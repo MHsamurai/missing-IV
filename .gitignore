@@ -1,0 +1,29 @@
+# macOS / local session files
+.DS_Store
+.Rhistory
+
+# Large or binary research materials kept locally
+*.pdf
+*.zip
+*.pptx
+
+# Data and generated outputs
+data/
+output/
+outputs/
+results/
+figures/generated/
+tables/generated/
+
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
