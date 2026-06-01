@@ -6,6 +6,7 @@
 *.pdf
 *.zip
 *.pptx
+*.docx
 
 # Data and generated outputs
 data/
