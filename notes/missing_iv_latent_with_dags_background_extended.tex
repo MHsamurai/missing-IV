@@ -1,0 +1,1178 @@
+\documentclass[dvipdfmx,autodetect-engine]{jsarticle}
+\usepackage{amsmath,amssymb,amsthm,bm}
+\usepackage{enumerate}
+
+% --- DAG figures ---
+% TikZ を用いたDAG。jsarticle + dvipdfmx で利用する想定。
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,shapes.geometric}
+\tikzset{
+  dagobs/.style={draw, rounded corners=1pt, minimum width=10mm, minimum height=7mm, align=center, inner sep=2pt, font=\small},
+  daglat/.style={draw, circle, minimum size=8mm, align=center, inner sep=1pt, font=\small},
+  dagerr/.style={draw, circle, dashed, minimum size=7mm, align=center, inner sep=1pt, font=\scriptsize},
+  dagmiss/.style={draw, diamond, aspect=1.7, minimum width=10mm, inner sep=1pt, align=center, font=\small},
+  dagcond/.style={dagobs, double, double distance=1pt},
+  dagarrow/.style={-{Latex[length=2.2mm,width=1.5mm]}, line width=.55pt},
+  dagdashed/.style={dagarrow, dashed},
+  dagnone/.style={line width=.45pt, dotted},
+  dagnote/.style={align=center, font=\scriptsize, inner sep=1pt}
+}
+% --- end DAG figures ---
+
+
+\newtheorem{assumption}{仮定}
+\newtheorem{theorem}{定理}
+\newtheorem{proposition}{命題}
+\newtheorem{lemma}{補題}
+\newtheorem{remark}{注意}
+
+\newcommand{\indep}{\mathrel{\perp\!\!\!\perp}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Prb}{\mathbb{P}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\1}{\mathbf{1}}
+\newcommand{\calO}{\mathcal{O}}
+\newcommand{\calF}{\mathcal{F}}
+\newcommand{\calV}{\mathcal{V}}
+\newcommand{\calY}{\mathcal{Y}}
+
+\title{欠測IVと潜在変数モデリングによる非無作為欠測の識別}
+\author{本多将大、星野崇宏}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{研究背景}
+非無作為欠測（non-MAR）は、観測データからの識別を困難にする代表的問題である。
+既存研究では、IVを用いた識別戦略が提案されている。
+\subsection{d'Haultfoeuille (2010)}
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \node[dagobs] (Z) at (0,0) {$Z$};
+  \node[dagerr] (eps) at (1.6,1.25) {$\epsilon$};
+  \node[dagobs] (Y) at (3.0,0) {$Y$};
+  \node[dagerr] (eta) at (4.5,1.25) {$\eta$};
+  \node[dagmiss] (R) at (6.0,0) {$R$};
+  \draw[dagarrow] (Z) -- node[dagnote,above] {$\phi$} (Y);
+  \draw[dagarrow] (eps) -- (Y);
+  \draw[dagarrow] (Y) -- node[dagnote,above] {$\psi$} (R);
+  \draw[dagarrow] (eta) -- (R);
+  \node[dagnote] at (3,-1.0) {$R=\psi(Y,\eta),\quad Y=\phi(Z,\epsilon),\quad \eta\indep (Z,\epsilon)$};
+  \node[dagnote] at (3,-1.55) {排除制約：$Z\nrightarrow R$，したがって $R\indep Z\mid Y$};
+  \draw[dagnone] (Z.south) .. controls +(1.8,-1.15) and +(-1.8,-1.15) .. (R.south);
+\end{tikzpicture}
+\caption{d'Haultfoeuille 型 shadow variable 識別のDAG。$Z$ は $Y$ とは関連するが，$Y$ を条件付けると欠測指標 $R$ から排除される。}
+\label{fig:dag-dhaultfoeuille}
+\end{figure}
+
+
+非無作為欠測に対して、以下の条件のもとで識別を行う。
+$R=1$ のときに $Y$ が観測される状況を考える。
+
+\begin{itemize}
+    \item （観測構造）  
+    $R$ と $(Y,Z)$ は $R=1$ のときのみ観測される。
+
+    \item （Zの情報）  
+    $Z$ の分布が識別可能（例えば常に観測される）。
+
+    \item （IV条件）
+    \begin{align}
+    R \perp Z \mid Y
+    \end{align}
+
+    \item （生成構造の一例）  
+    \begin{align}
+    Y = \phi(Z, \epsilon), \quad R = \psi(Y, \eta), \quad \eta \perp (Z, \epsilon)
+    \end{align}
+    のとき上記のIV条件が成立する。
+
+    \item （完全性条件）
+    \begin{align}
+    E[g(Y) \mid Z] = 0 \ \Rightarrow\ g(Y) = 0
+    \end{align}
+
+    \item （サポート条件）
+    \begin{align}
+    P(R=1 \mid Y) > 0
+    \end{align}
+\end{itemize}
+
+このとき、
+\begin{align}
+E\left[\frac{R}{P(Y)} \mid Z \right] = 1
+\end{align}
+が成り立ち、このモーメント条件により
+$(R,Y,Z)$ の同時分布が識別される。
+パラメトリックおよびノンパラメトリックのいずれの枠組みでも推定が可能である。
+
+\subsection{Zhao \& Shao (2015)}
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \node[dagobs] (U) at (2.8,1.45) {$U$};
+  \node[dagobs] (Z) at (0,0) {$Z$};
+  \node[dagobs] (Y) at (3.0,0) {$Y$};
+  \node[dagmiss] (R) at (6.0,0) {$R$};
+  \draw[dagarrow] (U) -- (Z);
+  \draw[dagarrow] (U) -- (Y);
+  \draw[dagarrow] (U) -- (R);
+  \draw[dagarrow] (Z) -- node[dagnote,above] {$P(Y\mid Z,U)$} (Y);
+  \draw[dagarrow] (Y) -- (R);
+  \node[dagnote] at (3,-1.0) {$P(R\mid Y,Z,U)=P(R\mid Y,U)$};
+  \node[dagnote] at (3,-1.55) {$R=1$ 標本でも $P(Z\mid Y,U,R=1)=P(Z\mid Y,U)$};
+  \draw[dagnone] (Z.south) .. controls +(1.8,-1.05) and +(-1.8,-1.05) .. (R.south);
+\end{tikzpicture}
+\caption{Zhao--Shao 型擬似尤度のDAG。共変量 $U$ を調整した上で，$Z$ は欠測機構から排除される。}
+\label{fig:dag-zhao-shao}
+\end{figure}
+
+
+欠測インディケータを $R$、共変量を $U$、IV（instrumental variable）を $Z$、アウトカムを $Y$ とする。
+以下を仮定するとき、
+\begin{align}
+P(R \mid Y, Z, U) = P(R \mid Y, U)
+\end{align}
+IV $Z$ は、
+\begin{align}
+P(Z \mid Y, U, R=1)
+&= \frac{P(R=1 \mid Z, Y, U) P(Z \mid Y, U)}{P(R=1 \mid Y, U)} \\
+&= P(Z \mid Y, U)
+\end{align}
+を満たす。
+
+したがって、$R=1$ のデータは $P(Z \mid Y, U)$ に従う。
+
+これを用いると、
+\begin{align}
+P(Z \mid Y, U)
+=
+\frac{P(Y \mid Z, U)\, P(Z \mid U)}
+{\int P(Y \mid z, U)\, P(z \mid U)\, dz}
+\end{align}
+と表される。
+
+$P(Y \mid Z, U)$ に対してGLMを仮定し、
+この条件付き分布に基づいて擬似尤度を構成し推定する。
+
+
+
+\section{研究背景と本稿の位置づけ}
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+  % IV panel
+  \node[dagnote] at (2.2,1.8) {IV型：$F=g(V)+U$};
+  \node[dagobs] (V1) at (0,0) {$V$};
+  \node[dagerr] (U1) at (1.6,1.0) {$U$};
+  \node[daglat] (F1) at (2.4,0) {$F$};
+  \node[dagobs] (Y1) at (4.4,0) {$Y_j$};
+  \node[dagerr] (E1) at (4.4,1.0) {$\varepsilon_j$};
+  \node[dagmiss] (D1) at (6.2,0) {$D_j$};
+  \node[dagerr] (H1) at (6.2,1.0) {$\eta_j$};
+  \draw[dagarrow] (V1) -- (F1);
+  \draw[dagarrow] (U1) -- (F1);
+  \draw[dagarrow] (F1) -- node[dagnote,above] {$h_j$} (Y1);
+  \draw[dagarrow] (E1) -- (Y1);
+  \draw[dagarrow] (Y1) -- node[dagnote,above] {$k_j$} (D1);
+  \draw[dagarrow] (H1) -- (D1);
+  % proxy panel
+  \node[dagnote] at (2.2,-1.65) {proxy型：$V=g(F)+U$};
+  \node[daglat] (F2) at (0,-3.3) {$F$};
+  \node[dagobs] (V2) at (2.0,-3.3) {$V$};
+  \node[dagerr] (U2) at (2.0,-2.35) {$U$};
+  \node[dagobs] (Y2) at (4.1,-3.3) {$Y_j$};
+  \node[dagerr] (E2) at (4.1,-2.35) {$\varepsilon_j$};
+  \node[dagmiss] (D2) at (6.0,-3.3) {$D_j$};
+  \node[dagerr] (H2) at (6.0,-2.35) {$\eta_j$};
+  \draw[dagarrow] (F2) -- node[dagnote,above] {$g$} (V2);
+  \draw[dagarrow] (U2) -- (V2);
+  \draw[dagarrow] (F2) to[bend left=12] node[dagnote,above] {$h_j$} (Y2);
+  \draw[dagarrow] (E2) -- (Y2);
+  \draw[dagarrow] (Y2) -- node[dagnote,above] {$k_j$} (D2);
+  \draw[dagarrow] (H2) -- (D2);
+  \node[dagnote] at (3.2,-4.35) {本稿では，$D_j\indep V\mid Y_j$ と completeness により item-wise MNAR を補正する。};
+\end{tikzpicture}
+\caption{本稿の位置づけ。$V$ が潜在因子の原因であるIV型と，$F$ の追加測定値であるproxy型を区別する。}
+\label{fig:dag-position}
+\end{figure}
+
+\subsection{シングルソースデータにおける二つの統計的障害}
+
+同一個体について行動データと調査データを統合するシングルソースデータでは，行動データは全顧客について比較的欠測なく観測される一方で，調査データは回答コストや協力率の制約により一部の個体でしか観測されないことが多い。
+さらに，調査データは満足度，態度，知覚品質，ライフスタイルなどの潜在的構成概念を間接的に測定する noisy proxy であり，回答された値そのものにも測定誤差が含まれる。
+したがって，調査・行動データの統合分析では，欠測と測定誤差という二つの問題を同時に扱う必要がある。
+この二つを無視すると，欠測による選択バイアスと，測定誤差による減衰バイアスまたは differential error による方向不明のバイアスが同時に生じ得る \cite{Heckman1979,ImaiYamamoto2010}。
+
+従来の多重代入法（multiple imputation; MI）は，欠測値を確率的に補完し，複数の complete data に対する推定結果を Rubin's combining rules により統合する枠組みである \cite{Rubin1987}。
+しかし，標準的な MI は観測された値を誤差のない実現値として扱うため，観測済み調査変数に測定誤差が含まれる場合には，欠測補完後の分析にも測定誤差バイアスが残る。
+一方，構造方程式モデリング（structural equation modeling; SEM）や潜在変数モデルは，複数の観測指標を用いて潜在構成概念と測定誤差を明示的にモデル化できるが，欠測が nonignorable である場合には，測定モデルと欠測機構を同時に識別するための追加条件が必要になる。
+このため，欠測と測定誤差の一方だけを補正する方法では，シングルソースデータに固有の問題を十分に解決できない。
+
+\subsection{MCAR, MAR, NI/MNAR の区別}
+
+完全データを $\mathcal{D}=(\mathcal{D}_{\mathrm{obs}},\mathcal{D}_{\mathrm{mis}})$，欠測指標を $M$ とする。
+Rubin 型の欠測分類では，欠測機構は次の三つに分けられる \cite{Rubin1976,LittleRubin2002}。
+\begin{align}
+  \text{MCAR:}\quad&
+  \Prb(M\mid \mathcal{D})=\Prb(M),
+  \label{eq:mcar-def}\\
+  \text{MAR:}\quad&
+  \Prb(M\mid \mathcal{D})=\Prb(M\mid \mathcal{D}_{\mathrm{obs}}),
+  \label{eq:mar-def}\\
+  \text{NI/MNAR:}\quad&
+  \Prb(M\mid \mathcal{D})=\Prb(M\mid \mathcal{D}_{\mathrm{obs}},\mathcal{D}_{\mathrm{mis}})
+  \quad\text{and generally depends on }\mathcal{D}_{\mathrm{mis}}.
+  \label{eq:ni-def}
+\end{align}
+MCAR では complete-case analysis などでも平均構造についてはバイアスを避けられる場合があるが，単一補完は分散を過小評価し得る。
+MAR では，観測変数に条件づければ欠測が無作為とみなせるため，MI や inverse probability weighting（IPW）が標準的に用いられる。
+これに対して NI または MNAR では，欠測確率が未観測値そのものに依存するため，観測データ尤度から欠測機構を無視することはできない。
+本稿では，NI, MNAR, non-MAR を，欠測指標が未観測値に依存し得る状況を表す用語として同義に用いる。
+
+本稿の基本的な欠測機構
+\begin{equation}
+  D_j=\1\{D_j^*>0\},
+  \qquad
+  D_j^*=k_j(Y_j)+\eta_j
+  \label{eq:background-y-dependent-missing}
+\end{equation}
+は，$D_j=0$ の個体について $Y_j$ が観測されない以上，典型的な NI/MNAR である。
+観測されていない $Y_j$ が欠測確率そのものを決めるからである。
+したがって，MAR を前提にした MI, IPW, MO をそのまま適用しても，母集団分布は一般には識別されない。
+
+\subsection{NI 欠測の非識別性と欠測IVの役割}
+
+NI 欠測の困難は，選択確率と母集団分布が観測分布の中で積として現れる点にある。
+たとえば $Y$ が $D=1$ のときのみ観測され，$\pi(y)=\Prb(D=1\mid Y=y)$ とすると，観測される回答者分布は
+\begin{equation}
+  p(y\mid D=1)
+  =
+  \frac{\pi(y)p_Y(y)}{\int \pi(t)p_Y(t)dt}.
+  \label{eq:selected-y-density-background}
+\end{equation}
+したがって，$p_Y$ と $\pi$ を別々に識別するには，選択モデルや pattern mixture model のような分解だけでは不十分であり，パラメトリック制約，外部情報，または除外制約を持つ変数が必要になる。
+
+\begin{proposition}[NI 欠測における非識別性]
+\label{prop:background-ni-nonid}
+$Y$ が $D=1$ のときのみ観測され，観測分布が \eqref{eq:selected-y-density-background} で与えられるとする。
+$p_Y$ と $\pi$ に追加制約を置かない限り，母集団分布 $p_Y$ は観測分布から一意に識別されない。
+\end{proposition}
+
+\begin{proof}
+任意の正値関数 $a(y)$ を取り，正規化定数を用いて
+\begin{equation}
+  \widetilde p_Y(y)=\frac{a(y)p_Y(y)}{\int a(t)p_Y(t)dt},
+  \qquad
+  \widetilde \pi(y)=c\frac{\pi(y)}{a(y)}
+  \label{eq:background-tilting}
+\end{equation}
+と定義する。
+$a$ を十分に $1$ に近く取り，定数 $c>0$ を十分小さく取れば，$0<\widetilde \pi(y)<1$ を保てる。
+このとき
+\begin{equation}
+  \widetilde \pi(y)\widetilde p_Y(y)
+  \propto
+  \pi(y)p_Y(y)
+\end{equation}
+であるため，\eqref{eq:selected-y-density-background} は変化しない。
+しかし $a$ が非定数であれば $\widetilde p_Y$ は一般に $p_Y$ と異なる。
+よって $p_Y$ は一意に定まらない。
+\end{proof}
+
+欠測IVまたは shadow variable は，この非識別性を除外制約によって破るための変数である。
+ここでいう IV は処置効果推定における通常の操作変数ではなく，欠測機構から排除された nonresponse instrument を意味する。
+常に観測される変数 $V$ が
+\begin{equation}
+  D_j\indep V\mid Y_j
+  \label{eq:background-shadow-condition}
+\end{equation}
+を満たし，かつ $V$ が $Y_j$ について十分な情報を持つ，すなわち completeness 条件を満たすならば，未知の重み $w_j(y)=1/\pi_j(y)$ は
+\begin{equation}
+  \E\{D_j w_j(Y_j)\mid V\}=1
+  \label{eq:background-shadow-moment}
+\end{equation}
+を満たす唯一の解として識別される。
+この条件は，$V$ を条件に入れれば欠測が MAR になるという仮定ではない。
+むしろ，$Y_j$ を条件づけた後に $V$ が欠測機構から排除されるという exclusion restriction と，$V$ が $Y_j$ の分布を十分に動かすという relevance/completeness の組である。
+本稿の $D_j^*=k_j(Y_j)+\eta_j$ という構造では，$\eta_j$ が $V$ と独立であるため \eqref{eq:background-shadow-condition} が成立し，その上で completeness を仮定することで NI 欠測の識別が可能になる。
+
+\subsection{測定誤差，SEM，MO，および潜在変数アプローチの限界}
+
+測定誤差の問題は，観測変数を真の構成概念の完全な観測値ではなく，誤差を含む代理変数として扱う必要があることから生じる。
+加法的な測定誤差モデルでは
+\begin{equation}
+  W=X^*+Q
+  \label{eq:background-additive-measurement-error}
+\end{equation}
+と書ける。
+さらに心理尺度や態度尺度のように複数項目で構成される場合には，潜在因子 $F$ に対して
+\begin{equation}
+  Y_j=h_j(F)+\varepsilon_j,
+  \qquad j=1,\ldots,J
+  \label{eq:background-latent-measurement}
+\end{equation}
+という測定モデルを置くことが自然である。
+線形 SEM ではしばしば $Y_j=\lambda_j F+\varepsilon_j$ と置かれるが，本稿では非線形な測定関数 $h_j$ を許す。
+複数の独立指標があれば，潜在因子の位置・尺度・符号に関する正規化の下で，潜在因子分布や測定関数を識別できる場合がある。
+この点で SEM や非線形測定誤差モデルは，測定誤差を補正するための自然な枠組みである。
+
+Multiple Overimputation（MO）は，MI を拡張し，欠測と測定誤差を統一的に扱う実用的なベイズ的補完法である \cite{BlackwellHonakerKing2017a,BlackwellHonakerKing2017b}。
+MO では，観測された noisy proxy $w_i$ を潜在真値 $x_i^*$ に対する observation-level の経験的事前分布として用い，典型的には
+\begin{equation}
+  x_i^*\mid w_i \sim N(w_i,\sigma_u^2)
+  \label{eq:background-mo-prior}
+\end{equation}
+のように表す。
+$\sigma_u^2=0$ なら完全観測，$0<\sigma_u^2<\infty$ なら測定誤差つき観測，$\sigma_u^2=\infty$ なら完全欠測に対応する。
+この意味で，MO は欠測を測定誤差の極限として扱う。
+ただし，MO の標準的な妥当性は，欠測機構が MAR であること，測定誤差が ignorable measurement mechanism assignment（IMMA）または non-differential error に近いこと，さらに測定誤差分散または正確性パラメータが外部情報や感度分析により指定されることに依存する。
+したがって，MO は欠測と測定誤差を同時に補正する重要な計算枠組みであるが，NI 欠測におけるノンパラメトリック識別そのものを保証するものではない。
+
+\subsection{本稿が組み合わせる三つの要素}
+
+以上を踏まえると，本稿の方法論的位置づけは明確である。
+第一に，欠測部分については，NI/MNAR を MAR とみなして補完するのではなく，欠測機構
+\begin{equation}
+  D_j^*=k_j(Y_j)+\eta_j
+\end{equation}
+を明示し，常に観測される $V$ を shadow variable として用いる。
+これにより，$\pi_j(Y_j)=\Prb(D_j=1\mid Y_j)$ と $P(Y_j,V)$，さらに item-wise IPW による $P(Y_1,Y_j,V)$ の復元を目指す。
+第二に，測定誤差部分については，調査項目を潜在構成概念 $F$ の noisy proxy とみなし，
+\begin{equation}
+  Y_j=h_j(F)+\varepsilon_j
+\end{equation}
+という潜在変数モデルを用いる。
+第三に，$V$ の役割について，$V$ が潜在因子を駆動する IV 型
+\begin{equation}
+  F=g(V)+U,
+  \label{eq:iv-latent}
+\end{equation}
+と，$V$ 自身が潜在因子の追加測定値である proxy 型
+\begin{equation}
+  V=g(F)+U
+  \label{eq:proxy-latent}
+\end{equation}
+を区別する。
+前者では $V$ が潜在因子の外生的変動を与え，後者では $V$ が常時観測される追加指標として働く。
+いずれの場合も，欠測が $Y_j$ 自身に依存する限り，$Y_j$ を条件づけたとき $D_j$ と $V$ は独立になり得る。
+
+この構成により，本稿は既存手法の隙間を埋める。
+選択モデルや pattern mixture model は NI 欠測を扱えるが，通常はパラメトリック制約または感度分析に強く依存する。
+SEM や非線形測定誤差モデルは測定誤差を扱えるが，NI 欠測下での母集団分布の復元には追加の識別条件が必要である。
+MO は欠測と測定誤差を統一的に処理できるが，標準的には MAR と測定誤差分散の外部指定に依存する。
+これに対して本稿は，shadow variable によって NI 欠測確率を識別し，復元された同時分布に潜在変数・測定誤差モデルの識別定理を適用するという二段階の識別論を与える。
+
+\subsection{本稿の射程と限界}
+
+本稿の主張は，「$V$ が存在すれば常に識別できる」というものではない。
+必要なのは，少なくとも次の三条件である。
+第一に，欠測指標が対象測定値に条件づけて $V$ から独立になること，すなわち \eqref{eq:background-shadow-condition} である。
+第二に，積分方程式 \eqref{eq:background-shadow-moment} の解が一意であること，すなわち completeness である。
+第三に，復元された $P(Y_1,Y_j,V)$ に対して，潜在変数モデルまたは非線形測定誤差モデルの識別条件が成り立つことである。
+
+したがって，欠測が $Y_j$ ではなく潜在因子 $F$ に直接依存する
+\begin{equation}
+  D_j^*=k_j(F)+\eta_j
+  \label{eq:background-f-dependent-missing}
+\end{equation}
+の場合には，$Y_j$ を条件づけても $V$ と $D_j$ の関連は一般に残る。
+この場合，$V$ は $Y_j$ に対する shadow variable ではなく，母集団平均 $\E(Y_j)$ のノンパラメトリック識別は一般に失敗する。
+ただし proxy 型では，選択された部分母集団内で多重指標構造が保たれる限り，測定関数 $h_j$ や $g$ が識別される場合がある。
+この区別が，本稿の後半で示す主要な結論である。
+\section{基本モデル}
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+  % IV-type DAG
+  \node[dagnote] at (2.35,2.05) {IV型：$F=g(V)+U$};
+  \node[dagobs] (V1) at (0,0) {$V$};
+  \node[dagerr] (U1) at (1.45,1.35) {$U$};
+  \node[daglat] (F1) at (1.55,0) {$F$};
+  \node[dagobs] (Y11) at (3.15,1.0) {$Y_1$};
+  \node[dagobs] (Y21) at (3.15,0) {$Y_2$};
+  \node[dagobs] (Y31) at (3.15,-1.0) {$Y_3$};
+  \node[dagmiss] (D11) at (4.75,1.0) {$D_1$};
+  \node[dagmiss] (D21) at (4.75,0) {$D_2$};
+  \node[dagmiss] (D31) at (4.75,-1.0) {$D_3$};
+  \draw[dagarrow] (V1) -- (F1);
+  \draw[dagarrow] (U1) -- (F1);
+  \draw[dagarrow] (F1) -- (Y11);
+  \draw[dagarrow] (F1) -- (Y21);
+  \draw[dagarrow] (F1) -- (Y31);
+  \draw[dagarrow] (Y11) -- (D11);
+  \draw[dagarrow] (Y21) -- (D21);
+  \draw[dagarrow] (Y31) -- (D31);
+
+  % proxy-type DAG
+  \node[dagnote] at (8.55,2.05) {proxy型：$V=g(F)+U$};
+  \node[daglat] (F2) at (6.25,0) {$F$};
+  \node[dagerr] (U2) at (7.55,1.35) {$U$};
+  \node[dagobs] (V2) at (7.65,0) {$V$};
+  \node[dagobs] (Y12) at (9.35,1.0) {$Y_1$};
+  \node[dagobs] (Y22) at (9.35,0) {$Y_2$};
+  \node[dagobs] (Y32) at (9.35,-1.0) {$Y_3$};
+  \node[dagmiss] (D12) at (10.95,1.0) {$D_1$};
+  \node[dagmiss] (D22) at (10.95,0) {$D_2$};
+  \node[dagmiss] (D32) at (10.95,-1.0) {$D_3$};
+  \draw[dagarrow] (F2) -- (V2);
+  \draw[dagarrow] (U2) -- (V2);
+  \draw[dagarrow] (F2) -- (Y12);
+  \draw[dagarrow] (F2) -- (Y22);
+  \draw[dagarrow] (F2) -- (Y32);
+  \draw[dagarrow] (Y12) -- (D12);
+  \draw[dagarrow] (Y22) -- (D22);
+  \draw[dagarrow] (Y32) -- (D32);
+
+  \node[dagnote] at (5.55,-1.9) {各 $Y_j$ は $D_j=1$ のときのみ観測される。測定誤差 $\varepsilon_j$ と欠測誤差 $\eta_j$ は図では省略している。};
+\end{tikzpicture}
+\caption{基本モデルのDAG。左はIV型，右はproxy型であり，どちらも item-wise な $Y_j$ 依存欠測を含む。}
+\label{fig:dag-basic-model}
+\end{figure}
+
+
+$j=1,2,3$ とし，潜在因子 $F$ に対する測定モデルを
+\begin{equation}
+  Y_j = h_j(F) + \varepsilon_j,
+  \qquad j=1,2,3,
+  \label{eq:measurement}
+\end{equation}
+とする。
+識別の正規化として，以下では主に
+\begin{equation}
+  h_1(f)=f
+  \label{eq:normalization-h1}
+\end{equation}
+を置く。
+代替的には，$\E(F)=0$，$\operatorname{Var}(F)=1$，かつ $h_1$ が単調増加であるという正規化を用いてもよい。
+この場合，潜在因子の位置，尺度，および符号の不定性が除去される。
+
+各 $Y_j$ は item-wise に欠測し，$D_j=1$ のときのみ観測される。
+まず，欠測が各測定値自身に依存する場合を考える：
+\begin{equation}
+  D_j = \1\{D_j^*>0\},
+  \qquad
+  D_j^* = k_j(Y_j)+\eta_j.
+  \label{eq:y-missing}
+\end{equation}
+このとき
+\begin{equation}
+  \pi_j(y) = \Prb(D_j=1\mid Y_j=y)
+  = \Prb\{\eta_j>-k_j(y)\}
+  \label{eq:pi-y}
+\end{equation}
+と書く。
+観測データは
+\begin{equation}
+  \calO = \{V,D_1,D_1Y_1,D_2,D_2Y_2,D_3,D_3Y_3\}
+  \label{eq:observed-data}
+\end{equation}
+である。
+
+\begin{assumption}[外生性]
+\label{ass:exogeneity}
+以下のいずれかの構造を考える。
+\begin{enumerate}[(i)]
+  \item 操作変数型：$F=g(V)+U$ であり，$V,U,\varepsilon_1,\varepsilon_2,\varepsilon_3,\eta_1,\eta_2,\eta_3$ は互いに独立である。
+  \item proxy 型：$V=g(F)+U$ であり，$F,U,\varepsilon_1,\varepsilon_2,\varepsilon_3,\eta_1,\eta_2,\eta_3$ は互いに独立である。
+\end{enumerate}
+\end{assumption}
+
+\begin{assumption}[positivity]
+\label{ass:positivity}
+各 $j$ について，ある定数 $c>0$ が存在して
+\begin{equation}
+  \pi_j(Y_j) \geq c
+  \quad \text{a.s.}
+  \label{eq:positivity}
+\end{equation}
+が成り立つ。
+\end{assumption}
+
+\begin{assumption}[shadow completeness]
+\label{ass:completeness-shadow}
+各 $j$ について，任意の可積分関数 $a$ に対し，
+\begin{equation}
+  \E\{a(Y_j)\mid V\}=0 \quad \text{a.s.}
+  \quad \Longrightarrow \quad
+  a(Y_j)=0 \quad \text{a.s.}
+  \label{eq:shadow-completeness}
+\end{equation}
+が成り立つ。
+\end{assumption}
+
+\begin{assumption}[潜在測定モデルの識別条件]
+\label{ass:latent-identification}
+復元された同時分布 $P(Y_1,Y_j,V)$ に対し，次の潜在測定モデルが，正規化 \eqref{eq:normalization-h1} の下で一意に識別されると仮定する。
+操作変数型では
+\begin{equation}
+  Y_1=F+\varepsilon_1,
+  \qquad
+  Y_j=h_j(F)+\varepsilon_j,
+  \qquad
+  F=g(V)+U
+  \label{eq:latent-id-iv}
+\end{equation}
+であり，proxy 型では
+\begin{equation}
+  Y_1=F+\varepsilon_1,
+  \qquad
+  Y_j=h_j(F)+\varepsilon_j,
+  \qquad
+  V=g(F)+U
+  \label{eq:latent-id-proxy}
+\end{equation}
+である。
+これは，Kotlarski 型の補題，非線形測定誤差モデル，または Hu--Schennach 型の識別定理に対応する仮定である。
+\end{assumption}
+
+\section{測定値依存欠測における shadow variable 識別}
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \node[dagnote] at (2.6,1.6) {IV型};
+  \node[dagobs] (V1) at (0,0) {$V$};
+  \node[daglat] (F1) at (1.8,0) {$F$};
+  \node[dagcond] (Y1) at (3.6,0) {$Y_j$};
+  \node[dagmiss] (D1) at (5.4,0) {$D_j$};
+  \node[dagerr] (H1) at (5.4,1.0) {$\eta_j$};
+  \draw[dagarrow] (V1) -- (F1);
+  \draw[dagarrow] (F1) -- (Y1);
+  \draw[dagarrow] (Y1) -- (D1);
+  \draw[dagarrow] (H1) -- (D1);
+  \node[dagnote] at (2.7,-0.85) {$Y_j$ で条件付けると $V\to F\to Y_j\to D_j$ が遮断される};
+  \node[dagnote] at (2.8,-1.35) {$D_j\indep V\mid Y_j$};
+
+  \node[dagnote] at (2.6,-2.35) {proxy型};
+  \node[daglat] (F2) at (0,-3.8) {$F$};
+  \node[dagobs] (V2) at (1.8,-3.8) {$V$};
+  \node[dagcond] (Y2) at (3.6,-3.8) {$Y_j$};
+  \node[dagmiss] (D2) at (5.4,-3.8) {$D_j$};
+  \node[dagerr] (H2) at (5.4,-2.8) {$\eta_j$};
+  \draw[dagarrow] (F2) -- (V2);
+  \draw[dagarrow] (F2) to[bend left=15] (Y2);
+  \draw[dagarrow] (Y2) -- (D2);
+  \draw[dagarrow] (H2) -- (D2);
+  \node[dagnote] at (2.7,-4.85) {$Y_j$ で条件付けると $V\leftarrow F\to Y_j\to D_j$ が遮断される};
+  \node[dagnote] at (2.8,-5.35) {$D_j\indep V\mid Y_j$};
+\end{tikzpicture}
+\caption{測定値依存欠測における shadow variable 条件。$Y_j$ を条件付けることで，常に観測される $V$ と欠測指標 $D_j$ の経路が遮断される。}
+\label{fig:dag-shadow-y-missing}
+\end{figure}
+
+
+\begin{lemma}[条件付き独立性]
+\label{lem:shadow-independence}
+仮定 \ref{ass:exogeneity} と欠測機構 \eqref{eq:y-missing} の下で，各 $j$ について
+\begin{equation}
+  D_j \indep V \mid Y_j
+  \label{eq:d-v-y}
+\end{equation}
+が成り立つ。
+さらに，任意の部分集合 $S\subset\{1,2,3\}$ について
+\begin{equation}
+  \Prb(D_j=1, j\in S \mid Y_1,Y_2,Y_3,V)
+  = \prod_{j\in S}\pi_j(Y_j)
+  \label{eq:product-missing}
+\end{equation}
+が成り立つ。
+\end{lemma}
+
+\begin{proof}
+$D_j$ は $Y_j$ と $\eta_j$ のみの関数であり，$\eta_j$ は $V$ および他の誤差項から独立である。
+したがって
+\begin{align}
+  \Prb(D_j=1\mid Y_j,V)
+  &= \Prb\{\eta_j>-k_j(Y_j)\mid Y_j,V\} \\
+  &= \Prb\{\eta_j>-k_j(Y_j)\mid Y_j\} \\
+  &= \pi_j(Y_j).
+\end{align}
+よって $D_j\indep V\mid Y_j$ が従う。
+また，$\eta_1,\eta_2,\eta_3$ は互いに独立なので，同時観測確率は各観測確率の積になる。
+\end{proof}
+
+\begin{theorem}[欠測確率と周辺平均の識別]
+\label{thm:shadow-identification}
+仮定 \ref{ass:exogeneity}--\ref{ass:completeness-shadow} と欠測機構 \eqref{eq:y-missing} の下で，各 $j=1,2,3$ について，欠測確率 $\pi_j(Y_j)$，同時分布 $P(Y_j,V)$，および平均 $\E(Y_j)$ は観測分布から識別される。
+\end{theorem}
+
+\begin{proof}
+$w_j(y)=1/\pi_j(y)$ と置く。
+補題 \ref{lem:shadow-independence} より，
+\begin{align}
+  \E\{D_jw_j(Y_j)\mid V\}
+  &= \E\bigl[\E\{D_jw_j(Y_j)\mid Y_j,V\}\mid V\bigr] \\
+  &= \E\bigl[w_j(Y_j)\pi_j(Y_j)\mid V\bigr] \\
+  &=1.
+  \label{eq:ipw-moment}
+\end{align}
+左辺は $D_j=1$ のときのみ $Y_j$ を用いるため，観測分布から評価できる。
+したがって $w_j$ は観測可能な積分方程式
+\begin{equation}
+  \E\{D_j w(Y_j)\mid V\}=1
+  \label{eq:integral-eq-w}
+\end{equation}
+の解である。
+
+次に一意性を示す。
+$w$ と $\widetilde w$ が \eqref{eq:integral-eq-w} の二つの解であるとする。
+すると
+\begin{align}
+  0
+  &=\E\{D_j(w-\widetilde w)(Y_j)\mid V\} \\
+  &=\E\{\pi_j(Y_j)(w-\widetilde w)(Y_j)\mid V\}.
+\end{align}
+仮定 \ref{ass:completeness-shadow} より
+\begin{equation}
+  \pi_j(Y_j)(w-\widetilde w)(Y_j)=0 \quad \text{a.s.}
+\end{equation}
+である。
+positivity より $\pi_j(Y_j)>0$ なので，$w=\widetilde w$ a.s. が従う。
+よって $w_j$ および $\pi_j$ は識別される。
+
+任意の有界可測関数 $\varphi$ について
+\begin{align}
+  \E\{\varphi(Y_j,V)\}
+  &=\E\left[\E\{D_jw_j(Y_j)\varphi(Y_j,V)\mid Y_j,V\}\right] \\
+  &=\E\{\varphi(Y_j,V)\}.
+\end{align}
+より，右辺の経験的対応物
+\begin{equation}
+  \E\{D_jw_j(Y_j)\varphi(Y_j,V)\}
+  \label{eq:ipw-functional}
+\end{equation}
+から $P(Y_j,V)$ が識別される。
+特に $\varphi(Y_j,V)=Y_j$ とすれば $\E(Y_j)$ が識別される。
+\end{proof}
+
+\begin{theorem}[同時分布の復元]
+\label{thm:joint-recovery}
+定理 \ref{thm:shadow-identification} の条件の下で，任意の $S\subset\{1,2,3\}$ について，同時分布 $P((Y_j)_{j\in S},V)$ は観測分布から識別される。
+特に，$P(Y_1,Y_2,V)$ および $P(Y_1,Y_3,V)$ は識別される。
+\end{theorem}
+
+\begin{proof}
+$S\subset\{1,2,3\}$ とし，$D_S=\prod_{j\in S}D_j$，$w_S(Y_S)=\prod_{j\in S}w_j(Y_j)$ と置く。
+補題 \ref{lem:shadow-independence} より，任意の有界可測関数 $\varphi$ について
+\begin{align}
+  \E\{D_S w_S(Y_S)\varphi(Y_S,V)\}
+  &=\E\left[
+      \E\{D_S w_S(Y_S)\mid Y_1,Y_2,Y_3,V\}
+      \varphi(Y_S,V)
+    \right] \\
+  &=\E\left[
+      \prod_{j\in S}\pi_j(Y_j)\prod_{j\in S}\frac{1}{\pi_j(Y_j)}
+      \varphi(Y_S,V)
+    \right] \\
+  &=\E\{\varphi(Y_S,V)\}.
+\end{align}
+左辺は，$Y_j$ が全て観測される $D_S=1$ の標本上で計算できる。
+したがって $P(Y_S,V)$ は識別される。
+\end{proof}
+
+\section{測定関数 $h_2,h_3,g$ の識別}
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \node[dagnote] at (2.7,1.65) {IV型：復元された $P(Y_1,Y_j,V)$};
+  \node[dagobs] (V1) at (0,0) {$V$};
+  \node[dagerr] (U1) at (1.4,1.0) {$U$};
+  \node[daglat] (F1) at (2.2,0) {$F$};
+  \node[dagobs] (Y11) at (4.3,0.7) {$Y_1$};
+  \node[dagobs] (Yj1) at (4.3,-0.7) {$Y_j$};
+  \node[dagerr] (E11) at (5.6,1.2) {$\varepsilon_1$};
+  \node[dagerr] (Ej1) at (5.6,-1.2) {$\varepsilon_j$};
+  \draw[dagarrow] (V1) -- node[dagnote,above] {$g$} (F1);
+  \draw[dagarrow] (U1) -- (F1);
+  \draw[dagarrow] (F1) -- node[dagnote,above] {$h_1$} (Y11);
+  \draw[dagarrow] (F1) -- node[dagnote,below] {$h_j$} (Yj1);
+  \draw[dagarrow] (E11) -- (Y11);
+  \draw[dagarrow] (Ej1) -- (Yj1);
+
+  \node[dagnote] at (2.7,-2.1) {proxy型：三つの独立指標 $(Y_1,Y_j,V)$};
+  \node[daglat] (F2) at (0,-3.8) {$F$};
+  \node[dagobs] (V2) at (2.4,-2.9) {$V$};
+  \node[dagobs] (Y12) at (2.4,-3.8) {$Y_1$};
+  \node[dagobs] (Yj2) at (2.4,-4.7) {$Y_j$};
+  \node[dagerr] (U2) at (4.1,-2.9) {$U$};
+  \node[dagerr] (E12) at (4.1,-3.8) {$\varepsilon_1$};
+  \node[dagerr] (Ej2) at (4.1,-4.7) {$\varepsilon_j$};
+  \draw[dagarrow] (F2) -- node[dagnote,above] {$g$} (V2);
+  \draw[dagarrow] (F2) -- node[dagnote,above] {$h_1$} (Y12);
+  \draw[dagarrow] (F2) -- node[dagnote,below] {$h_j$} (Yj2);
+  \draw[dagarrow] (U2) -- (V2);
+  \draw[dagarrow] (E12) -- (Y12);
+  \draw[dagarrow] (Ej2) -- (Yj2);
+\end{tikzpicture}
+\caption{測定関数の識別に用いるDAG。IPWで $P(Y_1,Y_j,V)$ を復元した後，IV型では非線形測定誤差モデル，proxy型では多重指標モデルの識別定理を適用する。}
+\label{fig:dag-function-identification}
+\end{figure}
+
+
+\begin{theorem}[操作変数型 $F=g(V)+U$ の識別]
+\label{thm:iv-functions}
+\eqref{eq:iv-latent}，\eqref{eq:measurement}，\eqref{eq:y-missing}，および仮定 \ref{ass:exogeneity}--\ref{ass:latent-identification} が成り立つとする。
+このとき，$\E(Y_1),\E(Y_2),\E(Y_3)$，$g$，$h_2$，$h_3$ は観測分布から識別される。
+\end{theorem}
+
+\begin{proof}
+定理 \ref{thm:shadow-identification} より，$\E(Y_j)$ は各 $j$ について識別される。
+定理 \ref{thm:joint-recovery} より，$P(Y_1,Y_2,V)$ および $P(Y_1,Y_3,V)$ が識別される。
+
+復元された $P(Y_1,Y_2,V)$ は
+\begin{equation}
+  p(y_1,y_2\mid v)
+  = \int p_{\varepsilon_1}(y_1-f)
+          p_{\varepsilon_2}\{y_2-h_2(f)\}
+          p_U\{f-g(v)\}
+    df
+  \label{eq:iv-kernel-y12}
+\end{equation}
+という積分表現を持つ。
+仮定 \ref{ass:latent-identification} により，この表現は正規化 $h_1(f)=f$ の下で一意である。
+したがって，$P(Y_1,Y_2,V)$ から $g$ と $h_2$ が識別される。
+同様に，復元された $P(Y_1,Y_3,V)$ に
+\begin{equation}
+  p(y_1,y_3\mid v)
+  = \int p_{\varepsilon_1}(y_1-f)
+          p_{\varepsilon_3}\{y_3-h_3(f)\}
+          p_U\{f-g(v)\}
+    df
+  \label{eq:iv-kernel-y13}
+\end{equation}
+を適用すれば，$h_3$ が識別される。
+\end{proof}
+
+\begin{theorem}[proxy 型 $V=g(F)+U$ の識別]
+\label{thm:proxy-functions}
+\eqref{eq:proxy-latent}，\eqref{eq:measurement}，\eqref{eq:y-missing}，および仮定 \ref{ass:exogeneity}--\ref{ass:latent-identification} が成り立つとする。
+このとき，$\E(Y_1),\E(Y_2),\E(Y_3)$，$g$，$h_2$，$h_3$ は観測分布から識別される。
+\end{theorem}
+
+\begin{proof}
+定理 \ref{thm:shadow-identification} と定理 \ref{thm:joint-recovery} により，$\E(Y_j)$，$P(Y_1,Y_2,V)$，$P(Y_1,Y_3,V)$ が識別される。
+復元された $P(Y_1,Y_2,V)$ は
+\begin{equation}
+  p(y_1,y_2,v)
+  = \int p_{\varepsilon_1}(y_1-f)
+          p_{\varepsilon_2}\{y_2-h_2(f)\}
+          p_U\{v-g(f)\}
+          p_F(f)
+    df
+  \label{eq:proxy-kernel-y12}
+\end{equation}
+と書ける。
+これは，$F$ に対する三つの独立指標 $(Y_1,Y_2,V)$ を持つ多重指標モデルである。
+仮定 \ref{ass:latent-identification} より，正規化の下で $h_2$ と $g$ は一意に識別される。
+同様に，$P(Y_1,Y_3,V)$ から $h_3$ が識別される。
+\end{proof}
+
+\begin{remark}[「必ず識別できる」という表現について]
+$V=g(F)+U$ の場合，$V$ は $F$ の追加測定値であり，$Y_j$ と $F$ を介して相関する。
+さらに欠測が $Y_j$ 自身にのみ依存するなら，$D_j\indep V\mid Y_j$ は成立する。
+しかし，これだけでは識別は十分ではない。
+積分方程式の解の一意性，すなわち completeness が必要である。
+したがって，正確には「条件が満たされれば識別できる」であり，「必ず識別できる」ではない。
+\end{remark}
+
+\section{測定誤差を追加した場合}
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \node[dagnote] at (2.4,1.7) {追加測定誤差を明示};
+  \node[daglat] (F1) at (0,0) {$F$};
+  \node[dagerr] (e1) at (1.6,1.0) {$e_j$};
+  \node[dagobs] (Ys) at (2.4,0) {$Y_j^*$};
+  \node[dagerr] (q1) at (3.8,1.0) {$Q_j$};
+  \node[dagobs] (Y1) at (4.8,0) {$Y_j$};
+  \draw[dagarrow] (F1) -- node[dagnote,above] {$h_j$} (Ys);
+  \draw[dagarrow] (e1) -- (Ys);
+  \draw[dagarrow] (Ys) -- (Y1);
+  \draw[dagarrow] (q1) -- (Y1);
+
+  \node[dagnote] at (2.4,-1.65) {合成誤差へ縮約};
+  \node[daglat] (F2) at (0,-3.2) {$F$};
+  \node[dagerr] (eps2) at (2.3,-2.2) {$\varepsilon_j=e_j+Q_j$};
+  \node[dagobs] (Y2) at (4.6,-3.2) {$Y_j$};
+  \draw[dagarrow] (F2) -- node[dagnote,above] {$h_j$} (Y2);
+  \draw[dagarrow] (eps2) -- (Y2);
+  \node[dagnote] at (2.4,-4.15) {独立な加法誤差なら，識別問題は $Y_j=h_j(F)+\varepsilon_j$ に帰着する。};
+\end{tikzpicture}
+\caption{追加測定誤差のDAG。$e_j$ と $Q_j$ は合成誤差 $\varepsilon_j$ として吸収できる。}
+\label{fig:dag-additional-measurement-error}
+\end{figure}
+
+
+観測変数が，真の測定値 $Y_j^*$ にさらに測定誤差 $Q_j$ を加えた
+\begin{align}
+  Y_j^* &= h_j(F)+e_j, \\
+  Y_j &= Y_j^*+Q_j
+  \label{eq:additional-measurement-error}
+\end{align}
+であるとする。
+ここで $e_j,Q_j$ は互いに独立であり，$F$ や $V$ とも独立とする。
+
+\begin{proposition}[誤差項の結合]
+\label{prop:error-combination}
+$\varepsilon_j=e_j+Q_j$ と定義すれば，モデル \eqref{eq:additional-measurement-error} は
+\begin{equation}
+  Y_j=h_j(F)+\varepsilon_j
+  \label{eq:combined-error-model}
+\end{equation}
+に帰着する。
+したがって，$\varepsilon_j$ が仮定 \ref{ass:latent-identification} に必要な独立性と正則性を満たす限り，追加測定誤差は $h_2,h_3,g$ の識別可能性を変えない。
+\end{proposition}
+
+\begin{proof}
+代入により
+\begin{equation}
+  Y_j=h_j(F)+e_j+Q_j=h_j(F)+\varepsilon_j
+\end{equation}
+である。
+独立な誤差の和は，$F,V$ および他の測定誤差から独立な新しい誤差項として扱える。
+よって，識別問題は基本モデル \eqref{eq:measurement} に一致する。
+\end{proof}
+
+\section{経験ベイズ的解釈と completeness}
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \node[dagnote] at (2.6,1.7) {測定誤差：smoothing};
+  \node[dagobs] (V1) at (0,0) {$V$};
+  \node[dagobs] (G1) at (1.8,0) {$g(V)$};
+  \node[dagerr] (U1) at (2.8,1.0) {$U$};
+  \node[daglat] (F1) at (3.8,0) {$F$};
+  \node[dagobs] (Y1) at (5.7,0) {$Y$};
+  \draw[dagarrow] (V1) -- (G1);
+  \draw[dagarrow] (G1) -- (F1);
+  \draw[dagarrow] (U1) -- (F1);
+  \draw[dagarrow] (F1) -- (Y1);
+  \node[dagnote] at (3.0,-0.95) {$p(F\mid V=v)=p_U\{F-g(v)\}$：畳み込み作用素};
+  \node[dagnote] at (3.0,-1.45) {$\phi_U(t)\neq0$ なら情報は完全には消えず，completeness が成立し得る。};
+
+  \node[dagnote] at (2.6,-2.45) {欠測：truncation};
+  \node[daglat] (F2) at (0,-4.0) {$F$};
+  \node[dagobs] (Y2) at (2.0,-4.0) {$Y$};
+  \node[dagmiss] (D2) at (4.0,-4.0) {$D$};
+  \node[dagobs] (O2) at (6.0,-4.0) {$Y^{obs}$};
+  \node[dagerr] (H2) at (4.0,-3.0) {$\eta$};
+  \draw[dagarrow] (F2) -- (Y2);
+  \draw[dagarrow] (Y2) -- (D2);
+  \draw[dagarrow] (H2) -- (D2);
+  \draw[dagarrow] (Y2) to[bend right=15] (O2);
+  \draw[dagarrow] (D2) -- (O2);
+  \node[dagnote] at (3.0,-5.05) {$D=0$ の領域では $Y$ の情報が観測分布から遮断される。};
+  \node[dagnote] at (3.0,-5.55) {positivity と shadow variable がなければ，作用素に非自明なヌル空間が残る。};
+\end{tikzpicture}
+\caption{経験ベイズ的解釈と completeness。測定誤差は情報を拡散する作用素，欠測は情報を切断する作用素として表せる。}
+\label{fig:dag-eb-completeness}
+\end{figure}
+
+
+誤差分布をノンパラメトリックに扱う場合でも，識別に必要なのは特定の分布族を仮定することではなく，誤差が情報を完全には消去しないことである。
+この点は completeness とフーリエ変換によって表現できる。
+
+\begin{proposition}[シフト族における completeness の十分条件]
+\label{prop:fourier-completeness}
+操作変数型 $F=g(V)+U$ を考える。
+$U$ は密度 $p_U$ を持ち，$U\indep V$ とする。
+$\phi_U(t)=\E\{\exp(itU)\}$ を $U$ の特性関数とする。
+さらに $g(\calV)=\R$ とし，$\phi_U(t)\neq0$ が全ての $t\in\R$ で成り立つとする。
+このとき，
+\begin{equation}
+  \E\{a(F)\mid V\}=0 \quad \text{a.s.}
+  \Longrightarrow
+  a(F)=0 \quad \text{a.s.}
+  \label{eq:fourier-completeness}
+\end{equation}
+が成り立つ。
+\end{proposition}
+
+\begin{proof}
+$x=g(v)$ とおくと，$F\mid V=v$ の密度は $p_U(f-x)$ である。
+したがって
+\begin{equation}
+  0=\E\{a(F)\mid V=v\}
+  =\int a(f)p_U(f-x)df
+  = (a*\check p_U)(x),
+  \label{eq:convolution-completeness}
+\end{equation}
+ただし $\check p_U(t)=p_U(-t)$ である。
+$g(\calV)=\R$ なので，$(a*\check p_U)(x)=0$ が全ての $x\in\R$ で成り立つ。
+フーリエ変換をとると
+\begin{equation}
+  \widehat a(t)\,\overline{\phi_U(t)}=0
+  \quad \text{for all }t.
+\end{equation}
+$\phi_U(t)\neq0$ より $\widehat a(t)=0$ である。
+フーリエ変換の一意性から $a=0$ a.e. が従う。
+\end{proof}
+
+\begin{remark}[測定誤差と欠測の境界]
+経験ベイズ的には，誤差分布を推定できるかどうかは，情報が単に拡散しているのか，あるいは完全に遮断されているのかの違いとして理解できる。
+測定誤差は畳み込みによる smoothing であり，特性関数が消えなければ deconvolution により復元可能である。
+一方，欠測や切断によりある領域の情報が完全に失われると，対応する積分作用素は非自明なヌル空間を持ち，completeness は破綻する。
+したがって，「誤差分布をノンパラメトリックに設定できること」は，「作用素が十分なランクを持つこと」と同じ方向の条件である。
+\end{remark}
+
+\section{潜在因子依存欠測の場合}
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \node[dagnote] at (3.2,1.65) {$F$ 依存欠測：$D_j^*=k_j(F)+\eta_j$};
+  \node[dagobs] (V) at (0,0) {$V$};
+  \node[daglat] (F) at (2.2,0) {$F$};
+  \node[dagcond] (Y) at (4.2,0.9) {$Y_j$};
+  \node[dagmiss] (D) at (4.2,-0.9) {$D_j$};
+  \node[dagerr] (E) at (5.8,1.45) {$\varepsilon_j$};
+  \node[dagerr] (H) at (5.8,-1.45) {$\eta_j$};
+  \draw[dagarrow] (V) -- node[dagnote,above] {IV型} (F);
+  \draw[dagarrow] (F) -- node[dagnote,above] {$h_j$} (Y);
+  \draw[dagarrow] (F) -- node[dagnote,below] {$k_j$} (D);
+  \draw[dagarrow] (E) -- (Y);
+  \draw[dagarrow] (H) -- (D);
+  \node[dagnote] at (3.0,-2.35) {$Y_j$ を条件付けても，$V\to F\to D_j$ の経路は一般に残る。};
+  \node[dagnote] at (3.0,-2.9) {したがって一般に $D_j\not\indep V\mid Y_j$。};
+  \node[dagnote] at (3.0,-3.45) {proxy型では $F\to V$ と置き換えても，$V\leftarrow F\to D_j$ が残る。};
+\end{tikzpicture}
+\caption{潜在因子依存欠測のDAG。欠測が $Y_j$ ではなく $F$ に依存すると，$V$ は $Y_j$ に対する shadow variable ではなくなる。}
+\label{fig:dag-f-missing}
+\end{figure}
+
+
+次に，欠測が $Y_j$ ではなく潜在因子 $F$ に依存する場合を考える：
+\begin{equation}
+  D_j = \1\{D_j^*>0\},
+  \qquad
+  D_j^* = k_j(F)+\eta_j.
+  \label{eq:f-missing}
+\end{equation}
+このとき
+\begin{equation}
+  \rho_j(f)=\Prb(D_j=1\mid F=f)
+  =\Prb\{\eta_j>-k_j(f)\}
+  \label{eq:rho-f}
+\end{equation}
+と書く。
+
+\begin{proposition}[shadow 条件の破綻]
+\label{prop:f-missing-not-shadow}
+欠測機構 \eqref{eq:f-missing} の下では，一般に
+\begin{equation}
+  D_j \not\indep V\mid Y_j.
+  \label{eq:not-shadow}
+\end{equation}
+したがって，$V$ を $Y_j$ に対する shadow variable とする定理 \ref{thm:shadow-identification} の証明は適用できない。
+\end{proposition}
+
+\begin{proof}
+\eqref{eq:f-missing} より
+\begin{equation}
+  \Prb(D_j=1\mid Y_j=y,V=v)
+  = \E\{\rho_j(F)\mid Y_j=y,V=v\}.
+  \label{eq:f-missing-cond-prob}
+\end{equation}
+$Y_j$ は $F$ の誤差付き測定値であるため，$Y_j=y$ を条件づけても $F$ は一般に確定しない。
+さらに $V$ は $F$ と関連しているので，$F\mid Y_j=y,V=v$ の分布は一般に $v$ に依存する。
+$\rho_j$ が非定数ならば，右辺も一般に $v$ に依存する。
+よって $D_j\indep V\mid Y_j$ は成立しない。
+\end{proof}
+
+\begin{proposition}[母集団平均の非識別]
+\label{prop:mean-nonid-f-missing}
+欠測が \eqref{eq:f-missing} に従う場合，追加のパラメトリック制約なしには，母集団平均 $\E(Y_j)$ は一般にノンパラメトリック識別されない。
+\end{proposition}
+
+\begin{proof}
+説明を簡潔にするため，proxy 型 $V=g(F)+U$ を例に取る。
+$D_j=1$ の標本で観測される同時密度は
+\begin{equation}
+  p_{\mathrm{obs}}(y_j,v)
+  \propto
+  \int p_{\varepsilon_j}\{y_j-h_j(f)\}
+       p_U\{v-g(f)\}
+       \rho_j(f)p_F(f)df.
+  \label{eq:selected-density}
+\end{equation}
+観測分布は，$p_F(f)$ と $\rho_j(f)$ を別々には含まず，積 $\rho_j(f)p_F(f)$ を通じてのみ含む。
+任意の正の関数 $a(f)$ に対して，正規化後
+\begin{equation}
+  \widetilde p_F(f) \propto a(f)p_F(f),
+  \qquad
+  \widetilde \rho_j(f) \propto \rho_j(f)/a(f)
+  \label{eq:tilt-nonid}
+\end{equation}
+と置けば，$a$ を十分に $1$ に近く選ぶことで $0<\widetilde\rho_j(f)<1$ を保ちつつ，積 $\widetilde\rho_j(f)\widetilde p_F(f)$ を元の $\rho_j(f)p_F(f)$ と比例的に一致させられる。
+したがって観測分布は不変である。
+しかし母集団平均は
+\begin{equation}
+  \E(Y_j)=\int h_j(f)p_F(f)df + \E(\varepsilon_j)
+  \label{eq:population-mean-f}
+\end{equation}
+であり，$p_F$ を $\widetilde p_F$ に変えると一般に値が変わる。
+よって $\E(Y_j)$ は観測分布から一意に定まらない。
+\end{proof}
+
+\begin{proposition}[選択部分母集団における測定関数の識別]
+\label{prop:selected-function-id}
+proxy 型 $V=g(F)+U$ において，欠測が \eqref{eq:f-missing} に従うとする。
+ある部分集合 $S$ について $D_j=1$ $(j\in S)$ の完全ケース分布が観測され，その中に少なくとも三つの独立指標が含まれ，仮定 \ref{ass:latent-identification} と同型の多重指標識別条件が成り立つならば，測定関数 $h_j$ および $g$ は選択部分母集団の分布から識別される。
+ただし，これは母集団における $F$ の分布 $p_F$ の識別を意味しない。
+\end{proposition}
+
+\begin{proof}
+完全ケース $D_S=1$ に条件づけた分布は
+\begin{equation}
+  p(y_S,v\mid D_S=1)
+  = \int
+      \left\{\prod_{j\in S}p_{\varepsilon_j}(y_j-h_j(f))\right\}
+      p_U(v-g(f))
+      p_{F\mid D_S=1}(f)
+    df,
+  \label{eq:selected-multiple-indicators}
+\end{equation}
+ただし
+\begin{equation}
+  p_{F\mid D_S=1}(f)
+  \propto
+  \left\{\prod_{j\in S}\rho_j(f)\right\}p_F(f).
+  \label{eq:selected-latent-density}
+\end{equation}
+選択は $F$ の分布を傾けるだけであり，$F$ を条件づけた測定方程式
+$Y_j=h_j(F)+\varepsilon_j$ および $V=g(F)+U$ は変化しない。
+したがって，選択後分布 \eqref{eq:selected-multiple-indicators} が多重指標識別条件を満たすならば，$h_j$ と $g$ は識別される。
+しかし \eqref{eq:selected-latent-density} は $p_F$ と $\rho_j$ の積のみを識別するため，母集団の $p_F$ は識別されない。
+\end{proof}
+
+\begin{remark}[操作変数型での注意]
+操作変数型 $F=g(V)+U$ では，$D_j$ が $F$ に依存すると，選択標本内で
+\begin{equation}
+  p(U\mid V,D_j=1)
+  \propto \rho_j\{g(V)+U\}p_U(U)
+  \label{eq:selection-breaks-iv}
+\end{equation}
+となる。
+これは一般に $V$ に依存するため，選択標本では $U\indep V$ が破れる。
+したがって，操作変数型の非線形測定誤差識別定理を完全ケース分布にそのまま適用することはできない。
+この場合に $h_j$ や $g$ を識別するには，欠測機構や誤差分布に追加のパラメトリック制約を置く必要がある。
+\end{remark}
+
+\section{まとめ}
+
+本稿の結論は次の通りである。
+
+第一に，欠測が各測定値自身に依存する
+\begin{equation}
+  D_j^*=k_j(Y_j)+\eta_j
+\end{equation}
+の場合，$V$ が常に観測され，$D_j\indep V\mid Y_j$ と completeness が成り立てば，$\pi_j(Y_j)$，$\E(Y_j)$，および $P(Y_1,Y_j,V)$ は識別される。
+この結果は，$F=g(V)+U$ という操作変数型構造でも，$V=g(F)+U$ という proxy 型構造でも成立する。
+ただし，completeness は仮定であり，単なる独立性から自動的に従うものではない。
+
+第二に，復元された同時分布 $P(Y_1,Y_j,V)$ に標準的な非線形測定誤差モデルまたは多重指標モデルの識別定理を適用すれば，$g,h_2,h_3$ が識別される。
+$Y_1=f+\varepsilon_1$ は正規化として便利であるが，$\E(F)=0$，$\operatorname{Var}(F)=1$，$h_1$ 単調増加という正規化でもよい。
+
+第三に，測定誤差がさらに追加されても，独立な加法誤差である限り，それは合成誤差 $\varepsilon_j=e_j+Q_j$ として吸収できる。
+したがって，識別問題の構造は変わらない。
+
+第四に，欠測が潜在因子に依存する
+\begin{equation}
+  D_j^*=k_j(F)+\eta_j
+\end{equation}
+の場合，$V$ は一般に $Y_j$ の shadow variable ではない。
+このため，母集団平均 $\E(Y_j)$ はノンパラメトリックには識別されない。
+proxy 型の多重指標モデルでは，選択部分母集団内の測定関数は識別され得るが，母集団の $F$ 分布と欠測関数は分離できない。
+パラメトリックな分布仮定を置けば識別可能性は回復し得るが，それは本稿のノンパラメトリック識別とは別の主張である。
+
+\begin{thebibliography}{99}
+
+\bibitem{dHaultfoeuille2010}
+D'Haultfoeuille, X. (2010).
+A new instrumental method for dealing with endogenous selection.
+\textit{Journal of Econometrics}, 154(1), 1--15.
+
+\bibitem{HuSchennach2008}
+Hu, Y. and Schennach, S. M. (2008).
+Instrumental variable treatment of nonclassical measurement error models.
+\textit{Econometrica}, 76(1), 195--216.
+
+\bibitem{Kotlarski1967}
+Kotlarski, I. I. (1967).
+On characterizing the gamma and the normal distribution.
+\textit{Pacific Journal of Mathematics}, 20(1), 69--76.
+
+\bibitem{ZhaoShao2015}
+Zhao, J. and Shao, J. (2015).
+Semiparametric pseudo-likelihoods in generalized linear models with nonignorable missing data.
+\textit{Journal of the American Statistical Association}, 110(512), 1577--1590.
+
+
+\bibitem{Rubin1976}
+Rubin, D. B. (1976).
+Inference and missing data.
+\textit{Biometrika}, 63(3), 581--592.
+
+\bibitem{Rubin1987}
+Rubin, D. B. (1987).
+\textit{Multiple Imputation for Nonresponse in Surveys}.
+Wiley.
+
+\bibitem{LittleRubin2002}
+Little, R. J. A. and Rubin, D. B. (2002).
+\textit{Statistical Analysis with Missing Data}.
+Wiley.
+
+\bibitem{Heckman1979}
+Heckman, J. J. (1979).
+Sample selection bias as a specification error.
+\textit{Econometrica}, 47(1), 153--161.
+
+\bibitem{ImaiYamamoto2010}
+Imai, K. and Yamamoto, T. (2010).
+Causal inference with differential measurement error: Nonparametric identification and sensitivity analysis.
+\textit{American Journal of Political Science}, 54(2), 543--560.
+
+\bibitem{BlackwellHonakerKing2017a}
+Blackwell, M., Honaker, J. and King, G. (2017a).
+A unified approach to measurement error and missing data: Overview and applications.
+\textit{Sociological Methods \& Research}, 46(3), 303--341.
+
+\bibitem{BlackwellHonakerKing2017b}
+Blackwell, M., Honaker, J. and King, G. (2017b).
+A unified approach to measurement error and missing data: Details and extensions.
+\textit{Sociological Methods \& Research}, 46(3), 342--369.
+
+\bibitem{HonakerKingBlackwell2011}
+Honaker, J., King, G. and Blackwell, M. (2011).
+Amelia II: A program for missing data.
+\textit{Journal of Statistical Software}, 45(7), 1--47.
+
+\bibitem{VenkatesanBleierReinartzRavishanker2019}
+Venkatesan, R., Bleier, A., Reinartz, W. and Ravishanker, N. (2019).
+Improving customer profit predictions with customer mindset metrics through multiple overimputation.
+\textit{Journal of the Academy of Marketing Science}, 47, 771--794.
+
+\bibitem{Hoshino2007}
+星野崇宏 (2007).
+学習科学研究の妥当性向上へ向けた統計解析法と複数データの統合手法について---傾向スコアによる共変量調整とデータフュージョン---.
+\textit{教育システム情報学会誌}, 24(3), 216--224.
+
+\bibitem{HondaJIMS2025}
+本多将大 (2025).
+シングルソースデータにおける調査・行動データの統合分析モデル---Multiple Overimputation による欠測・測定誤差の補正---.
+\textit{マーケティング・サイエンス}, 33(1).
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,301 @@
+
+% ============================================================
+% Shadow variable に関する加筆節
+% 挿入推奨位置：
+% 「2. 研究背景と本稿の位置づけ」の後，
+% 「3. 基本モデル」の前。
+% ============================================================
+
+\section{Shadow variable による非無視可能欠測の識別}
+\label{sec:shadow-variable-review}
+
+本節では，本稿の識別戦略の中核となる shadow variable の概念を整理する。
+非無視可能欠測（nonignorable missingness; NI）または MNAR では，欠測確率が未観測値そのものに依存するため，一般には観測データのみから母集団分布を識別できない。
+すなわち，$R=1$ のときのみ $Y$ が観測される場合，観測される完全ケース分布は
+\begin{equation}
+  p(y\mid R=1)
+  =
+  \frac{\Prb(R=1\mid Y=y)p_Y(y)}
+       {\int \Prb(R=1\mid Y=t)p_Y(t)\,dt}
+  \label{eq:cc-density-shadow-section}
+\end{equation}
+であり，母集団密度 $p_Y$ と選択確率 $\Prb(R=1\mid Y)$ は積としてのみ現れる。
+したがって，欠測機構または母集団分布に追加制約を置かなければ，$p_Y$ も $\E(Y)$ も一意には定まらない。
+
+この非識別性に対する一つの有力な解決策が，常に観測される補助変数を用いた shadow variable アプローチである。
+$d$'Haultfoeuille (2010) における $Z$ は，後続研究では shadow variable，nonresponse instrument，または missing-data instrumental variable と呼ばれる変数に対応する。
+これは，通常の操作変数法における「処置変数の外生的変動源」という意味の IV ではなく，欠測機構の識別に用いられる補助変数である。
+本稿では混同を避けるため，以下では主に shadow variable と呼ぶ。
+
+\begin{definition}[Shadow variable]
+\label{def:shadow-variable}
+$R=1$ のときのみ $Y$ が観測され，共変量 $X$ と補助変数 $Z$ は常に観測されるとする。
+$Z$ が $Y$ に対する shadow variable であるとは，次の二条件を満たすことをいう。
+\begin{enumerate}[(i)]
+  \item 除外制約：
+  \begin{equation}
+    R \indep Z \mid (Y,X).
+    \label{eq:shadow-exclusion}
+  \end{equation}
+  すなわち，欠測は $Y$ と $X$ を条件づけると $Z$ には直接依存しない。
+  \item 関連性：
+  \begin{equation}
+    Z \not\indep Y \mid X.
+    \label{eq:shadow-relevance}
+  \end{equation}
+  すなわち，$Z$ は欠測値 $Y$ について情報を持つ。
+\end{enumerate}
+さらにノンパラメトリック識別には，関連性を十分に強めた completeness 条件が必要となる。
+\end{definition}
+
+この定義において重要なのは，shadow variable が MAR を仮定するための変数ではない，という点である。
+MAR では
+\begin{equation}
+  \Prb(R=1\mid Y,X,Z)
+  =
+  \Prb(R=1\mid X,Z)
+  \label{eq:mar-shadow-section}
+\end{equation}
+のように，欠測確率が未観測の $Y$ に依存しないことを要求する。
+これに対して shadow variable アプローチでは，
+\begin{equation}
+  \Prb(R=1\mid Y,X,Z)
+  =
+  \Prb(R=1\mid Y,X)
+  \label{eq:mnar-shadow-section}
+\end{equation}
+を許す。
+すなわち，欠測は $Y$ に依存してよい。
+識別に必要なのは，$Y$ を条件づけた後に $Z$ が欠測に追加的な影響を持たないことと，$Z$ が $Y$ に十分な情報を持つことである。
+
+\subsection{基本的な識別方程式}
+
+説明を簡単にするため，まず共変量 $X$ を省略する。
+$R=1$ のときのみ $Y$ が観測され，$Z$ は常に観測されるとする。
+欠測確率を
+\begin{equation}
+  \pi(y)=\Prb(R=1\mid Y=y)
+  \label{eq:pi-shadow-section}
+\end{equation}
+とおき，$w(y)=1/\pi(y)$ と定義する。
+shadow variable 条件
+\begin{equation}
+  R\indep Z\mid Y
+  \label{eq:shadow-basic}
+\end{equation}
+の下では，
+\begin{align}
+  \E\{R w(Y)\mid Z\}
+  &=
+  \E\left[
+    \E\{R w(Y)\mid Y,Z\}
+    \mid Z
+  \right] \notag \\
+  &=
+  \E\left[
+    w(Y)\Prb(R=1\mid Y,Z)
+    \mid Z
+  \right] \notag \\
+  &=
+  \E\left[
+    w(Y)\pi(Y)
+    \mid Z
+  \right]
+  =
+  1.
+  \label{eq:shadow-moment-basic}
+\end{align}
+したがって，未知関数 $w$ は観測分布から構成される積分方程式
+\begin{equation}
+  \E\{R w(Y)\mid Z\}=1
+  \label{eq:shadow-integral-equation}
+\end{equation}
+の解として特徴づけられる。
+ここで左辺は $R=1$ のときのみ $Y$ を用いるため，観測データから評価可能である。
+
+ただし，\eqref{eq:shadow-integral-equation} に解が存在するだけでは不十分である。
+識別には解の一意性が必要である。
+そのための代表的条件が completeness である。
+
+\begin{assumption}[Shadow completeness]
+\label{ass:shadow-completeness-review}
+任意の可積分関数 $a$ について，
+\begin{equation}
+  \E\{a(Y)\mid Z\}=0 \quad \mathrm{a.s.}
+  \quad\Longrightarrow\quad
+  a(Y)=0 \quad \mathrm{a.s.}
+  \label{eq:shadow-completeness-review}
+\end{equation}
+が成り立つ。
+\end{assumption}
+
+\begin{proposition}[欠測確率の識別]
+\label{prop:shadow-propensity-id}
+$R\indep Z\mid Y$，positivity
+\begin{equation}
+  \Prb(R=1\mid Y)>0 \quad \mathrm{a.s.},
+  \label{eq:shadow-positivity-review}
+\end{equation}
+および仮定 \ref{ass:shadow-completeness-review} が成り立つとする。
+このとき，$w(Y)=1/\Prb(R=1\mid Y)$，したがって $\pi(Y)$ は観測分布から識別される。
+\end{proposition}
+
+\begin{proof}
+$w$ と $\widetilde w$ がともに \eqref{eq:shadow-integral-equation} を満たすとする。
+すると
+\begin{align}
+0
+&=
+\E\{R[w(Y)-\widetilde w(Y)]\mid Z\} \notag\\
+&=
+\E\{\pi(Y)[w(Y)-\widetilde w(Y)]\mid Z\}.
+\end{align}
+仮定 \ref{ass:shadow-completeness-review} より
+\begin{equation}
+  \pi(Y)[w(Y)-\widetilde w(Y)]=0 \quad \mathrm{a.s.}
+\end{equation}
+である。
+positivity より $\pi(Y)>0$ なので，
+\begin{equation}
+  w(Y)=\widetilde w(Y)\quad \mathrm{a.s.}
+\end{equation}
+が従う。
+よって \eqref{eq:shadow-integral-equation} の解は一意であり，$w$ と $\pi$ は識別される。
+\end{proof}
+
+$\pi$ が識別されれば，任意の可積分関数 $\varphi$ について
+\begin{equation}
+  \E\{\varphi(Y,Z)\}
+  =
+  \E\left\{
+    \frac{R\varphi(Y,Z)}{\pi(Y)}
+  \right\}
+  \label{eq:shadow-ipw-functional}
+\end{equation}
+が成立する。
+特に
+\begin{equation}
+  \E(Y)
+  =
+  \E\left\{
+    \frac{RY}{\pi(Y)}
+  \right\}
+  \label{eq:shadow-ipw-mean}
+\end{equation}
+である。
+この意味で，shadow variable は NI/MNAR 下でも母集団平均や母集団分布を復元するための識別装置として機能する。
+
+共変量 $X$ が存在する場合も同様である。
+このとき条件は
+\begin{equation}
+  R\indep Z\mid (Y,X)
+  \label{eq:shadow-with-x}
+\end{equation}
+であり，欠測確率は
+\begin{equation}
+  \pi(y,x)=\Prb(R=1\mid Y=y,X=x)
+\end{equation}
+となる。
+識別方程式は
+\begin{equation}
+  \E\left\{
+    \frac{R}{\pi(Y,X)}
+    \mid Z,X
+  \right\}
+  =
+  1
+  \label{eq:shadow-with-x-moment}
+\end{equation}
+である。
+対応する completeness 条件は，
+\begin{equation}
+  \E\{a(Y,X)\mid Z,X\}=0
+  \quad\Longrightarrow\quad
+  a(Y,X)=0
+  \label{eq:shadow-complete-x}
+\end{equation}
+である。
+
+\subsection{先行研究における位置づけ}
+
+$d$'Haultfoeuille (2010) は，内生的選択を伴う状況において，$R\indep Z\mid Y$ 型の条件と completeness 条件に基づく識別戦略を提示した。
+この文脈における $Z$ は，後続の欠測データ文献で shadow variable または nonresponse instrument と呼ばれる変数に相当する。
+
+統計学の欠測データ文献では，Wang, Shao and Kim (2014) が nonignorable nonresponse に対して instrumental variable を用いた識別・推定法を提案し，この方向の研究を発展させた。
+Zhao and Shao (2015) は，一般化線形モデルにおける非無視可能欠測に対して，shadow variable を用いた semiparametric pseudo-likelihood を構成した。
+Shao and Wang (2016) は，非無視可能欠測に対する semiparametric inverse propensity weighting を提案し，欠測確率を完全にパラメトリックに特定しない形で IPW 推定を行う枠組みを与えた。
+また，Miao and Tchetgen Tchetgen (2016) および Miao and Tchetgen Tchetgen (2018) は，shadow variable が欠測共変量やアウトカムの非無視可能欠測における識別を改善することを示し，より一般的な semiparametric 識別理論を発展させた。
+
+さらに，Li, Miao and Tchetgen Tchetgen (2023) は，完全な同時分布の識別を要求せず，平均汎関数，典型的には $\E(Y\mid X)$ やその周辺化された平均，の推定に焦点を当てることで，従来の full-law identification に必要な completeness 条件を緩和できることを示した。
+この研究は，本稿のように $P(Y,Z)$ 全体を復元して潜在変数モデルの識別へ進むアプローチとは異なり，推定対象を平均汎関数に限定することで識別条件を弱める方向の研究と位置づけられる。
+
+\subsection{本稿のモデルにおける $V$ の役割}
+
+本稿では，常に観測される変数 $V$ を用いる。
+$V$ は二つの意味で用いられる。
+
+第一に，欠測補正の段階では，$V$ は各 $Y_j$ に対する shadow variable である。
+すなわち，欠測が
+\begin{equation}
+  D_j^*=k_j(Y_j)+\eta_j
+  \label{eq:shadow-yj-missing}
+\end{equation}
+のように各測定値自身に依存し，$\eta_j$ が $V$ と独立ならば，
+\begin{equation}
+  D_j\indep V\mid Y_j
+  \label{eq:v-shadow-yj}
+\end{equation}
+が成り立つ。
+この条件と completeness により，$\pi_j(Y_j)$ と $\E(Y_j)$ が識別される。
+
+第二に，潜在変数モデルの段階では，$V$ は潜在因子 $F$ と測定値 $Y_j$ を結びつける情報源である。
+操作変数型では
+\begin{equation}
+  F=g(V)+U
+  \label{eq:v-as-latent-iv-review}
+\end{equation}
+であり，$V$ は $F$ の外生的変動を与える。
+proxy 型では
+\begin{equation}
+  V=g(F)+U
+  \label{eq:v-as-proxy-review}
+\end{equation}
+であり，$V$ は $F$ の追加測定値である。
+いずれの場合も，欠測が $Y_j$ 自身に依存する限り，$V$ は欠測機構に直接入らず，かつ $F$ を通じて $Y_j$ と関連するため，shadow variable としての除外制約と関連性を満たし得る。
+
+ただし，この議論は $V$ が常に shadow variable として有効であることを意味しない。
+とくに，欠測が
+\begin{equation}
+  D_j^*=k_j(F)+\eta_j
+  \label{eq:f-dependent-missing-shadow-review}
+\end{equation}
+のように潜在因子 $F$ に依存する場合には，一般に
+\begin{equation}
+  D_j\not\indep V\mid Y_j
+  \label{eq:shadow-f-missing-failure}
+\end{equation}
+となる。
+なぜなら，$Y_j$ は $F$ の誤差付き測定値であり，$Y_j$ を条件づけても $F$ は完全には固定されないためである。
+その結果，$V$ は残余の $F$ に関する情報を持ち，$D_j$ と条件付きで関連してしまう。
+したがって，潜在因子依存欠測では，$V$ を $Y_j$ に対する shadow variable として用いた IPW 識別は一般に成立しない。
+この点は，本稿の後続節における「測定値依存欠測」と「潜在因子依存欠測」の識別可能性の違いを理解するうえで重要である。
+
+\subsection{MO・SEM・潜在変数アプローチとの関係}
+
+本稿の shadow variable 識別は，MO や SEM と競合するものではなく，それらを NI 欠測へ拡張するための補完的要素である。
+標準的な MI や MO は，欠測値の補完を観測変数に条件づけた予測問題として扱うため，基本的には MCAR/MAR を前提にする。
+MO は，観測された調査指標を潜在変数の noisy proxy とみなし，欠測と測定誤差を統一的に扱う点に特徴がある。
+しかし，欠測が未観測値そのものに依存する NI/MNAR の場合，MO のみでは選択バイアスを除去できない。
+この限界は，調査データの欠測と測定誤差を同時に扱うマーケティング応用においても重要である。
+
+これに対して本稿では，shadow variable により NI 欠測確率 $\pi_j(Y_j)$ を識別し，IPW により母集団分布または必要な同時分布を復元する。
+その上で，復元された $P(Y_1,Y_j,V)$ に対して，SEM 型または非線形測定誤差モデル型の潜在変数識別を適用する。
+したがって，本稿の方法論的位置づけは，
+\begin{equation}
+  \text{NI 欠測の識別}
+  \quad+\quad
+  \text{測定誤差・潜在変数モデルの識別}
+  \label{eq:shadow-plus-latent}
+\end{equation}
+である。
+この二段階構成により，MAR を前提とする補完法だけでは扱いにくい状況，すなわち調査回答の有無が回答値そのものに依存し，かつ回答値が潜在態度の誤差付き測定値である状況を扱うことができる。

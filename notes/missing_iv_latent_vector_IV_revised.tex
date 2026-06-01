@@ -1,0 +1,672 @@
+\documentclass[dvipdfmx,autodetect-engine]{jsarticle}
+\usepackage{amsmath,amssymb,amsthm,bm}
+\usepackage{enumerate}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,shapes.geometric}
+
+\tikzset{
+  dagobs/.style={draw, rounded corners=1pt, minimum width=10mm, minimum height=7mm, align=center, inner sep=2pt, font=\small},
+  daglat/.style={draw, circle, minimum size=8mm, align=center, inner sep=1pt, font=\small},
+  dagerr/.style={draw, circle, dashed, minimum size=7mm, align=center, inner sep=1pt, font=\scriptsize},
+  dagmiss/.style={draw, diamond, aspect=1.7, minimum width=10mm, inner sep=1pt, align=center, font=\small},
+  dagcond/.style={dagobs, double, double distance=1pt},
+  dagarrow/.style={-{Latex[length=2.2mm,width=1.5mm]}, line width=.55pt},
+  dagdashed/.style={dagarrow, dashed},
+  dagnone/.style={line width=.45pt, dotted},
+  dagnote/.style={align=center, font=\scriptsize, inner sep=1pt}
+}
+
+\newtheorem{assumption}{仮定}
+\newtheorem{theorem}{定理}
+\newtheorem{proposition}{命題}
+\newtheorem{lemma}{補題}
+\newtheorem{remark}{注意}
+\newtheorem{definition}{定義}
+
+\newcommand{\indep}{\mathrel{\perp\!\!\!\perp}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Prb}{\mathbb{P}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\1}{\mathbf{1}}
+\newcommand{\calO}{\mathcal{O}}
+\newcommand{\calF}{\mathcal{F}}
+\newcommand{\calV}{\mathcal{V}}
+\newcommand{\calY}{\mathcal{Y}}
+\newcommand{\Y}{\bm{Y}}
+\newcommand{\D}{\bm{D}}
+\newcommand{\eps}{\bm{\varepsilon}}
+
+\title{欠測IVと潜在変数モデリングによる非無作為欠測の識別}
+\author{%
+本多将大\\[-1mm]
+\small 慶應義塾大学大学院経済学研究科
+\and
+星野崇宏\\[-1mm]
+\small 慶應義塾大学経済学部
+\and
+Taisuke Otsu\\[-1mm]
+\small Department of Economics, London School of Economics\\[-1mm]
+\small Houghton Street, London WC2A 2AE, UK\\[-1mm]
+\small \texttt{t.otsu@lse.ac.uk}\quad \texttt{http://econ.lse.ac.uk/staff/otsu\_taisuke/}
+}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+非無作為欠測（nonignorable missingness; NI/MNAR）では，欠測確率が未観測値に依存するため，通常の多重代入や観測変数のみに基づくIPWでは母集団分布や平均の識別が困難である。本研究では，d'Haultfoeuille 型の欠測IV／shadow variable の識別条件を，ベクトル値の欠測変数と潜在変数モデルへ拡張する。具体的には，複数の測定変数 $\Y=(Y_1,\ldots,Y_K)'$ が共通潜在因子 $F$ を通じて生成され，常時観測される変数 $V$ が $F$ を駆動するIV型構造 $F=g(V)+U$ を考える。欠測指標が $\Y$ に依存しても，$\Y$ を条件づけた後に $V$ が欠測機構から排除され，かつ completeness が成立するならば，欠測確率，$P(\Y,V)$，$\E(\Y)$，および潜在測定関数が識別されることを示す。従来は各欠測変数に個別の shadow variable を必要とする設定が多かったのに対し，本稿は共通潜在因子を介して単一の常時観測IVにより複数変数の joint distribution を識別する点に特徴がある。
+\end{abstract}
+
+\section{研究背景}
+非無作為欠測（non-MAR）は，観測データからの識別を困難にする代表的問題である。既存研究では，欠測機構から排除された補助変数を用いる識別戦略が提案されている。本稿では，この補助変数を通常の処置効果推定における操作変数と区別するため，主に shadow variable または欠測IVと呼ぶ。
+
+\subsection{d'Haultfoeuille (2010)}
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \node[dagobs] (Z) at (0,0) {$Z$};
+  \node[dagerr] (eps) at (1.6,1.25) {$\epsilon$};
+  \node[dagobs] (Y) at (3.0,0) {$Y$};
+  \node[dagerr] (eta) at (4.5,1.25) {$\eta$};
+  \node[dagmiss] (R) at (6.0,0) {$R$};
+  \draw[dagarrow] (Z) -- node[dagnote,above] {$\phi$} (Y);
+  \draw[dagarrow] (eps) -- (Y);
+  \draw[dagarrow] (Y) -- node[dagnote,above] {$\psi$} (R);
+  \draw[dagarrow] (eta) -- (R);
+  \node[dagnote] at (3,-1.0) {$R=\psi(Y,\eta),\quad Y=\phi(Z,\epsilon),\quad \eta\indep (Z,\epsilon)$};
+  \node[dagnote] at (3,-1.55) {排除制約：$Z\nrightarrow R$，したがって $R\indep Z\mid Y$};
+  \draw[dagnone] (Z.south) .. controls +(1.8,-1.15) and +(-1.8,-1.15) .. (R.south);
+\end{tikzpicture}
+\caption{d'Haultfoeuille 型 shadow variable 識別のDAG。$Z$ は $Y$ とは関連するが，$Y$ を条件付けると欠測指標 $R$ から排除される。}
+\label{fig:dag-dhaultfoeuille}
+\end{figure}
+
+$R=1$ のときに $Y$ が観測される状況を考える。d'Haultfoeuille 型の識別では，常に観測される，または分布が識別可能な変数 $Z$ が
+\begin{equation}
+  R\indep Z\mid Y
+  \label{eq:dh-exclusion}
+\end{equation}
+を満たし，かつ $Y$ について十分な情報を持つことを利用する。例えば
+\begin{equation}
+  Y=\phi(Z,\epsilon),\qquad R=\psi(Y,\eta),\qquad \eta\indep (Z,\epsilon)
+\end{equation}
+ならば，\eqref{eq:dh-exclusion} が成立する。
+
+欠測確率を
+\begin{equation}
+  \pi(Y)=\Prb(R=1\mid Y)
+\end{equation}
+とおくと，shadow variable 条件の下で
+\begin{equation}
+  \E\left\{\frac{R}{\pi(Y)}\mid Z\right\}=1
+  \label{eq:dh-correct-moment}
+\end{equation}
+が成り立つ。旧稿では分母を $P(Y)$ と書いていたが，正しくは欠測確率 $\pi(Y)$ である。さらに completeness
+\begin{equation}
+  \E\{a(Y)\mid Z\}=0 \quad\Rightarrow\quad a(Y)=0
+  \label{eq:dh-completeness}
+\end{equation}
+と positivity $\pi(Y)>0$ の下で，$\pi(Y)$ と $P(Y,Z)$ が識別される。
+
+\subsection{Zhao \& Shao (2015)}
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \node[dagobs] (U) at (2.8,1.45) {$X$};
+  \node[dagobs] (Z) at (0,0) {$Z$};
+  \node[dagobs] (Y) at (3.0,0) {$Y$};
+  \node[dagmiss] (R) at (6.0,0) {$R$};
+  \draw[dagarrow] (U) -- (Z);
+  \draw[dagarrow] (U) -- (Y);
+  \draw[dagarrow] (U) -- (R);
+  \draw[dagarrow] (Z) -- node[dagnote,above] {$P(Y\mid Z,X)$} (Y);
+  \draw[dagarrow] (Y) -- (R);
+  \node[dagnote] at (3,-1.0) {$P(R\mid Y,Z,X)=P(R\mid Y,X)$};
+  \node[dagnote] at (3,-1.55) {$R=1$ 標本でも $P(Z\mid Y,X,R=1)=P(Z\mid Y,X)$};
+  \draw[dagnone] (Z.south) .. controls +(1.8,-1.05) and +(-1.8,-1.05) .. (R.south);
+\end{tikzpicture}
+\caption{Zhao--Shao 型擬似尤度のDAG。共変量 $X$ を調整した上で，$Z$ は欠測機構から排除される。}
+\label{fig:dag-zhao-shao}
+\end{figure}
+
+欠測インディケータを $R$，共変量を $X$，shadow variable を $Z$，アウトカムを $Y$ とする。以下を仮定する：
+\begin{equation}
+  P(R\mid Y,Z,X)=P(R\mid Y,X).
+\end{equation}
+このとき
+\begin{align}
+P(Z\mid Y,X,R=1)
+&=\frac{P(R=1\mid Z,Y,X)P(Z\mid Y,X)}{P(R=1\mid Y,X)}\\
+&=P(Z\mid Y,X)
+\end{align}
+を満たす。したがって $R=1$ の標本に基づいて $P(Z\mid Y,X)$ を扱うことができる。さらに
+\begin{equation}
+P(Z\mid Y,X)=
+\frac{P(Y\mid Z,X)P(Z\mid X)}{\int P(Y\mid z,X)P(z\mid X)dz}
+\end{equation}
+であるため，$P(Y\mid Z,X)$ に GLM 等を仮定すれば，この条件付き分布に基づく擬似尤度を構成できる。
+
+\section{Shadow variable による非無視可能欠測の識別}
+\label{sec:shadow-variable-review}
+
+本節では，本稿の識別戦略の中核となる shadow variable の概念を整理する。NI/MNAR では，欠測確率が未観測値そのものに依存するため，一般には観測データのみから母集団分布を識別できない。$R=1$ のときのみ $Y$ が観測される場合，観測される完全ケース分布は
+\begin{equation}
+  p(y\mid R=1)=
+  \frac{\Prb(R=1\mid Y=y)p_Y(y)}
+       {\int \Prb(R=1\mid Y=t)p_Y(t)dt}
+  \label{eq:cc-density-shadow-section}
+\end{equation}
+であり，母集団密度 $p_Y$ と選択確率 $\Prb(R=1\mid Y)$ は積としてのみ現れる。したがって，欠測機構または母集団分布に追加制約を置かなければ，$p_Y$ も $\E(Y)$ も一意には定まらない。
+
+この非識別性に対する一つの有力な解決策が，常に観測される補助変数を用いた shadow variable アプローチである。d'Haultfoeuille (2010) における $Z$ は，後続研究では shadow variable，nonresponse instrument，または missing-data instrumental variable と呼ばれる変数に対応する。
+
+\begin{definition}[Shadow variable]
+\label{def:shadow-variable}
+$R=1$ のときのみ $Y$ が観測され，共変量 $X$ と補助変数 $Z$ は常に観測されるとする。$Z$ が $Y$ に対する shadow variable であるとは，次を満たすことをいう。
+\begin{enumerate}[(i)]
+  \item 除外制約：
+  \begin{equation}
+    R\indep Z\mid (Y,X).
+    \label{eq:shadow-exclusion}
+  \end{equation}
+  \item 関連性：
+  \begin{equation}
+    Z\not\indep Y\mid X.
+    \label{eq:shadow-relevance}
+  \end{equation}
+\end{enumerate}
+さらにノンパラメトリック識別には，関連性を十分に強めた completeness 条件が必要となる。
+\end{definition}
+
+重要なのは，shadow variable が MAR を仮定するための変数ではない点である。MAR は
+\begin{equation}
+  \Prb(R=1\mid Y,X,Z)=\Prb(R=1\mid X,Z)
+\end{equation}
+を要求するが，shadow variable アプローチでは
+\begin{equation}
+  \Prb(R=1\mid Y,X,Z)=\Prb(R=1\mid Y,X)
+\end{equation}
+を許す。すなわち欠測は $Y$ に依存してよい。識別に必要なのは，$Y$ を条件づけた後に $Z$ が欠測に追加的な影響を持たないことと，$Z$ が $Y$ に十分な情報を持つことである。
+
+\subsection{基本的な識別方程式}
+
+共変量 $X$ を省略し，$R=1$ のときのみ $Y$ が観測され，$Z$ は常に観測されるとする。$\pi(y)=\Prb(R=1\mid Y=y)$，$w(y)=1/\pi(y)$ とおく。$R\indep Z\mid Y$ の下では
+\begin{align}
+  \E\{Rw(Y)\mid Z\}
+  &=\E\left[\E\{Rw(Y)\mid Y,Z\}\mid Z\right] \\
+  &=\E\left[w(Y)\Prb(R=1\mid Y,Z)\mid Z\right] \\
+  &=\E\left[w(Y)\pi(Y)\mid Z\right]=1.
+  \label{eq:shadow-moment-basic}
+\end{align}
+したがって，未知関数 $w$ は観測分布から構成される積分方程式
+\begin{equation}
+  \E\{Rw(Y)\mid Z\}=1
+  \label{eq:shadow-integral-equation}
+\end{equation}
+の解として特徴づけられる。
+
+\begin{assumption}[Shadow completeness]
+\label{ass:shadow-completeness-review}
+任意の可積分関数 $a$ について，
+\begin{equation}
+  \E\{a(Y)\mid Z\}=0\quad \mathrm{a.s.}
+  \quad\Longrightarrow\quad
+  a(Y)=0\quad \mathrm{a.s.}
+  \label{eq:shadow-completeness-review}
+\end{equation}
+が成り立つ。
+\end{assumption}
+
+\begin{proposition}[欠測確率の識別]
+\label{prop:shadow-propensity-id}
+$R\indep Z\mid Y$，positivity $\Prb(R=1\mid Y)>0$，および仮定 \ref{ass:shadow-completeness-review} が成り立つとする。このとき，$w(Y)=1/\Prb(R=1\mid Y)$，したがって $\pi(Y)$ は観測分布から識別される。
+\end{proposition}
+
+\begin{proof}
+$w$ と $\widetilde w$ がともに \eqref{eq:shadow-integral-equation} を満たすとする。すると
+\begin{align}
+0
+&=\E\{R[w(Y)-\widetilde w(Y)]\mid Z\}\\
+&=\E\{\pi(Y)[w(Y)-\widetilde w(Y)]\mid Z\}.
+\end{align}
+仮定 \ref{ass:shadow-completeness-review} より $\pi(Y)[w(Y)-\widetilde w(Y)]=0$ a.s. である。positivity より $\pi(Y)>0$ なので $w(Y)=\widetilde w(Y)$ a.s. が従う。
+\end{proof}
+
+$\pi$ が識別されれば，任意の可積分関数 $\varphi$ について
+\begin{equation}
+  \E\{\varphi(Y,Z)\}
+  =\E\left\{\frac{R\varphi(Y,Z)}{\pi(Y)}\right\}
+  \label{eq:shadow-ipw-functional}
+\end{equation}
+が成立する。特に $\E(Y)=\E\{RY/\pi(Y)\}$ である。
+
+\subsection{先行研究における位置づけ}
+
+d'Haultfoeuille (2010) は，内生的選択を伴う状況において，$R\indep Z\mid Y$ 型の条件と completeness 条件に基づく識別戦略を提示した。統計学の欠測データ文献では，Wang, Shao and Kim (2014) が nonignorable nonresponse に対して instrumental variable を用いた識別・推定法を提案した。Zhao and Shao (2015) は，一般化線形モデルにおける非無視可能欠測に対して，shadow variable を用いた semiparametric pseudo-likelihood を構成した。Shao and Wang (2016) は，非無視可能欠測に対する semiparametric inverse propensity weighting を提案した。Miao and Tchetgen Tchetgen (2016, 2018) は，shadow variable を用いたより一般的な semiparametric 識別理論を発展させた。さらに Li, Miao and Tchetgen Tchetgen (2023) は，完全な同時分布の識別ではなく平均汎関数の推定に焦点を当てることで，full-law identification に必要な completeness 条件を緩和できることを示した。
+
+\section{研究背景と本稿の位置づけ}
+
+本稿の主な貢献は，d'Haultfoeuille 型の shadow variable 識別を，スカラーの欠測変数からベクトル値の欠測変数へ拡張し，さらに共通潜在因子構造と結合する点にある。従来の素朴な拡張では，各欠測変数 $Y_j$ に対してそれぞれ別の shadow variable を用意する必要があるように見える。これに対して本稿では，複数の欠測変数が共通潜在因子 $F$ を通じて同時に生成される場合，単一の常時観測変数 $V$ によってベクトル $\Y=(Y_1,\ldots,Y_K)'$ の joint distribution を識別できることを示す。
+
+この点は，欠測変数間の相関を明示的に認めるためにも重要である。旧稿では $Y_j$ ごとに
+\begin{equation}
+  D_j\indep V\mid Y_j
+\end{equation}
+を置き，さらに同時観測確率を $\prod_j \pi_j(Y_j)$ と表記していた。しかしこの書き方は，欠測機構および $Y_j$ 間の関係を過度に独立化しているように見える。ベクトル $\Y$ に対して議論すれば，$Y_1,\ldots,Y_K$ の相関を許したまま，
+\begin{equation}
+  R\indep V\mid \Y
+  \label{eq:vector-shadow-condition-intro}
+\end{equation}
+を中心条件として識別論を構成できる。
+
+本稿では，まずIV型構造
+\begin{equation}
+  F=g(V)+U
+  \label{eq:iv-latent-main}
+\end{equation}
+に集中する。ここで $V$ は常時観測される景気先行指標，$F$ は不況などの共通潜在要因，$\Y$ は複数企業の株価指数・財務指標・調査指標などと解釈できる。欠測または結束が各 $Y_j$ に発生する場合でも，共通の $F$ を介して $V$ が $\Y$ 全体に情報を持つならば，$V$ はベクトル $\Y$ に対する shadow variable として機能する。
+
+一方，$V=g(F)+U$ とする proxy 型は，測定誤差モデルや因子分析の文脈では興味深いが，欠測補完の識別戦略としては追加検討を要する。したがって本稿では，proxy 型を中心的主張には含めず，今後の課題として位置づける。
+
+\section{基本モデル}
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+  \node[dagobs] (V) at (0,0) {$V$};
+  \node[dagerr] (U) at (1.5,1.25) {$U$};
+  \node[daglat] (F) at (2.0,0) {$F$};
+  \node[dagobs] (Y1) at (4.0,1.0) {$Y_1$};
+  \node[dagobs] (Y2) at (4.0,0) {$Y_2$};
+  \node[dagobs] (Y3) at (4.0,-1.0) {$Y_3$};
+  \node[dagmiss] (R) at (6.2,0) {$R$};
+  \node[dagerr] (eta) at (6.2,1.25) {$\eta$};
+  \draw[dagarrow] (V) -- node[dagnote,above] {$g$} (F);
+  \draw[dagarrow] (U) -- (F);
+  \draw[dagarrow] (F) -- node[dagnote,above] {$h_1$} (Y1);
+  \draw[dagarrow] (F) -- node[dagnote,above] {$h_2$} (Y2);
+  \draw[dagarrow] (F) -- node[dagnote,below] {$h_3$} (Y3);
+  \draw[dagarrow] (Y1) -- (R);
+  \draw[dagarrow] (Y2) -- (R);
+  \draw[dagarrow] (Y3) -- (R);
+  \draw[dagarrow] (eta) -- (R);
+  \node[dagnote] at (3.1,-2.05) {$\Y=(Y_1,Y_2,Y_3)'$ は相関してよい。欠測指標 $R$ は $\Y$ 全体に依存してよい。};
+  \node[dagnote] at (3.1,-2.55) {$\Y$ で条件付けると $V\to F\to \Y\to R$ が遮断され，$R\indep V\mid \Y$。};
+\end{tikzpicture}
+\caption{本稿の基本モデル。単一の常時観測変数 $V$ が潜在因子 $F$ を介してベクトル $\Y$ と関連し，欠測指標 $R$ は $\Y$ 全体に依存する。}
+\label{fig:dag-vector-basic}
+\end{figure}
+
+$K\geq 2$ とし，ベクトル値の測定変数を
+\begin{equation}
+  \Y=(Y_1,\ldots,Y_K)'\in\R^K
+\end{equation}
+と定義する。潜在因子 $F$ に対する測定モデルを
+\begin{equation}
+  Y_j=h_j(F)+\varepsilon_j,
+  \qquad j=1,\ldots,K,
+  \label{eq:vector-measurement}
+\end{equation}
+またはベクトル表記で
+\begin{equation}
+  \Y=\bm h(F)+\eps,
+  \qquad \bm h(F)=\{h_1(F),\ldots,h_K(F)\}'
+  \label{eq:vector-measurement-compact}
+\end{equation}
+と書く。識別の正規化として，主に $h_1(f)=f$ を置く。代替的には，$\E(F)=0$，$\operatorname{Var}(F)=1$，かつ $h_1$ が単調増加であるという正規化を用いてもよい。
+
+本稿の中心となるIV型構造は
+\begin{equation}
+  F=g(V)+U,
+  \label{eq:main-iv-structure}
+\end{equation}
+である。ここで $V$ はスカラーでもベクトルでもよい。後者の場合，$V\in\R^q$ は複数の常時観測された先行指標または補助変数を表す。
+
+各 $Y_j$ は欠測し得るが，以下では joint distribution の識別を明確にするため，まず完全観測パターンを表す指標
+\begin{equation}
+  R=\1\{Y_1,\ldots,Y_K\text{ がすべて観測される}\}
+\end{equation}
+を用いる。欠測機構は
+\begin{equation}
+  R=\1\{R^*>0\},
+  \qquad
+  R^*=k(\Y)+\eta
+  \label{eq:vector-y-missing}
+\end{equation}
+であり，欠測確率を
+\begin{equation}
+  \pi(\bm y)=\Prb(R=1\mid \Y=\bm y)
+  =\Prb\{\eta>-k(\bm y)\}
+  \label{eq:vector-pi}
+\end{equation}
+と定義する。この定式化では，欠測が $Y_j$ ごとに独立であるとは仮定しない。$Y_j$ 間の相関も，欠測確率が $\Y$ の複数成分に同時に依存することも許す。
+
+観測データは
+\begin{equation}
+  \calO=\{V,R,R\Y,\D\}
+  \label{eq:vector-observed-data}
+\end{equation}
+である。ここで $\D=(D_1,\ldots,D_K)'$ は項目別の観測指標であり，$R=\prod_{j=1}^K D_j$ である。以下の識別定理では $R=1$ の完全ケースを用いるが，部分観測パターンを利用する拡張は別途，パターン別の欠測確率 $\pi_{\bm d}(\bm y)=\Prb(\D=\bm d\mid \Y=\bm y)$ により定式化できる。
+
+\begin{assumption}[外生性]
+\label{ass:vector-exogeneity}
+$V,U,\eps,\eta$ は互いに独立であり，$F=g(V)+U$，$\Y=\bm h(F)+\eps$，$R^*=k(\Y)+\eta$ が成り立つ。
+\end{assumption}
+
+\begin{assumption}[positivity]
+\label{ass:vector-positivity}
+ある定数 $c>0$ が存在して
+\begin{equation}
+  \pi(\Y)\geq c\quad \mathrm{a.s.}
+  \label{eq:vector-positivity}
+\end{equation}
+が成り立つ。
+\end{assumption}
+
+\begin{assumption}[vector shadow completeness]
+\label{ass:vector-completeness}
+任意の可積分関数 $a:\R^K\to\R$ について，
+\begin{equation}
+  \E\{a(\Y)\mid V\}=0\quad \mathrm{a.s.}
+  \quad\Longrightarrow\quad
+  a(\Y)=0\quad \mathrm{a.s.}
+  \label{eq:vector-completeness}
+\end{equation}
+が成り立つ。
+\end{assumption}
+
+\begin{assumption}[潜在測定モデルの識別条件]
+\label{ass:vector-latent-identification}
+復元された同時分布 $P(\Y,V)$ に対し，
+\begin{equation}
+  \Y=\bm h(F)+\eps,
+  \qquad
+  F=g(V)+U
+  \label{eq:vector-latent-id}
+\end{equation}
+が，正規化 $h_1(f)=f$ の下で一意に識別されると仮定する。これは，非線形測定誤差モデルまたは Hu--Schennach 型の識別定理に対応する仮定である。
+\end{assumption}
+
+\section{ベクトル値欠測変数における shadow variable 識別}
+
+\begin{lemma}[ベクトル条件付き独立性]
+\label{lem:vector-shadow-independence}
+仮定 \ref{ass:vector-exogeneity} と欠測機構 \eqref{eq:vector-y-missing} の下で，
+\begin{equation}
+  R\indep V\mid \Y
+  \label{eq:vector-shadow-independence}
+\end{equation}
+が成り立つ。
+\end{lemma}
+
+\begin{proof}
+$R$ は $\Y$ と $\eta$ のみの関数であり，$\eta$ は $V$ および他の誤差項から独立である。したがって
+\begin{align}
+  \Prb(R=1\mid \Y,V)
+  &=\Prb\{\eta>-k(\Y)\mid \Y,V\}\\
+  &=\Prb\{\eta>-k(\Y)\mid \Y\}\\
+  &=\pi(\Y).
+\end{align}
+よって $R\indep V\mid \Y$ が従う。
+\end{proof}
+
+\begin{theorem}[欠測確率と joint distribution の識別]
+\label{thm:vector-shadow-identification}
+仮定 \ref{ass:vector-exogeneity}--\ref{ass:vector-completeness} の下で，欠測確率 $\pi(\Y)$，同時分布 $P(\Y,V)$，および平均ベクトル $\E(\Y)$ は観測分布から識別される。
+\end{theorem}
+
+\begin{proof}
+$w(\bm y)=1/\pi(\bm y)$ と置く。補題 \ref{lem:vector-shadow-independence} より，
+\begin{align}
+  \E\{Rw(\Y)\mid V\}
+  &=\E\left[\E\{Rw(\Y)\mid \Y,V\}\mid V\right]\\
+  &=\E\left[w(\Y)\pi(\Y)\mid V\right]\\
+  &=1.
+  \label{eq:vector-ipw-moment}
+\end{align}
+左辺は $R=1$ のときのみ $\Y$ を用いるため，観測分布から評価できる。したがって $w$ は観測可能な積分方程式
+\begin{equation}
+  \E\{Rw(\Y)\mid V\}=1
+  \label{eq:vector-integral-equation}
+\end{equation}
+の解である。
+
+次に一意性を示す。$w$ と $\widetilde w$ が \eqref{eq:vector-integral-equation} の二つの解であるとする。すると
+\begin{align}
+0
+&=\E\{R[w(\Y)-\widetilde w(\Y)]\mid V\}\\
+&=\E\{\pi(\Y)[w(\Y)-\widetilde w(\Y)]\mid V\}.
+\end{align}
+仮定 \ref{ass:vector-completeness} より $\pi(\Y)[w(\Y)-\widetilde w(\Y)]=0$ a.s. である。positivity より $w=\widetilde w$ a.s. が従う。よって $w$ および $\pi$ は識別される。
+
+任意の有界可測関数 $\varphi$ について
+\begin{equation}
+  \E\{\varphi(\Y,V)\}
+  =\E\{Rw(\Y)\varphi(\Y,V)\}
+  \label{eq:vector-ipw-functional}
+\end{equation}
+が成り立つ。したがって $P(\Y,V)$ が識別される。特に $\varphi(\Y,V)=\Y$ とすれば平均ベクトル $\E(\Y)$ が識別される。
+\end{proof}
+
+\begin{remark}[旧稿からの修正点]
+旧稿では，各 $Y_j$ について $D_j\indep V\mid Y_j$ を置き，$\prod_j\pi_j(Y_j)$ 型の重みで同時分布を復元していた。しかし，この表記は $Y_j$ 間の相関や欠測指標間の依存を不要に制限しているように見える。本稿では，$\Y$ 全体を一つのベクトルとして扱い，$R\indep V\mid \Y$ と $\pi(\Y)=\Prb(R=1\mid \Y)$ を用いる。これにより，$Y_1,\ldots,Y_K$ の相関を認めたまま，joint distribution $P(\Y,V)$ の識別を示すことができる。
+\end{remark}
+
+\section{測定関数 $\bm h$ と $g$ の識別}
+
+\begin{theorem}[IV型潜在測定関数の識別]
+\label{thm:vector-iv-functions}
+\eqref{eq:vector-measurement-compact}，\eqref{eq:main-iv-structure}，\eqref{eq:vector-y-missing}，および仮定 \ref{ass:vector-exogeneity}--\ref{ass:vector-latent-identification} が成り立つとする。このとき，$\E(\Y)$，$g$，および $h_1,\ldots,h_K$ は観測分布から識別される。
+\end{theorem}
+
+\begin{proof}
+定理 \ref{thm:vector-shadow-identification} より，$P(\Y,V)$ と $\E(\Y)$ は識別される。復元された $P(\Y,V)$ は
+\begin{equation}
+  p(\bm y\mid v)
+  =\int
+    \left\{\prod_{j=1}^K p_{\varepsilon_j}(y_j-h_j(f))\right\}
+    p_U\{f-g(v)\}
+    df
+  \label{eq:vector-iv-kernel}
+\end{equation}
+という積分表現を持つ。仮定 \ref{ass:vector-latent-identification} により，この表現は正規化の下で一意である。したがって，復元された $P(\Y,V)$ から $g$ および $\bm h=(h_1,\ldots,h_K)$ が識別される。
+\end{proof}
+
+\begin{remark}[二次元での確認]
+$K=2$ の場合，モデルは
+\begin{equation}
+  Y_1=h_1(F)+\varepsilon_1,
+  \qquad
+  Y_2=h_2(F)+\varepsilon_2,
+  \qquad
+  F=g(V)+U
+\end{equation}
+である。欠測指標を $R=1\{Y_1,Y_2\text{ がともに観測}\}$ とし，
+\begin{equation}
+  R^*=k(Y_1,Y_2)+\eta
+\end{equation}
+を許す。このとき $Y_1$ と $Y_2$ は $F$ を通じて相関し，欠測も両方の値に依存してよい。それでも $R\indep V\mid (Y_1,Y_2)$ と vector completeness が成立すれば，$P(Y_1,Y_2,V)$ は
+\begin{equation}
+  \E\{Rw(Y_1,Y_2)\varphi(Y_1,Y_2,V)\}
+\end{equation}
+として識別される。これは旧稿のような $\pi_1(Y_1)\pi_2(Y_2)$ 型の積重みを必要としない。
+\end{remark}
+
+\section{測定誤差を追加した場合}
+
+観測変数が，真の測定値 $Y_j^*$ にさらに測定誤差 $Q_j$ を加えた
+\begin{align}
+  Y_j^*&=h_j(F)+e_j,\\
+  Y_j&=Y_j^*+Q_j
+\end{align}
+であるとする。ここで $e_j,Q_j$ は互いに独立であり，$F$ や $V$ とも独立とする。
+
+\begin{proposition}[誤差項の結合]
+\label{prop:vector-error-combination}
+$\varepsilon_j=e_j+Q_j$ と定義すれば，モデルは
+\begin{equation}
+  Y_j=h_j(F)+\varepsilon_j
+\end{equation}
+に帰着する。したがって，$\varepsilon_j$ が仮定 \ref{ass:vector-latent-identification} に必要な独立性と正則性を満たす限り，追加測定誤差は $\bm h$ と $g$ の識別可能性を変えない。
+\end{proposition}
+
+\section{経験ベイズ的解釈と completeness}
+
+誤差分布をノンパラメトリックに扱う場合でも，識別に必要なのは特定の分布族を仮定することではなく，誤差が情報を完全には消去しないことである。この点は completeness とフーリエ変換によって表現できる。
+
+\begin{proposition}[シフト族における completeness の十分条件]
+\label{prop:fourier-completeness}
+$F=g(V)+U$ を考える。$U$ は密度 $p_U$ を持ち，$U\indep V$ とする。$\phi_U(t)=\E\{\exp(itU)\}$ を $U$ の特性関数とする。さらに $g(\calV)=\R$ とし，$\phi_U(t)\neq0$ が全ての $t\in\R$ で成り立つとする。このとき，
+\begin{equation}
+  \E\{a(F)\mid V\}=0\quad \mathrm{a.s.}
+  \Longrightarrow
+  a(F)=0\quad \mathrm{a.s.}
+\end{equation}
+が成り立つ。
+\end{proposition}
+
+\begin{proof}
+$x=g(v)$ とおくと，$F\mid V=v$ の密度は $p_U(f-x)$ である。したがって
+\begin{equation}
+  0=\E\{a(F)\mid V=v\}=\int a(f)p_U(f-x)df=(a*\check p_U)(x),
+\end{equation}
+ただし $\check p_U(t)=p_U(-t)$ である。$g(\calV)=\R$ なので，$(a*\check p_U)(x)=0$ が全ての $x\in\R$ で成り立つ。フーリエ変換をとると
+\begin{equation}
+  \widehat a(t)\overline{\phi_U(t)}=0
+\end{equation}
+である。$\phi_U(t)\neq0$ より $\widehat a(t)=0$ であり，フーリエ変換の一意性から $a=0$ a.e. が従う。
+\end{proof}
+
+\begin{remark}[ベクトル $\Y$ に対する completeness]
+本稿の主定理に必要なのは $\E\{a(\Y)\mid V\}=0\Rightarrow a(\Y)=0$ というベクトル版 completeness である。これはスカラー版より強い条件であり，実証では $V$ の次元，$g(V)$ の変動幅，および $\Y$ の次元に注意が必要である。会議で確認された通り，理論上はスカラーからベクトルへの拡張は可能だが，仮定の強さと推定の ill-posedness は明示しておく必要がある。
+\end{remark}
+
+\section{潜在因子依存欠測の場合}
+
+次に，欠測が $\Y$ ではなく潜在因子 $F$ に依存する場合を考える：
+\begin{equation}
+  R=\1\{R^*>0\},
+  \qquad
+  R^*=k(F)+\eta.
+  \label{eq:vector-f-missing}
+\end{equation}
+このとき $\rho(f)=\Prb(R=1\mid F=f)$ と書く。
+
+\begin{proposition}[shadow 条件の破綻]
+\label{prop:vector-f-missing-not-shadow}
+欠測機構 \eqref{eq:vector-f-missing} の下では，一般に
+\begin{equation}
+  R\not\indep V\mid \Y.
+\end{equation}
+したがって，$V$ を $\Y$ に対する shadow variable とする定理 \ref{thm:vector-shadow-identification} の証明は適用できない。
+\end{proposition}
+
+\begin{proof}
+\eqref{eq:vector-f-missing} より
+\begin{equation}
+  \Prb(R=1\mid \Y=\bm y,V=v)=\E\{\rho(F)\mid \Y=\bm y,V=v\}.
+\end{equation}
+$\Y$ は $F$ の誤差付き測定値であるため，$\Y=\bm y$ を条件づけても $F$ は一般に確定しない。さらに $V$ は $F$ と関連しているので，$F\mid \Y=\bm y,V=v$ の分布は一般に $v$ に依存する。$\rho$ が非定数ならば右辺も一般に $v$ に依存する。よって $R\indep V\mid \Y$ は成立しない。
+\end{proof}
+
+\section{実証分析または擬似実証の方向性}
+
+本稿は理論論文として完結し得るが，実証的なイラストレーションを加えることも有用である。候補としては，米国等のオープンな経済指標データを用い，$V$ を景気先行指標，$F$ を景気循環・不況要因，$\Y$ を複数企業または複数市場の指標とみなす設計が考えられる。この場合，本稿の目的は因果効果の推定ではなく，非無視可能欠測または結束が発生した $\Y$ の joint distribution を補完することである。
+
+また，完全データに人工的な NI 欠測を導入し，提案手法が $\E(\Y)$ や $P(\Y,V)$ をどの程度復元できるかを検証する擬似実証も有効である。この設計では真の母集団分布が既知であるため，理論結果のイラストレーションとして位置づけやすい。
+
+\section{まとめ}
+
+本稿の結論は次の通りである。
+
+第一に，欠測がベクトル値の測定変数 $\Y$ に依存する
+\begin{equation}
+  R^*=k(\Y)+\eta
+\end{equation}
+の場合，$V$ が常に観測され，$R\indep V\mid \Y$ と vector completeness が成り立てば，$\pi(\Y)$，$P(\Y,V)$，および $\E(\Y)$ は識別される。
+
+第二に，復元された joint distribution $P(\Y,V)$ に非線形測定誤差モデルの識別定理を適用すれば，IV型構造 $F=g(V)+U$ の下で $g$ と $h_1,\ldots,h_K$ が識別される。
+
+第三に，旧稿の $Y_j$ ごとの識別ではなく，$\Y$ 全体に条件づける表記へ変更することで，$Y_j$ 間の相関と欠測指標間の依存を許した理論に整理できる。この点が，今回の会議で確認された主要な修正点である。
+
+第四に，proxy 型 $V=g(F)+U$ は測定誤差モデルとして興味深いが，欠測補完の主定理としては識別の見通しがまだ明確でないため，本稿では中心的主張から外し，今後の課題として扱う。
+
+\begin{thebibliography}{99}
+
+\bibitem{dHaultfoeuille2010}
+D'Haultfoeuille, X. (2010).
+A new instrumental method for dealing with endogenous selection.
+\textit{Journal of Econometrics}, 154(1), 1--15.
+
+\bibitem{HuSchennach2008}
+Hu, Y. and Schennach, S. M. (2008).
+Instrumental variable treatment of nonclassical measurement error models.
+\textit{Econometrica}, 76(1), 195--216.
+
+\bibitem{Kotlarski1967}
+Kotlarski, I. I. (1967).
+On characterizing the gamma and the normal distribution.
+\textit{Pacific Journal of Mathematics}, 20(1), 69--76.
+
+\bibitem{ZhaoShao2015}
+Zhao, J. and Shao, J. (2015).
+Semiparametric pseudo-likelihoods in generalized linear models with nonignorable missing data.
+\textit{Journal of the American Statistical Association}, 110(512), 1577--1590.
+
+\bibitem{WangShaoKim2014}
+Wang, S., Shao, J. and Kim, J. K. (2014).
+An instrumental variable approach for identification and estimation with nonignorable nonresponse.
+\textit{Statistica Sinica}, 24, 1097--1116.
+
+\bibitem{ShaoWang2016}
+Shao, J. and Wang, L. (2016).
+Semiparametric inverse propensity weighting for nonignorable missing data.
+\textit{Biometrika}, 103(1), 175--187.
+
+\bibitem{MiaoTchetgen2016}
+Miao, W. and Tchetgen Tchetgen, E. J. (2016).
+On varieties of doubly robust estimators under missingness not at random with a shadow variable.
+\textit{Biometrika}, 103(2), 475--482.
+
+\bibitem{MiaoTchetgen2018}
+Miao, W. and Tchetgen Tchetgen, E. J. (2018).
+Identification and inference with nonignorable missing covariate data.
+\textit{Statistica Sinica}, 28(4), 2049--2067.
+
+\bibitem{LiMiaoTchetgen2023}
+Li, W., Miao, W. and Tchetgen Tchetgen, E. J. (2023).
+Non-parametric inference about mean functionals of non-ignorable non-response data without identifying the joint distribution.
+\textit{Journal of the Royal Statistical Society: Series B}, 85(3), 913--935.
+
+\bibitem{Rubin1976}
+Rubin, D. B. (1976).
+Inference and missing data.
+\textit{Biometrika}, 63(3), 581--592.
+
+\bibitem{Rubin1987}
+Rubin, D. B. (1987).
+\textit{Multiple Imputation for Nonresponse in Surveys}.
+Wiley.
+
+\bibitem{LittleRubin2002}
+Little, R. J. A. and Rubin, D. B. (2002).
+\textit{Statistical Analysis with Missing Data}.
+Wiley.
+
+\bibitem{BlackwellHonakerKing2017a}
+Blackwell, M., Honaker, J. and King, G. (2017a).
+A unified approach to measurement error and missing data: Overview and applications.
+\textit{Sociological Methods \& Research}, 46(3), 303--341.
+
+\bibitem{BlackwellHonakerKing2017b}
+Blackwell, M., Honaker, J. and King, G. (2017b).
+A unified approach to measurement error and missing data: Details and extensions.
+\textit{Sociological Methods \& Research}, 46(3), 342--369.
+
+\end{thebibliography}
+
+\end{document}
