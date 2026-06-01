@@ -18,6 +18,7 @@ data/*
 output/
 outputs/
 results/
+build/
 figures/generated/
 tables/generated/
 

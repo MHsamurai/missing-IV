@@ -9,8 +9,18 @@
 
 ## 現在の主要メモ
 
-- `manuscript/missing_iv_latent_dhaultfoeuille_style_fullcontent.tex`
+- `manuscript/main.tex`
 - `manuscript/欠測IV (1).pdf`（ローカル資料。Git追跡対象外）
+
+## コンパイル
+
+主論文ファイルは `manuscript/main.tex` です。
+
+```sh
+make pdf
+```
+
+出力PDFは `build/main.pdf` に生成されます。LaTeXの設定は `.latexmkrc` にまとめています。
 
 ## ディレクトリ構成
 
