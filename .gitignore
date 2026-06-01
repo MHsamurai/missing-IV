@@ -7,6 +7,10 @@
 *.zip
 *.pptx
 *.docx
+*.m4a
+*.mp3
+*.mp4
+*.mov
 
 # Data and generated outputs
 data/
