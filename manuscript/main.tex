@@ -57,7 +57,7 @@ Taisuke Otsu\\[-1mm]
 \maketitle
 
 \begin{abstract}
-非無作為欠測（nonignorable missingness; NI/MNAR）では，欠測確率が未観測値に依存するため，通常の多重代入や観測変数のみに基づくIPWでは母集団分布や平均の識別が困難である。本研究では，d'Haultfoeuille 型の欠測IV／shadow variable の識別条件を，ベクトル値の欠測変数と潜在変数モデルへ拡張する。具体的には，複数の測定変数 $\Y=(Y_1,\ldots,Y_K)'$ が共通潜在因子 $F$ を通じて生成され，常時観測される変数 $V$ が $F$ を駆動するIV型構造 $F=g(V)+U$ を考える。欠測指標が $\Y$ に依存しても，$\Y$ を条件づけた後に $V$ が欠測機構から排除され，かつ completeness が成立するならば，欠測確率，$P(\Y,V)$，$\E(\Y)$，および潜在測定関数が識別されることを示す。従来は各欠測変数に個別の shadow variable を必要とする設定が多かったのに対し，本稿は共通潜在因子を介して単一の常時観測IVにより複数変数の joint distribution を識別する点に特徴がある。
+非無作為欠測（nonignorable missingness; NI/MNAR）では，欠測確率が未観測値に依存するため，通常の多重代入や観測変数のみに基づくIPWでは母集団分布や平均の識別が困難である。本研究では，d'Haultfoeuille (2010) の shadow variable / missing IV 識別を，スカラーの欠測アウトカムからベクトル値の欠測変数 $\Y=(Y_1,\ldots,Y_K)'$ へ拡張する。第一段階では，欠測指標 $R$ が $\Y$ に依存しても，$\Y$ を条件づけると常時観測補助変数 $V$ が欠測機構から排除される $R\indep V\mid \Y$ と vector completeness の下で，欠測確率 $\pi(\Y)=\Prb(R=1\mid \Y)$，同時分布 $P(\Y,V)$，および平均ベクトル $\E(\Y)$ が識別されることを示す。第二段階では，復元された $P(\Y,V)$ に $\Y=\bm h(F)+\eps,\ F=g(V)+U$ という潜在測定モデルの識別条件を課すことで，$g$ と $h_1,\ldots,h_K$ の識別を議論する。したがって本稿の主識別結果は，潜在変数に依存するNMARを直接モデル化する方法ではなく，d'Haultfoeuille 型の欠測IV識別のベクトル拡張である。
 \end{abstract}
 
 \section{Introduction}
@@ -73,9 +73,9 @@ Taisuke Otsu\\[-1mm]
 \end{equation}
 であり，母集団密度 $p_Y$ と選択確率 $\Prb(R=1\mid Y)$ は積としてのみ現れる。したがって，欠測機構または母集団分布に追加制約を置かなければ，$p_Y$ も $\E(Y)$ も一意には定まらない。
 
-この非識別性に対する一つの有力な解決策が，常に観測される補助変数を用いた shadow variable アプローチである。d'Haultfoeuille (2010) における $Z$ は，後続研究では shadow variable，nonresponse instrument，または missing-data instrumental variable と呼ばれる変数に対応する。通常の処置効果推定における操作変数とは異なり，ここでの IV は欠測機構から排除された補助変数である。
+この非識別性に対する一つの有力な解決策が，常に観測される補助変数を用いた shadow variable アプローチである。本稿の出発点は，d'Haultfoeuille (2010, \textit{Journal of Econometrics}) の ``A new instrumental method for dealing with endogenous selection'' である。同論文の識別戦略は，通常の処置効果IVのように「操作変数がアウトカムから排除される」ことではなく，「アウトカムを条件づけたとき，操作変数が選択・欠測指標から排除される」ことに基づく。d'Haultfoeuille (2010) における $Z$ は，後続研究では shadow variable，nonresponse instrument，または missing-data instrumental variable と呼ばれる変数に対応する。通常の処置効果推定における操作変数とは異なり，ここでの IV は欠測機構から排除された補助変数である。
 
-本稿の主な貢献は，d'Haultfoeuille 型の shadow variable 識別を，スカラーの欠測変数からベクトル値の欠測変数へ拡張し，さらに共通潜在因子構造と結合する点にある。従来の素朴な拡張では，各欠測変数 $Y_j$ に対してそれぞれ別の shadow variable を用意する必要があるように見える。これに対して本稿では，複数の欠測変数が共通潜在因子 $F$ を通じて同時に生成される場合，単一の常時観測変数 $V$ によってベクトル $\Y=(Y_1,\ldots,Y_K)'$ の joint distribution を識別できることを示す。
+本稿の主な貢献は，d'Haultfoeuille 型の shadow variable 識別を，スカラーの欠測変数からベクトル値の欠測変数へ拡張し，さらに共通潜在因子構造と結合する点にある。従来の素朴な拡張では，各欠測変数 $Y_j$ に対してそれぞれ別の shadow variable を用意する必要があるように見える。これに対して本稿では，複数の欠測変数が共通潜在因子 $F$ を通じて同時に生成される場合，スカラーまたはベクトル値の常時観測補助変数 $V$ によってベクトル $\Y=(Y_1,\ldots,Y_K)'$ の joint distribution を識別できる条件を示す。
 
 この点は，欠測変数間の相関を明示的に認めるためにも重要である。旧稿では $Y_j$ ごとに
 \begin{equation}
@@ -93,7 +93,13 @@ Taisuke Otsu\\[-1mm]
   F=g(V)+U
   \label{eq:intro-iv-latent}
 \end{equation}
-に集中する。ここで $V$ は常時観測される景気先行指標，$F$ は不況などの共通潜在要因，$\Y$ は複数企業の株価指数・財務指標・調査指標などと解釈できる。欠測または結束が各 $Y_j$ に発生する場合でも，共通の $F$ を介して $V$ が $\Y$ 全体に情報を持つならば，$V$ はベクトル $\Y$ に対する shadow variable として機能する。
+に集中する。ここで $V$ は常時観測される景気先行指標，$F$ は不況などの共通潜在要因，$\Y$ は複数企業の株価指数・財務指標・調査指標などと解釈できる。欠測または選択が各 $Y_j$ に発生する場合でも，共通の $F$ を介して $V$ が $\Y$ 全体に情報を持つならば，$V$ はベクトル $\Y$ に対する shadow variable として機能し得る。ただし，ベクトル値 $\Y$ に対する completeness を満たすには，$V$ のサポートと $\Y$ との関連性が十分に豊かである必要がある。
+
+重要な区別として，本稿の主結果は欠測が $\Y$ に依存する
+\begin{equation}
+  R^*=k(\Y)+\eta
+\end{equation}
+場合に関する。欠測が潜在因子そのものに依存する $R^*=k(F)+\eta$ の場合には，一般に $R\indep V\mid \Y$ は成立せず，d'Haultfoeuille 型の証明は適用できない。この場合は Appendix \ref{app:latent-factor-missingness} で非識別または別アプローチの問題として扱う。
 
 一方，$V=g(F)+U$ とする proxy 型は，測定誤差モデルや因子分析の文脈では興味深いが，欠測補完の識別戦略としては追加検討を要する。したがって本稿では，proxy 型を中心的主張には含めず，今後の課題として位置づける。ただし，旧稿で検討した proxy 型の補足的識別議論は，Appendix \ref{app:proxy-type} に残す。
 
@@ -133,6 +139,8 @@ $R=1$ のときに $Y$ が観測される状況を考える。d'Haultfoeuille �
   Y=\phi(Z,\epsilon),\qquad R=\psi(Y,\eta),\qquad \eta\indep (Z,\epsilon)
 \end{equation}
 ならば，\eqref{eq:dh-exclusion} が成立する。
+
+d'Haultfoeuille (2010) では，$D$ は選択ダミー，$Y$ は欠測し得るアウトカム，$Z$ は操作変数である。観測構造は，$D=1$ のとき $Y$ が観測され，$Z$ の分布は本標本または補助情報から識別されている，というものである。本稿では欠測データ文脈に合わせて，選択ダミー $D$ を完全ケース指標 $R$，操作変数 $Z$ を常時観測補助変数 $V$，スカラーアウトカム $Y$ をベクトル値欠測変数 $\Y$ に置き換える。
 
 欠測確率を
 \begin{equation}
@@ -237,6 +245,15 @@ $\pi$ が識別されれば，任意の可積分関数 $\varphi$ について
 
 \subsection{Our vector model}
 
+本節の主対象は，d'Haultfoeuille (2010) の $(D,Y,Z)$ を
+\begin{equation}
+  D\mapsto R,\qquad
+  Y\mapsto \Y,\qquad
+  Z\mapsto V
+  \label{eq:dh-to-vector-map}
+\end{equation}
+と置き換えたベクトル版である。ここで $R$ は完全ケース指標，$\Y$ は同時分布を復元したい欠測変数ベクトル，$V$ は常時観測される shadow variable である。潜在因子 $F$ は，$V$ と $\Y$ の関連性および vector completeness を支える構造として導入する。
+
 \begin{figure}[tbp]
 \centering
 \begin{tikzpicture}[x=1cm,y=1cm]
@@ -260,7 +277,7 @@ $\pi$ が識別されれば，任意の可積分関数 $\varphi$ について
   \node[dagnote] at (3.1,-2.05) {$\Y=(Y_1,Y_2,Y_3)'$ は相関してよい。欠測指標 $R$ は $\Y$ 全体に依存してよい。};
   \node[dagnote] at (3.1,-2.55) {$\Y$ で条件付けると $V\to F\to \Y\to R$ が遮断され，$R\indep V\mid \Y$。};
 \end{tikzpicture}
-\caption{本稿の基本モデル。単一の常時観測変数 $V$ が潜在因子 $F$ を介してベクトル $\Y$ と関連し，欠測指標 $R$ は $\Y$ 全体に依存する。}
+\caption{本稿の基本モデル。常時観測補助変数 $V$ が潜在因子 $F$ を介してベクトル $\Y$ と関連し，欠測指標 $R$ は $\Y$ 全体に依存する。}
 \label{fig:dag-vector-basic}
 \end{figure}
 
@@ -287,7 +304,7 @@ $K\geq 2$ とし，ベクトル値の測定変数を
   F=g(V)+U,
   \label{eq:main-iv-structure}
 \end{equation}
-である。ここで $V$ はスカラーでもベクトルでもよい。後者の場合，$V\in\R^q$ は複数の常時観測された先行指標または補助変数を表す。
+である。ここで $V$ はスカラーでもベクトルでもよい。後者の場合，$V\in\R^q$ は複数の常時観測された先行指標または補助変数を表す。記法上は単に $V$ と書くが，ベクトル値 $\Y$ に対する completeness を満たすには，$V$ のサポートと $\Y$ との関連性が十分に豊かである必要がある。
 
 各 $Y_j$ は欠測し得るが，以下では joint distribution の識別を明確にするため，まず完全観測パターンを表す指標
 \begin{equation}
@@ -352,6 +369,7 @@ $V,U,\eps,\eta$ は互いに独立であり，$F=g(V)+U$，$\Y=\bm h(F)+\eps$，
   \label{eq:vector-latent-id}
 \end{equation}
 が，正規化 $h_1(f)=f$ の下で一意に識別されると仮定する。これは，非線形測定誤差モデルまたは Hu--Schennach 型の識別定理に対応する仮定である。
+この仮定は d'Haultfoeuille (2010) の shadow-variable 識別そのものではなく，第一段階で復元された $P(\Y,V)$ に対して潜在測定関数を回復するための追加的な測定モデル識別条件である。
 \end{assumption}
 
 \subsection{Main identification results}
@@ -370,6 +388,8 @@ $V,U,\eps,\eta$ は互いに独立であり，$F=g(V)+U$，$\Y=\bm h(F)+\eps$，
 \label{thm:vector-shadow-identification}
 仮定 \ref{ass:vector-exogeneity}--\ref{ass:vector-completeness} の下で，欠測確率 $\pi(\Y)$，同時分布 $P(\Y,V)$，および平均ベクトル $\E(\Y)$ は観測分布から識別される。
 \end{theorem}
+
+定理 \ref{thm:vector-shadow-identification} が，本稿における d'Haultfoeuille (2010) の直接のベクトル拡張である。次の定理は，この識別結果で得られた $P(\Y,V)$ を入力として，潜在測定モデルの関数を回復する第二段階の結果である。
 
 \begin{theorem}[IV型潜在測定関数の識別]
 \label{thm:vector-iv-functions}
@@ -810,7 +830,7 @@ proxy 型では，$V$ は $F$ の原因ではなく，$F$ の誤差付き測定�
 \end{proof}
 
 \begin{remark}[本文から付録へ移した理由]
-proxy 型では $V$ が $F$ の追加測定値として機能するため，測定誤差モデルとしては自然である。一方で，本稿の主な貢献である「単一の常時観測IVによりベクトル値欠測変数を補完する」という解釈は，IV 型構造 $F=g(V)+U$ の方が明確である。そのため，proxy 型の識別は本稿では補足的議論として付録に留める。
+proxy 型では $V$ が $F$ の追加測定値として機能するため，測定誤差モデルとしては自然である。一方で，本稿の主な貢献である「常時観測補助変数によりベクトル値欠測変数を補完する」という解釈は，IV 型構造 $F=g(V)+U$ の方が明確である。そのため，proxy 型の識別は本稿では補足的議論として付録に留める。
 \end{remark}
 
 \begin{thebibliography}{99}
