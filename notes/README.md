@@ -14,9 +14,11 @@
 ## Reading notes
 
 - `reading/dhaultfoeuille2010_annotated_ja.tex`: d'Haultfoeuille (2010) の注釈付き日本語読解ノート
+- `reading/zhao_shao2015_annotated_ja.tex`: Zhao and Shao (2015) の注釈付き日本語読解ノート
 
 コンパイル:
 
 ```sh
 make reading-dhaultfoeuille2010
+make reading-zhao-shao2015
 ```
