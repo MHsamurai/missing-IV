@@ -13,7 +13,8 @@
 *.mov
 
 # Data and generated outputs
-data/
+data/*
+!data/.gitkeep
 output/
 outputs/
 results/
