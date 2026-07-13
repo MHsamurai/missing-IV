@@ -16,7 +16,6 @@
 # Data and generated outputs
 data/*
 !data/.gitkeep
-output/
 outputs/
 results/
 build/

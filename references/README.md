@@ -6,4 +6,10 @@
 - `data_fusion/`: data fusion / data combination 関連文献
 - `course_notes/`: 講義ノート
 
-外部資料として `/Users/m/Library/Mobile Documents/com~apple~CloudDocs/慶応/手法/参考資料/data fusion` も参照します。
+文献は用途別に配置します。
+
+- `missing_iv/`: 欠測IVに直接関係する文献
+- `data_fusion/`: data fusion / data combination 関連文献
+- `course_notes/`: 講義ノート
+- `conference/`: 学会資料
+- `layout/`: レイアウト参考資料
