@@ -1,5 +1,6 @@
 # macOS / local session files
 .DS_Store
+._*
 .Rhistory
 
 # Large or binary research materials kept locally
