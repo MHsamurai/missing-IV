@@ -1,8 +1,16 @@
-\documentclass[dvipdfmx,autodetect-engine]{jsarticle}
+\documentclass[10pt,a4paper]{article}
+\usepackage{xeCJK}
+\setCJKmainfont{Yu Mincho}
+\setCJKsansfont{Yu Gothic}
+\setCJKmonofont{Yu Gothic}
+\usepackage[margin=25mm]{geometry}
 \usepackage{amsmath,amssymb,amsthm,bm}
 \usepackage{enumerate}
-\usepackage[dvipdfmx]{graphicx}
+\usepackage{graphicx}
 \usepackage{tikz}
+\usepackage{csquotes}
+\usepackage[backend=biber,style=apa,sorting=nyt]{biblatex}
+\addbibresource{manuscript/references.bib}
 \usetikzlibrary{arrows.meta,positioning,calc,fit,shapes.geometric}
 
 \tikzset{
@@ -833,6 +841,10 @@ proxy 型では，$V$ は $F$ の原因ではなく，$F$ の誤差付き測定�
 proxy 型では $V$ が $F$ の追加測定値として機能するため，測定誤差モデルとしては自然である。一方で，本稿の主な貢献である「常時観測補助変数によりベクトル値欠測変数を補完する」という解釈は，IV 型構造 $F=g(V)+U$ の方が明確である。そのため，proxy 型の識別は本稿では補足的議論として付録に留める。
 \end{remark}
 
+\nocite{dHaultfoeuille2010,HuSchennach2008,Kotlarski1967,ZhaoShao2015,KanoTakai2011,WangShaoKim2014,ShaoWang2016,MiaoTchetgen2016,MiaoTchetgen2018,LiMiaoTchetgen2023,Rubin1976,Rubin1987,LittleRubin2002,BlackwellHonakerKing2017a,BlackwellHonakerKing2017b}
+\printbibliography[title={References}]
+
+\iffalse
 \begin{thebibliography}{99}
 
 \bibitem{dHaultfoeuille2010}
@@ -906,5 +918,6 @@ A unified approach to measurement error and missing data: Details and extensions
 \textit{Sociological Methods \& Research}, 46(3), 342--369.
 
 \end{thebibliography}
+\fi
 
 \end{document}

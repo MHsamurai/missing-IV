@@ -1,5 +1,4 @@
-$latex = 'uplatex -synctex=1 -interaction=nonstopmode -file-line-error %O %S';
-$bibtex = 'upbibtex %O %B';
-$dvipdf = 'dvipdfmx %O -o %D %S';
-$pdf_mode = 3;
+$xelatex = 'xelatex --disable-installer -synctex=1 -interaction=nonstopmode -file-line-error %O %S';
+$biber = 'biber %O %B';
+$pdf_mode = 5;
 $out_dir = 'build';
