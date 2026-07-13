@@ -12,6 +12,9 @@
 ## 現在の主要メモ
 
 - `manuscript/main.tex`
+- `manuscript/vector_missing_iv_identification_proof.tex`
+- `manuscript/vector_missing_iv_identification_beamer.tex`
+- `notes/onepage/vector_missing_iv_identification_onepage.tex`
 - `manuscript/欠測IV (1).pdf`（ローカル資料。Git追跡対象外）
 
 ## コンパイル
@@ -20,6 +23,8 @@
 
 ```sh
 make pdf
+make proof
+make beamer
 ```
 
 出力PDFは `build/formal/main/main.pdf` に生成されます。LaTeXの設定は `.latexmkrc` にまとめています。
@@ -28,6 +33,8 @@ make pdf
 
 - `build/formal/main/`: 主論文 `main.tex` と関連生成物
 - `build/formal/vector_missing_iv_identification_onepage/`: 正式なアブストラクトとプレビュー
+- `build/formal/vector_missing_iv_identification_proof/`: onepage版に続く正式なベクトル識別証明
+- `build/formal/vector_missing_iv_identification_beamer/`: ベクトル識別証明の発表用Beamer
 - `build/supplementary_reading/`: 著者・年別の副読資料
 - `build/templates/`: レイアウトテンプレート
 

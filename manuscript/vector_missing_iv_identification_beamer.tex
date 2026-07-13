@@ -1,0 +1,309 @@
+\documentclass[aspectratio=169,11pt]{beamer}
+\usepackage{xeCJK}
+\setCJKmainfont{Yu Gothic}
+\setCJKsansfont{Yu Gothic}
+\setCJKmonofont{Yu Gothic}
+\usepackage{amsmath,amssymb,bm}
+
+\usetheme{Madrid}
+\usefonttheme{professionalfonts}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+\definecolor{deepblue}{RGB}{28,61,104}
+\definecolor{accent}{RGB}{176,76,45}
+\setbeamercolor{structure}{fg=deepblue}
+\setbeamercolor{alerted text}{fg=accent}
+
+\newcommand{\E}{\mathbb E}
+\newcommand{\Prb}{\mathbb P}
+\newcommand{\1}{\mathbf 1}
+\newcommand{\Y}{\bm Y}
+\newcommand{\D}{\bm D}
+\newcommand{\indep}{\mathrel{\perp\!\!\!\perp}}
+
+\title{欠測IV識別のベクトル化}
+\subtitle{d'Haultfoeuille (2010), Proposition 2.1 and Theorem 2.3 の再構築}
+\author{}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{問題設定}
+  \begin{itemize}
+    \item 欠測変数はベクトル
+      \[
+        \Y=(Y_1,\ldots,Y_m)'.
+      \]
+    \item 欠測確率は未観測になりうる $\Y$ 自身に依存してよい。
+    \item 常時観測変数 $Z$ を使って，完全ケース確率
+      \[
+        \pi(\bm y)=\Prb(R=1\mid\Y=\bm y)
+      \]
+      を逆問題として識別する。
+  \end{itemize}
+  \begin{alertblock}{目的}
+    MARや項目別独立を仮定せず，$P(R,\Y,Z)$ を回復する。
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{原論文からベクトル版への対応}
+  \centering
+  \begin{tabular}{lll}
+    \hline
+    対象 & 原論文 & ベクトル版 \\
+    \hline
+    選択・完全ケース & $D\in\{0,1\}$ & $R=\1\{\D=\bm1_m\}$ \\
+    欠測変数 & $Y$ & $\Y=(Y_1,\ldots,Y_m)'$ \\
+    常時観測IV & $Z$ & $Z$ \\
+    選択確率 & $P(y)$ & $\pi(\bm y)$ \\
+    \hline
+  \end{tabular}
+
+  \vspace{1em}
+  ベクトル化で変わるのは関数の定義域であり，
+  \alert{識別証明の骨格は変わらない}。
+\end{frame}
+
+\begin{frame}{観測データと識別範囲}
+  項目別観測指標と完全ケース指標を
+  \[
+    \D=(D_1,\ldots,D_m)',
+    \qquad
+    R=\1\{\D=\bm1_m\}
+  \]
+  とする。
+
+  \begin{block}{中心証明が使う観測情報}
+    \[
+      P(Z),qquad
+      \Prb\{R=1,\Y\in d\bm y,Z\in dz\}.
+    \]
+  \end{block}
+
+  部分観測ケースは追加情報になりうるが，中心定理では使わない。
+\end{frame}
+
+\begin{frame}{維持する仮定}
+  \begin{enumerate}
+    \item Shadow exclusion
+      \[
+        R\indep Z\mid\Y.
+      \]
+    \item Positivity
+      \[
+        \pi(\Y)>0\quad\text{a.s.}
+      \]
+    \item Vector $\mathcal B_{\Y}$-completeness
+      \[
+        \E\{a(\Y)\mid Z\}=0
+        \ \Longrightarrow\ a(\Y)=0,
+        \qquad a\in\mathcal B_{\Y},
+      \]
+      \[
+        \mathcal B_{\Y}
+        =\{a:\E|a(\Y)|<\infty,\ a(\Y)\text{ は下に有界}\}.
+      \]
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{構造から条件付き独立性へ}
+  \[
+    \Y=\phi(Z,\bm\varepsilon),
+    \qquad
+    \D=\psi(\Y,\bm\nu),
+    \qquad
+    \bm\nu\indep(Z,\bm\varepsilon).
+  \]
+
+  $\Y$ は $(Z,\bm\varepsilon)$ の関数なので
+  $\bm\nu\indep(\Y,Z)$。したがって
+  \[
+    \Prb(\D=\bm d\mid\Y=\bm y,Z=z)
+    =\Prb(\D=\bm d\mid\Y=\bm y).
+  \]
+
+  \begin{block}{ベクトル版 Proposition 2.1}
+    \[
+      \D\indep Z\mid\Y
+      \quad\Longrightarrow\quad
+      R\indep Z\mid\Y.
+    \]
+  \end{block}
+\end{frame}
+
+\begin{frame}{真の完全ケース確率が満たす式}
+  条件付き独立性より
+  \begin{align*}
+    \E\left\{\frac{R}{\pi(\Y)}\middle|Z\right\}
+    &=\E\left[\left.
+      \frac{\E(R\mid\Y,Z)}{\pi(\Y)}\right|Z\right]\\
+    &=\E\left\{\left.
+      \frac{\pi(\Y)}{\pi(\Y)}\right|Z\right\}=1.
+  \end{align*}
+
+  \begin{alertblock}{識別モーメント}
+    \[
+      \boxed{\E\{R/\pi(\Y)\mid Z\}=1}.
+    \]
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{候補解の観測可能性}
+  候補 $q:\mathbb R^m\to(0,1]$ に対して
+  \[
+    \E\left\{\frac{R}{q(\Y)}\middle|Z\right\}=1
+  \]
+  を考える。
+
+  \begin{itemize}
+    \item $R=0$ なら $R/q(\Y)=0$。
+    \item $q(\Y)$ を評価する必要があるのは $R=1$ のときだけ。
+    \item したがって左辺は完全ケースの観測分布から計算できる。
+  \end{itemize}
+
+  識別問題は，この観測可能な積分方程式の
+  \alert{解が一意か}という問題になる。
+\end{frame}
+
+\begin{frame}{完備性を適用する関数}
+  候補解 $q$ に対して
+  \[
+    a(\Y)=\frac{\pi(\Y)}{q(\Y)}-1
+  \]
+  と置く。
+
+  \begin{columns}[T]
+    \column{0.46\textwidth}
+    \begin{block}{下方有界性}
+      \[
+        a(\Y)\ge-1.
+      \]
+    \end{block}
+    \column{0.50\textwidth}
+    \begin{block}{可積分性}
+      \[
+        \E\left\{\frac{\pi(\Y)}{q(\Y)}\right\}=1,
+      \]
+      \[
+        \E|a(\Y)|\le2.
+      \]
+    \end{block}
+  \end{columns}
+
+  よって $a\in\mathcal B_{\Y}$。これが原論文の関数クラスを
+  維持する理由である。
+\end{frame}
+
+\begin{frame}{Vector completenessによる一意性}
+  候補モーメントと条件付き独立性から
+  \begin{align*}
+    0
+    &=\E\left\{\frac{R}{q(\Y)}-1\middle|Z\right\}\\
+    &=\E\left\{\frac{\pi(\Y)}{q(\Y)}-1\middle|Z\right\}\\
+    &=\E\{a(\Y)\mid Z\}.
+  \end{align*}
+
+  $a\in\mathcal B_{\Y}$ なのでvector completenessより
+  \[
+    a(\Y)=0\quad\text{a.s.}
+    \quad\Longrightarrow\quad
+    q(\Y)=\pi(\Y)\quad\text{a.s.}
+  \]
+
+  \begin{alertblock}{結論}
+    完全ケース確率 $\pi(\Y)$ は一意に識別される。
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{同時分布の復元}
+  任意の可測集合 $A$ について
+  \[
+    \Prb\{(\Y,Z)\in A\}
+    =\E\left[
+      \frac{R}{\pi(\Y)}\1\{(\Y,Z)\in A\}
+    \right].
+  \]
+  したがって
+  \[
+    P_{\Y,Z}(d\bm y,dz)
+    =\frac{P(R=1,\Y\in d\bm y,Z\in dz)}{\pi(\bm y)}.
+  \]
+
+  $R=0$ 側も
+  \[
+    \Prb\{R=0,(\Y,Z)\in A\}
+    =\E\left[
+      R\frac{1-\pi(\Y)}{\pi(\Y)}\1_A
+    \right]
+  \]
+  で復元できる。
+\end{frame}
+
+\begin{frame}{何が識別され、何が識別されないか}
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    \begin{block}{識別される}
+      \begin{itemize}
+        \item $\pi(\Y)$
+        \item $P(\Y,Z)$
+        \item $P(R,\Y,Z)$
+        \item $\E(\Y)$（有限なら）
+      \end{itemize}
+    \end{block}
+    \column{0.48\textwidth}
+    \begin{alertblock}{追加仮定なしには識別されない}
+      \begin{itemize}
+        \item $P(\D,\Y,Z)$ 全体
+        \item 各 $\bm d\ne\bm1_m$ の潜在的な $\Y$ 分布
+      \end{itemize}
+    \end{alertblock}
+  \end{columns}
+
+  パターン別識別には $\pi_{\bm d}(\Y)$ ごとの除外制約と
+  識別モーメントが必要である。
+\end{frame}
+
+\begin{frame}{主論文への接続}
+  主論文では記号を
+  \[
+    Z\longmapsto V
+  \]
+  と置き換えるだけで，同じ第一段階から $P(\Y,V)$ を復元する。
+
+  \begin{block}{第二段階：潜在測定モデル}
+    \[
+      F=g(V)+U,
+      \qquad
+      \Y=\bm h(F)+\bm\varepsilon.
+    \]
+  \end{block}
+
+  \begin{itemize}
+    \item 第一段階：欠測IVにより $P(\Y,V)$ を復元。
+    \item 第二段階：別途の測定モデル識別条件で $g,h_1,\ldots,h_m$ を回復。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{まとめ}
+  \begin{enumerate}
+    \item ベクトル化しても中心モーメントは
+      \[
+        \E\{R/\pi(\Y)\mid Z\}=1.
+      \]
+    \item $a=\pi/q-1$ は下に有界で $\E|a|\le2$。
+    \item Vector $\mathcal B_{\Y}$-completenessが候補解を一意にする。
+    \item $\pi$ から $P(R,\Y,Z)$ と有限な平均を復元できる。
+    \item 項目別積重みや項目別独立は不要。
+  \end{enumerate}
+
+  \begin{alertblock}{主張の境界}
+    $P(R,\Y,Z)$ の識別と $P(\D,\Y,Z)$ の識別は区別する。
+  \end{alertblock}
+\end{frame}
+
+\end{document}
