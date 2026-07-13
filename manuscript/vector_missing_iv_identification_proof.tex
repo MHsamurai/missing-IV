@@ -1,0 +1,301 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{xeCJK}
+\setCJKmainfont{Yu Mincho}
+\setCJKsansfont{Yu Gothic}
+\setCJKmonofont{Yu Gothic}
+\usepackage[margin=25mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,bm}
+\usepackage{hyperref}
+
+\newtheorem{assumption}{仮定}
+\newtheorem{proposition}{命題}
+\newtheorem{theorem}{定理}
+\newtheorem{corollary}{系}
+\newtheorem{remark}{注意}
+
+\newcommand{\E}{\mathbb E}
+\newcommand{\Prb}{\mathbb P}
+\newcommand{\1}{\mathbf 1}
+\newcommand{\Y}{\bm Y}
+\newcommand{\D}{\bm D}
+\newcommand{\indep}{\mathrel{\perp\!\!\!\perp}}
+
+\title{欠測IV識別のベクトル化：\\
+d'Haultfoeuille (2010), Proposition 2.1 and Theorem 2.3 の再構築}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+d'Haultfoeuille (2010) のスカラー選択モデルを，項目別欠測指標
+$\D$ と欠測変数ベクトル $\Y$ を持つ設定へ拡張する。中心となるのは
+完全ケース指標 $R$ である。条件付き独立性と vector
+$\mathcal B_{\Y}$-completeness の下で，完全ケース確率
+$\pi(\Y)$，同時分布 $P(\Y,Z)$，および $P(R,\Y,Z)$ が識別される。
+各非完全パターン $\D=\bm d\ne\bm 1_m$ の分布は，中心仮定だけからは
+識別されないことも明確にする。
+\end{abstract}
+
+\section{原論文との記法対応}
+
+原論文と本ノートの役割は次のように対応する。
+\begin{center}
+\begin{tabular}{lll}
+\hline
+対象 & d'Haultfoeuille (2010) & 本ノート \\
+\hline
+選択・完全ケース & $D\in\{0,1\}$ & $R=\1\{\D=\bm 1_m\}$ \\
+欠測変数 & $Y$ & $\Y=(Y_1,\ldots,Y_m)'$ \\
+常時観測IV & $Z$ & $Z$ \\
+選択確率 & $P(y)$ & $\pi(\bm y)$ \\
+\hline
+\end{tabular}
+\end{center}
+
+項目別観測指標を $\D=(D_1,\ldots,D_m)'$ とし，
+\begin{equation}
+ R=\1\{\D=\bm 1_m\}
+\end{equation}
+を完全ケース指標とする。$Z$ は常に観測される。中心証明が利用する
+観測分布は $P(Z)$ と完全ケースsubdistribution
+\begin{equation}
+ \Prb\{R=1,\Y\in d\bm y,Z\in dz\}
+\end{equation}
+である。$R=0$ における部分観測値は，識別を強める可能性はあるが，
+以下の定理には用いない。
+
+\section{構造から導かれる条件付き独立性}
+
+\begin{assumption}[ベクトル構造]
+ある可測関数 $\phi,\psi$ が存在して
+\begin{equation}
+ \Y=\phi(Z,\bm\varepsilon),
+ \qquad
+ \D=\psi(\Y,\bm\nu),
+ \qquad
+ \bm\nu\indep(Z,\bm\varepsilon)
+ \label{eq:vector-structure}
+\end{equation}
+が成り立つ。
+\end{assumption}
+
+\begin{proposition}[ベクトル版 Proposition 2.1]
+\label{prop:vector-ci}
+仮定1の下で
+\begin{equation}
+ \D\indep Z\mid\Y,
+ \qquad
+ R\indep Z\mid\Y
+ \label{eq:vector-ci}
+\end{equation}
+が成り立つ。
+\end{proposition}
+
+\begin{proof}
+任意の欠測パターン $\bm d$ と値 $\bm y$ に対して
+\begin{equation}
+ A_{\bm y,\bm d}
+ =\{\bm u:\psi(\bm y,\bm u)=\bm d\}
+\end{equation}
+と置く。$\Y$ は $(Z,\bm\varepsilon)$ の可測関数であり，
+$\bm\nu\indep(Z,\bm\varepsilon)$ だから
+$\bm\nu\indep(\Y,Z)$ である。したがって
+\begin{align}
+ \Prb(\D=\bm d\mid\Y=\bm y,Z=z)
+ &=\Prb(\bm\nu\in A_{\bm y,\bm d}mid\Y=\bm y,Z=z)\\
+ &=\Prb(\bm\nu\in A_{\bm y,\bm d})\\
+ &=\Prb(\D=\bm d\mid\Y=\bm y).
+\end{align}
+よって $\D\indep Z\mid\Y$ である。$R$ は $\D$ の可測関数なので，
+$R\indep Z\mid\Y$ も従う。
+\end{proof}
+
+\section{識別仮定}
+
+完全ケース確率を
+\begin{equation}
+ \pi(\bm y)=\Prb(R=1\mid\Y=\bm y)
+\end{equation}
+と定義する。また，原論文と同じ関数クラス
+\begin{equation}
+ \mathcal B_{\Y}
+ =\left\{a:\E|a(\Y)|<\infty,
+ \ a(\Y)\text{ は下に有界 a.s.}\right\}
+ \label{eq:admissible-class}
+\end{equation}
+を用いる。
+
+\begin{assumption}[vector $\mathcal B_{\Y}$-completeness]
+任意の $a\in\mathcal B_{\Y}$ について
+\begin{equation}
+ \E\{a(\Y)\mid Z\}=0\quad\text{a.s.}
+ \quad\Longrightarrow\quad
+ a(\Y)=0\quad\text{a.s.}
+ \label{eq:vector-completeness}
+\end{equation}
+が成り立つ。
+\end{assumption}
+
+\begin{assumption}[positivity]
+\begin{equation}
+ \pi(\Y)>0\quad\text{a.s.}
+ \label{eq:positivity}
+\end{equation}
+が成り立つ。
+\end{assumption}
+
+一様な下限 $\pi(\Y)\ge c>0$ は推定の安定性には有用であるが，以下の
+識別証明には必要ない。
+
+\section{完全ケース確率の一意識別}
+
+\begin{theorem}[ベクトル版 Theorem 2.3]
+\label{thm:vector-identification}
+命題\ref{prop:vector-ci}の条件，vector
+$\mathcal B_{\Y}$-completeness，および positivity が成り立つとする。
+このとき $\pi(\Y)$，$P(\Y,Z)$，および $P(R,\Y,Z)$ は観測分布から
+識別される。さらに $\E\|\Y\|<\infty$ なら $\E(\Y)$ も識別される。
+\end{theorem}
+
+\begin{proof}
+証明を六段階に分ける。
+
+\paragraph{1. 真の完全ケース確率がモーメント方程式を満たすこと.}
+命題\ref{prop:vector-ci}より
+\begin{align}
+ \E\left\{\frac{R}{\pi(\Y)}\middle|Z\right\}
+ &=\E\left[\left.
+   \frac{\E(R\mid\Y,Z)}{\pi(\Y)}\right|Z\right]\\
+ &=\E\left\{\left.
+   \frac{\pi(\Y)}{\pi(\Y)}\right|Z\right\}=1.
+ \label{eq:true-moment}
+\end{align}
+
+\paragraph{2. 候補モーメントの観測可能性.}
+任意の可測な候補 $q:\mathbb R^m\to(0,1]$ に対し
+\begin{equation}
+ \E\left\{\frac{R}{q(\Y)}\middle|Z\right\}=1
+ \label{eq:candidate-moment}
+\end{equation}
+を考える。$R/q(\Y)$ は $R=0$ ならゼロであり，$R=1$ のときだけ
+$\Y$ を評価する。したがって式\eqref{eq:candidate-moment}の左辺は
+観測分布から決まる。
+
+\paragraph{3. 候補解から完備性を適用できる関数を作ること.}
+$q$ が式\eqref{eq:candidate-moment}の解であるとし
+\begin{equation}
+ a(\Y)=\frac{\pi(\Y)}{q(\Y)}-1
+ \label{eq:ratio-function}
+\end{equation}
+と置く。$\pi>0$ と $q>0$ より $a(\Y)\ge-1$ である。また
+式\eqref{eq:candidate-moment}を $Z$ について積分すると
+\begin{equation}
+ \E\left\{\frac{\pi(\Y)}{q(\Y)}\right\}
+ =\E\left\{\frac{R}{q(\Y)}\right\}=1.
+\end{equation}
+したがって
+\begin{equation}
+ \E|a(\Y)|
+ \le \E\left\{\frac{\pi(\Y)}{q(\Y)}\right\}+1=2,
+ \label{eq:ratio-integrability}
+\end{equation}
+ゆえに $a\in\mathcal B_{\Y}$ である。
+
+\paragraph{4. vector completenessによる一意性.}
+条件付き独立性と候補モーメントから
+\begin{align}
+ 0
+ &=\E\left\{\frac{R}{q(\Y)}-1\middle|Z\right\}\\
+ &=\E\left\{\frac{\pi(\Y)}{q(\Y)}-1\middle|Z\right\}
+ =\E\{a(\Y)\mid Z\}.
+\end{align}
+式\eqref{eq:vector-completeness}より $a(\Y)=0$ a.s.，したがって
+$q(\Y)=\pi(\Y)$ a.s. である。よってモーメント方程式の解は一意で，
+$\pi$ は識別される。
+
+\paragraph{5. 母集団同時分布の復元.}
+任意の可測集合 $A\subseteq\mathbb R^m\times\mathcal Z$ に対して
+\begin{align}
+ \Prb\{(\Y,Z)\in A\}
+ &=\E\left[
+ \frac{R}{\pi(\Y)}\1\{(\Y,Z)\in A\}
+ \right].
+ \label{eq:joint-recovery}
+\end{align}
+右辺は完全ケースsubdistributionと識別された $\pi$ だけから決まる。
+同値な測度表示は
+\begin{equation}
+ P_{\Y,Z}(d\bm y,dz)
+ =\frac{P(R=1,\Y\in d\bm y,Z\in dz)}{\pi(\bm y)}.
+ \label{eq:measure-recovery}
+\end{equation}
+したがって $P(\Y,Z)$ が識別される。
+
+\paragraph{6. $R=0$ 側と完全な三変量分布の復元.}
+同じ集合 $A$ について
+\begin{align}
+ &\Prb\{R=0,(\Y,Z)\in A\}\
+ &\qquad=
+ \E\left[
+ R\frac{1-\pi(\Y)}{\pi(\Y)}
+ \1\{(\Y,Z)\in A\}
+ \right].
+ \label{eq:noncomplete-recovery}
+\end{align}
+$R=1$ 側は観測されているので，式\eqref{eq:noncomplete-recovery}と
+合わせて $P(R,\Y,Z)$ 全体が識別される。
+\end{proof}
+
+\begin{corollary}[関数と平均の復元]
+\label{cor:functional-recovery}
+期待値が存在する任意の可測関数 $h$ について
+\begin{equation}
+ \E\{h(\Y,Z)\}
+ =\E\left\{\frac{R}{\pi(\Y)}h(\Y,Z)\right\}.
+ \end{equation}
+特に $\E\|\Y\|<\infty$ なら
+\begin{equation}
+ \E(\Y)=\E\left\{\frac{R\Y}{\pi(\Y)}\right\}.
+\end{equation}
+\end{corollary}
+
+\begin{remark}[識別されない対象]
+中心仮定は $R\indep Z\mid\Y$ であるため，直接識別される欠測状態は
+二値指標 $R$ である。各 $\bm d\ne\bm 1_m$ について
+$P(\D=\bm d,\Y,Z)$ を識別するには，パターン別確率
+$\Prb(\D=\bm d\mid\Y)$ に対する追加の除外制約，positivity，および
+対応するモーメント方程式が必要である。したがって，本定理は
+$P(R,\Y,Z)$ の識別を $P(\D,\Y,Z)$ の識別と読み替えない。
+\end{remark}
+
+\begin{remark}[項目別分解を仮定しないこと]
+$Y_1,\ldots,Y_m$ は相関してよく，$\pi(\bm y)$ は複数成分へ同時に
+依存してよい。証明は $\pi(\bm y)=\prod_j\pi_j(y_j)$ も
+$D_j\indep D_k\mid\Y$ も用いない。
+\end{remark}
+
+\section{主論文の記法への写像}
+
+本ノートはonepage版との連続性のため常時観測変数を $Z$ と書いた。
+主論文では次の置換だけを行う。
+\begin{equation}
+ Z\longmapsto V,
+ \qquad
+ \E\{a(\Y)\mid Z\}=0
+ \longmapsto
+ \E\{a(\Y)\mid V\}=0.
+\end{equation}
+証明の各段階は変わらない。潜在構造
+$F=g(V)+U$ と $\Y=\bm h(F)+\bm\varepsilon$ の識別は，ここで復元した
+$P(\Y,V)$ を入力とする第二段階であり，本定理そのものとは区別する。
+
+\begin{thebibliography}{9}
+\bibitem{dhaultfoeuille2010}
+d'Haultfoeuille, X. (2010).
+A new instrumental method for dealing with endogenous selection.
+\textit{Journal of Econometrics}, \textit{154}(1), 1--15.
+\end{thebibliography}
+
+\end{document}
