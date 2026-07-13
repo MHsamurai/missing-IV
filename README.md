@@ -6,7 +6,7 @@
 
 - `manuscript/`: 論文本文
 - `notes/`: 読解・検討メモ
-- `references/`: 関連文献とレイアウト参考資料
+- `resources/`: 文献・発表資料・旧版などの補助資料
 - `docs/`: プロジェクトの前提と作業方針
 
 ## 現在の主要メモ
@@ -28,17 +28,8 @@ make pdf
 
 - `manuscript/`: 論文本文・現在の執筆メモ
 - `docs/`: プロジェクトの前提・作業方針
-- `references/missing_iv/`: 欠測IVに直接関係する文献
-- `references/data_fusion/`: data fusion / data combination 関連文献
-- `references/course_notes/`: 講義ノート等
-- `references/conference/`: 学会資料
-- `references/layout/`: レイアウト参考資料
 - `notes/`: ブリーフィング、音声メモなどの作業メモ
-- `presentations/`: 発表資料
-- `data/`: データ置き場。原則としてGitには載せない
-- `figures/`: 図表素材
-- `tables/`: 表素材
-- `archive/`: 旧版・圧縮ファイル等
+- `resources/`: 文献、講義ノート、発表資料、レイアウト参考、旧版
 - `build/`: PDFなどの生成物・一時出力
 
 ## Git管理方針

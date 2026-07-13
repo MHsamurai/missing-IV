@@ -1,4 +1,4 @@
-# references
+# resources
 
 文献・講義資料を置きます。PDF等のバイナリ資料はGit追跡対象外です。
 
@@ -13,3 +13,5 @@
 - `course_notes/`: 講義ノート
 - `conference/`: 学会資料
 - `layout/`: レイアウト参考資料
+- `presentations/`: 発表資料
+- `archive/`: 旧版・圧縮ファイル

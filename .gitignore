@@ -13,14 +13,10 @@
 *.mp4
 *.mov
 
-# Data and generated outputs
-data/*
-!data/.gitkeep
+# Generated outputs
 outputs/
 results/
 build/
-figures/generated/
-tables/generated/
 
 # LaTeX build artifacts
 *.aux
