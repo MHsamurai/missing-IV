@@ -1,0 +1,89 @@
+\documentclass[dvipdfmx,autodetect-engine,a4paper,10pt]{jsarticle}
+
+\usepackage[top=22mm,bottom=22mm,left=22mm,right=22mm]{geometry}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{multicol}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage[dvipdfmx]{hyperref}
+
+\pagestyle{plain}
+\setlength{\parindent}{1em}
+\setlength{\parskip}{0pt}
+\setlength{\columnsep}{8mm}
+\renewcommand{\baselinestretch}{0.95}
+
+\titleformat{\section}
+  {\normalfont\bfseries\normalsize}
+  {\thesection.}{0.7em}{}
+\titlespacing*{\section}{0pt}{0.7\baselineskip}{0.2\baselineskip}
+
+\newcommand{\E}{\mathbb E}
+\newcommand{\Prb}{\mathbb P}
+\newcommand{\indep}{\mathrel{\perp\!\!\!\perp}}
+
+\newcommand{\papertitle}{%
+  ベクトル値欠測変数に対する欠測IV識別
+}
+
+\newcommand{\authorblock}{%
+  \begin{tabular}{lll}
+    慶應義塾大学 & 本田 昌宏 & HONDA Masahiro\\
+    慶應義塾大学 & 星野 崇宏 & HOSHINO Takahiro\\
+  \end{tabular}
+}
+
+\begin{document}
+
+\vspace*{12mm}
+
+\begin{center}
+  {\Large\bfseries \papertitle\par}
+  \vspace{6mm}
+  {\normalsize \authorblock}
+\end{center}
+
+\vspace{4mm}
+
+\begin{multicols}{2}
+
+\section{はじめに}
+ここに導入を書く。問題設定，既存研究との差分，本稿の貢献を短く述べる。
+
+\section{識別設定}
+ここに記号と仮定を書く。たとえば，欠測対象を
+\(\bm Y=(Y_1,\ldots,Y_K)'\)，観測パターンを
+\(\bm D=(D_1,\ldots,D_K)'\)，完全観測インジケータを
+\[
+R=\mathbf 1\{\bm D=\bm 1\}
+\]
+とする。
+
+\section{主結果}
+ここに主定理を書く。中心となる条件は
+\[
+R\indep \bm Z\mid \bm Y
+\]
+と vector completeness であり，選択確率
+\[
+\pi(\bm y)=\Prb(R=1\mid \bm Y=\bm y)
+\]
+は
+\[
+\E\left\{\frac{R}{\pi(\bm Y)}\mid \bm Z\right\}=1
+\]
+を通じて識別される。
+
+\section{まとめ}
+ここに結論を書く。完全ケースの選択確率を補正することで，
+母集団の \(P(\bm Y,\bm Z)\) および \(P(\bm Y)\) を回復できることを述べる。
+
+\section*{参考文献}
+\begin{enumerate}[label={[\arabic*]},leftmargin=1.7em,itemsep=0pt,topsep=0pt]
+  \item X. d'Haultfoeuille, A new instrumental method for dealing with
+  endogenous selection, \textit{Journal of Econometrics} 154, 1--15, 2010.
+\end{enumerate}
+
+\end{multicols}
+
+\end{document}
