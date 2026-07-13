@@ -338,7 +338,7 @@ $K\geq 2$ とし，ベクトル値の測定変数を
   \calO=\{V,R,R\Y,\D\}
   \label{eq:vector-observed-data}
 \end{equation}
-である。ここで $\D=(D_1,\ldots,D_K)'$ は項目別の観測指標であり，$R=\prod_{j=1}^K D_j$ である。以下の識別定理では $R=1$ の完全ケースを用いるが，部分観測パターンを利用する拡張は別途，パターン別の欠測確率 $\pi_{\bm d}(\bm y)=\Prb(\D=\bm d\mid \Y=\bm y)$ により定式化できる。
+である。ここで $\D=(D_1,\ldots,D_K)'$ は項目別の観測指標であり，$R=\prod_{j=1}^K D_j$ である。以下の識別定理では $R=1$ の完全ケースを用いる。したがって中心定理が直接識別する欠測状態は二値指標 $R$ であり，各非完全パターン $\D=\bm d\ne\bm 1_K$ と $\Y$ の結合分布ではない。部分観測パターンを利用する拡張には，パターン別の欠測確率 $\pi_{\bm d}(\bm y)=\Prb(\D=\bm d\mid \Y=\bm y)$ に対する追加条件が必要である。
 
 \begin{assumption}[外生性]
 \label{ass:vector-exogeneity}
@@ -347,17 +347,28 @@ $V,U,\eps,\eta$ は互いに独立であり，$F=g(V)+U$，$\Y=\bm h(F)+\eps$，
 
 \begin{assumption}[positivity]
 \label{ass:vector-positivity}
-ある定数 $c>0$ が存在して
 \begin{equation}
-  \pi(\Y)\geq c\quad \mathrm{a.s.}
+  \pi(\Y)>0\quad \mathrm{a.s.}
   \label{eq:vector-positivity}
 \end{equation}
 が成り立つ。
 \end{assumption}
 
-\begin{assumption}[vector shadow completeness]
+識別ではこの positivity で十分である。推定量の安定性のために
+$\pi(\Y)\geq c>0$ という一様下限を課す場合は，推定上の追加正則性として区別する。
+
+d'Haultfoeuille (2010) と同様に，関数クラスを
+\begin{equation}
+  \mathcal B_{\Y}
+  =\left\{a:\E|a(\Y)|<\infty,\
+  a(\Y)\text{ は下に有界 a.s.}\right\}
+  \label{eq:vector-admissible-class}
+\end{equation}
+と定義する。
+
+\begin{assumption}[vector shadow $\mathcal B_{\Y}$-completeness]
 \label{ass:vector-completeness}
-任意の可積分関数 $a:\R^K\to\R$ について，
+任意の $a\in\mathcal B_{\Y}$ について，
 \begin{equation}
   \E\{a(\Y)\mid V\}=0\quad \mathrm{a.s.}
   \quad\Longrightarrow\quad
@@ -394,14 +405,14 @@ $V,U,\eps,\eta$ は互いに独立であり，$F=g(V)+U$，$\Y=\bm h(F)+\eps$，
 
 \begin{theorem}[欠測確率と joint distribution の識別]
 \label{thm:vector-shadow-identification}
-仮定 \ref{ass:vector-exogeneity}--\ref{ass:vector-completeness} の下で，欠測確率 $\pi(\Y)$，同時分布 $P(\Y,V)$，および平均ベクトル $\E(\Y)$ は観測分布から識別される。
+仮定 \ref{ass:vector-exogeneity}--\ref{ass:vector-completeness} の下で，欠測確率 $\pi(\Y)$，同時分布 $P(\Y,V)$，および $P(R,\Y,V)$ は観測分布から識別される。さらに $\E\|\Y\|<\infty$ なら，平均ベクトル $\E(\Y)$ も識別される。
 \end{theorem}
 
 定理 \ref{thm:vector-shadow-identification} が，本稿における d'Haultfoeuille (2010) の直接のベクトル拡張である。次の定理は，この識別結果で得られた $P(\Y,V)$ を入力として，潜在測定モデルの関数を回復する第二段階の結果である。
 
 \begin{theorem}[IV型潜在測定関数の識別]
 \label{thm:vector-iv-functions}
-\eqref{eq:vector-measurement-compact}，\eqref{eq:main-iv-structure}，\eqref{eq:vector-y-missing}，および仮定 \ref{ass:vector-exogeneity}--\ref{ass:vector-latent-identification} が成り立つとする。このとき，$\E(\Y)$，$g$，および $h_1,\ldots,h_K$ は観測分布から識別される。
+\eqref{eq:vector-measurement-compact}，\eqref{eq:main-iv-structure}，\eqref{eq:vector-y-missing}，および仮定 \ref{ass:vector-exogeneity}--\ref{ass:vector-latent-identification} が成り立ち，$\E\|\Y\|<\infty$ とする。このとき，$\E(\Y)$，$g$，および $h_1,\ldots,h_K$ は観測分布から識別される。
 \end{theorem}
 
 \begin{corollary}[二次元の場合]
@@ -411,6 +422,10 @@ $K=2$ とし，$\Y=(Y_1,Y_2)'$ とする。欠測指標を $R=1\{Y_1,Y_2\text{ �
 
 \begin{remark}[旧稿からの修正点]
 旧稿では，各 $Y_j$ について $D_j\indep V\mid Y_j$ を置き，$\prod_j\pi_j(Y_j)$ 型の重みで同時分布を復元していた。しかし，この表記は $Y_j$ 間の相関や欠測指標間の依存を不要に制限しているように見える。本稿では，$\Y$ 全体を一つのベクトルとして扱い，$R\indep V\mid \Y$ と $\pi(\Y)=\Prb(R=1\mid \Y)$ を用いる。これにより，$Y_1,\ldots,Y_K$ の相関を認めたまま，joint distribution $P(\Y,V)$ の識別を示すことができる。
+\end{remark}
+
+\begin{remark}[項目別欠測パターンとの区別]
+定理 \ref{thm:vector-shadow-identification} は $P(R,\Y,V)$ を識別するが，$P(\D,\Y,V)$ 全体を識別するとは主張しない。各 $\bm d\ne\bm 1_K$ の分布を回復するには，$R\indep V\mid\Y$ だけでなく，パターン別確率 $\pi_{\bm d}(\Y)$ に対する除外制約，positivity，および対応する識別モーメントが必要である。
 \end{remark}
 
 \section{Estimation}
@@ -609,35 +624,72 @@ $R$ は $\Y$ と $\eta$ のみの関数であり，$\eta$ は $V$ および他�
 よって $R\indep V\mid \Y$ が従う。
 
 \subsection{Proof of Theorem \ref{thm:vector-shadow-identification}}
-$w(\bm y)=1/\pi(\bm y)$ と置く。補題 \ref{lem:vector-shadow-independence} より，
+補題 \ref{lem:vector-shadow-independence} より，真の完全ケース確率は
 \begin{align}
-  \E\{Rw(\Y)\mid V\}
-  &=\E\left[\E\{Rw(\Y)\mid \Y,V\}\mid V\right]\\
-  &=\E\left[w(\Y)\pi(\Y)\mid V\right]\\
+  \E\left\{\frac{R}{\pi(\Y)}\middle|V\right\}
+  &=\E\left[\left.
+    \frac{\E(R\mid\Y,V)}{\pi(\Y)}\right|V\right]\\
   &=1.
   \label{eq:appendix-vector-ipw-moment}
 \end{align}
-左辺は $R=1$ のときのみ $\Y$ を用いるため，観測分布から評価できる。したがって $w$ は観測可能な積分方程式
+任意の可測な候補 $q:\R^K\to(0,1]$ に対して，積分方程式
 \begin{equation}
-  \E\{Rw(\Y)\mid V\}=1
+  \E\left\{\frac{R}{q(\Y)}\middle|V\right\}=1
+  \label{eq:appendix-vector-candidate-moment}
 \end{equation}
-の解である。
+を考える。左辺は $R=1$ のときのみ $\Y$ を評価するため，観測分布から決まる。
 
-次に一意性を示す。$w$ と $\widetilde w$ がこの積分方程式の二つの解であるとする。すると
+候補 $q$ が式 \eqref{eq:appendix-vector-candidate-moment} を満たすとし，
+\begin{align}
+  a(\Y)=\frac{\pi(\Y)}{q(\Y)}-1
+  \label{eq:appendix-vector-ratio-function}
+\end{align}
+$\pi>0$ と $q>0$ より $a(\Y)\geq-1$ である。また候補モーメントを $V$ について積分すると
+\begin{equation}
+  \E\left\{\frac{\pi(\Y)}{q(\Y)}\right\}
+  =\E\left\{\frac{R}{q(\Y)}\right\}=1,
+\end{equation}
+したがって
+\begin{equation}
+  \E|a(\Y)|
+  \leq \E\left\{\frac{\pi(\Y)}{q(\Y)}\right\}+1=2.
+  \label{eq:appendix-vector-ratio-integrability}
+\end{equation}
+よって $a\in\mathcal B_{\Y}$ である。さらに条件付き独立性より
 \begin{align}
 0
-&=\E\{R[w(\Y)-\widetilde w(\Y)]\mid V\}\\
-&=\E\{\pi(\Y)[w(\Y)-\widetilde w(\Y)]\mid V\}.
+&=\E\left\{\frac{R}{q(\Y)}-1\middle|V\right\}\\
+&=\E\left\{\frac{\pi(\Y)}{q(\Y)}-1\middle|V\right\}
+=\E\{a(\Y)\mid V\}.
 \end{align}
-仮定 \ref{ass:vector-completeness} より $\pi(\Y)[w(\Y)-\widetilde w(\Y)]=0$ a.s. である。positivity より $w=\widetilde w$ a.s. が従う。よって $w$ および $\pi$ は識別される。
+仮定 \ref{ass:vector-completeness} より $a(\Y)=0$ a.s. であり，$q(\Y)=\pi(\Y)$ a.s. が従う。よって $\pi$ は一意に識別される。
 
 任意の有界可測関数 $\varphi$ について
 \begin{equation}
   \E\{\varphi(\Y,V)\}
-  =\E\{Rw(\Y)\varphi(\Y,V)\}
+  =\E\left\{\frac{R}{\pi(\Y)}\varphi(\Y,V)\right\}
   \label{eq:appendix-vector-ipw-functional}
 \end{equation}
-が成り立つ。したがって $P(\Y,V)$ が識別される。特に $\varphi(\Y,V)=\Y$ とすれば平均ベクトル $\E(\Y)$ が識別される。
+が成り立つ。すべての有界可測関数の期待値が決まるため，$P(\Y,V)$ が識別される。測度表示では
+\begin{equation}
+  P_{\Y,V}(d\bm y,dv)
+  =\frac{P(R=1,\Y\in d\bm y,V\in dv)}{\pi(\bm y)}.
+  \label{eq:appendix-vector-measure-recovery}
+\end{equation}
+さらに任意の可測集合 $A\subseteq\R^K\times\mathcal V$ について
+\begin{equation}
+  \Prb\{R=0,(\Y,V)\in A\}
+  =\E\left[
+    R\frac{1-\pi(\Y)}{\pi(\Y)}
+    \1\{(\Y,V)\in A\}
+  \right].
+  \label{eq:appendix-vector-noncomplete-recovery}
+\end{equation}
+$R=1$ 側は観測されているので，$P(R,\Y,V)$ 全体が識別される。ただし，これは各非完全パターンを含む $P(\D,\Y,V)$ の識別を意味しない。最後に $\E\|\Y\|<\infty$ なら，式 \eqref{eq:appendix-vector-ipw-functional} を成分ごとに適用して
+\begin{equation}
+  \E(\Y)=\E\left\{\frac{R\Y}{\pi(\Y)}\right\}
+\end{equation}
+を得る。
 
 \subsection{Proof of Theorem \ref{thm:vector-iv-functions}}
 定理 \ref{thm:vector-shadow-identification} より，$P(\Y,V)$ と $\E(\Y)$ は識別される。復元された $P(\Y,V)$ は
