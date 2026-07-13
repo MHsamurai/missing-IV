@@ -1,7 +1,12 @@
-\documentclass[dvipdfmx,autodetect-engine]{jsarticle}
+\documentclass[10pt,a4paper]{article}
+\usepackage{xeCJK}
+\setCJKmainfont{Yu Mincho}
+\setCJKsansfont{Yu Gothic}
+\setCJKmonofont{Yu Gothic}
 \usepackage{amsmath,amssymb,bm}
 \usepackage{enumitem}
-\usepackage[dvipdfmx]{hyperref}
+\usepackage[margin=25mm]{geometry}
+\usepackage{hyperref}
 
 \title{d'Haultfoeuille (2010) 注釈付き日本語読解ノート}
 \author{読解対象：Xavier d'Haultfoeuille, Journal of Econometrics 154 (2010), 1--15}
@@ -352,7 +357,35 @@ D=1\{P(Y)\geq \eta\}
 
 \subsection*{A.1 命題2.1の証明}
 
-証明は，$D=\psi(Y,\eta)$ であるため，$Y=y$ と $Z=z$ を条件づけると，$D=1$ は $\eta$ が $y$ に応じた集合に入る事象になる，という観察に基づく。$\eta$ が $(Z,\varepsilon)$ から独立なら，$Y=y$ と $Z=z$ を条件づけても，$\eta$ の分布は $Y=y$ のみを条件づけた場合と同じである。したがって $\Prb(D=1\mid Y=y,Z=z)=\Prb(D=1\mid Y=y)$ となり，$D\indep Z\mid Y$ が従う。
+\paragraph{Original proof sequence (typeset).}
+For fixed $(y,z)$, define the inverse-image sets
+\[
+ A_y=\{u:\psi(y,u)=1\},
+ \qquad
+ C_{y,z}=\{v:\varphi(z,v)=y\}.
+\]
+Then the proof proceeds as
+\begin{align*}
+ \Prb(D=1\mid Y=y,Z=z)
+ &=\Prb(\eta\in A_y\mid Y=y,Z=z)\\
+ &=\Prb(\eta\in A_y\mid \varepsilon\in C_{y,z},Z=z)\\
+ &=\Prb(\eta\in A_y)\\
+ &=\Prb(\eta\in A_y\mid Y=y)\\
+ &=\Prb(D=1\mid Y=y).
+\end{align*}
+The middle equalities use $\eta\indep(Z,\varepsilon)$; hence
+$D\indep Z\mid Y$.
+
+\paragraph{日本語による論理の再確認.}
+$D=\psi(Y,\eta)$ であるため，$Y=y$ を固定すると $D=1$ は
+$\eta\in A_y$ と同じ事象である。また $Y=\varphi(Z,\varepsilon)$
+なので，$(Y,Z)=(y,z)$ を固定することは $Z=z$ と
+$\varepsilon\in C_{y,z}$ を固定することに対応する。
+$\eta$ は $(Z,\varepsilon)$ から独立であるため，この条件づけは
+$\eta$ の分布を変えない。最後に $Y$ も $(Z,\varepsilon)$ の関数で
+あるから $\eta\indep Y$ であり，$Y$ のみを条件づけても同じ確率に
+なる。したがって $Z$ は $Y$ を所与とした選択確率へ追加情報を
+与えない。
 
 \subsection*{A.2 命題2.2の証明}
 
@@ -362,11 +395,78 @@ D=1\{P(Y)\geq \eta\}
 
 \subsection*{A.3 定理2.3の証明}
 
-真の選択確率 $P(Y)$ は，仮定3により
+\paragraph{Original proof sequence (typeset).}
+Let $P(y)=\Prb(D=1\mid Y=y)$. Assumption 3 gives
+\begin{align}
+ \E\left\{\frac{D}{P(Y)}\middle|Z\right\}
+ &=\E\left[\left.
+   \frac{\E(D\mid Y,Z)}{P(Y)}\right|Z\right] \notag\\
+ &=\E\left[\left.
+   \frac{\E(D\mid Y)}{P(Y)}\right|Z\right]
+ =1.
+ \label{eq:annotated-a7}
+\end{align}
+For any proposed selection probability $Q:\mathcal Y\to(0,1]$,
+the left-hand side of
 \[
-\E\left\{\frac{D}{P(Y)}\mid Z\right\}=1
+ \E\left\{\frac{D}{Q(Y)}-1\middle|Z\right\}=0
 \]
-を満たす。別の候補 $Q$ も同じ方程式を満たすとすると，$g(Y)=P(Y)/Q(Y)-1$ は下に有界で可積分であり，$\E\{g(Y)\mid Z\}=0$ を満たす。仮定4より $g(Y)=0$，すなわち $P=Q$ である。選択確率が分かれば，完全ケース密度を $P(y)$ で割ることで $Y,Z$ の母集団分布を復元し，$D=0$ 側も補完できる。
+is determined by the observed complete-case distribution and the
+marginal distribution of $Z$. Thus every candidate for $P$ must solve
+this equation.
+
+Suppose $Q$ is a solution and put
+\[
+ g(Y)=\frac{P(Y)}{Q(Y)}-1.
+\]
+Because $P(Y)>0$ and $Q(Y)>0$, $g(Y)\geq-1$. Integrating the candidate
+moment over $Z$ yields
+\[
+ \E\left\{\frac{P(Y)}{Q(Y)}\right\}
+ =\E\left\{\frac{D}{Q(Y)}\right\}=1,
+\]
+and therefore
+\[
+ \E\{|g(Y)|\}
+ \leq \E\left\{\frac{P(Y)}{Q(Y)}\right\}+1<\infty.
+\]
+Hence $g$ belongs to the admissible class $B$. Moreover,
+\begin{align*}
+ 0
+ &=\E\left\{\frac{D}{Q(Y)}-1\middle|Z\right\}\\
+ &=\E\left\{\frac{P(Y)}{Q(Y)}-1\middle|Z\right\}
+ =\E\{g(Y)\mid Z\}.
+\end{align*}
+Assumption 4 implies $g(Y)=0$ almost surely, so $Q(Y)=P(Y)$ almost
+surely. The solution, and therefore the selection probability, is
+unique.
+
+Finally, the complete-case subdensity is observed:
+\[
+ f_{D,Y,Z}(1,y,z)=f_{Y,Z\mid D=1}(y,z)\Prb(D=1).
+\]
+Conditional independence gives
+\[
+ P(y)=\frac{f_{D,Y,Z}(1,y,z)}{f_{Y,Z}(y,z)},
+\]
+so that
+\begin{align*}
+ f_{Y,Z}(y,z)
+ &=\frac{f_{D,Y,Z}(1,y,z)}{P(y)},\\
+ f_{D,Y,Z}(0,y,z)
+ &=\frac{1-P(y)}{P(y)}f_{D,Y,Z}(1,y,z).
+\end{align*}
+Thus the full distribution of $(D,Y,Z)$ is identified.
+
+\paragraph{日本語による論理の再確認.}
+観測可能性は，$D/Q(Y)$ が $D=1$ の標本でしか $Y$ を必要としない
+ことから従う。一意性で直接完備性を適用する対象は $P-Q$ や
+$1/P-1/Q$ ではなく $g=P/Q-1$ である。この選択により
+$g\geq-1$ が自動的に得られ，候補モーメントから可積分性も確認
+できる。したがって，原論文の通常の完備性より弱い
+$B$-completenessで十分である。$P$ の識別後は，完全ケースの
+subdensityを $P(y)$ で割って母集団の $(Y,Z)$ 分布を戻し，残りを
+$(1-P)/P$ 倍して $D=0$ 側も復元する。
 
 \subsection*{A.4 定理2.4の証明}
 
