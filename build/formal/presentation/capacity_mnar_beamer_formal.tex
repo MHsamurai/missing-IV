@@ -85,6 +85,7 @@
 \newcommand{\Cov}{\operatorname{Cov}}
 \newcommand{\supp}{\operatorname{supp}}
 \newcommand{\rank}{\operatorname{rank}}
+\newcommand{\Range}{\operatorname{Range}}
 \newcommand{\ord}{\operatorname{ord}}
 \newcommand{\Top}{\operatorname{Top}}
 \newcommand{\Unif}{\operatorname{Unif}}
@@ -101,7 +102,7 @@
 
 % ---------- Metadata ----------
 \title{欠測IVと潜在変数モデリングによる\\非無作為欠測の識別}
-\subtitle{容量制約付き多変量MNARのノンパラメトリック識別とレビューへの応用}
+\subtitle{容量制約付きgeneralized Roy selectionのMNAR表現とレビュー実験}
 \author{本多 将大 \quad 星野 崇宏 \quad 大津 泰介}
 \institute{慶應義塾大学・理化学研究所・London School of Economics and Political Science}
 \date{日本統計学会研究報告}
@@ -110,19 +111,22 @@
 
 % REVIEW FIX 01: complete-case results are moved to the appendix.
 % REVIEW FIX 02: observed data and structural support are defined explicitly.
-% REVIEW FIX 03: the main positive result is supported-block identification.
+% REVIEW FIX 03: the main positive result is target-specific representer identification.
 % REVIEW FIX 04: identified targets are limited to supported marginals/functionals.
 % REVIEW FIX 05: Model 1 conditions only on fully observed context.
 % REVIEW FIX 06: crowd-out comparative statics no longer condition on the varied outcome.
 % REVIEW FIX 07: capacity monotonicity uses the ranking variable, not noisy salience.
 % REVIEW FIX 08: U-shaped tail inflation and J-shaped valence asymmetry are separated.
 % REVIEW FIX 09: self-censoring comparisons include positivity and upward-closed support.
-% REVIEW FIX 10: Model 2 is a sharp finite-support identified set.
-% REVIEW FIX 11: Model 3 adds weak-but-many shadow signals and a rank condition.
+% REVIEW FIX 10: Model 2 is retained in the appendix as a partial-identification extension.
+% REVIEW FIX 11: Model 3 is retained in the appendix as a weak-but-many extension.
 % REVIEW FIX 12: latent measurement identification is stated with anchor conditions.
 % REVIEW FIX 13: experiments evaluate mechanisms/recovery, not identification assumptions.
 % REVIEW FIX 14: oracle, naive, and corrected estimators share one estimand.
 % REVIEW FIX 15: algorithmic amplification is tested with randomized ranking.
+% REVIEW RESPONSE 16: the selection equation is positioned as a generalized Roy model.
+% REVIEW RESPONSE 17: target-specific representer identification is the main positive result.
+% REVIEW RESPONSE 18: full-law identification and Models 2/3 are retained in the appendix.
 
 % 1 ---------------------------------------------------------------------------
 \begin{frame}[plain]
@@ -136,7 +140,7 @@
 \end{frame}
 
 % 2 ---------------------------------------------------------------------------
-\begin{frame}[shrink=6]{容量制約付きレビューは新しい多変量MNARを生む}
+\begin{frame}[shrink=6]{容量制約付きレビューはgeneralized Roy型の多変量MNARである}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.48\textwidth}
 \begin{block}{既知：MNARと欠測IV}
@@ -182,11 +186,50 @@ forced condition より分布がpolarになる
 \begin{block}{三つの目的}
 \scriptsize
 \begin{enumerate}
-\item 構造的ゼロをもつ多変量MNARとして定式化する。
-\item 観測可能な supported block の分布を shadow variable によりノンパラメトリックに識別する。
+\item generalized Roy型のmultiple selectionを，構造的ゼロをもつ多変量MNARとして表現する。
+\item 平均評価・極端評価率をtarget-specific bridgeによりノンパラメトリックに識別する。
 \item ランダム化した開示容量とランキングにより，選択と増幅を実験的に評価する。
 \end{enumerate}
 \end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{選択方程式はgeneralized Roy modelに含まれる}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.49\textwidth}
+\begin{block}{包含関係}
+\scriptsize
+各レビュー候補には公開効用 $A_{ij}$ があり，個人は容量 $K_i$ の下で
+\[
+S_i(K_i)\in\argmax_{|S|\le K_i}\sum_{j\in S}A_{ij}
+\]
+を選ぶ。これは非金銭的効用と複数選択を許す
+\textbf{capacity-constrained generalized Roy model} と読める。
+\end{block}
+\begin{alertblock}{新規性を主張しない部分}
+\scriptsize
+\textcite{dHaultfoeuille2010} はshadow IVを
+unobserved-sector Roy modelへ適用できることを既に示している。
+したがって「Roy modelへのshadow-variable法の適用」自体は本研究の新規性ではない。
+\end{alertblock}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{本研究が検証する部分}
+\scriptsize
+\begin{enumerate}
+\item exact top-$K$ による構造的ゼロ；
+\item 他項目との競争によるcross-item crowd-out；
+\item oracleとpublicを同一標本から得る回復性能；
+\item $K_i$ とランキングのランダム化による因果比較。
+\end{enumerate}
+\end{block}
+\begin{alertblock}{位置づけ}
+\scriptsize
+方法論の中心は新しいRoy識別定理ではなく，
+レビュー生成をgeneralized Roy型MNARとして実装し，
+選択機構とshadow補正を直接評価することである。
+\end{alertblock}
 \end{column}
 \end{columns}
 \end{frame}
@@ -311,10 +354,10 @@ $R^{cc}=\1\{\D=\bm1_m\}=0$ a.s. で，識別モーメント自体が消える。
 \addlinespace
 \textbf{本研究}
 &
-支持される部分ブロック $S$ ごとに
-$R_S=\prod_{j\in S}D_j$ と shadow condition を置く。
+項目・supported blockごとにshadow conditionと
+target-specific representer bridgeを置く。
 &
-構造的ゼロを維持したまま，$|S|\le K$ の周辺分布・汎関数を回復する。
+平均・裾確率を直接回復する。分布全体の識別には追加の完備性を要する。
 \\
 \bottomrule
 \end{tabular}
@@ -408,7 +451,7 @@ salience $s_{ij}$ について同じ結論を得るには
 \end{frame}
 
 % 10 --------------------------------------------------------------------------
-\begin{frame}[shrink=7]{U字型の裾過剰とJ字型の方向非対称を区別する}
+\begin{frame}[shrink=7]{実験仮説：U字型の裾過剰とJ字型の非対称を区別する}
 評価の方向別salienceを
 \[
 s(y)=\alpha_+(y-c_0)_++\alpha_-(c_0-y)_+,
@@ -417,17 +460,17 @@ s(y)=\alpha_+(y-c_0)_++\alpha_-(c_0-y)_+,
 とする。
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.48\textwidth}
-\begin{block}{対称な極端性選択}
+\begin{block}{U字型を導く追加条件}
 \[
 \alpha_+=\alpha_->0
 \]
-かつ母分布・誤差が $c_0$ 周りに対称なら，容量制約は両側の裾を過剰にする。
+に加え，公開効用の順位が極端性順位と整合し，選択が非退化なら，容量制約は両側の裾を過剰にする。
 \[
 \Prb(|Y-c_0|\ge t\mid D=1)
->
+\ge
 \Prb(|Y-c_0|\ge t).
 \]
-これはU字型・polarizationである。
+この順位整合性はRoy構造だけからは従わず，実験仮説として検証する。
 \end{block}
 \end{column}
 \begin{column}{0.48\textwidth}
@@ -547,190 +590,148 @@ $P_A$ と $P_B$ は同じ観測データ法則 $P_O$ を生成するが，
 \end{frame}
 
 % 11 --------------------------------------------------------------------------
-\begin{frame}{定理2：supported-block識別の仮定}
-supported block $S$ について
+\begin{frame}{本文の識別対象は平均・裾確率である}
+項目 $j$ について
 \[
-\pi_S(\Y_S,\mathcal C_S)
-=\Prb(R_S=1\mid\Y_S,\mathcal C_S)
+R_{ij}=D_{ij},\qquad
+C_{ij}=(\X_i,K_i,\V_{i,-j}),\qquad
+V_{ij}=Z^{pre}_{ij}
 \]
-とする。
-\begin{block}{仮定 B1--B3}
+とする。$C_{ij}$ と $V_{ij}$ は全員について観測される。
+\begin{block}{Target-specific functionals}
 \scriptsize
 \[
-\text{B1: }\pi_S(\Y_S,\mathcal C_S)>0\quad\text{a.s.}
+\theta_{j,\tau}=\E\{\tau(Y_{ij},C_{ij})\},
 \]
 \[
-\text{B2: }R_S\indep\V_S\mid\Y_S,\mathcal C_S.
-\tag{BSV}
-\]
-任意の下有界・可積分な $a$ について
-\[
-\text{B3: }\E\{a(\Y_S,\mathcal C_S)\mid\V_S,\mathcal C_S\}=0
-\Rightarrow a(\Y_S,\mathcal C_S)=0.
-\tag{BC}
+\tau_{mean}(y,c)=y,\qquad
+\tau_{tail}(y,c)=\1\{y\in\{1,5\}\},\qquad
+\tau_{ext}(y,c)=|y-c_0|.
 \]
 \end{block}
-\begin{alertblock}{仮定の役割}
-B1は観測支持，B2はshadow exclusion，B3は条件付き期待値作用素の単射性を与える。
-いずれも full joint law の識別は要求しない。
+\begin{alertblock}{識別方針}
+full-data lawを先に識別するのではなく，実験で比較する平均・裾確率を直接識別する。
+これにより，分布全体に必要な完備性より弱い条件を利用できる。
 \end{alertblock}
 \end{frame}
 
-\begin{frame}{定理2：supported block はshadow variableで識別できる}
-\begin{alertblock}{定理2（supported-block nonparametric identification）}
-B1--B3 の下で，$\pi_S$ は観測可能な方程式
+\begin{frame}{Target-specific representer bridgeを明示する}
+\begin{block}{仮定 R1--R3}
+\scriptsize
 \[
-\E\left\{\frac{R_S}{q_S(\Y_S,\mathcal C_S)}
-\middle|\V_S,\mathcal C_S\right\}=1
-\tag{BM}
+\text{R1: }0<\Prb(R_{ij}=1\mid Y_{ij},C_{ij})\quad\text{a.s.}
 \]
-の唯一の正値解である。したがって任意の可積分 $h$ について
 \[
-\E h(\Y_S,\V_S,\mathcal C_S)
-=
-\E\left\{\frac{R_S}{\pi_S(\Y_S,\mathcal C_S)}
-h(\Y_S,\V_S,\mathcal C_S)\right\}
-\tag{BR}
+\text{R2: }R_{ij}\indep V_{ij}\mid Y_{ij},C_{ij}.
+\tag{SV}
 \]
-が成り立ち，supported-block law はノンパラメトリックに識別される。
-\end{alertblock}
-\begin{block}{回復される対象}
-$S=\{j\}$ なら $P(Y_j,V_j,C_j)$ と $\E h(Y_j)$，
-$|S|=2$ なら支持される二変量分布と共分散が対象になる。
+$\delta_{j,\tau}\in L^2(V_{ij},C_{ij})$ が存在して
+\[
+\text{R3: }\E\{\delta_{j,\tau}(V_{ij},C_{ij})
+\mid R_{ij}=1,Y_{ij},C_{ij}\}
+=\tau(Y_{ij},C_{ij}).
+\tag{Bridge}
+\]
 \end{block}
+\begin{alertblock}{作用素による表現}
+\scriptsize
+\[
+(T_j^*\delta)(y,c)
+=\E\{\delta(V_{ij},c)\mid R_{ij}=1,Y_{ij}=y,C_{ij}=c\}.
+\]
+bridge条件は $\tau\in\Range(T_j^*)$ である。解の存在は必要だが，一意性は要求しない
+\parencite{LiMiaoTchetgen2023}。
+これは対象識別の便利な十分条件であり，一般的な必要十分条件とは主張しない。
+R1が成立しない場合は，対象をitemwise overlap populationへ限定する。
+\end{alertblock}
+\end{frame}
+
+\begin{frame}{定理2：対象汎関数はfull lawなしに識別できる}
+\begin{alertblock}{定理2（target-specific nonparametric identification）}
+R1--R3 の下で
+\[
+\boxed{
+\theta_{j,\tau}
+=\E\left[
+R_{ij}\tau(Y_{ij},C_{ij})
++(1-R_{ij})\delta_{j,\tau}(V_{ij},C_{ij})
+\right].}
+\tag{TF}
+\]
+右辺は観測データのみの汎関数であるため，$\theta_{j,\tau}$ は
+ノンパラメトリックに識別される。
+\end{alertblock}
+\begin{block}{なぜ成立するか}
+\scriptsize
+R2により $V_{ij}\mid(Y_{ij},C_{ij})$ の分布は $R_{ij}$ に依存しない。
+したがってR3は非公開者にも同じ条件付き平均を与え，
+\[
+\E\{(1-R_{ij})\delta_{j,\tau}\}
+=\E\{(1-R_{ij})\tau(Y_{ij},C_{ij})\}.
+\]
+公開部分を加えると (TF) が従う。
+\end{block}
+\end{frame}
+
+\begin{frame}{5段階評価ではbridge存在条件をrankで確認できる}
+$Y_{ij}\in\{1,2,3,4,5\}$ とし，$V_{ij}$ も有限サポートをもつとする。
+\[
+H_j(c)=\left[
+\Prb(V_{ij}=v\mid R_{ij}=1,Y_{ij}=y,C_{ij}=c)
+\right]_{y,v}.
+\]
+\begin{block}{Target-specific condition}
+\scriptsize
+$\bm\tau_j(c)=(\tau(1,c),\ldots,\tau(5,c))'$ とするとbridge equationは
+\[
+H_j(c)\bm\delta_{j,\tau}(c)=\bm\tau_j(c).
+\]
+したがって必要なのは
+\[
+\bm\tau_j(c)\in\Range\{H_j(c)\}\quad\text{a.e. }c.
+\tag{RC}
+\]
+\end{block}
+\begin{alertblock}{完備性との違い}
+\scriptsize
+$\rank H_j(c)=5$ は全ての $\tau$ に対する十分条件だが，平均や裾確率には (RC) だけでよい。
+これはfull-law識別の完備性より弱い。
+\end{alertblock}
 \end{frame}
 
 % 12 --------------------------------------------------------------------------
-\begin{frame}[shrink=6]{Model 1：強いが観測可能な conditional shadow を置く}
-項目 $j$ について $S=\{j\}$，
+\begin{frame}[shrink=6]{Model 1：top-$K$ の下ではshadow exclusionを追加仮定する}
+選択写像を
 \[
-C_{ij}=(\X_i,K_i,\V_{i,-j})
+R_{ij}=r_j(\Y_i,\X_i,K_i,\bm\kappa_i,\bm\varepsilon_i^D)
 \]
-は全員で観測される文脈とする。利用前期待・事前評価を
-$V_{ij}=Z^{pre}_{ij}$ と書く。
-\begin{alertblock}{Model 1: operational itemwise shadow}
-\[
-D_{ij}\indep V_{ij}\mid Y_{ij},C_{ij},
-\qquad
-V_{ij}\not\indep Y_{ij}\mid C_{ij}.
-\tag{M1}
-\]
-\[
-\E\{a(Y_{ij},C_{ij})\mid V_{ij},C_{ij}\}=0
-\Rightarrow a(Y_{ij},C_{ij})=0.
-\]
-このとき定理2により $P(Y_{ij},C_{ij})$ と $\E h(Y_{ij})$ が
-ノンパラメトリックに識別される。
-\end{alertblock}
-\begin{block}{なぜ $\Y_{i,-j}$ を条件に入れないか}
+と書く。top-$K$ では $R_{ij}$ が $\Y_{i,-j}$ に依存するため，
+(SV) はRoy構造だけから自動的には従わない。
+\begin{alertblock}{原始的な十分条件の一例}
 \scriptsize
 \[
-D_{ij}\indep V_{ij}\mid Y_{ij},\Y_{i,-j},\X_i,K_i
+V_{ij}\indep
+(\Y_{i,-j},\bm\varepsilon_i^D,\bm\kappa_i)
+\mid Y_{ij},C_{ij},
+\tag{P-SV}
 \]
-だけでは，$D_{ij}=1$ でも $\Y_{i,-j}$ の全ては観測されないため，識別モーメントを計算できない。
-十分条件の一例は full-vector shadow に加え
+かつ $V_{ij}$ は $Y_{ij},C_{ij}$ を固定した後に公開効用 $A_{ij}$ へ直接入らない。
+このとき未観測の競合評価と選択ショックを周辺化した後も
 \[
-V_{ij}\indep\Y_{i,-j}\mid Y_{ij},C_{ij}
+R_{ij}\indep V_{ij}\mid Y_{ij},C_{ij}
 \]
-を置き，未観測の競合評価を周辺化した後も (M1) が保たれることである。
-\end{block}
-\end{frame}
-
-% 13 --------------------------------------------------------------------------
-\begin{frame}{Model 2：exclusionが疑わしい場合は点識別を捨てる}
-過去利用変数 $V_{ij}$ が現在評価を固定しても公開に直接影響することを許し，
-順序 $v'\succeq v$ に対して
-\[
-\pi_j(y,v',c)\ge\pi_j(y,v,c)
-\tag{M2-MON}
-\]
-のみを置く。観測データ法則を $P_O$ とする。
-\begin{block}{非パラメトリック候補集合}
+が保たれる。
+\end{alertblock}
+\begin{block}{限定}
 \scriptsize
-\[
-\mathcal P_{M2}(P_O)
-=\left\{
-P:\ P\mapsto P_O,\ \pi_j>0,\ \text{(M2-MON) holds}
-\right\}.
-\]
-\[
-\Theta_h^{M2}(P_O)
-=\{\E_P h(Y_j):P\in\mathcal P_{M2}(P_O)\}.
-\]
+(P-SV) は強い維持仮定であり，実験だけでは証明できない。
+二波測定・時点付きログ・複数信号・排除制約違反への感度分析で妥当性を補強する。
+事前期待は期待不一致を通じて公開効用へ直接入り得るため，時間的先行だけでは十分でない。
 \end{block}
-\begin{alertblock}{識別主張}
-単調性だけでは $\Theta_h^{M2}(P_O)$ は一般に一点にならない。
-したがって Model 2 の対象は点推定ではなく，部分識別集合と感度分析である。
-\end{alertblock}
-\end{frame}
-
-\begin{frame}{命題3：有限サポートではsharp boundsを計算できる}
-\begin{alertblock}{命題3（finite-support sharp bounds）}
-$Y_j,V_{ij},C_{ij}$ が有限サポートなら
-\[
-\underline\theta_h
-=\min_{P\in\mathcal P_{M2}(P_O)}\E_Ph(Y_j),
-\qquad
-\overline\theta_h
-=\max_{P\in\mathcal P_{M2}(P_O)}\E_Ph(Y_j)
-\]
-は sharp である。すなわち，全ての feasible $P$ は同じ $P_O$ と単調性を満たす
-full-data law を構成し，区間内の値は達成可能である。
-\end{alertblock}
-Model 2 は点識別ではなく，\textbf{weak shadow signal による部分識別・感度分析}である。
-\end{frame}
-
-% 14 --------------------------------------------------------------------------
-\begin{frame}{Model 3：weak-but-many signals は共同完備性を回復し得る}
-項目 $j$ に対して常時観測される事前信号を
-\[
-\V_{ij}^{(L)}=(V_{ij1},\ldots,V_{ijL})'
-\]
-とする。各信号が弱くても，ベクトルとして
-\[
-D_{ij}\indep\V_{ij}^{(L)}\mid Y_{ij},C_{ij}
-\tag{M3-SV}
-\]
-を満たし，
-\[
-\E\{a(Y_{ij},C_{ij})\mid\V_{ij}^{(L)},C_{ij}\}=0
-\Rightarrow a(Y_{ij},C_{ij})=0
-\tag{M3-C}
-\]
-なら定理2を適用できる。
-\begin{alertblock}{識別の論点}
-各信号の第一段階が弱くても，ベクトル信号が $Y_j$ の異なる値を共同で分離すればよい。
-必要なのは予測精度ではなく条件付き期待値作用素の単射性である。
-\end{alertblock}
-\end{frame}
-
-\begin{frame}{Model 3：有限サポートではfull column rankを確認する}
-\begin{block}{有限サポートのrank条件}
-$Y_j$ のサポート数を $s$ とし
-\[
-M_L(c)=
-\left[
-\Prb(Y_j=y_a\mid\V_j^{(L)}=v_b,C_j=c)
-\right]_{b,a}.
-\]
-\[
-\rank M_L(c)=s
-\quad\Longrightarrow\quad
-\text{conditional completeness}.
-\]
-信号を増やす目的は予測精度だけでなく，条件付き分布の列を分離することである。
-\end{block}
-\begin{alertblock}{集約時の注意}
-$F^{pre}_{ij}=T_L(\V_{ij}^{(L)})$ と集約しても，
-\[
-\E\{a(Y_{ij},C_{ij})\mid F^{pre}_{ij},C_{ij}\}=0\Rightarrow a=0
-\]
-を別途確認する必要がある。many signals は自動的に completeness を保証しない。
-\end{alertblock}
 \end{frame}
 
 % 15 --------------------------------------------------------------------------
-\begin{frame}{潜在変数はsupported blocksを結ぶ追加構造として使う}
+\begin{frame}{発展：潜在変数はsupported blocksを結ぶ追加構造である}
 \begin{block}{測定モデル}
 \scriptsize
 \[
@@ -747,7 +748,7 @@ Y_{ij}=h_j(F_i,\X_i)+\varepsilon_{ij},
 \begin{alertblock}{定理3の十分条件}
 次を仮定する。
 \begin{enumerate}
-\item $K\ge3$ の層で三つの anchor items $a,b,c$ が jointly supported であり，定理2が $P(Y_a,Y_b,Y_c,V,X)$ を識別する。
+\item $K\ge3$ の層で三つの anchor items $a,b,c$ が jointly supported であり，付録Eの強い完備性条件により $P(Y_a,Y_b,Y_c,V,X)$ が識別される。
 \item $Y_a,Y_b,Y_c$ は $(F,X)$ を条件に独立で，対応する条件付き期待値作用素が injective である。
 \item $F$ の位置・尺度を正規化する。
 \item 各 $j$ について $\{j,a,b\}$ が jointly supported で，同じ injectivity 条件を満たす。
@@ -770,6 +771,7 @@ h_j(f,x)=\E(Y_j\mid F=f,X=x)
 \begin{block}{境界}
 低ランク構造だけでは vector completeness は従わない。
 定理3には supported anchors，measurement injectivity，正規化が必要である。
+これは本文の実験的貢献に必要な仮定ではなく，full-law回復を目指す発展結果である。
 \end{block}
 \end{frame}
 
@@ -790,17 +792,17 @@ K_i\in\{1,3\},\qquad \text{forced random-3}
 
 \begin{frame}{実験1：shadow測定時点と検証範囲を分ける}
 \begin{alertblock}{Shadow signal の測定時点}
-回顧的な利用前期待は recall bias により Model 1 の valid shadow とみなさず，Model 2/3 の候補信号とする。
-点識別を主張するconfirmatory studyでは，二波設計またはログにより
+回顧的な利用前期待は recall bias により R2 の valid shadow と自動的にはみなさない。
+target-specific point identificationを主張するconfirmatory studyでは，二波設計またはログにより
 $V_{ij}^{pre}$ を評価形成前に測る。必要なら倫理審査を変更する。
 \end{alertblock}
 \begin{block}{実験が検証できる範囲}
 実験は capacity effect，crowd-out，oracleに対する補正性能を評価する。
-exclusion や completeness そのものをデータだけで証明するものではない。
+shadow exclusionやbridgeの存在そのものをデータだけで証明するものではない。
 \end{block}
 \begin{alertblock}{必要な設計変更}
-Model 1 の点識別を confirmatory claim にする場合は，倫理審査変更後の二波測定または
-時点付きプラットフォームログを用いる。現行の回顧測定だけなら Model 2/3 として報告する。
+R1--R3をconfirmatory claimにする場合は，倫理審査変更後の二波測定または
+時点付きプラットフォームログを用いる。現行の回顧測定だけなら，付録の単調性boundsと感度分析を併記する。
 \end{alertblock}
 \end{frame}
 
@@ -826,28 +828,35 @@ oracleとnaiveをともに個人平均として定義し，項目数や公開数
 \end{alertblock}
 \end{frame}
 
-\begin{frame}{Shadow補正の有限標本回復をoracleで評価する}
-定理2に基づくHorvitz--Thompson型補正は
+\begin{frame}[shrink=10]{Representer bridgeの有限標本回復をoracleで評価する}
+定理2に基づくtarget-specific推定量は
 \[
-\widehat\theta_h^{sv}
-=\frac1n\sum_{i=1}^n\frac1m\sum_{j=1}^{m}
-\frac{D_{ij}h(Y_{ij})}{\widehat\pi_j(Y_{ij},C_{ij})}.
+\widehat\theta_{\tau}^{rep}
+=\frac1{nm}\sum_{i=1}^n\sum_{j=1}^{m}
+\left[
+D_{ij}\tau(Y_{ij},C_{ij})
++(1-D_{ij})\widehat\delta_{j,\tau}(V_{ij},C_{ij})
+\right].
 \]
 \begin{alertblock}{事前登録する主要対象}
 \[
-h_1(y)=|y-c_0|,
-\quad h_2(y)=\1\{y\in\{1,5\}\},
-\quad h_3(y)=y,
+\tau_1(y,c)=|y-c_0|,
+\quad \tau_2(y,c)=\1\{y\in\{1,5\}\},
+\quad \tau_3(y,c)=y,
 \]
 および own-rating を固定した competitor extremity のcrowd-out効果。
 \[
 \mathsf H_{rec}:\quad
-|\widehat\theta_h^{sv}-\widehat\theta_h^{oracle}|
+|\widehat\theta_{\tau}^{rep}-\widehat\theta_{\tau}^{oracle}|
 <
-|\widehat\theta_h^{naive}-\widehat\theta_h^{oracle}|
+|\widehat\theta_{\tau}^{naive}-\widehat\theta_{\tau}^{oracle}|
 \]
 を有限標本上の回復仮説として評価する。成立しても識別仮定の真実性そのものは証明しない。
 \end{alertblock}
+\begin{block}{Poolingの条件}
+項目間で共通bridgeを仮定しない場合，$\widehat\delta_{j,\tau}$ は項目別に推定してから平均する。
+poolingするには項目交換可能性または共通bridgeを追加仮定する。
+\end{block}
 \end{frame}
 
 % 18 --------------------------------------------------------------------------
@@ -885,17 +894,16 @@ helpfulness評価にはproper scoring / peer-predictionを事前指定する。
 \end{frame}
 
 % 19 --------------------------------------------------------------------------
-\begin{frame}[shrink=6]{結論：full jointではなくsupported functionalsを回復する}
+\begin{frame}[shrink=6]{結論：Roy型選択の対象汎関数を直接回復する}
 \begin{enumerate}
-\item \textbf{新しいMNAR構造}\quad
-レビュー候補は有限の開示枠を競い，自己単調性とcross-item crowd-outをもつ。
+\item \textbf{位置づけ}\quad
+選択方程式はgeneralized Roy modelに含まれ，shadow-variable法のRoy応用自体は既知である。
+\item \textbf{レビューへの貢献}\quad
+exact top-$K$ を構造的ゼロとcross-item crowd-outをもつ多変量MNARとして実装する。
 \item \textbf{非識別の境界}\quad
 exact top-$K$ では完全ケースが構造的に存在せず，full joint law は一般に非識別である。
 \item \textbf{正の識別結果}\quad
-supported block ごとの shadow condition，positivity，completeness により，
-周辺分布と低次元汎関数をノンパラメトリックに識別できる。
-\item \textbf{仮定の段階化}\quad
-Model 1は点識別，Model 2はsharp bounds，Model 3はweak-but-many signalsと潜在測定構造を用いる。
+shadow exclusionとtarget-specific representerの存在により，平均・裾確率をfull lawなしにノンパラメトリックに識別する。
 \item \textbf{実験}\quad
 ランダム化した $K$ とランキングにより，選択機構，oracle回復性能，アルゴリズム増幅を分けて評価する。
 \end{enumerate}
@@ -903,7 +911,7 @@ Model 1は点識別，Model 2はsharp bounds，Model 3はweak-but-many signals�
 \[
 \begin{gathered}
 \text{Reviews compete for scarce disclosure slots;}\\
-\text{only supported margins are recoverable without extra structure.}
+\text{target functionals can be recovered without identifying the full law.}
 \end{gathered}
 \]
 \end{alertblock}
@@ -992,8 +1000,8 @@ f(v\mid y,x)
 \]
 \begin{alertblock}{本研究との関係}
 Zhao--ShaoはGLMパラメータのsemiparametric識別・推定を扱う。
-本研究の定理2は，supported blockの選択確率と周辺法則を
-完備性によりノンパラメトリックに識別する。
+本研究の定理2は，target-specific representerの存在により
+平均・裾確率をfull-data lawなしにノンパラメトリックに識別する。
 \end{alertblock}
 {\tiny Source: \textcite{ZhaoShao2015}.}
 \end{frame}
@@ -1057,6 +1065,58 @@ $\mathcal B$-completenessにより $g=0$ a.s.，すなわち $q=\pi^{cc}$。
 \end{frame}
 
 % A5 --------------------------------------------------------------------------
+\begin{frame}{付録E：分布全体の識別には強い仮定を置く}
+supported block $S$ について
+\[
+\pi_S(\Y_S,\mathcal C_S)
+=\Prb(R_S=1\mid\Y_S,\mathcal C_S)
+\]
+とする。
+\begin{block}{仮定 B1--B3}
+\scriptsize
+\[
+\text{B1: }\pi_S(\Y_S,\mathcal C_S)>0\quad\text{a.s.},
+\]
+\[
+\text{B2: }R_S\indep\V_S\mid\Y_S,\mathcal C_S,
+\]
+任意の下有界・可積分な $a$ について
+\[
+\text{B3: }\E\{a(\Y_S,\mathcal C_S)\mid\V_S,\mathcal C_S\}=0
+\Rightarrow a(\Y_S,\mathcal C_S)=0.
+\]
+\end{block}
+\begin{alertblock}{本文との違い}
+本文のrepresenter bridgeは一つの $\tau$ に対する解の存在だけを要求する。
+B3は全ての関数を分離する完備性であり，full-law識別のための強い条件である。
+\end{alertblock}
+\end{frame}
+
+\begin{frame}[shrink=6]{付録E：inverse-selection bridgeによるfull-law識別}
+\begin{alertblock}{Inverse-selection bridge}
+\scriptsize
+\[
+\omega_S(\Y_S,\mathcal C_S)=\frac1{\pi_S(\Y_S,\mathcal C_S)},
+\qquad
+\E\{R_S\omega_S(\Y_S,\mathcal C_S)\mid\V_S,\mathcal C_S\}=1.
+\tag{ISB}
+\]
+B1--B3の下で $\omega_S$ は (ISB) の唯一の正値解である。したがって
+\[
+\E h(\Y_S,\V_S,\mathcal C_S)
+=\E\{R_S\omega_S(\Y_S,\mathcal C_S)
+h(\Y_S,\V_S,\mathcal C_S)\}
+\tag{BR}
+\]
+によりsupported-block lawがノンパラメトリックに識別される。
+\end{alertblock}
+\begin{block}{二つのbridgeを区別する}
+\scriptsize
+representer bridge：target-specific，存在のみ，一意性不要。\par
+inverse-selection bridge：full law，一意性と完備性が必要。
+\end{block}
+\end{frame}
+
 \begin{frame}[shrink=6]{付録E：supported-block定理の証明}
 真の $\pi_S$ はB2から
 \[
@@ -1178,6 +1238,96 @@ S_i\mid M_i,K_i
 \frac{m-K_i}{m-1}.
 \]
 $m=10,K=3$ なら $\binom{10}{3}=120$ 通りを個人ごとに列挙できる。
+\end{frame}
+
+% A9 --------------------------------------------------------------------------
+\begin{frame}{付録I：Model 2は単調性による部分識別である}
+過去利用変数 $V_{ij}$ が現在評価を固定しても公開に直接影響することを許し，
+順序 $v'\succeq v$ に対して
+\[
+\pi_j(y,v',c)\ge\pi_j(y,v,c)
+\tag{M2-MON}
+\]
+のみを置く。観測データ法則を $P_O$ とする。
+\begin{block}{ノンパラメトリック候補集合}
+\scriptsize
+\[
+\mathcal P_{M2}(P_O)
+=\{P:P\mapsto P_O,\ \pi_j>0,\ \text{(M2-MON) holds}\},
+\]
+\[
+\Theta_h^{M2}(P_O)
+=\{\E_Ph(Y_j):P\in\mathcal P_{M2}(P_O)\}.
+\]
+\end{block}
+\begin{alertblock}{識別主張}
+単調性だけでは $\Theta_h^{M2}(P_O)$ は一般に一点にならない。
+Model 2の対象は点推定ではなく，部分識別集合と感度分析である。
+\end{alertblock}
+\end{frame}
+
+\begin{frame}{付録I：有限サポートのboundsを計算する}
+\begin{alertblock}{有限サポートのidentified set}
+$Y_j,V_{ij},C_{ij}$ が有限サポートなら
+\[
+\underline\theta_h
+=\inf_{P\in\mathcal P_{M2}(P_O)}\E_Ph(Y_j),
+\qquad
+\overline\theta_h
+=\sup_{P\in\mathcal P_{M2}(P_O)}\E_Ph(Y_j).
+\]
+閉性・コンパクト性と端点の実現可能性を別途示した場合に限り，min/maxで達成されるsharp boundsと呼ぶ。
+\end{alertblock}
+\begin{block}{本文に置かない理由}
+本文の主結果はtarget-specific point identificationである。
+Model 2はexclusion違反に対する頑健性・感度分析として位置づける。
+\end{block}
+\end{frame}
+
+% A10 -------------------------------------------------------------------------
+\begin{frame}{付録J：Model 3はweak-but-many signalsを用いる}
+項目 $j$ に対して常時観測される事前信号を
+\[
+\V_{ij}^{(L)}=(V_{ij1},\ldots,V_{ijL})'
+\]
+とする。各信号が弱くても，ベクトルとして
+\[
+D_{ij}\indep\V_{ij}^{(L)}\mid Y_{ij},C_{ij}
+\tag{M3-SV}
+\]
+を満たし，対象 $\tau$ について
+\[
+\tau(\cdot,c)\in\Range(T_{j,L}^*)
+\tag{M3-R}
+\]
+なら本文のrepresenter bridgeを適用できる。
+\begin{alertblock}{必要なのは共同の分離能力}
+単一信号の第一段階が弱くても，異質な信号が $Y_j$ の対象方向を共同で分離すればよい。
+予測精度や信号数だけではbridge存在は保証されない。
+\end{alertblock}
+\end{frame}
+
+\begin{frame}{付録J：有限サポートではrankとrangeを区別する}
+\begin{block}{Target-specific condition}
+$Y_j$ のサポート数を $s$ とし
+\[
+H_L(c)=
+\left[
+\Prb(\V_j^{(L)}=v_b\mid D_j=1,Y_j=y_a,C_j=c)
+\right]_{a,b}.
+\]
+\[
+\bm\tau(c)\in\Range\{H_L(c)\}
+\quad\Longrightarrow\quad
+\text{target-specific bridge exists}.
+\]
+全ての $\tau$ を扱う十分条件は $\rank H_L(c)=s$ である。
+\end{block}
+\begin{alertblock}{集約時の注意}
+$F_{ij}^{pre}=T_L(\V_{ij}^{(L)})$ に集約する場合も，
+$\bm\tau(c)\in\Range\{H_F(c)\}$ を別途確認する必要がある。
+weak-but-manyは自動的にcompletenessやbridge存在を保証しない。
+\end{alertblock}
 \end{frame}
 
 \end{document}
