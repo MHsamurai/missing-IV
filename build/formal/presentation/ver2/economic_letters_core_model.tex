@@ -1,0 +1,529 @@
+\documentclass[a4paper,11pt]{ltjsarticle}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools,bm}
+\usepackage{booktabs,array,enumitem,geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage[backend=biber,style=authoryear,maxcitenames=3]{biblatex}
+\addbibresource{capacity_mnar_references_mathdense.bib}
+
+\geometry{margin=25mm}
+\setlist{nosep}
+
+\newcommand{\E}{\mathbb E}
+\newcommand{\Prb}{\mathbb P}
+\newcommand{\indep}{\mathrel{\perp\!\!\!\perp}}
+\newcommand{\1}{\mathbf 1}
+\newcommand{\cJ}{\mathcal J}
+\newcommand{\cE}{\mathcal E}
+\newcommand{\cS}{\mathcal S}
+\newcommand{\Range}{\operatorname{Range}}
+\newcommand{\rank}{\operatorname{rank}}
+
+\theoremstyle{definition}
+\newtheorem{definition}{定義}
+\newtheorem{assumption}{仮定}
+\theoremstyle{plain}
+\newtheorem{proposition}{命題}
+\newtheorem{theorem}{定理}
+\newtheorem{corollary}{系}
+\theoremstyle{remark}
+\newtheorem{remark}{注意}
+
+\title{容量制約付きオンラインレビュー選択：\\
+Economic Letters版コアモデルとノンパラメトリック識別}
+\author{研究用理論ノート（ver2）}
+\date{2026年7月19日}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+本ノートは、オンラインレビューを個人内の共有時間予算の下で生じる
+capacity-constrained subset choice として定式化する。
+固定投稿費用だけのモデルは財別に分離可能な generalized Roy/Heckman 型選択であり、
+他財による crowd-out を生まない。これに対し、共通時間予算を導入すると、
+各人が経験した財の間で公開枠が競合し、ある財の公開確率が他財の評価に依存する
+多変量 MNAR が生じる。本研究の識別対象は、各財の経験者における平均評価、
+極端評価率、CDF 点である。target-specific representer bridge により、
+多財の同時分布全体を識別せずにこれらをノンパラメトリックに識別する。
+実験では、同一標本から private/oracle 評価と public 評価を取得し、
+時間予算または公開上限をランダム化して crowd-out と回復精度を検証する。
+\end{abstract}
+
+\section{位置づけと主張の境界}
+
+欠測値自身が観測確率を動かす MNAR では、公開レビューだけから評価分布を推測すると
+一般に偏る。オンラインレビューの polarity self-selection と underreporting bias は既知である
+\parencite{HuPavlouZhang2017,SchoenmuellerNetzerStahl2020,Karaman2021}。
+また、選択方程式だけを見れば本稿は generalized Roy model の一例であり、
+shadow IV の Roy model への応用自体も既知である \parencite{dHaultfoeuille2010}。
+
+したがって、本稿は「新しい Roy 識別定理」または「極端なレビューが多いことの発見」を
+貢献とはしない。Economic Letters 版の貢献候補は次の三点である。
+\begin{enumerate}
+  \item レビュー候補間の共有時間予算が experience-level crowd-out を生むことを明示する。
+  \item 容量をランダム化し、自己評価を固定しても競合経験が公開を押し出すことを検証する。
+  \item 同一標本の private/oracle と public を用いて、shadow-variable bridge による
+  財別汎関数のノンパラメトリック回復を直接検証する。
+\end{enumerate}
+
+\section{母集団、経験集合、観測単位}
+
+全財集合を $\cJ=\{1,\ldots,J\}$ とする。個人 $i$ が財 $j$ を経験済みなら
+$E_{ij}=1$ とし、
+\[
+  \cE_i=\{j\in\cJ:E_{ij}=1\},
+  \qquad m_i=|\cE_i|=\sum_{j=1}^J E_{ij}.
+\]
+評価 $Y_{ij}$ は $E_{ij}=1$ のときに定義される。公開指標を
+\[
+  R_{ij}=\1\{\text{個人 $i$ が財 $j$ の評価を公開する}\},
+  \qquad R_{ij}\le E_{ij}
+\]
+とする。独立な標本単位は person--item ではなく個人 $i$ である。
+個人内の $R_{ij}$ は共有予算を通じて依存する。
+
+\begin{definition}[財別 experienced-user target]
+財 $j$ の母集団は財 $j$ の経験者である。既知関数 $\tau$ に対して
+\[
+  \theta_{j,\tau}
+  =\E\{\tau(Y_{ij},C_{ij})\mid E_{ij}=1\}
+  \tag{1}
+\]
+を標的とする。$\tau(y,c)=y$ は平均評価、
+$\tau(y,c)=\1\{y\in\{1,5\}\}$ は極端評価率、
+$\tau_t(y,c)=\1\{y\le t\}$ は CDF 点を与える。
+\end{definition}
+
+未経験者を含む全消費者の「潜在評価」は、別途 acquisition model を導入しない限り
+本稿の識別対象ではない。複数財を集約する場合にも、
+\[
+ \theta^{\mathrm{person}}_\tau
+ =\E\left\{\frac{1}{m_i}\sum_{j\in\cE_i}\tau(Y_{ij})\right\},
+ \qquad
+ \theta^{\mathrm{experience}}_\tau
+ =\frac{\E\{\sum_{j\in\cE_i}\tau(Y_{ij})\}}{\E(m_i)}
+ \tag{2}
+\]
+は異なる。前者は個人均等、後者は経験一件均等である。
+主分析では財別 target (1) を用い、pooled analysis を行う場合は重み付けを事前登録する。
+
+\begin{assumption}[経験集合の観測 (E)]
+$\{E_{ij},Z_{ij},W_{ij}:j\in\cE_i\}$ は、レビューを公開しない財についても観測される。
+\end{assumption}
+
+仮定 (E) は実験ではスクリーニングと private survey により満たせる。
+プラットフォームデータでは購入・利用ログが必要である。
+$E_{ij}=0$ と $E_{ij}=1,R_{ij}=0$ を区別できなければ、acquisition bias と
+review-selection bias が混在し、本稿のモデルだけでは識別できない。
+
+\section{行動モデル：費用と共有時間予算を分ける}
+
+$X_i$ を年齢、一般的レビュー傾向等の個人共変量、
+$W_{ij}$ を利用頻度、利用期間、課金等の財別履歴とする。
+中立評価を $y_0$ とし、positive/negative WOM の動機を
+\[
+ M^+_{ij}=f_+\{(Y_{ij}-y_0)_+,X_i,W_{ij}\},
+ \qquad
+ M^-_{ij}=f_-\{(y_0-Y_{ij})_+,X_i,W_{ij}\}
+ \tag{3}
+\]
+と置く。positive WOM は自己表現・他者支援・企業支援、negative WOM は不快感の解放・
+他者への警告等を含む \parencite{HennigThurauEtAl2004,Berger2014}。
+
+財 $j$ を公開する純便益は
+\[
+ A_{ij}
+ =a_+(M^+_{ij})+a_-(M^-_{ij})
+ -\kappa_{ij}+\varepsilon^D_{ij},
+ \qquad a_+',a_-',f_+',f_-'\ge0,
+ \tag{4}
+\]
+とする。$\kappa_{ij}$ は心理的・文章作成上の非時間的負担であり、
+個人固定成分 $\kappa_i$ を含んでもよい。
+
+\subsection{固定費用だけでは crowd-out は生じない}
+
+\begin{proposition}[分離可能な費用モデル]
+共有制約がなく、個人が
+\[
+ \max_{\bm d_i\in\{0,1\}^{m_i}}
+ \sum_{j\in\cE_i}d_{ij}A_{ij}
+ \tag{5}
+\]
+を解くとする。$\Prb(A_{ij}=0)=0$ なら
+\[
+ R_{ij}=\1\{A_{ij}>0\}.
+ \tag{6}
+\]
+したがって、$A_{ij}$ を固定したまま $A_{i\ell}$（$\ell\ne j$）を変化させても
+$R_{ij}$ は変化しない。
+\end{proposition}
+
+\begin{proof}
+目的関数は $j$ ごとに加法分離できる。各 $d_{ij}$ は $A_{ij}>0$ のときだけ1となる。
+\end{proof}
+
+よって、固定投稿費用が「すべての経験を投稿しない」ことは説明しても、
+レビュー候補間の競争は説明しない。このベンチマークは財別の latent-index
+Roy/Heckman 型選択である。
+
+\subsection{共有時間予算による capacity-constrained subset choice}
+
+財 $j$ のレビューに必要な時間を $q_{ij}>0$、個人 $i$ がレビューに使える時間を
+$T_i>0$ とする。公開集合を
+\[
+ \cS_i(T_i)\in
+ \arg\max_{S\subseteq\cE_i}\sum_{j\in S}A_{ij}
+ \quad\text{s.t.}\quad
+ \sum_{j\in S}q_{ij}\le T_i,
+ \qquad R_{ij}=\1\{j\in\cS_i(T_i)\}
+ \tag{7}
+\]
+で定める。これは0--1 knapsack choice であり、戦略的入札者を持つ auction ではない。
+「個人内レビューオークション」は直感的比喩に留め、本文では
+capacity-constrained subset choice と呼ぶ。
+
+\begin{assumption}[標準化された投稿時間 (H)]
+主理論では $q_{ij}=q_i$ とし、
+\[
+ K_i=\left\lfloor T_i/q_i\right\rfloor<m_i
+ \tag{8}
+\]
+と置く。$A_{ij}$ に同順位はない。
+\end{assumption}
+
+\begin{proposition}[at-most-$K_i$ 表現]
+仮定 (H) の下で、(7) の解は正の公開効用を持つ候補のうち上位 $K_i$ 件であり、
+\[
+ R_{ij}=\1\left\{
+ A_{ij}>0,
+ \sum_{\ell\in\cE_i\setminus\{j\}}
+ \1(A_{i\ell}>A_{ij})\le K_i-1
+ \right\}.
+ \tag{9}
+\]
+したがって、自然環境では投稿数は最大 $K_i$ 件であり、0件も許される。
+\end{proposition}
+
+\begin{proof}
+等しい資源消費の下では、任意の選択集合の低い効用を非選択の高い効用と交換すれば
+目的関数が増加する。また負の効用を含めることは目的関数を低下させる。
+\end{proof}
+
+実験で「必ず $K_i$ 件」と指定する exact top-$K_i$ は (9) の特殊な強制条件である。
+自然環境の at-most-$K_i$ と混同しない。
+
+\begin{proposition}[自己単調性、crowd-out、容量効果]
+\label{prop:comparative}
+仮定 (H) の下で次が成立する。
+\begin{enumerate}[label=(\roman*)]
+ \item $\bm A_{i,-j}$ を固定すると、$A_{ij}$ の上昇は $R_{ij}$ を弱く増加させる。
+ \item $A_{ij}$ と $\bm A_{i,-\{j,\ell\}}$ を固定すると、
+ $A_{i\ell}$（$\ell\ne j$）の上昇は $R_{ij}$ を弱く減少させる。
+ \item $K_i$ の上昇に対して選択集合は入れ子になり、各 $R_{ij}$ は弱く増加する。
+ \item 選択された正の公開効用の平均は、$K_i$ の上昇に対して弱く低下する。
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(9) の順位表示による。(ii) では競合候補の順位上昇は $j$ の順位を改善しない。
+(iii) では同じ順位列の切断点だけが緩む。(iv) では追加される候補の効用は既選択候補の
+最小値以下である。
+\end{proof}
+
+異質な $q_{ij}$ を許す一般 knapsack では、選択集合は単純な順位切断にならない。
+競合効用の上昇が最適な組合せを変え、財 $j$ が逆に入る例もあるため、
+命題\ref{prop:comparative}(ii) を一般化してはならない。EL 本文では標準化レビュー形式を採用し、
+異質時間は発展課題とする。
+
+\begin{corollary}[極端性との接続]
+$e_{ij}=|Y_{ij}-y_0|$ とし、個人内で
+\[
+ A_{ij}>A_{i\ell}\quad\Longleftrightarrow\quad e_{ij}>e_{i\ell}
+ \tag{11}
+\]
+が成立するなら、$K_i$ が小さいほど公開評価の平均極端性は弱く高くなる。
+\end{corollary}
+
+条件 (11) は Roy 構造だけからは従わない。positive/negative WOM の非対称性や誤差により
+J字型にもU字型にもなり得るため、これは実験仮説として検証する。
+
+\section{観測データと多変量 MNAR}
+
+常時観測される candidate shadow signal を $Z_{ij}$、その他の履歴を $W_{ij}$ と分ける。
+観測データは個人単位で
+\[
+ O_i=\left[
+ X_i,T_i,\{E_{ij},Z_{ij},W_{ij},R_{ij},R_{ij}Y_{ij}\}_{j=1}^J
+ \right],
+ \qquad i=1,\ldots,n
+ \tag{12}
+\]
+である。$O_1,\ldots,O_n$ は i.i.d. とし、推論は個人内依存を保ったまま行う。
+
+式 (9) より $R_{ij}$ は $Y_{ij}$ だけでなく $\bm Y_{i,-j}$ と共通容量に依存する。
+したがって本稿の MNAR は itemwise 独立な
+$\Prb(R_{ij}=1\mid Y_{ij})$ ではなく、
+\[
+ \Prb(R_{ij}=1\mid Y_{ij},\bm Y_{i,-j},X_i,W_i,T_i)
+ \tag{13}
+\]
+で記述される dependent multivariate MNAR である。
+ただし $\bm Y_{i,-j}$ の非公開成分は観測されないため、これを実装可能な bridge の
+条件変数に直接入れてはならない。
+
+exact top-$K_i<m_i$ の実験条件では
+\[
+ \sum_{j\in\cE_i}R_{ij}=K_i<m_i,
+ \qquad
+ \Prb(R_{ij}=1\ \forall j\in\cE_i)=0.
+ \tag{14}
+\]
+これは「no complete case」というデータ生成上の特徴であり、識別仮定ではない。
+自然環境の at-most-$K_i$ では (14) が常に成立するとは限らない。
+
+\section{財別汎関数のノンパラメトリック識別}
+
+財 $j$ を固定する。$C_{ij}$ は全員について観測される条件変数であり、例えば
+\[
+ C_{ij}=(X_i,T_i,\bm E_i,\bm W_i,\bm Z_{i,-j})
+ \tag{15}
+\]
+とする。実際には高次元性を避けるため事前に定めた要約を用いてもよいが、
+識別と推定の次元削減を区別する。
+
+\begin{assumption}[Item-level positivity]
+\[
+ \Prb(R_{ij}=1\mid Y_{ij},C_{ij},E_{ij}=1)>0
+ \quad\text{a.s.}
+ \tag{P}
+\]
+\end{assumption}
+
+\begin{assumption}[Conditional shadow exclusion]
+\[
+ R_{ij}\indep Z_{ij}\mid Y_{ij},C_{ij},E_{ij}=1.
+ \tag{SV}
+\]
+\end{assumption}
+
+\begin{assumption}[Target-specific representer bridge]
+指定した $\tau$ に対して、二乗可積分な $\delta_{j,\tau}$ が存在し、
+\[
+ \E\left\{
+ \delta_{j,\tau}(Z_{ij},C_{ij})
+ \mid R_{ij}=1,Y_{ij},C_{ij},E_{ij}=1
+ \right\}
+ =\tau(Y_{ij},C_{ij})
+ \tag{RB}
+\]
+を満たす。
+\end{assumption}
+
+\begin{theorem}[Target-specific nonparametric identification]
+仮定 (E), (P), (SV), (RB) の下で、
+\[
+ \boxed{
+ \theta_{j,\tau}
+ =\E\left[
+ R_{ij}\tau(Y_{ij},C_{ij})
+ +(1-R_{ij})\delta_{j,\tau}(Z_{ij},C_{ij})
+ \mid E_{ij}=1
+ \right].}
+ \tag{16}
+\]
+右辺は観測データ法則の汎関数であり、$\theta_{j,\tau}$ は
+ノンパラメトリックに識別される。bridge 解の一意性は不要である。
+\end{theorem}
+
+\begin{proof}
+(SV) より $Z_{ij}\mid(Y_{ij},C_{ij},E_{ij}=1)$ の条件付き分布は
+$R_{ij}$ に依存しない。したがって (RB) は $R_{ij}=0$ にも移送され、
+\[
+ \E\{\delta_{j,\tau}(Z_{ij},C_{ij})
+ \mid R_{ij}=0,Y_{ij},C_{ij},E_{ij}=1\}
+ =\tau(Y_{ij},C_{ij}).
+\]
+両辺に $(1-R_{ij})$ を掛けて期待値を取り、公開部分
+$R_{ij}\tau(Y_{ij},C_{ij})$ を加えると (16) を得る。
+\end{proof}
+
+この識別戦略は full-data law を先に識別せずに平均等を直接識別する
+representer approach に対応する \parencite{LiMiaoTchetgen2023}。
+多財 $\bm Y_i$ の同時分布全体は、exact top-$K_i$ で支持されないブロックがあるため、
+追加構造なしには識別されない。
+
+\subsection{5段階評価における range 条件}
+
+$Y_{ij}\in\{1,2,3,4,5\}$、$Z_{ij}\in\{z_1,\ldots,z_L\}$ とする。
+\[
+ H_j(c)
+ =\left[
+ \Prb(Z_{ij}=z_v\mid R_{ij}=1,Y_{ij}=y,C_{ij}=c,E_{ij}=1)
+ \right]_{y=1,\ldots,5;\ v=1,\ldots,L}.
+ \tag{17}
+\]
+$\bm\tau(c)=(\tau(1,c),\ldots,\tau(5,c))'$ とすれば、bridge は
+\[
+ H_j(c)\bm\delta_{j,\tau}(c)=\bm\tau(c)
+ \tag{18}
+\]
+である。特定の平均や裾確率に必要なのは
+\[
+ \bm\tau(c)\in\Range\{H_j(c)\}
+ \quad\text{a.e. }c
+ \tag{19}
+\]
+だけである。任意の5カテゴリー汎関数を識別する十分条件は
+\[
+ L\ge5,
+ \qquad \rank H_j(c)=5
+ \quad\text{a.e. }c.
+ \tag{20}
+\]
+単なる $Z_{ij}$ と $Y_{ij}$ の相関または極端性に関する単調性は (19)--(20) を意味しない。
+
+\subsection{IPWを使う場合は別の強い bridge が必要である}
+
+IPW を用いるなら、representer bridge (RB) ではなく inverse-selection bridge
+\[
+ \E\{R_{ij}\omega_j(Y_{ij},C_{ij})\mid
+ Z_{ij},C_{ij},E_{ij}=1\}=1
+ \tag{21}
+\]
+を解く。作用素
+\[
+ g\mapsto
+ \E\{R_{ij}g(Y_{ij},C_{ij})\mid Z_{ij},C_{ij},E_{ij}=1\}
+ \tag{22}
+\]
+が適切な関数クラス上で injective であれば、
+\[
+ \omega_j(y,c)
+ =\frac{1}{\Prb(R_{ij}=1\mid Y_{ij}=y,C_{ij}=c,E_{ij}=1)}
+ \tag{23}
+\]
+が一意に識別され、
+\[
+ \theta_{j,\tau}
+ =\E\{R_{ij}\omega_j(Y_{ij},C_{ij})
+ \tau(Y_{ij},C_{ij})\mid E_{ij}=1\}
+ \tag{24}
+\]
+を得る。これは完備性を用いる \textcite{dHaultfoeuille2010} 型の強い経路である。
+EL 本文では (16) を主結果とし、(21)--(24) は付録に置く。
+
+\section{Shadow signal の妥当性}
+
+top-$K_i$ 選択では (SV) は Roy 構造から自動的に従わない。
+選択を
+\[
+ R_{ij}=r_j(Y_{ij},C_{ij},U^S_{ij}),
+ \qquad
+ U^S_{ij}=(\bm Y_{i,-j},\bm\varepsilon_i^D,\bm\kappa_i,\bm q_i)
+ \tag{25}
+\]
+と書くと、(SV) の原始的な十分条件の一例は
+\[
+ Z_{ij}\indep U^S_{ij}\mid Y_{ij},C_{ij},E_{ij}=1,
+ \tag{26}
+\]
+かつ、$Z_{ij}$ が現在評価と $C_{ij}$ を固定した後に公開効用または時間費用へ
+直接入らないことである。
+
+利用頻度、利用期間、課金額は、同じ現在評価でも専門性、関与、想起容易性、
+文章作成費用を通じて公開へ直接影響し得る。したがって原則として、これらは
+$Z_{ij}$ ではなく $W_{ij}$ または $C_{ij}$ に含める方が防御しやすい。
+購入時期待も、期待不一致が WOM を直接刺激するなら排除制約に違反する。
+「過去変数である」ことだけでは (SV) を正当化しない。
+
+複数の weak-but-valid signals は (17) の rank や数値安定性を改善し得るが、
+複数の invalid signals は排除制約違反を修復しない。本文では候補 $Z$ ごとの制度的根拠、
+二波測定、negative-control 型診断、排除制約違反への感度分析を提示する。
+
+\section{仮定の分類}
+
+\begin{center}
+\small
+\begin{tabular}{>{\raggedright\arraybackslash}p{31mm}
+                >{\raggedright\arraybackslash}p{56mm}
+                >{\raggedright\arraybackslash}p{58mm}}
+\toprule
+候補 & 正しい役割 & 本文での扱い \\
+\midrule
+Roy model & 選択行動の構造・解釈 & 識別仮定とは呼ばない \\
+共有時間予算 & cross-item crowd-out の生成 & 主モデル (7)--(10) \\
+polarity monotonicity & 行動比較静学・bounds の候補 & completeness の代替とはしない \\
+conditional completeness & inverse bridge の一意性 & 強い IPW 経路、付録 \\
+target bridge range & 指定汎関数の識別 & 主識別仮定 (RB) \\
+sparsity & 高次元推定・正則化 & 識別仮定とはしない \\
+no complete case & 支持集合の特徴・負の結果 & exact top-$K$ の帰結 \\
+support & experience support、positivity、range/rank & 三つを分けて明示 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+「疎な $X,Y,Z,R$ 行列」という表現は用いない。非観測値は数値ゼロではない。
+疎な経験グラフまたは高次元 nuisance の sparsity を仮定する場合は、推定節で別途定義する。
+
+\section{実験と oracle/public 検証}
+
+\subsection{実験1：同一標本で private/oracle と public を得る}
+
+最小設計は次の通りである。
+\begin{enumerate}
+  \item 対象サービス群について経験集合 $\cE_i$、$X_i$、$W_{ij}$、candidate $Z_{ij}$ を取得する。
+  \item 公開容量を知らせる前に、全経験財の private rating $Y_{ij}$ を取得してロックする。
+  \item 個人を時間予算 $T_i$ または上限 $K_i$ の条件へランダム化する。
+  \item 標準化されたレビュー形式と時間負担を提示し、最大 $K_i$ 件を自己選択させる。
+  \item 選択財だけ自由記述レビューを作成し、後続参加者に実際に公開する。
+  \item forced-random-$K$ 条件を設ける場合、自己選択と単なる文章作成負担を分離する。
+\end{enumerate}
+
+主仮説は、(i) $K_i$ または $T_i$ が小さいほど公開評価の極端性が高いこと、
+(ii) $Y_{ij}$ を固定しても競合経験の salience が高いほど $R_{ij}$ が低いこと、
+(iii) public estimator の偏りが bridge correction により縮小することである。
+
+財 $j$ の oracle と public CDF は
+\[
+ F_j^{\mathrm{oracle}}(y)=\Prb(Y_{ij}\le y\mid E_{ij}=1),
+ \qquad
+ F_j^{\mathrm{public}}(y)=\Prb(Y_{ij}\le y\mid R_{ij}=1,E_{ij}=1)
+ \tag{27}
+\]
+である。推定 bias は同じ標的について
+\[
+ B_j^{\mathrm{public}}(y)
+ =F_j^{\mathrm{public}}(y)-F_j^{\mathrm{oracle}}(y),
+ \qquad
+ B_j^{\mathrm{bridge}}(y)
+ =\widehat F_j^{\mathrm{bridge}}(y)-F_j^{\mathrm{oracle}}(y)
+ \tag{28}
+\]
+と比較する。oracle 評価を bridge の学習、変数選択、チューニングに使用してはならず、
+public data だけで推定した後の外部検証に限定する。
+
+\subsection{推論と実装上の限定}
+
+標準誤差は個人単位でクラスタリングする。30--40サービス、$n>100$ 程度の疎な設計で
+財別 bridge を完全にノンパラメトリック推定することは現実的でない。
+EL 実証では、(a) 共通して経験者が多い少数サービスに絞る、または
+(b) item fixed effects と共通 bridge を置いて pool する必要がある。
+(b) は交換可能性・共通作用素という追加の推定仮定を要し、
+「財別完全ノンパラメトリック推定」とは区別する。
+
+\section{Economic Letters版の最小構成}
+
+本文は次に限定する。
+\begin{enumerate}
+  \item 費用だけの分離選択と共有予算選択の違い。
+  \item 等投稿時間の at-most-$K$ モデルと命題\ref{prop:comparative}。
+  \item 財別 experienced-user target と target-specific identification (16)。
+  \item ランダム化容量、oracle/public 比較、bridge correction の実験。
+\end{enumerate}
+一般 knapsack、多財同時分布、潜在因子、monotone-IV bounds、weak-but-many completeness、
+アルゴリズム増幅は付録または別論文に置く。
+
+\printbibliography
+\end{document}
