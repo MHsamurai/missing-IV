@@ -1,0 +1,275 @@
+\documentclass[a4paper,11pt,xelatex,ja=standard]{bxjsarticle}
+
+\usepackage{amsmath,amssymb,bm,booktabs,array,longtable,enumitem,hyperref,xcolor}
+\hypersetup{colorlinks=true,linkcolor=blue!55!black,urlcolor=blue!55!black,citecolor=blue!55!black}
+\setlist{nosep,leftmargin=2em}
+\newcommand{\indep}{\mathrel{\perp\!\!\!\perp}}
+\newcommand{\E}{\mathbb E}
+\newcommand{\Prb}{\mathbb P}
+\newcommand{\Y}{\bm Y}
+
+\title{容量制約付きレビュー研究と潜在因子 Shadow-IV 研究\\
+\large 査読者評価・論文分割・優先順位}
+\author{}
+\date{2026年7月18日}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+本稿は，容量制約付きレビュー選択の研究と，共通潜在因子を介した多変量MNARのShadow-IV研究を，識別主張，既存研究との差，完成可能性，投稿先の観点から比較する。結論は，両者を別論文とし，短期的にはランダム化された公開容量とcross-item crowd-outを扱うレビュー研究を先行させることである。潜在因子研究は理論的上限が高いが，shadow exclusionとcompleteness，各周辺分布と同時分布，測定数と非線形潜在モデル識別を区別した定理監査を先に行う必要がある。
+\end{abstract}
+
+\section{結論}
+
+二つの研究は分割するべきである。現時点で一方を優先するなら，\textbf{容量制約付きレビュー研究を先行}させる方が，独自の観察可能な現象，実験可能性，早期投稿可能性の点で優位である。
+
+潜在因子 Shadow-IV 研究は博論との整合性と理論的な上限が高い一方，現在の主張はそのままでは論文の定理にならない。特に，shadow exclusionとrelevance/completeness，項目別周辺分布と多変量同時分布，測定数と非線形潜在モデル識別を区別する必要がある。
+
+推奨する研究ポートフォリオは次の通りである。
+\begin{itemize}
+  \item 論文A: Capacity-constrained review generation and competitive underreporting
+  \item 論文B: Nonparametric identification of latent measurement models with itemwise MNAR outcomes and a common shadow variable
+  \item 将来の論文C: Platform ranking / generative-AI amplification
+\end{itemize}
+
+\section{二つの研究の欠測構造}
+
+\subsection{論文A: 容量制約付きレビュー}
+
+個人 $i$ は $J$ 個の私的評価 $\Y_i=(Y_{i1},\ldots,Y_{iJ})$ を持ち，公開効用
+\[
+A_{ij}=b(Y_{ij},X_{ij})+\varepsilon^D_{ij}
+\]
+の上位 $K_i$ 件を公開する。
+\[
+S_i(K_i)\in
+\arg\max_{S\subseteq\{1,\ldots,J\}}
+\sum_{j\in S}A_{ij}
+\quad\text{s.t.}\quad |S|\le K_i,
+\qquad
+R_{ij}=\mathbf 1\{j\in S_i(K_i)\}.
+\]
+$R_{ij}$ は $Y_{ij}$ だけでなく $\Y_{i,-j}$ にも依存し，欠測指標間には容量制約による依存が生じる。exact top-$K$ なら
+\[
+\sum_{j=1}^J R_{ij}=K_i
+\]
+であり，$K_i<J$ のとき完全ケースは構造的に存在しない。
+
+\subsection{論文B: 潜在因子と項目別self-censoring}
+
+測定モデルを
+\[
+Y_{ij}=h_j(F_i)+\varepsilon_{ij},\qquad j=1,\ldots,J
+\]
+とする。常時観測変数 $V_i$ との関係には二つの型がある。
+\[
+\text{IV型:}\quad F_i=g_{\mathrm{IV}}(V_i)+U_i,
+\qquad
+\text{proxy型:}\quad V_i=g_{\mathrm P}(F_i)+U_i.
+\]
+項目別欠測を
+\[
+D_{ij}=\mathbf 1\{k_j(Y_{ij})+\eta_{ij}>0\}
+\]
+とする。このモデルは，各項目の欠測が自己の値だけに依存するstrict self-censoringの特殊ケースである。
+
+\section{潜在因子案の識別監査}
+
+\subsection{shadow exclusionと識別条件}
+
+$\eta_{ij}$ が $(V_i,F_i,\bm\varepsilon_i)$ から独立なら，IV型・proxy型のいずれでも
+\[
+\Prb(D_{ij}=1\mid Y_{ij},V_i)
+=\Prb\{\eta_{ij}>-k_j(Y_{ij})\mid Y_{ij}\}
+=:\pi_j(Y_{ij}),
+\]
+したがって
+\[
+D_{ij}\indep V_i\mid Y_{ij}
+\tag{SV-j}
+\]
+が成立する。これは因果方向ではなく，$V$ が欠測効用に直接入らないことから従う。
+
+ただし，(SV-j)だけでは不十分である。各項目についてfull-law identificationを行う典型的な条件は
+\[
+\E\{a(Y_{ij})\mid V_i\}=0
+\quad\Longrightarrow\quad
+a(Y_{ij})=0\quad\text{a.s.}
+\tag{C-j}
+\]
+である。$V_i$ が $F_i$ と関連すること，$g$ が非定数または非線形であることだけでは(C-j)は従わない。$g$が定数ならrelevanceが失われ，相関があっても条件付き期待値作用素が非自明なヌル空間を持てばcompletenessは成立しない。
+
+\subsection{各周辺平均の識別}
+
+(SV-j)，positivity $\pi_j(Y_{ij})>0$，(C-j)の下では
+\[
+\E\{D_{ij}w_j(Y_{ij})\mid V_i\}=1,
+\qquad
+w_j(y)=\frac{1}{\pi_j(y)},
+\]
+から $\pi_j$ を識別できる。したがって
+\[
+\E(Y_{ij})=\E\{D_{ij}w_j(Y_{ij})Y_{ij}\}
+\]
+が識別される。これは項目ごとのスカラーshadow-variable識別を同じ $V_i$ に対して反復した結果であり，ここだけでは共通潜在因子を必要としない。
+
+\subsection{同時分布の回復}
+
+$P(Y_{i1},Y_{i2},V_i)$などを回復するには，例えば任意の $S\subseteq\{1,\ldots,J\}$ について
+\[
+\Prb(D_{ij}=1,\ j\in S\mid\Y_i,V_i)
+=\prod_{j\in S}\pi_j(Y_{ij})
+\tag{PF}
+\]
+と，同時観測positivityが必要である。(PF)は欠測誤差の条件付き独立性と，各欠測式が自己の $Y_{ij}$ だけに依存するという強い仮定である。このとき
+\[
+\E\!\left[
+\left\{\prod_{j\in S}D_{ij}w_j(Y_{ij})\right\}
+\varphi(\Y_{iS},V_i)
+\right]
+=\E\{\varphi(\Y_{iS},V_i)\}
+\]
+により $P(\Y_{iS},V_i)$ を回復できる。
+
+\subsection{非線形潜在測定モデルは別の識別問題である}
+
+復元された $P(Y_{i1},Y_{i2},V_i)$ から $F_i$，$h_2$，$g$ を識別するには，Hu--Schennach型の条件を明示する必要がある。「三つの条件付き独立な測定値がある」という記述だけでは不十分である。必要となり得る条件には，条件付き独立性，積分作用素の単射性またはbounded completeness，固有関数をラベル付けするlocation条件，正則性，潜在尺度の正規化が含まれる。
+
+\subsection{潜在尺度の正規化}
+
+$\E(F)=0$，$\operatorname{Var}(F)=1$，$h_1$が単調増加，だけでは一般に非線形な再パラメータ化を排除できない。単調な一対一変換 $T$ により
+\[
+F^*=T(F),
+\qquad
+h_j^*(f^*)=h_j\{T^{-1}(f^*)\}
+\]
+と書き換えても観測分布が同じになる可能性がある。例えば $h_1(f)=f$ を固定する，潜在分布全体を既知とする，または既存定理のlocation normalizationを採用する必要がある。
+
+\subsection{\texorpdfstring{$g$}{g}の非線形性とcompleteness}
+
+IV型シフトモデルでは
+\[
+\E\{a(F)\mid V=v\}
+=\int a(f)p_U\{f-g_{\mathrm{IV}}(v)\}\,df
+=(a*\check p_U)\{g_{\mathrm{IV}}(v)\}.
+\]
+例えば $g_{\mathrm{IV}}(\mathcal V)=\mathbb R$ かつ $U$ の特性関数が全域で非零なら，適切な関数空間においてcompletenessを示せる。しかし，$g$の非線形性それ自体は必要条件でも十分条件でもない。像が開区間を含むだけなら，解析性等を追加しない限り区間上の零から全域の零は従わない。
+
+\subsection{測定誤差と欠測}
+
+測定誤差は観測値が真値とノイズから生成される観測方程式であり，欠測は観測指標によって値が記録されない観測過程である。「誤差分布を設定できるなら測定誤差，できないなら欠測」という分類は採用しない。特性関数の零点や逆問題のill-posednessは識別・推定の難しさを表すが，両者の定義上の境界ではない。
+
+\section{既存研究との境界}
+
+d'Haultfoeuille (2010)以降の文献は，条件付き排除とcompletenessによりMNAR full-data lawをノンパラメトリックに識別する一般論を与えている。Miao et al. (2024)は一般的識別条件，効率影響関数，二重ロバスト推定まで提示している。
+
+Li et al. (2023)は，各欠測指標が自己のアウトカムに依存し，他のアウトカムには条件付きで依存しない多変量self-censoring modelを提示し，full-data lawの識別，IPW，回帰型，二重ロバスト推定，感度分析を与えている。現在の項目別欠測式はそのstrict self-censoring特殊ケースに近い。
+
+Hu and Schennach (2008)は，操作変数を利用した非古典的・非線形測定誤差モデルについて，作用素の固有値・固有関数分解による識別とsieve推定を提示している。
+
+したがって現在の潜在因子案は，査読者には
+\[
+\text{既存の項目別shadow識別}
++\text{strict self-censoring}
++\text{既存の非線形測定モデル識別}
+\]
+の逐次適用と評価される可能性が高い。
+
+\section{査読者としての比較}
+
+\begin{center}
+\small
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.18\textwidth}>{\raggedright\arraybackslash}p{0.35\textwidth}>{\raggedright\arraybackslash}p{0.35\textwidth}}
+\toprule
+観点 & 論文A: 容量制約レビュー & 論文B: 潜在因子 Shadow-IV\\
+\midrule
+現在の新規性 & randomized $K$，cross-item crowd-out，oracle/public比較 & 既存結果の合成に見える\\
+欠測構造 & dependent multivariate MNAR，構造的零 & strict itemwise self-censoring，積型欠測\\
+理論リスク & 中 & 高\\
+実証可能性 & 倫理審査後に直接実験可能 & 適切な実証設定が別途必要\\
+短期投稿 & Economics Letters，JIM，ECRA & 現状では難しい\\
+理論的上限 & 新推定理論を加えれば高い & 真に新しい識別定理ができれば高い\\
+博論との整合 & 中 & 高\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{二本を統合しない理由}
+
+論文Bのjoint recoveryは(PF)と同時観測positivityに依存する。一方，論文Aのexact top-$K$選択では
+\[
+\sum_jR_{ij}=K_i<J
+\]
+であり，欠測指標は負に依存し，完全ケース確率は零である。したがって，論文Bの積重み識別をレビュー設定に適用できない。
+
+この差は単なる応用上の違いではなく，識別仮定の違いである。一つの論文に統合すると，前半のproduct-form self-censoringと後半のcapacity-constrained dependent missingnessが矛盾して見える。
+
+\section{推奨する作業順序}
+
+\subsection{論文Aを先行する}
+\begin{enumerate}
+  \item $K_i$をランダム化したExperiment 1を確定する。
+  \item 自己評価効果，cross-item crowd-out，容量効果を事前登録する。
+  \item oracleとpublicについて平均，裾確率，極端性を比較する。
+  \item 事前期待等を用いたtarget-specific representer bridgeを推定する。
+  \item 排除制約違反への感度分析を行う。
+  \item 最初はExperiment 2と潜在因子を切り離す。
+\end{enumerate}
+
+\subsection{論文Bは短期間の定理監査を行う}
+
+最初に有限離散モデルで観測分布から構造対象への写像のrankを確認し，識別と反例を明示する。その後，次の候補定理が既存研究の単純な逐次適用を超えるか判定する。
+
+\begin{quote}
+すべての測定項目がitemwise MNARであっても，単一の常時観測proxy $V$ と部分観測パターンから，潜在分布，測定関数，母集団平均をノンパラメトリックに識別できる。
+\end{quote}
+
+Go条件は，少なくとも次の一つを示せることである。
+\begin{itemize}
+  \item Li et al. (2023)のcross-outcome completenessを弱める。
+  \item 完全ケースを必要としない。
+  \item 高次元vector completenessを低次元latent completenessへ置き換える。
+  \item 単一proxyについてprimitiveな十分条件を与える。
+  \item 潜在関数推定誤差を含む新しい推定・推論理論を与える。
+\end{itemize}
+
+これらを示せず既存定理を順番に適用するだけなら，独立した方法論論文ではなく博論の補助章または応用上の構造拡張として扱う。
+
+\section{投稿先の見立て}
+
+\paragraph{論文A}
+短報は\textit{Economics Letters}，レビュー行動・プラットフォーム中心なら\textit{Journal of Interactive Marketing}または\textit{Electronic Commerce Research and Applications}，新しい推定・漸近理論まで含むなら\textit{The Econometrics Journal}が候補である。
+
+\paragraph{論文B}
+新しい識別定理，推定量，漸近理論，simulationが揃う場合は\textit{The Econometrics Journal}，\textit{Journal of Multivariate Analysis}，\textit{Statistica Sinica}が候補である。潜在特性・測定モデル中心なら\textit{Psychometrika}，\textit{Multivariate Behavioral Research}も考えられる。現在の逐次適用だけなら独立した上位方法論誌への投稿は推奨しない。
+
+\paragraph{上位目標}
+\textit{Journal of Econometrics}を目標にするには，top-$K$ dependent MNARまたはlatent-proxy MNARに固有の新しい識別・推論理論が必要である。
+
+\section{最終判断}
+
+期待採択確率と完成可能性を重視するなら論文Aを先に完成させる。論文Bは放棄せず，博論の理論章候補として，まず識別定理の成立範囲と既存研究との差を監査する。
+\begin{center}
+\fbox{\begin{minipage}{0.87\textwidth}
+\centering
+論文A: dependent top-$K$ MNARを実験で発見・補正\\[1mm]
+論文B: itemwise MNAR下の潜在測定モデルを理論的に識別
+\end{minipage}}
+\end{center}
+
+\section*{参考文献}
+
+\noindent\textbf{d'Haultfoeuille (2010).}
+A new instrumental method for dealing with endogenous selection. \textit{Journal of Econometrics}, 154(1), 1--15. \url{https://doi.org/10.1016/j.jeconom.2009.06.005}
+
+\noindent\textbf{Hu and Schennach (2008).}
+Instrumental variable treatment of nonclassical measurement error models. \textit{Econometrica}, 76(1), 195--216. \url{https://doi.org/10.1111/j.0012-9682.2008.00823.x}
+
+\noindent\textbf{Li et al. (2023).}
+A self-censoring model for multivariate nonignorable nonmonotone missing data. \textit{Biometrics}, 79(4), 3203--3214. \url{https://doi.org/10.1111/biom.13916}
+
+\noindent\textbf{Miao et al. (2024).}
+Identification and semiparametric efficiency theory of nonignorable missing data with a shadow variable. \textit{ACM/IMS Journal of Data Science}, 1(2), Article 5. \url{https://doi.org/10.1145/3592389}
+
+\end{document}
