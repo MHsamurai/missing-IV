@@ -102,7 +102,7 @@
 
 % ---------- Metadata ----------
 \title{欠測IVと潜在変数モデリングによる\\非無作為欠測の識別}
-\subtitle{容量制約付きgeneralized Roy selectionのMNAR表現とレビュー実験}
+\subtitle{多変量MNARのノンパラメトリック識別とオンラインレビューへの応用}
 \author{本多 将大 \quad 星野 崇宏 \quad 大津 泰介}
 \institute{慶應義塾大学・理化学研究所・London School of Economics and Political Science}
 \date{日本統計学会研究報告}
@@ -140,101 +140,154 @@
 \end{frame}
 
 % 2 ---------------------------------------------------------------------------
-\begin{frame}[shrink=6]{容量制約付きレビューはgeneralized Roy型の多変量MNARである}
+\begin{frame}[shrink=8]{Motivation：多変量MNARからマーケティング実証へ}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{0.48\textwidth}
-\begin{block}{既知：MNARと欠測IV}
+\begin{column}{0.50\textwidth}
+\begin{block}{マイクロデータの非観測問題}
 \scriptsize
-MNARでは未観測値が観測確率を動かす。
+欠測値，選択，反実仮想の非観測は頻繁に生じる。MNARでは未観測値自身が観測確率を動かすため，
 \[
-\Prb(R=1\mid Y,X)\text{ depends on }Y,
+\Prb(D=1\mid Y,X)\text{ depends on }Y
+\quad\Rightarrow\quad
+f(Y\mid D=1,X)\ne f(Y\mid X).
 \]
+観測集団だけに基づく推論は一般に偏る。
+\end{block}
+\begin{block}{欠測IVによるノンパラメトリック識別}
+\scriptsize
+選択だけを動かす通常のIVでは，アウトカム分布全体の点識別は困難である。一方，\textcite{dHaultfoeuille2010} は
 \[
-\Rightarrow\quad f(Y\mid R=1,X)\ne f(Y\mid X).
+D\indep V\mid Y,X,
+\qquad V\not\indep Y\mid X
 \]
-\textcite{dHaultfoeuille2010} は
-\[
-R\indep V\mid Y,X
-\]
-と完備性により，$f(Y\mid X)$ を関数形なしに
-\textbf{ノンパラメトリックに識別}した。
-多変量MNARでは self-censoring と no self-censoring が提案されている
+と完備性の下で，欠測アウトカムの分布を関数形なしに識別した。近年は自己値依存・他項目依存の多変量MNARについても識別・推定が示されている
 \parencite{LiMiaoShpitserTchetgen2023,MalinskyShpitserTchetgen2022}。
 \end{block}
-\begin{block}{既知：レビューの自己選択}
-\scriptsize
-公開レビューは極端な評価を過剰に含み，自己選択条件では
-forced condition より分布がpolarになる
-\parencite{SchoenmuellerNetzerStahl2020,HuPavlouZhang2017}。
-\end{block}
 \end{column}
-\begin{column}{0.49\textwidth}
-\begin{alertblock}{本研究の問題}
+\begin{column}{0.47\textwidth}
+\begin{alertblock}{オンラインレビューは制約付き多変量MNARである}
 \scriptsize
-個人 $i$ は $m$ 個の評価を持つが，公開できるのは $K_i<m$ 件である。
+レビュー投稿は自己選択的で，極端な経験を選ぶpolarity self-selectionにより，公開評価はJ字型またはpolarな分布になる
+\parencite{SchoenmuellerNetzerStahl2020,HuPavlouZhang2017}。
+
+\medskip
+個人 $i$ は $m$ 個の私的評価を持つが，認知的・行動的な投稿コストにより公開できるのは $K_i<m$ 件である。
 \[
 \Y_i=(Y_{i1},\ldots,Y_{im})',
 \qquad
 \sum_{j=1}^{m}D_{ij}=K_i.
 \]
-したがって
-\[
-\Prb(D_{ij}=1\mid\Y_i,\X_i,K_i)
-\]
-は自己値 $Y_{ij}$ と競合する他項目 $\Y_{i,-j}$ の双方に依存する。
+このとき多数の潜在的レビューが有限の開示枠を競い，$D_{ij}$ は自己値 $Y_{ij}$ と他項目 $\Y_{i,-j}$ の双方に依存する。
 \end{alertblock}
-\begin{block}{三つの目的}
+\begin{block}{中心的な問い}
 \scriptsize
-\begin{enumerate}
-\item generalized Roy型のmultiple selectionを，構造的ゼロをもつ多変量MNARとして表現する。
-\item 平均評価・極端評価率をtarget-specific bridgeによりノンパラメトリックに識別する。
-\item ランダム化した開示容量とランキングにより，選択と増幅を実験的に評価する。
-\end{enumerate}
+構造的ゼロとcross-item crowd-outをもつ分布から，平均評価や極端評価率をどこまでノンパラメトリックに回復できるか。
 \end{block}
-\end{column}
-\end{columns}
-\end{frame}
-
-\begin{frame}{選択方程式はgeneralized Roy modelに含まれる}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{0.49\textwidth}
-\begin{block}{包含関係}
-\scriptsize
-各レビュー候補には公開効用 $A_{ij}$ があり，個人は容量 $K_i$ の下で
-\[
-S_i(K_i)\in\argmax_{|S|\le K_i}\sum_{j\in S}A_{ij}
-\]
-を選ぶ。これは非金銭的効用と複数選択を許す
-\textbf{capacity-constrained generalized Roy model} と読める。
-\end{block}
-\begin{alertblock}{新規性を主張しない部分}
-\scriptsize
-\textcite{dHaultfoeuille2010} はshadow IVを
-unobserved-sector Roy modelへ適用できることを既に示している。
-したがって「Roy modelへのshadow-variable法の適用」自体は本研究の新規性ではない。
-\end{alertblock}
-\end{column}
-\begin{column}{0.48\textwidth}
-\begin{block}{本研究が検証する部分}
-\scriptsize
-\begin{enumerate}
-\item exact top-$K$ による構造的ゼロ；
-\item 他項目との競争によるcross-item crowd-out；
-\item oracleとpublicを同一標本から得る回復性能；
-\item $K_i$ とランキングのランダム化による因果比較。
-\end{enumerate}
-\end{block}
-\begin{alertblock}{位置づけ}
-\scriptsize
-方法論の中心は新しいRoy識別定理ではなく，
-レビュー生成をgeneralized Roy型MNARとして実装し，
-選択機構とshadow補正を直接評価することである。
-\end{alertblock}
 \end{column}
 \end{columns}
 \end{frame}
 
 % 3 ---------------------------------------------------------------------------
+\begin{frame}[shrink=7]{多変量MNARでは，項目 $j$ の公開が評価ベクトル全体に依存する}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.57\textwidth}
+\centering
+\begin{tikzpicture}[x=1.28cm,y=1.05cm,scale=.84,transform shape]
+  \node[softbox,minimum width=1.55cm] (dj) at (0,3.8) {$D_{ij}$};
+  \node[softbox,minimum width=1.75cm] (dm) at (4.2,3.8) {$\D_{i,-j}$};
+  \node[box,minimum width=1.55cm] (yj) at (0,1.85) {$Y_{ij}$};
+  \node[box,minimum width=1.75cm] (ym) at (4.2,1.85) {$\Y_{i,-j}$};
+  \node[sandbox,minimum width=1.55cm] (vj) at (0,0) {$V_{ij}$};
+  \node[sandbox,minimum width=1.75cm] (vm) at (4.2,0) {$\V_{i,-j}$};
+  \node[box,minimum width=1.5cm] (xk) at (-2.25,1.85) {$\X_i,K_i$};
+
+  \draw[arr,draw=Teal] (vj) -- (yj);
+  \draw[arr,draw=Teal] (vm) -- (ym);
+  \draw[arr] (xk) -- (yj);
+  \draw[arr] (xk) to[bend left=18] (dj);
+  \draw[arr,draw=Brick,line width=1.0pt] (yj) -- (dj);
+  \draw[arr,draw=Brick,line width=1.0pt] (ym) -- (dm);
+  \draw[arr,draw=Brick,dashed] (ym) to[bend right=17] (dj);
+  \draw[arr,draw=Brick,dashed] (yj) to[bend left=17] (dm);
+  \draw[<->,draw=GrayText,line width=.7pt] (yj) -- node[above,font=\scriptsize]{相互依存} (ym);
+  \draw[decorate,decoration={brace,amplitude=5pt},draw=Navy]
+    (-.75,4.45) -- (4.95,4.45)
+    node[midway,above=6pt,font=\scriptsize] {$\sum_{\ell=1}^{m}D_{i\ell}=K_i$};
+
+  \node[note,text=Brick] at (2.1,3.15) {実線：自己値依存\quad{}破線：cross-item crowd-out};
+  \node[note,text=Teal] at (2.1,-.65) {$V$は常時観測されるshadow signal};
+\end{tikzpicture}
+{\scriptsize
+\[
+Y_{ij}^{\mathrm{obs}}=D_{ij}Y_{ij},
+\qquad
+O_i=(\X_i,K_i,\V_i,\D_i,\Y_i^{\mathrm{obs}}).
+\]}
+\end{column}
+\begin{column}{0.40\textwidth}
+\begin{block}{既存の二つのcensoring関係}
+\scriptsize
+\textbf{Self-censoring:}
+\[
+D_{ij}\indep\Y_{i,-j}
+\mid \X_i,Y_{ij},\D_{i,-j}.
+\]
+\textbf{No self-censoring:}
+\[
+D_{ij}\indep Y_{ij}
+\mid \X_i,\Y_{i,-j},\D_{i,-j}.
+\]
+\end{block}
+\begin{alertblock}{容量制約付き選択}
+\scriptsize
+\[
+\Prb(D_{ij}=1\mid\Y_i,\X_i,K_i)
+\]
+は $Y_{ij}$ と $\Y_{i,-j}$ の双方に依存する。したがって既存のどちらのcensoring独立性にも一般に属さない。
+\end{alertblock}
+\begin{block}{Shadow-variable route}
+\tiny
+$C_{ij}=(\X_i,K_i,\V_{i,-j})$ を常時観測文脈とし，
+\[
+D_{ij}\indep V_{ij}\mid Y_{ij},C_{ij},
+\qquad
+V_{ij}\not\indep Y_{ij}\mid C_{ij}
+\]
+とtarget-specific bridgeにより，平均・裾確率を直接回復する。
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+% 4 ---------------------------------------------------------------------------
+\begin{frame}[shrink=5]{本研究は方法論を実験で検証し，プラットフォーム増幅へ拡張する}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.32\textwidth}
+\begin{block}{1. 方法論}
+\scriptsize
+容量制約付きmultiple selectionを，構造的ゼロと項目間依存をもつ多変量MNARとして定式化する。既存モデルと識別仮定が異なるため，平均・裾確率のtarget-specific bridgeによるノンパラメトリック識別を与える。
+\end{block}
+\end{column}
+\begin{column}{0.32\textwidth}
+\begin{block}{2. 実験1}
+\scriptsize
+同一標本から全項目の私的評価（oracle）と公開評価（public）を取得する。開示容量 $K_i$ をランダム化し，MNARのcrowd-outと識別・回復性能を直接比較する。
+\end{block}
+\end{column}
+\begin{column}{0.32\textwidth}
+\begin{block}{3. 実験2}
+\scriptsize
+発展的に，実際の擬似プラットフォームでrandom，helpfulness，生成AIランキングを比較し，投稿段階の歪みが表示アルゴリズムによって増幅されるかを検証する。
+\end{block}
+\end{column}
+\end{columns}
+\begin{alertblock}{期待される成果とアウトリーチ}
+\scriptsize
+観察される公開評価から母集団の評価汎関数を回復する理論と実証を得る。統計学，情報理論，経済学，商学，心理学，機械学習を横断し，SNS，口コミ，体験談，苦情投稿などの投稿コストと取得データが社会的評価分布に与える影響を明らかにする。
+\end{alertblock}
+\end{frame}
+
+% 5 ---------------------------------------------------------------------------
 \begin{frame}[shrink=5]{既知なのは極端性，未解明なのは経験間の競争である}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.42\textwidth}
@@ -269,7 +322,7 @@ $Y_{ij}$ を固定しても，他項目により強い経験があると $j$ は
 \end{columns}
 \end{frame}
 
-% 4 ---------------------------------------------------------------------------
+% 6 ---------------------------------------------------------------------------
 \begin{frame}[shrink=7]{Strategic sample selection を欠測パターンへ写像する}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{0.45\textwidth}
@@ -317,7 +370,47 @@ Y_{ij}^{obs}=D_{ij}Y_{ij}.
 \end{columns}
 \end{frame}
 
-% 5 ---------------------------------------------------------------------------
+% 7 ---------------------------------------------------------------------------
+\begin{frame}{選択方程式はgeneralized Roy modelに含まれる}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.49\textwidth}
+\begin{block}{包含関係}
+\scriptsize
+各レビュー候補には公開効用 $A_{ij}$ があり，個人は容量 $K_i$ の下で
+\[
+S_i(K_i)\in\argmax_{|S|\le K_i}\sum_{j\in S}A_{ij}
+\]
+を選ぶ。これは非金銭的効用と複数選択を許す
+\textbf{capacity-constrained generalized Roy model} と読める。
+\end{block}
+\begin{alertblock}{新規性を主張しない部分}
+\scriptsize
+\textcite{dHaultfoeuille2010} はshadow IVを
+unobserved-sector Roy modelへ適用できることを既に示している。
+したがって「Roy modelへのshadow-variable法の適用」自体は本研究の新規性ではない。
+\end{alertblock}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{本研究が検証する部分}
+\scriptsize
+\begin{enumerate}
+\item exact top-$K$ による構造的ゼロ；
+\item 他項目との競争によるcross-item crowd-out；
+\item oracleとpublicを同一標本から得る回復性能；
+\item $K_i$ とランキングのランダム化による因果比較。
+\end{enumerate}
+\end{block}
+\begin{alertblock}{位置づけ}
+\scriptsize
+方法論の中心は新しいRoy識別定理ではなく，
+容量制約付きレビューをdependent multivariate MNARとして実装し，
+選択機構とshadow補正を直接評価することである。
+\end{alertblock}
+\end{column}
+\end{columns}
+\end{frame}
+
+% 8 ---------------------------------------------------------------------------
 \begin{frame}[shrink=5]{既存の多変量MNARは top-$K$ の支持集合と両立しない}
 \scriptsize
 \begin{tabular}{>{\raggedright\arraybackslash}p{0.18\textwidth}
@@ -894,11 +987,9 @@ helpfulness評価にはproper scoring / peer-predictionを事前指定する。
 \end{frame}
 
 % 19 --------------------------------------------------------------------------
-\begin{frame}[shrink=6]{結論：Roy型選択の対象汎関数を直接回復する}
+\begin{frame}[shrink=6]{結論：多変量MNARの対象汎関数を回復し，レビューで検証する}
 \begin{enumerate}
-\item \textbf{位置づけ}\quad
-選択方程式はgeneralized Roy modelに含まれ，shadow-variable法のRoy応用自体は既知である。
-\item \textbf{レビューへの貢献}\quad
+\item \textbf{新しい多変量MNAR表現}\quad
 exact top-$K$ を構造的ゼロとcross-item crowd-outをもつ多変量MNARとして実装する。
 \item \textbf{非識別の境界}\quad
 exact top-$K$ では完全ケースが構造的に存在せず，full joint law は一般に非識別である。
@@ -906,6 +997,8 @@ exact top-$K$ では完全ケースが構造的に存在せず，full joint law 
 shadow exclusionとtarget-specific representerの存在により，平均・裾確率をfull lawなしにノンパラメトリックに識別する。
 \item \textbf{実験}\quad
 ランダム化した $K$ とランキングにより，選択機構，oracle回復性能，アルゴリズム増幅を分けて評価する。
+\item \textbf{位置づけ}\quad
+選択方程式はgeneralized Roy modelに含まれ，shadow-variable法のRoy応用自体は既知である。新規性はdependent MNARの定式化，識別境界，ランダム化検証に置く。
 \end{enumerate}
 \begin{alertblock}{中心メッセージ}
 \[
