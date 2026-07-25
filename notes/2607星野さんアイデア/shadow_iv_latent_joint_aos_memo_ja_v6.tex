@@ -1,0 +1,4798 @@
+\documentclass[11pt,a4paper]{ltjsarticle}
+\usepackage[margin=20mm,headsep=7mm,footskip=10mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,bm,mathrsfs}
+\usepackage{booktabs,longtable,tabularx,array,multirow}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc,matrix}
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage[nameinlink,noabbrev]{cleveref}
+
+\definecolor{navy}{HTML}{15365A}
+\definecolor{accent}{HTML}{2878A8}
+\definecolor{softblue}{HTML}{F2F7FA}
+\definecolor{softgreen}{HTML}{F2F8F5}
+\definecolor{softred}{HTML}{FBF3F2}
+\definecolor{deepgreen}{HTML}{21664A}
+\definecolor{deepred}{HTML}{8F3833}
+\definecolor{softgray}{HTML}{F6F7F8}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=navy,
+  citecolor=deepgreen,
+  urlcolor=accent,
+  pdftitle={常時観測 Shadow-IV と共有潜在構造による MNAR の同時識別: 離散・連続潜在変数の識別理論, 線形因子分析・Rasch IRT, および弱識別一様推論},
+  pdfauthor={Masahiro Honda; Takahiro Hoshino; Taisuke Otsu}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{常時観測 Shadow-IV と共有潜在構造}
+\rhead{AoS 理論研究メモ v6}
+\cfoot{\thepage}
+\setlength{\headheight}{18pt}
+\setlength{\parindent}{1em}
+\setlength{\parskip}{0.25em}
+\setlength{\emergencystretch}{3em}
+\setlist{nosep,leftmargin=2.2em}
+\allowdisplaybreaks
+
+\newtheorem{assumption}{仮定}[section]
+\newtheorem{definition}{定義}[section]
+\newtheorem{theorem}{定理}[section]
+\newtheorem{proposition}{命題}[section]
+\newtheorem{lemma}{補題}[section]
+\newtheorem{corollary}{系}[section]
+\newtheorem{example}{例}[section]
+\theoremstyle{remark}
+\newtheorem{remark}{注意}[section]
+
+\crefname{assumption}{仮定}{仮定}
+\crefname{definition}{定義}{定義}
+\crefname{theorem}{定理}{定理}
+\crefname{proposition}{命題}{命題}
+\crefname{lemma}{補題}{補題}
+\crefname{corollary}{系}{系}
+\crefname{example}{例}{例}
+\crefname{remark}{注意}{注意}
+
+\newcommand{\E}{\mathbb E}
+\newcommand{\Pp}{\mathbb P}
+\newcommand{\R}{\mathbb R}
+\newcommand{\C}{\mathbb C}
+\newcommand{\N}{\mathbb N}
+\newcommand{\ind}{\perp\!\!\!\perp}
+\newcommand{\one}{\bm 1}
+\newcommand{\given}{\,\middle|\,}
+\newcommand{\dd}{\,\mathrm d}
+\newcommand{\ii}{\mathrm i}
+\newcommand{\wh}{\widehat}
+\newcommand{\wt}{\widetilde}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\inner}[2]{\left\langle#1,#2\right\rangle}
+\newcommand{\cA}{\mathcal A}
+\newcommand{\cB}{\mathcal B}
+\newcommand{\cC}{\mathcal C}
+\newcommand{\cD}{\mathcal D}
+\newcommand{\cE}{\mathcal E}
+\newcommand{\cF}{\mathcal F}
+\newcommand{\cG}{\mathcal G}
+\newcommand{\cH}{\mathcal H}
+\newcommand{\cI}{\mathcal I}
+\newcommand{\cK}{\mathcal K}
+\newcommand{\cL}{\mathcal L}
+\newcommand{\cM}{\mathcal M}
+\newcommand{\cN}{\mathcal N}
+\newcommand{\cO}{\mathcal O}
+\newcommand{\cP}{\mathcal P}
+\newcommand{\cQ}{\mathcal Q}
+\newcommand{\cR}{\mathcal R}
+\newcommand{\cS}{\mathcal S}
+\newcommand{\cT}{\mathcal T}
+\newcommand{\cU}{\mathcal U}
+\newcommand{\cV}{\mathcal V}
+\newcommand{\cW}{\mathcal W}
+\newcommand{\cX}{\mathcal X}
+\newcommand{\cY}{\mathcal Y}
+\newcommand{\cZ}{\mathcal Z}
+\newcommand{\Mop}{\mathscr M}
+\newcommand{\Aop}{\mathscr A}
+\newcommand{\Top}{\mathscr T}
+\newcommand{\Bop}{\mathscr B}
+\newcommand{\Lop}{\mathscr L}
+\newcommand{\Gop}{\mathscr G}
+\newcommand{\Jop}{\mathscr J}
+\newcommand{\Sop}{\mathscr S}
+\newcommand{\Cop}{\mathscr C}
+\newcommand{\Jcal}{\mathscr D}
+\newcommand{\Kop}{\mathscr K}
+\newcommand{\Qop}{\mathscr Q}
+\newcommand{\Fop}{\mathscr F}
+\newcommand{\Null}{\operatorname{Null}}
+\newcommand{\Range}{\operatorname{Range}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\argmin}{\operatorname*{arg\,min}}
+\newcommand{\argmax}{\operatorname*{arg\,max}}
+\newcommand{\cl}{\operatorname{cl}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\sgn}{\operatorname{sgn}}
+\newcommand{\Span}{\operatorname{span}}
+\newcommand{\Id}{\operatorname{Id}}
+\newcommand{\dist}{\operatorname{dist}}
+\newcommand{\col}{\operatorname{col}}
+\newcommand{\row}{\operatorname{row}}
+\newcommand{\op}{\operatorname{op}}
+\newcommand{\KL}{\operatorname{KL}}
+
+\title{\vspace{-1.4cm}
+{\color{navy}\bfseries 常時観測 Shadow-IV と共有潜在構造による\\
+MNAR の同時識別}\\[2mm]
+{\large 離散・連続 $F$ の識別理論・線形因子分析/Rasch IRT・弱識別一様推論}}
+\author{
+Masahiro Honda\\[-1mm]
+{\small Keio University and RIKEN}
+\and
+Takahiro Hoshino\\[-1mm]
+{\small Keio University and RIKEN}
+\and
+Taisuke Otsu\\[-1mm]
+{\small London School of Economics and Political Science}
+}
+\date{2026年7月24日\quad 理論研究メモ v6}
+
+\begin{document}
+\maketitle
+
+\begin{tcolorbox}[colback=softblue,colframe=accent,boxrule=.8pt,arc=2mm]
+\textbf{要旨．}
+常時観測される shadow instrument を持つ一般的な多変量 missing not at random (MNAR) を考える。欠測 pattern に容量制約は課さず，完全ケースが存在する通常の設定，完全ケースを欠く sparse pattern，および exact top-$K$ を同一の supported-block 枠組みに含める。各 block の inverse-selection bridge は条件付きモーメント方程式を満たすが，完備性を仮定せず，解の非一意性を許す。測定値は共通の潜在変数を介して結ばれ，その共有構造が複数 block の weighted moments に制約を課す。
+
+第一の主結果は，bridge 方程式 $\Top\omega=b$ と latent moment 方程式 $\Bop\omega=\Psi(\lambda)$ を同時に考えたとき，latent identified set が商写像 $q_{\Bop\Null(\Top)}\circ\Psi$ の fiber と厳密に一致するという商空間識別定理である。第二に，潜在変数の型を明示的に分ける。有限個の離散 latent classes では normalized tangent は有限次元であり，selection cancellation と Rado--Hall capacity condition により primitive quotient injectivity の可否を必要十分に特徴づける。これに対し，連続 $F$ のノンパラメトリック model では tangent は無限次元であるため，有限 rank genericity を用いない。Continuous selection probability を Hilbert-space 上で正確に消去し，shadow conditional-expectation operators $\Cop_S$ と latent score operators $\Jcal_S$ の積 $\Cop\Jcal$ が joint quotient identification を決めることを示す。Protected adjoint features $\Jcal_S^*\Cop_S^*q$ の totality が識別の必要十分条件であり，latent score space と shadow-null space の principal-angle transversality，および shadow attenuation の reduced singular values が sieve-level stability を決める。
+
+第三に，spectral-fiber decomposition を持つ continuous model について，各 mode の一つの full-rank witness だけから injectivity が Baire-generic に成立することを証明する。Compact direct-sum operator の singular values は mode matrices の singular values の decreasing rearrangement に等しい。正の Fourier shadow kernel を明示的に構成し，continuous shadow relevance が independence に任意に近くても全 Fourier modes を識別し得る一方，effective singular values は任意に速くゼロへ近づき得ることを示す。Additive calibration-anchor model では，measurement curve $g_j$ の有効 multiplier が shadow transversality $\tau_{j,k}$ と anchor-error characteristic function $\varphi_a(2\pi k)$ の積になり，mild/severe ill-posedness を primitive quantities から特徴づける。
+
+第四に，joint penalized sieve minimum distance 推定量について entropy と spline 近似誤差から収束率を導き，Gaussian integrated inverse experiment における minimax 上下界，DQM/LAN，regular latent functionals の one-step 推論を与える。最後に effective singular value の lower bound，bridge uniqueness，target point identificationを要求しない finite-sample projection sets と bias-aware Anderson--Rubin 型 profile confidence sets を構成し，weak identification の全 sequence に一様な coverage と honest-diameter lower bound を証明する。
+
+第五に，応用上の仮定を，①欠測 indicator--顕在変数関係，②顕在変数--潜在変数測定関係，③潜在分布の三層へ分解する。Pure shadow IV は完全データの manifest map に残る latent nonidentification を超えられないという complete-data ceiling を証明し，欠測なし，欠測 IV なしの MNAR，shadow-IV ありの MNAR の各 regime で，①--③のどこを parametric，structural semiparametric，または nonparametric にできるかを整理する。線形一因子モデルでは任意の潜在分布の下で protected covariance graph の connected non-bipartite condition により loading を識別し，Rasch IRT では任意の能力分布の下で protected discordant pair-cell ratio から item difficulties を識別する。潜在分布を正規分布や有限混合などの有限次元族に限定する場合は，protected statistics の quotient Jacobian による局所識別へ還元する。
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=softgreen,colframe=deepgreen,boxrule=.7pt,arc=2mm,title=本稿の中心定理]
+\begin{enumerate}[label=\textbf{T\arabic*.}]
+\item \textbf{Exact quotient identification:} latent identified set を $\Psi(\lambda)-\Psi(\lambda_0)\in\Bop\Null(\Top)$ で必要十分に特徴づける。
+\item \textbf{Discrete $F$: sharp Rado--Hall genericity:} 有限 latent tangent では selection cancellation と Rado--Hall capacity condition により primitive quotient injectivity の可能性を必要十分に特徴づける。
+\item \textbf{Continuous $F$: totality theorem:} 無限次元 latent tangent では $\Null(\Cop\Jcal)=\{0\}$，protected adjoint features の totality，および restricted completeness が同値であることを示す。
+\item \textbf{Continuous transversality and singular values:} sieve principal angle $\tau_n$，shadow reduced singular value $\chi_n$，latent attenuation $s_n(\Jcal)$ が有効特異値を積として支配することを証明する。
+\item \textbf{Baire-generic spectral injectivity:} countable spectral fibers の各 mode に一つの witness があれば，全 mode injectivity は dense $G_\delta$ で成立し，direct-sum singular spectrum を明示できる。
+\item \textbf{Joint sieve estimation and minimax theory:} entropy，近似誤差，restricted singular value，および mild/severe inverse rates を統合する。
+\item \textbf{Regular and weak-ID-robust inference:} $d\chi\in\Range(\Sop^*)$ を root-$n$ 正則性の必要十分条件とし，finite-sample projection，profile/AR coverage，および honest-diameter lower bound を与える。
+\item \textbf{Three-layer identification and concrete measurement models:} ①欠測 model，②測定 model，③潜在分布を分離し，pure-shadow complete-data ceiling，protected-statistic transfer，線形因子の graph/signless-Laplacian theorem，Rasch の distribution-free pair-ratio/Laplacian theorem，および parametric latent-family の quotient-Jacobian theorem を与える。
+\end{enumerate}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=softred,colframe=deepred,boxrule=.7pt,arc=2mm,title=理論メモとしての範囲]
+本文の商空間識別，finite-support selection cancellation，Rado--Hall genericity，continuous selection cancellation，totality/restricted-completeness equivalence，sieve transversality，spectral-fiber Baire genericity，direct-sum singular spectrum，positive Fourier shadow construction，joint sieve rate，Gaussian minimax bounds，DQM/LAN，regular target inference，および weak-ID-uniform projection inferenceには証明を付す。Finite latent class と continuous additive calibration-anchor の大域識別に加え，線形一因子モデルの covariance-graph identification，Rasch difficulty の pair-ratio identification，parametric latent-family の局所識別，pure-shadow complete-data ceiling，および三層 transfer principle も構成的に証明する。一方，任意の深層 latent architecture，任意の continuous kernel model に対する spectral decomposition，または任意の full likelihood における semiparametric efficiency は主張しない。Continuous genericity は一般 totality theorem と，spectrally decomposable primitive family に対する residual theorem を区別する。
+\end{tcolorbox}
+
+\tableofcontents
+\newpage
+
+\section{導入}\label{sec:intro}
+
+\subsection{問題設定}
+個体は潜在的測定ベクトル $Y=(Y_1,\ldots,Y_m)$ を持ち，欠測指標 $D=(D_1,\ldots,D_m)\in\{0,1\}^m$ に応じて $Y_D=\{Y_j:D_j=1\}$ のみが観測される。$X$ は常時観測共変量，$Z$ は欠測機構から排除される shadow signals，$W$ は必要に応じて潜在分布を動かす mixture shifter である。観測データは
+\[
+O=(X,W,Z,D,Y_D).
+\]
+本稿では $D$ の支持集合に容量制約を課さない。完全ケース $D=\one_m$ が正の確率を持ってもよく，持たなくてもよい。重要なのは，各分析 block $S$ について，$Y_S$ が同時観測される indicator $R_S$ と，常時観測される shadow $Z_S$ を定義できることである。
+
+既存の shadow-variable 法は，典型的には
+\[
+R\ind Z\mid(Y,X),\qquad 0<P(R=1\mid Y,X)
+\]
+と完備性から inverse-selection bridge または full-data law を識別する。他方，潜在測定モデルは
+\[
+P(Y\mid W,X)=\int\prod_{j=1}^mP(Y_j\mid F,X)\,\dd P(F\mid W,X)
+\]
+のような共有構造を与える。標準的な段階法は，まず各 bridge を一意に識別し，次に latent decomposition を行う。本稿はこの順序を外し，bridge と latent parameter を観測データ上の一つの joint system として扱う。
+
+\subsection{新規性の位置}
+「shadow が常時観測される」こと自体，あるいは「latent MNAR を joint likelihood で推定する」こと自体は既知である。本稿が狙う理論的前進は，次の厳密な区別にある。
+\begin{quote}
+各 shadow equation が単独では bridge を一意にしなくても，複数の weighted moments が同一の latent measurement system から生成されるという横断制約により，latent parameter またはその smooth functional が一意になることがある。
+\end{quote}
+これを単なる sufficient condition ではなく，商空間の fiber と partialled operator の null space による必要十分条件として記述する。
+
+\subsection{Shadow と mixture shifter を分ける}
+$Z$ と $W$ の役割は異なる。$Z$ は selection exclusion
+\[
+R_S\ind Z_S\mid(Y_S,C_S)
+\]
+を支え，$W$ は $P(F\mid W,X)$ を動かして latent classes や連続潜在分布を分離する。一般に
+\[
+D\ind Z\mid(Y,F,X)
+\]
+から $F$ を積分しても $D\ind Z\mid(Y,X)$ は従わない。従って，latent predictor と missingness shadow を同一変数で兼用する場合には，周辺化後の exclusion を独立に検証する必要がある。
+
+\subsection{既存研究との関係}
+本稿は，d'Haultfoeuille (2010)，Miao and Tchetgen Tchetgen (2016)，Miao et al. (2024) の shadow-variable MNAR，Li, Miao and Tchetgen Tchetgen (2023) の target-specific representer，Bennett et al. (2026) の nonunique nuisance 下の strongly identified functional，Hu and Schennach (2008)，Kotlarski (1967)，Allman, Matias and Rhodes (2009) の潜在測定・generic identification，Ai and Chen (2003)，Chen and Pouzo (2012) の conditional-moment sieve，Hall and Horowitz (2005)，Cavalier (2008)，Chen and Reiss (2011) の inverse-problem theory，Anderson and Rubin (1949)，Stock and Wright (2000)，Guggenberger and Smith (2005)，Kleibergen (2005)，Otsu (2006)，Andrews and Mikusheva (2016) の weak-identification robust inference，および Dufour (1997) の honest confidence set に関する impossibility logic に接続する。さらに，欠測 IV を用いない latent-MNAR の factor/IRT 文献は，parametric selection，latent response propensity，または finite-mixture joint model により①--③を同時に制限する~\cite{MuthenKaplanHollis1987,HolmanGlas2005,Lee2006,RoseVonDavierXu2010,RoseVonDavierNagengast2017,KuhaKatsikatsouMoustaki2018,BacciBartolucci2015}。本稿はこれらを否定するのではなく，shadow IV により①の functional form を外したとき，②--③の完全データ識別条件だけをどこまで維持すればよいかを明示する。近年の identifiable deep latent MNAR は conditional no-self-censoring given latent variables を用いるが，本稿は observed shadow exclusion と共有 latent restrictions の交差を対象にする。
+
+\subsection{構成}
+\Cref{sec:model}で一般 model と離散/連続 $F$ の分岐を定義する。\Cref{sec:global}で商空間による大域識別，\Cref{sec:generic}で有限次元・離散 $F$ の Rado--Hall genericity，\Cref{sec:continuousprimitive}で連続 $F$ の totality・transversality・spectral genericity，\Cref{sec:local}で一般有効統合作用素，\Cref{sec:special}で主要な特殊ケースを証明する。\Cref{sec:factorrasch}は理論を線形一因子分析と Rasch IRT に具体化し，graph geometry，弱識別，および parametric latent family の局所識別を示す。\Cref{sec:boundary}は一般識別境界，\Cref{sec:estimation}は joint sieve 推定，\Cref{sec:minimax}は特異値と minimax theory，\Cref{sec:dqminference}は DQM/LAN と smooth functional inference，\Cref{sec:weakuniform}は weak identification に一様な projection inference を扱う。最後の \Cref{app:three-layer-taxonomy} は①欠測 model，②測定 model，③潜在分布の parametric/semiparametric/nonparametric 組合せを，欠測なし，no-IV MNAR，shadow-IV MNAR の三 regime で網羅的に整理する。
+
+\section{一般的な capacity-free shadow--latent model}\label{sec:model}
+
+\subsection{Supported blocks と常時観測 shadow}
+集合 $S\subseteq\{1,\ldots,m\}$ に対し
+\[
+R_S=\prod_{j\in S}D_j,\qquad Y_S=(Y_j:j\in S)
+\]
+と置く。$P(R_S=1)>0$ を満たす $S$ を supported block と呼び，使用する有限個の block collection を $\cS$ とする。$C_S$ は $X,W$，欠測 pattern の既知部分，および block 固有の常時観測文脈を含む。$Z_S$ は全個体について観測される shadow signal である。
+
+\begin{assumption}[Blockwise shadow validity]\label{as:shadow}
+各 $S\in\cS$ について次を仮定する。
+\begin{enumerate}[label=(SV\arabic*)]
+\item $R_S\ind Z_S\mid(Y_S,C_S)$。
+\item $\pi_S(Y_S,C_S)=P(R_S=1\mid Y_S,C_S)$ は a.s. 正である。
+\item 真の inverse-selection bridge $\omega_{S0}=1/\pi_S$ は指定した Hilbert space $\mathbb H_{\omega,S}$ に属する。
+\end{enumerate}
+\end{assumption}
+
+\Cref{as:shadow}の下で
+\begin{equation}
+\E\{R_S\omega_{S0}(Y_S,C_S)\mid Z_S,C_S\}=1.
+\label{eq:shadowbridge}
+\end{equation}
+ただし，\eqref{eq:shadowbridge} の解の一意性は仮定しない。$\mathbb H_\omega=\bigoplus_{S\in\cS}\mathbb H_{\omega,S}$ とし，観測法則 $P_O$ の下で bounded linear operator
+\begin{equation}
+(\Top\omega)_S
+=\E\{R_S\omega_S(Y_S,C_S)\mid Z_S,C_S\}
+\label{eq:Tdef}
+\end{equation}
+を定義する。右辺の target を $b=(1:S\in\cS)$ と書く。
+
+\begin{remark}[観測可能性]
+$Y_S$ は $R_S=1$ のときだけ観測されるが，$R_S\omega_S(Y_S,C_S)$ は $R_S=0$ でゼロと定義できるため，\eqref{eq:Tdef} は観測データのみから定義される。
+\end{remark}
+
+\subsection{共有 latent structure が課す weighted moments}
+$\lambda\in\Lambda$ を潜在分布，measurement kernels，measurement curves，または有限 latent-class parameters をまとめた parameter とする。各 block $S$ について，観測可能な test function vector $\psi_S(Y_S,C_S)\in\mathbb K_S$ を選び，
+\begin{equation}
+(\Bop\omega)_S
+=\E\{R_S\omega_S(Y_S,C_S)\psi_S(Y_S,C_S)\}
+\label{eq:Bdef}
+\end{equation}
+と置く。$\mathbb K_2=\bigoplus_{S\in\cS}\mathbb K_S$ とし，$\Bop:\mathbb H_\omega\to\mathbb K_2$ は bounded linear と仮定する。
+
+共有 latent model は，同じ moment vector を
+\begin{equation}
+\Psi(\lambda)=\bigl(\E_\lambda\psi_S(Y_S,C_S):S\in\cS\bigr)\in\mathbb K_2
+\label{eq:Psidef}
+\end{equation}
+として生成する。真値 $(\omega_0,\lambda_0)$ は
+\begin{equation}
+\Top\omega_0=b,
+\qquad
+\Bop\omega_0=\Psi(\lambda_0)
+\label{eq:jointpopulation}
+\end{equation}
+を満たす。
+
+\begin{definition}[Joint shadow--latent solution set]\label{def:solutionset}
+観測法則 $P_O$ に対し
+\begin{equation}
+\cZ(P_O)
+=\{(\omega,\lambda)\in\mathbb H_\omega\times\Lambda:
+\Top\omega=b,\ \Bop\omega=\Psi(\lambda)\}
+\label{eq:solutionset}
+\end{equation}
+を joint solution set と呼ぶ。
+\end{definition}
+
+\begin{remark}[Full selection likelihood は不要]
+\eqref{eq:solutionset}は各 block の conditional moment model であり，$\{\omega_S\}$ が一つの global pattern propensity $P(D=d\mid Y,X)$ から来ることを要求しない。full observed-data likelihood を構成する場合には blockwise compatibility を追加すべきであるが，本稿の識別原理は conditional moment model 自体に成立する。
+\end{remark}
+
+\subsection{潜在モデルの代表例}
+本稿の抽象定理は次を含む。
+\begin{enumerate}[label=(\roman*)]
+\item \textbf{有限 latent class:}
+\[
+P(Y_S=y_S\mid W=w,X=x)
+=\sum_{f=1}^r\lambda_f(w,x)\prod_{j\in S}M_j(y_j,f;x).
+\]
+\item \textbf{連続 additive measurement:}
+\[
+Y_a=U+\varepsilon_a,\quad Y_b=U+\varepsilon_b,
+\quad Y_j=g_j(U)+\varepsilon_j.
+\]
+\item \textbf{一般 kernel model:}
+\[
+P(Y_S\in\dd y_S\mid W,X)
+=\int\prod_{j\in S}p_j(y_j\mid f,X)\,\dd Q(f\mid W,X).
+\]
+\end{enumerate}
+$\Psi$ は cell probabilities，characteristic functions，conditional means，または series moments を積み上げて構成できる。
+
+
+\subsection{潜在変数の型による理論的分岐}\label{subsec:latenttypes}
+本稿では ``$F$ が離散か連続か'' よりも，正規化後の latent tangent space が有限次元か無限次元かが理論を分ける。
+\begin{center}
+\begin{tabularx}{0.97\textwidth}{>{\bfseries}p{30mm}X X}
+\toprule
+型 & 識別 geometry & Genericity / stability \\
+\midrule
+有限離散 $F\in\{1,\ldots,r\}$
+& latent tangent は有限次元。Cell/test moment Jacobians の quotient rank で識別する。
+& Rado--Hall capacity，nonzero minors，Lebesgue-null exceptional set。\\
+連続 $F$，または countably infinite discrete $F$
+& latent density・measurement curves・error laws の tangent は separable Hilbert space。Conditional-expectation operator と latent score operator の積で識別する。
+& Adjoint features の totality，null-space transversality，Baire-residual spectral injectivity，modewise singular-value decay。\\
+連続 $F$ だが parametric / fixed-dimensional sieve
+& tangent は有限次元。
+& 離散 $F$ と同じ finite-dimensional rank theory を適用可能。\\
+\bottomrule
+\end{tabularx}
+\end{center}
+従って \Cref{sec:generic} は有限-dimensional tangent の theorem であり，$F$ の support が有限であること自体を本質とはしない。完全ノンパラメトリックな連続 $F$ には \Cref{sec:continuousprimitive} の totality/transversality theory を用いる。
+
+\section{商空間による大域的 joint identification}\label{sec:global}
+
+\subsection{Exact fiber characterization}
+$\cN_T=\Null(\Top)$，$\cR_B=\Bop(\cN_T)$ と置く。$\cR_B$ は algebraic linear subspace であり，必ずしも閉でなくてよい。$q_B:\mathbb K_2\to\mathbb K_2/\cR_B$ を algebraic quotient map とする。
+
+\begin{theorem}[商空間による exact global identification]\label{thm:quotient}
+$\cZ(P_O)$ が非空で $(\omega_0,\lambda_0)\in\cZ(P_O)$ とする。このとき latent parameter の projection は厳密に
+\begin{equation}
+\operatorname{proj}_\lambda\cZ(P_O)
+=\{\lambda\in\Lambda:
+\Psi(\lambda)-\Psi(\lambda_0)\in\cR_B\}
+=\{\lambda:q_B\Psi(\lambda)=q_B\Psi(\lambda_0)\}.
+\label{eq:globalfiber}
+\end{equation}
+従って次が成立する。
+\begin{enumerate}[label=(\roman*)]
+\item $\lambda_0$ が点識別されるための必要十分条件は
+\begin{equation}
+\Psi(\lambda)-\Psi(\lambda_0)\in\Bop\Null(\Top)
+\quad\Longrightarrow\quad \lambda=\lambda_0.
+\label{eq:globalidcond}
+\end{equation}
+\item target $\theta:\Lambda\to\Theta_\theta$ が点識別されるための必要十分条件は，$q_B\Psi$ の $\lambda_0$-fiber 上で $\theta$ が一定であること，すなわち
+\begin{equation}
+q_B\Psi(\lambda)=q_B\Psi(\lambda_0)
+\quad\Longrightarrow\quad
+\theta(\lambda)=\theta(\lambda_0)
+\label{eq:globaltarget}
+\end{equation}
+である。
+\item $q_B\circ\Psi$ が $\Lambda$ 上で injective なら，latent model は global に識別される。
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+$(\omega,\lambda)\in\cZ(P_O)$ とする。$\Top\omega=\Top\omega_0=b$ なので $h=\omega-\omega_0\in\Null(\Top)$。さらに
+\[
+\Psi(\lambda)-\Psi(\lambda_0)
+=\Bop\omega-\Bop\omega_0
+=\Bop h\in\Bop\Null(\Top)=\cR_B.
+\]
+従って左辺は \eqref{eq:globalfiber} の右辺に含まれる。
+
+逆に，$\Psi(\lambda)-\Psi(\lambda_0)\in\cR_B$ とする。定義により，ある $h\in\Null(\Top)$ が存在して
+$\Bop h=\Psi(\lambda)-\Psi(\lambda_0)$。$\omega=\omega_0+h$ と置けば
+\[
+\Top\omega=b,
+\qquad
+\Bop\omega=\Bop\omega_0+\Bop h=\Psi(\lambda),
+\]
+よって $(\omega,\lambda)\in\cZ(P_O)$。これで \eqref{eq:globalfiber} が示された。(i)--(iii) は fiber characterization から直ちに従う。
+\end{proof}
+
+\begin{proposition}[制約付き bridge class の exact fiber]\label{prop:constrainedfiber}
+正値性，形状制約，または compatibility を課した候補集合 $\Omega\subseteq\mathbb H_\omega$ を考え，
+\[
+\Delta_\Omega(\omega_0)
+=\{h\in\Null(\Top):\omega_0+h\in\Omega\}
+\]
+と置く。$\cZ_\Omega(P_O)=\cZ(P_O)\cap(\Omega\times\Lambda)$ なら
+\begin{equation}
+\operatorname{proj}_\lambda\cZ_\Omega(P_O)
+=\{\lambda:\Psi(\lambda)-\Psi(\lambda_0)
+\in\Bop\Delta_\Omega(\omega_0)\}.
+\label{eq:constrainedfiber}
+\end{equation}
+特に $\Omega=\omega_0+\mathbb V$ が affine linear class なら，右辺は
+$\Bop\{\Null(\Top)\cap\mathbb V\}$ を用いた quotient fiber に還元される。
+\end{proposition}
+
+\begin{proof}
+$\omega\in\Omega$ と $\Top\omega=\Top\omega_0$ は，$h=\omega-\omega_0\in\Delta_\Omega(\omega_0)$ と同値である。残りは \Cref{thm:quotient} の両包含と同一である。
+\end{proof}
+
+\begin{remark}[線形 relaxation と正値 bridge]
+\Cref{thm:quotient} は $\Omega=\mathbb H_\omega$ とした exact conditional-moment model である。Inverse-selection interpretation のため候補 bridge に正値性を要求する場合は \Cref{prop:constrainedfiber} が exact identified set を与える。線形 relaxation 上で quotient injectivity が成立すれば，任意のより小さい正値候補集合上でも識別されるため，\Cref{thm:quotient} の条件は保守的な十分条件としても使える。
+\end{remark}
+
+\begin{remark}[Jointness が仮定を弱める厳密な意味]
+段階法は通常 $\Null(\Top)=\{0\}$ を要求する。\Cref{thm:quotient}は $\Null(\Top)\neq\{0\}$ を許し，必要なのは latent model の差分が nuisance image $\Bop\Null(\Top)$ と衝突しないことだけである。従って bridge の一意性ではなく，latent moment map の quotient injectivity が本質である。
+\end{remark}
+
+\begin{corollary}[一意 bridge benchmark]\label{cor:uniquebridge}
+$\Null(\Top)=\{0\}$ なら $\cR_B=\{0\}$ であり，\Cref{thm:quotient}の条件は $\Psi$ の injectivity に還元される。これは「full law または必要 moments を shadow で回復してから latent model を識別する」通常の段階 route である。
+\end{corollary}
+
+\begin{corollary}[Bridge 自体を識別しない target identification]\label{cor:targetonly}
+$\lambda$ 全体が識別されなくても，$\theta$ が $q_B\Psi$ の fiber 上で一定なら $\theta(\lambda_0)$ は識別される。特に，curve の高周波成分が nuisance image と衝突しても，低周波 linear functional が fiber 上で一定ならその functional は識別され得る。
+\end{corollary}
+
+\subsection{Strict extension の有限次元例}
+\begin{example}[Bridge equation は非一意だが latent parameter は大域識別]\label{ex:strictglobal}
+$\omega=(u_1,u_2)\in\R^2$，$\lambda=\beta\in\R$ とし
+\[
+\Top=(1\ \ 0),\qquad
+\Bop=\begin{pmatrix}0&1\\0&2\end{pmatrix},
+\qquad
+\Psi(\beta)=\begin{pmatrix}\beta\\\beta\end{pmatrix}.
+\]
+$\Top\omega=b$ は $u_1=b$ だけを定め，$u_2$ は非一意である。ところが
+\[
+\Bop\Null(\Top)=\Span\{(1,2)'\}
+\]
+であり，$\Psi(\beta)-\Psi(0)=\beta(1,1)'$ は $\beta=0$ のときだけこの空間に属する。従って $\beta$ は joint system で大域識別される。実際，$u_2=\beta$ と $2u_2=\beta$ から $u_2=\beta=0$ である。
+\end{example}
+
+\subsection{有限次元 rank criterion}
+\begin{proposition}[計算可能な rank 条件]\label{prop:rankglobal}
+$\Top\in\R^{q_1\times p_\omega}$，$\Bop\in\R^{q_2\times p_\omega}$ とし，$N_T\in\R^{p_\omega\times d_N}$ の列が $\Null(\Top)$ の基底をなす。latent map が線形 $\Psi(\beta)=L\beta$，$L\in\R^{q_2\times p_\lambda}$ であるとする。次は同値である。
+\begin{enumerate}[label=(\roman*)]
+\item $\beta$ は joint system で識別される。
+\item $Lh\in\col(\Bop N_T)$ なら $h=0$。
+\item
+\begin{equation}
+\rank[\Bop N_T\ \ L]
+=\rank(\Bop N_T)+p_\lambda.
+\label{eq:rankcriterion}
+\end{equation}
+\item block Jacobian
+\[
+A=\begin{pmatrix}\Top&0\\\Bop&-L\end{pmatrix}
+\]
+について $\Null(A)\subseteq\{(h_\omega,h_\lambda):h_\lambda=0\}$。
+\end{enumerate}
+一般の linear target $P\beta$ は，$P h=0$ が $Lh\in\col(\Bop N_T)$ を満たすすべての $h$ について成立するとき，かつそのときに限り識別される。
+\end{proposition}
+
+\begin{proof}
+$\Bop\Null(\Top)=\col(\Bop N_T)$ なので，\Cref{thm:quotient}を線形 map に適用すれば (i) と (ii) は同値。(ii) は $L$ の列空間が $\col(\Bop N_T)$ modulo で full column rank を持つことなので，列 rank の加法条件 \eqref{eq:rankcriterion} と同値である。(iv) は
+\[
+A(h_\omega,h_\lambda)=0
+\Longleftrightarrow
+h_\omega\in\Null(\Top),\quad
+Lh_\lambda=\Bop h_\omega
+\]
+から同値。target 版も同じ fiber argument による。
+\end{proof}
+
+\subsection{Weak-but-many shadows}
+同じ bridge $\omega$ に対して $L$ 個の常時観測 shadow restrictions を積み上げた operator を
+\[
+\Top_L=(\Top_1,\ldots,\Top_L)'
+\]
+とする。
+
+\begin{proposition}[Shadow の追加による identified set の単調縮小]\label{prop:manyshadow}
+$\Null(\Top_{L+1})\subseteq\Null(\Top_L)$ なら
+\[
+\Bop\Null(\Top_{L+1})\subseteq\Bop\Null(\Top_L).
+\]
+従って
+\[
+\{\lambda:\Psi(\lambda)-\Psi(\lambda_0)\in\Bop\Null(\Top_{L+1})\}
+\subseteq
+\{\lambda:\Psi(\lambda)-\Psi(\lambda_0)\in\Bop\Null(\Top_L)\}.
+\]
+すなわち valid shadow restrictions の追加は latent identified set を拡大せず，弱く縮小する。有限 support では，これは stacked shadow matrix の rank 上昇に対応する。
+\end{proposition}
+
+\begin{proof}
+第一の包含は linear map $\Bop$ の像の単調性から従う。第二の包含は \Cref{thm:quotient}の fiber characterization に代入すればよい。
+\end{proof}
+
+\section{有限次元・離散潜在構造：Rado--Hall generic quotient injectivity}\label{sec:generic}
+
+本節は有限 latent classes，有限次元 parametric continuous $F$，または固定次元 sieve に適用する。抽象的な quotient injectivity は必要十分条件を与えるが，実応用では，どのような outcome support，shadow support，および finite-dimensional latent tangent spaces がその条件を保証するかを primitive probability level で確認したい。本節では有限 support の cell-probability model を直接解析する。中心結果は二つである。第一に，shadow exclusion の下では selection probability が quotient Jacobian から\emph{正確に消去される}。第二に，各 block の shadow が供給できる contrast 数と latent tangent spaces の位置関係だけから，quotient injectivity の可否を Rado--Hall 型の必要十分条件で特徴づける。Full completeness，bridge uniqueness，または shadow relevance の一様な lower bound は要求しない。
+
+\subsection{Finite-support cell system と selection cancellation}
+有限個の context strata は block index に吸収できるので，以下では $C_S=c$ を固定して記法から省く。各 $S\in\cS$ について
+\[
+Y_S\in\{1,\ldots,d_S\},
+\qquad
+Z_S\in\{1,\ldots,q_S\}
+\]
+とする。Normalized latent parameter を $\beta\in\mathcal B^\circ\subset\R^p$ とし，latent model が生成する full-data block probability vector を
+\[
+p_S(\beta)=\{p_{Sy}(\beta):1\le y\le d_S\}\in\operatorname{int}\Delta_{d_S-1}
+\]
+と書く。Jacobian を
+\[
+J_S(\beta)=D_\beta p_S(\beta)\in\R^{d_S\times p}
+\]
+とする。確率の和が1なので
+\begin{equation}
+\one_{d_S}'J_S(\beta)=0.
+\label{eq:probjacsumzero}
+\end{equation}
+
+\begin{assumption}[Primitive finite-support restrictions]\label{as:primitivefinite}
+各 $S\in\cS$ と真値 $\beta_0$ について次を仮定する。
+\begin{enumerate}[label=(PF\arabic*)]
+\item $p_{Sy}(\beta_0)>0$，$a_{Sz}:=P(Z_S=z)>0$。一様な lower bound は要求しない。
+\item Shadow exclusion
+\[
+R_S\ind Z_S\mid Y_S
+\]
+と cellwise overlap $\pi_{Sy}:=P(R_S=1\mid Y_S=y)>0$ が成立する。
+\item $p_S(\beta)$ は $\beta_0$ の近傍で continuously differentiable であり，$\beta$ は label，location，scale，orientation 等を除いた normalized local coordinate である。
+\item Joint system は shadow bridge moments に加えて，$d_S$ 個の cell moments
+\[
+E\{R_S\omega_S(Y_S)\one(Y_S=y)\}=p_{Sy}(\beta),
+\qquad y=1,\ldots,d_S,
+\]
+を用いる。最後の cell は確率和制約により冗長でもよい。
+\end{enumerate}
+\end{assumption}
+
+観測法則から定まる matrix を
+\begin{align}
+\mathsf T_S(z,y)
+&=P(R_S=1,Y_S=y\mid Z_S=z),
+\label{eq:primitiveT}\\
+\mathsf D_S
+&=\diag\{P(R_S=1,Y_S=y):1\le y\le d_S\},
+\label{eq:primitiveD}
+\end{align}
+と置く。また
+\begin{align}
+\mathsf H_S
+&=\mathsf T_S\mathsf D_S^{-1},
+\label{eq:primitiveH}\\
+\mathsf C_S
+&=\mathsf H_S-\one_{q_S}\one_{d_S}'.
+\label{eq:primitiveC}
+\end{align}
+と定義する。$\mathsf C_S$ は shadow relevance を表す standardized contrast matrix である。
+
+\begin{lemma}[Selection cancellation]\label{lem:selectioncancellation}
+\Cref{as:primitivefinite}の下で
+\begin{equation}
+\mathsf H_S(z,y)
+=\frac{P(Y_S=y\mid Z_S=z)}{p_{Sy}(\beta_0)},
+\label{eq:Hselectioncancel}
+\end{equation}
+従って
+\begin{equation}
+\mathsf C_Sp_S(\beta_0)=0,
+\qquad
+a_S'\mathsf C_S=0,
+\qquad
+a_S=(a_{S1},\ldots,a_{Sq_S})'.
+\label{eq:Cprobconstraints}
+\end{equation}
+
+Bridge cell-value perturbation $u_S\in\R^{d_S}$ と latent perturbation $h\in\R^p$ を考える。Block $S$ の joint linearized equations
+\begin{equation}
+\mathsf T_Su_S=0,
+\qquad
+\mathsf D_Su_S=J_S(\beta_0)h
+\label{eq:blocklinearsystem}
+\end{equation}
+は
+\begin{equation}
+\mathsf C_SJ_S(\beta_0)h=0,
+\qquad
+u_S=\mathsf D_S^{-1}J_S(\beta_0)h
+\label{eq:cancelledsystem}
+\end{equation}
+と同値である。従って stacked finite-support joint system が latent direction を local quotient identify するための必要十分条件は
+\begin{equation}
+\rank\mathsf K(\beta_0,\mathsf C)=p,
+\qquad
+\mathsf K(\beta_0,\mathsf C)
+=\operatorname{vcat}_{S\in\cS}
+\{\mathsf C_SJ_S(\beta_0)\}.
+\label{eq:primitiveKrank}
+\end{equation}
+特に selection probabilities $\{\pi_{Sy}\}$ は \eqref{eq:primitiveKrank} から完全に消える。
+\end{lemma}
+
+\begin{proof}
+Shadow exclusion により
+\[
+\mathsf T_S(z,y)
+=\pi_{Sy}P(Y_S=y\mid Z_S=z),
+\qquad
+\mathsf D_S(y,y)=\pi_{Sy}p_{Sy}(\beta_0).
+\]
+PF1--PF2 により $\mathsf D_S$ は正則なので \eqref{eq:Hselectioncancel} が従う。各 row について
+\[
+\sum_y\mathsf H_S(z,y)p_{Sy}
+=\sum_yP(Y_S=y\mid Z_S=z)=1,
+\]
+従って $\mathsf C_Sp_S=0$。また
+\[
+\sum_za_{Sz}\mathsf H_S(z,y)
+=\frac{\sum_za_{Sz}P(Y_S=y\mid Z_S=z)}{p_{Sy}}=1,
+\]
+従って $a_S'\mathsf C_S=0$。
+
+\eqref{eq:blocklinearsystem}の第二式から $u_S=\mathsf D_S^{-1}J_Sh$。第一式へ代入すると
+\[
+0=\mathsf T_S\mathsf D_S^{-1}J_Sh
+=\mathsf H_SJ_Sh.
+\]
+\eqref{eq:probjacsumzero}より
+\[
+\mathsf H_SJ_S
+=(\one\one'+\mathsf C_S)J_S
+=\mathsf C_SJ_S,
+\]
+なので \eqref{eq:cancelledsystem} と同値である。全 block を積み上げれば，joint null direction $h$ は $\mathsf K h=0$ と同値であり，\eqref{eq:primitiveKrank} が必要十分である。
+\end{proof}
+
+\begin{remark}[何が弱くなったか]\label{rem:selectioncancelweak}
+通常の stagewise route は各 $\mathsf T_S$ の full column rank，すなわち有限 support completeness を要求する。\Cref{lem:selectioncancellation}では $\mathsf T_S$ が rank deficient でもよい。必要なのは，その null directionsを latent cell restrictions と同時に課した後の stacked matrix $\mathsf K$ が full column rank であることだけである。また $\pi_{Sy}>0$ は必要だが，$\inf_y\pi_{Sy}$ が既知定数から離れることは要求しない。
+\end{remark}
+
+固定された marginal probabilities $p\in\operatorname{int}\Delta_{d-1}$ と $a\in\operatorname{int}\Delta_{q-1}$ に対し，valid shadow contrast の集合を
+\begin{equation}
+\mathfrak C(p,a)
+=\left\{C\in\R^{q\times d}:
+Cp=0,
+\ a'C=0,
+\ 1+C_{zy}>0\ \forall z,y
+\right\}
+\label{eq:admissibleC}
+\end{equation}
+とする。これは線形空間
+\[
+\mathfrak L(p,a)=\{C:Cp=0,\ a'C=0\}
+\]
+の relative open convex subset であり，$C=0$ は $Y\ind Z$ に対応する。逆に $C\in\mathfrak C(p,a)$ なら
+\begin{equation}
+P(Y=y\mid Z=z)=p_y(1+C_{zy})
+\label{eq:CtoQ}
+\end{equation}
+は marginal $p$ と shadow marginal $a$ を持つ strictly positive conditional probability table を定める。
+
+\begin{lemma}[任意の latent contrast の primitive realization]\label{lem:contrastrealization}
+$J\in\R^{d\times p}$ が $\one_d'J=0$ を満たし，$V=\row(J)\subset\R^p$ とする。$r\le q-1$ とし，任意の row vectors $v_1,\ldots,v_r\in V$ を取る。このとき，任意の $\varepsilon_0>0$ に対して $C\in\mathfrak C(p,a)$ が存在し，
+\begin{equation}
+\norm{C}_{\max}<\varepsilon_0,
+\qquad
+v_1,\ldots,v_r\in\row(CJ).
+\label{eq:realizecontrasts}
+\end{equation}
+特に，shadow law は independence に任意に近くても，$q-1$ 個までの指定 latent contrasts を供給できる。
+\end{lemma}
+
+\begin{proof}
+$v_\ell\in\row(J)$ なので，ある $b_\ell\in\R^d$ が存在して $b_\ell'J=v_\ell$。$\one_d'J=0$ を用い
+\[
+c_\ell=b_\ell-(b_\ell'p)\one_d
+\]
+と置けば
+\[
+c_\ell'p=0,
+\qquad
+c_\ell'J=v_\ell.
+\]
+$C$ の最初の $r$ rows を $\epsilon c_1',\ldots,\epsilon c_r'$，残りの最初の $q-1$ rows をゼロとし，最後の row を
+\[
+C_{q,\cdot}
+=-a_q^{-1}\sum_{z=1}^{q-1}a_zC_{z,\cdot}
+\]
+と定める。各 row は $p$ と直交するので $Cp=0$，定義から $a'C=0$。$\epsilon>0$ を十分小さく選べば $1+C_{zy}>0$ かつ $\norm{C}_{\max}<\varepsilon_0$ である。最初の $r$ rows of $CJ$ は $\epsilon v_1,\ldots,\epsilon v_r$ なので \eqref{eq:realizecontrasts} が従う。
+\end{proof}
+
+
+\begin{lemma}[Block contrasts の global probability compatibility]\label{lem:globalcompatibility}
+$Y=(Y_1,\ldots,Y_m)$ の一つの full-data law が与えられ，その $Y_S$ marginal が $p_S$ であるとする。各 $S\in\cS$ について $a_S\in\operatorname{int}\Delta_{q_S-1}$ と
+$C_S\in\mathfrak C(p_S,a_S)$ を任意に取る。また pattern support $\mathcal D\subseteq\{0,1\}^m$ が，各 $S\in\cS$ について $S$ を含む pattern を少なくとも一つ含むとする。
+
+このとき，$(Y,\{Z_S:S\in\cS\},D)$ の一つの joint probability law で，次を同時に満たすものが存在する。
+\begin{enumerate}[label=(\roman*)]
+\item $Z_S$ は常時観測され，$Y$ を条件として block 間で独立，かつ
+\begin{equation}
+P(Z_S=z\mid Y=y)
+=a_{Sz}\{1+C_S(z,y_S)\}.
+\label{eq:globalshadowconstruction}
+\end{equation}
+\item $D\mid Y$ は $\mathcal D$ 上の任意の strictly positive conditional law を持ち，$Z=\{Z_S\}$ には直接依存しない。従って selection は $Y$ に依存する MNAR であってよい。
+\item $R_S=\prod_{j\in S}D_j$ と置けば
+\[
+R_S\ind Z_S\mid Y_S,
+\qquad
+P(R_S=1\mid Y_S=y)>0,
+\]
+かつ $Z_S$ の marginal は $a_S$，standardized shadow contrast は正確に $C_S$ である。
+\end{enumerate}
+特に exact top-$K$ では $|S|\le K$ for every $S\in\cS$ なら，$\mathcal D$ を全 $K$-subsets としてよい。容量制約がない場合は任意の supported pattern family を用いられる。
+\end{lemma}
+
+\begin{proof}
+$C_S\in\mathfrak C(p_S,a_S)$ なので $1+C_S(z,y)>0$，$a_S'C_S=0$ である。従って各 $y_S$ について
+\[
+\sum_z a_{Sz}\{1+C_S(z,y_S)\}=1,
+\]
+ゆえに \eqref{eq:globalshadowconstruction} は valid conditional probability を定める。さらに $C_Sp_S=0$ から
+\[
+P(Z_S=z)
+=a_{Sz}\sum_y p_{Sy}\{1+C_S(z,y)\}
+=a_{Sz}.
+\]
+Bayes rule により
+\[
+P(Y_S=y\mid Z_S=z)
+=p_{Sy}\{1+C_S(z,y)\},
+\]
+従って \eqref{eq:primitiveH}--\eqref{eq:primitiveC} から得られる contrast は $C_S$ そのものである。各 $Z_S$ を $Y$ 条件付きで独立に生成すれば，全 block tables は一つの joint law と整合する。
+
+次に $D\mid Y$ を $\mathcal D$ 上で strictly positive に選び，$D\ind Z\mid Y$ とする。\eqref{eq:globalshadowconstruction} の右辺は $Y_{-S}$ に依存しないので，任意の $r,z,y_S$ について
+\begin{align*}
+&P(R_S=r,Z_S=z\mid Y_S=y_S)\\
+&\quad=\sum_{y_{-S}}P(y_{-S}\mid y_S)
+ P(Z_S=z\mid y_S)
+ P(R_S=r\mid y_S,y_{-S})\\
+&\quad=P(Z_S=z\mid y_S)P(R_S=r\mid Y_S=y_S).
+\end{align*}
+従って $R_S\ind Z_S\mid Y_S$。$\mathcal D$ が $S$ を含む pattern を持ち，その conditional probability が各 finite cell で正なので overlap も従う。Selection probabilities は $Y$ の任意の関数でよく，MNAR を許す。Exact top-$K$ の主張は $|S|\le K$ なら $S$ を含む $K$-subset が存在することから従う。
+\end{proof}
+
+\subsection{Rado--Hall capacity condition と sharp genericity}
+各 block が供給できる独立 shadow contrasts は高々
+\[
+r_S=q_S-1
+\]
+個である。Latent tangent space の blockwise row space を
+\[
+V_S=\row\{J_S(\beta_0)\}\subset\R^p
+\]
+とする。
+
+\begin{lemma}[Perfect--Rado capacity formula]\label{lem:radoedmonds}
+有限個の subspaces $\{V_S:S\in\cS\}$ と nonnegative integers $\{r_S\}$ を考える。各 $S$ から高々 $r_S$ 本の vectors を選び，全選択 vectors の rank を最大化した値を $\rho_*$ とする。このとき
+\begin{equation}
+\rho_*
+=\min_{\mathcal I\subseteq\cS}
+\left\{
+\dim\left(\sum_{S\in\mathcal I}V_S\right)
++\sum_{S\notin\mathcal I}r_S
+\right\}.
+\label{eq:radocapacity}
+\end{equation}
+従って $p$ 本の jointly independent vectors を選べるための必要十分条件は
+\begin{equation}
+\dim\left(\sum_{S\in\mathcal I}V_S\right)
++\sum_{S\notin\mathcal I}r_S
+\ge p
+\qquad
+\text{for every }\mathcal I\subseteq\cS.
+\label{eq:RadoHall}
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+$R=\sum_Sr_S$ とし，各 $S$ について $V_S$ の labeled copy を $r_S$ 個作る。これら $R$ 個の集合から選ぶ independent partial transversal の最大サイズについて，Rado の independent-transversal theorem \cite{Rado1942} を maximum partial transversal へ拡張した Perfect の定理 \cite{Perfect1969} は
+\[
+\min_{\mathcal A}
+\left\{R-|\mathcal A|
++\dim\left(\sum_{A\in\mathcal A}A\right)
+\right\}
+\]
+を与える。ここで $\mathcal A$ は labeled copies の任意の subfamily である。ある block $S$ の copy が $\mathcal A$ に一つでも含まれれば，span への寄与は $V_S$ 全体であり，copy 数をさらに増やしても span は変わらず $-|\mathcal A|$ だけが減る。従って minimum では，含める block の copies は全て $r_S$ 個含めてよい。含める block 集合を $\mathcal I$ とすれば上式は
+\[
+R-\sum_{S\in\mathcal I}r_S
++\dim\left(\sum_{S\in\mathcal I}V_S\right)
+=
+\sum_{S\notin\mathcal I}r_S
++\dim\left(\sum_{S\in\mathcal I}V_S\right),
+\]
+となり \eqref{eq:radocapacity} を得る。$\rho_*=p$ と全ての inequalities \eqref{eq:RadoHall} の同値性は直ちに従う。Perfect の theorem は vector matroid に適用しており，各 $V_S$ は任意の有限 spanning set で表せばよい。
+\end{proof}
+
+\begin{theorem}[Sharp primitive quotient genericity]\label{thm:primitivegenericity}
+\Cref{as:primitivefinite}を仮定し，$r_S=q_S-1$，$V_S=\row J_S(\beta_0)$ とする。
+\begin{enumerate}[label=(\roman*)]
+\item Rado--Hall condition \eqref{eq:RadoHall} が失敗するなら，任意の strictly positive shadow tables，任意の overlap probabilities $\{\pi_{Sy}>0\}$，および任意の admissible contrasts $\mathsf C_S\in\mathfrak C(p_S,a_S)$ に対して
+\[
+\rank\mathsf K(\beta_0,\mathsf C)<p.
+\]
+従って quotient injectivity は不可能である。
+\item \eqref{eq:RadoHall} が成立するなら，任意の $\varepsilon>0$ に対して
+\[
+\max_{S\in\cS}\norm{\mathsf C_S}_{\max}<\varepsilon
+\]
+を満たし，かつ $\rank\mathsf K=p$ となる strictly positive shadow law が存在する。すなわち witness は $Y_S\ind Z_S$ に任意に近く構成でき，\Cref{lem:globalcompatibility}により全 block を一つの joint probability law として同時に実現できる。
+\item 各 $\mathfrak L(p_S,a_S)$ の任意の linear coordinate chart を取り，positivity inequalities が定める connected open parameter set を $\Xi$ とする。\eqref{eq:RadoHall}の下で bad set
+\begin{equation}
+\mathcal E_{\beta_0}
+=\{\xi\in\Xi:\rank\mathsf K(\beta_0,\xi)<p\}
+\label{eq:primitivebadset}
+\end{equation}
+は proper algebraic subset であり，relative Lebesgue measure zero かつ nowhere dense である。従って admissible primitive shadow tables に関して quotient injectivity は generic である。
+\item Primitive shadow coordinate が $\Xi$ 上の relative Lebesgue measure に absolutely continuous な任意の分布を持つなら，quotient injectivity は probability one で成立する。
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\Cref{lem:selectioncancellation}より quotient injectivity は $\rank\mathsf K=p$ と同値である。各 $\mathsf C_SJ_S$ の rows は $V_S$ に属し，$a_S'\mathsf C_S=0$ から $\rank\mathsf C_S\le q_S-1=r_S$ なので，任意の shadow law が達成できる stacked rank は \Cref{lem:radoedmonds} の $\rho_*$ 以下である。従って \eqref{eq:RadoHall} が失敗すれば $\rho_*<p$ であり (i) が従う。
+
+\eqref{eq:RadoHall} が成立すれば，\Cref{lem:radoedmonds}により各 $S$ から高々 $r_S$ 本の vectors を選んで全体を rank $p$ にできる。各 block の選択 vectors に \Cref{lem:contrastrealization}を適用し，任意に小さい $\mathsf C_S$ でそれらを $\row(\mathsf C_SJ_S)$ に含める。従って stacked matrix は rank $p$ となる。\Cref{lem:globalcompatibility}により，得られた block contrasts は一つの globally compatible data-generating law で同時に実現できるので (ii) が従う。
+
+Coordinate $\xi$ に関して $\mathsf C_S$ は線形であるから，$\mathsf K$ の各 $p\times p$ minor は $\xi$ の polynomial である。(ii) の witness で非零となる minor を一つ $\Delta(\xi)$ とする。$\Delta$ は恒等的にゼロでないので，その zero set は relative Lebesgue measure zero で interior を持たない。Bad set \eqref{eq:primitivebadset} は全 $p\times p$ minors の共通 zero set であり，特に $\{\Delta=0\}$ に含まれるため (iii) が従う。(iv) は absolutely continuous law が null set に質量を置かないことから従う。
+\end{proof}
+
+\begin{corollary}[Single-block と weak-but-many shadows]\label{cor:primitivegenericcases}
+\begin{enumerate}[label=(\roman*)]
+\item Block が一つだけなら，primitive generic quotient injectivity の必要十分条件は
+\[
+\rank J_S(\beta_0)=p,
+\qquad
+q_S-1\ge p.
+\]
+従って $q_S<d_S$ で full-law completeness が不可能でも，latent dimension $p$ が小さければ joint latent parameter は generic に識別され得る。
+\item 複数 blocks/shadows では，個々の $\rank J_S$ や $q_S-1$ が小さくても，\eqref{eq:RadoHall} が成立すればよい。特に $\sum_S(q_S-1)\ge p$ は必要だが十分ではなく，latent tangent spaces $V_S$ が互いに補完的であることが必要である。
+\end{enumerate}
+\end{corollary}
+
+\begin{remark}[実応用での弱い維持仮定]\label{rem:primitivepractical}
+\Cref{thm:primitivegenericity}が要求する確率的仮定は，使用 cell の interior positivity，observable shadow exclusion，および normalized latent block probabilities の differentiability である。Full completeness，complete-case positivity，known selection model，または relevance の定量的 lower bound は不要である。Rado--Hall condition は，(a) 各 shadow の support size，(b) blockwise latent Jacobian の row spaces，だけで判定できる。ただし witness を independence に近づけられることは，generic point identification と strong identification が異なることを意味する。Relevance が小さい場合，推論は\Cref{sec:weakuniform}の identification-robust procedure を用いるべきである。
+\end{remark}
+
+\subsection{Analytic family への拡張}
+前節は latent law $\beta_0$ を固定した sharp theorem である。Latent probabilities，measurement probabilities，selection probabilities，および shadow tablesを同時に動かす finite-dimensional family では，次の one-witness theorem が joint genericity を与える。
+
+各条件付き確率ベクトルの最後の cell を除いた座標を用い，strictly positive probability simplex の積を connected open set $\mathcal U\subset\R^d$ と同一視する。$\vartheta\in\mathcal U$ は primitive probability coordinate である。潜在 label，location，scale，orientation などの連続 gauge はあらかじめ正規化し，残る latent local coordinate の次元を $p_\lambda$ とする。有限個の observed moments を積み上げた局所線形化において，bridge およびその他の observationally unrestricted nuisance directions の derivative matrix を
+\[
+\mathbf G(\vartheta)\in\R^{J\times p_\omega},
+\]
+normalized latent directions の derivative matrix を
+\[
+\mathbf J(\vartheta)\in\R^{J\times p_\lambda}
+\]
+と書く。
+
+\begin{definition}[Local quotient injectivity と probability-genericity]\label{def:genericquotient}
+点 $\vartheta$ で
+\begin{equation}
+\mathbf J(\vartheta)h_\lambda\in\col\{\mathbf G(\vartheta)\}
+\quad\Longrightarrow\quad h_\lambda=0
+\label{eq:finitequotientinjective}
+\end{equation}
+が成立するとき，latent coordinate はその点で local quotient injective であるという。性質が $\mathcal U$ の Lebesgue measure zero かつ nowhere dense な集合を除いて成立するとき，probability-generic に成立するという。
+\end{definition}
+
+\begin{assumption}[Finite-support analytic family]\label{as:analyticfamily}
+\begin{enumerate}[label=(GA\arabic*)]
+\item $\mathcal U$ は connected open set であり，必要な全 marginal/conditional cell probabilities は各点で strictly positive である。一様な positivity constant は要求しない。
+\item $\mathbf G(\vartheta)$ と $\mathbf J(\vartheta)$ の各要素は $\vartheta$ の real-analytic function である。
+\item nuisance および normalized latent chart の次元 $p_\omega,p_\lambda$ は $\mathcal U$ 上で一定である。
+\end{enumerate}
+\end{assumption}
+
+GA2 は有限 support model では自然である。条件付き期待値は cell probabilities の有限和と正の marginal probability による除算で書けるため rational analytic である。Latent-class probabilities は積と和，logit/softmax mixing regression は指数関数と正の分母からなるため real analytic である。
+
+\begin{theorem}[One-witness generic quotient injectivity]\label{thm:genericquotient}
+\Cref{as:analyticfamily}を仮定し，
+\[
+r_G=\max_{\vartheta\in\mathcal U}\rank\{\mathbf G(\vartheta)\}
+\]
+と置く。ある strictly positive witness point $\vartheta^\dagger\in\mathcal U$ が存在し，
+\begin{equation}
+\rank\{\mathbf G(\vartheta^\dagger)\}=r_G,
+\qquad
+\rank[\mathbf G(\vartheta^\dagger)\ \mathbf J(\vartheta^\dagger)]
+=r_G+p_\lambda
+\label{eq:genericwitness}
+\end{equation}
+を満たすとする。このとき，ある proper real-analytic exceptional set $\mathcal E\subset\mathcal U$ が存在し，
+\begin{equation}
+\operatorname{Leb}(\mathcal E)=0,
+\qquad
+\operatorname{int}_{\mathcal U}(\mathcal E)=\varnothing,
+\label{eq:genericexceptional}
+\end{equation}
+かつ全ての $\vartheta\in\mathcal U\setminus\mathcal E$ で \eqref{eq:finitequotientinjective} が成立する。さらに，$\vartheta$ が $\mathcal U$ 上の Lebesgue measure に absolutely continuous な任意の分布を持つなら，quotient injectivity は probability one で成立する。
+\end{theorem}
+
+\begin{proof}
+$\vartheta^\dagger$ で非零な $r_G\times r_G$ minor of $\mathbf G$ を選び，determinant を $\Delta_G(\vartheta)$ と書く。また $\vartheta^\dagger$ で非零な $(r_G+p_\lambda)\times(r_G+p_\lambda)$ minor of $[\mathbf G\ \mathbf J]$ を選び，determinant を $\Delta_A(\vartheta)$ と書く。GA2 により両者は real analytic で，$\Delta_G\Delta_A$ は恒等的にゼロではない。
+
+\[
+\mathcal E=\{\vartheta\in\mathcal U:\Delta_G(\vartheta)\Delta_A(\vartheta)=0\}
+\]
+と置く。非零 real-analytic function の zero set は Lebesgue measure zero で interior を持たないので \eqref{eq:genericexceptional} が成立する。この fact は \Cref{lem:analyticzero} に証明する。
+
+$\vartheta\notin\mathcal E$ なら $\rank\mathbf G(\vartheta)=r_G$，かつ
+\[
+\rank[\mathbf G(\vartheta)\ \mathbf J(\vartheta)]
+=r_G+p_\lambda
+=\rank\mathbf G(\vartheta)+p_\lambda.
+\]
+もし $\mathbf J h_\lambda=\mathbf G h_\omega$ なら $[\mathbf G\ \mathbf J](-h_\omega,h_\lambda)'=0$。上の rank addition は $\mathbf J$ の全列が $\col(\mathbf G)$ modulo で独立であることと同値なので $h_\lambda=0$。最後の probability-one claim は absolutely continuous distribution が Lebesgue-null set に質量を置かないことから従う。
+\end{proof}
+
+\begin{corollary}[Rado--Hall witness からの joint genericity]\label{cor:radoanalyticgeneric}
+Primitive finite-support family が $\vartheta$ に関して real analytic であり，ある interior point $\vartheta^\dagger$ で \eqref{eq:RadoHall} が成立するとする。このとき \Cref{thm:primitivegenericity}(ii) により，$\vartheta^\dagger$ の latent law を保ったまま shadow table を任意に小さく摂動し，新しい interior point $\widetilde\vartheta^\dagger$ で \eqref{eq:genericwitness} を満たす witness を構成できる。従って joint primitive family 上で quotient injectivity は probability-generic である。
+\end{corollary}
+
+\begin{remark}[Local と global の区別]\label{rem:genericweak}
+\Cref{thm:primitivegenericity,thm:genericquotient}は local quotient identification の theorem である。Affine latent probability map では local rank がそのまま global quotient injectivityを与えるが，一般の nonlinear latent model では複数 isolated fibers，label switching，または nonlinear reparameterization を model-specific argument で除く必要がある。\Cref{thm:finiteclass,thm:continuousanchor}はその大域的な特殊ケースを与える。
+\end{remark}
+
+\subsection{Target-specific representer によるさらに弱い route}
+Full cell moments を用いず，latent target を分離する有限個の representer moments だけを使うこともできる。Block index $k=1,\ldots,p_\lambda$ に対し $R_k,Y_k,Z_k,C_k$ を簡略記法とし，full-data contrast $\tau_k(Y_k,C_k)$ を考える。Representer operator を
+\[
+(T_k^*\delta)(y,c)
+=\E\{\delta(Z_k,c)\mid R_k=1,Y_k=y,C_k=c\}
+\]
+とする。
+
+\begin{theorem}[Representer-protected genericity]\label{thm:representergeneric}
+各 $k=1,\ldots,p_\lambda$ について次を仮定する。
+\begin{enumerate}[label=(RG\arabic*)]
+\item $R_k\ind Z_k\mid(Y_k,C_k)$ と overlap が成立する。
+\item ある $\delta_{k0}\in L_2(Z_k,C_k)$ が存在し，
+\begin{equation}
+T_k^*\delta_{k0}=\tau_k.
+\label{eq:repRG}
+\end{equation}
+解の一意性は要求しない。
+\item Latent model が生成する contrast vector
+\begin{equation}
+\mu(\lambda)
+=\bigl(\E_\lambda\tau_1(Y_1,C_1),\ldots,
+\E_\lambda\tau_{p_\lambda}(Y_{p_\lambda},C_{p_\lambda})\bigr)'
+\label{eq:mulambda}
+\end{equation}
+は normalized latent chart 上で real analytic である。
+\end{enumerate}
+このとき，任意の representer null perturbation $h_k\in\Null(T_k^*)$ は target moment を変化させず，
+\begin{equation}
+\E\{(1-R_k)h_k(Z_k,C_k)\}=0.
+\label{eq:repnullprotected}
+\end{equation}
+従って，ある interior point $\lambda^\dagger$ で
+\begin{equation}
+\det D_\lambda\mu(\lambda^\dagger)\neq0
+\label{eq:mujacobian}
+\end{equation}
+なら，representer-based joint system はその点で local quotient injective である。さらに finite-support analytic family では，\eqref{eq:mujacobian} が一つの interior law で成立するだけで quotient injectivity は probability-generic に成立する。
+
+有限 support の場合，RG2 は各 $k$ について
+\begin{equation}
+\tau_k(c)\in\Range\{H_k(c)\}
+\label{eq:RGfiniterange}
+\end{equation}
+という target-specific range condition と同値であり，$H_k(c)$ の full row rank や completeness は不要である。
+\end{theorem}
+
+\begin{proof}
+$h_k\in\Null(T_k^*)$ なら
+\[
+\E\{h_k(Z_k,C_k)\mid R_k=1,Y_k,C_k\}=0.
+\]
+RG1 により $Z_k\mid(Y_k,C_k,R_k=0)$ と $Z_k\mid(Y_k,C_k,R_k=1)$ は同じ conditional law を持つ。従って
+\[
+\E\{h_k(Z_k,C_k)\mid R_k=0,Y_k,C_k\}=0
+\]
+であり，反復期待値から \eqref{eq:repnullprotected} が従う。
+
+また RG1--RG2 により
+\begin{equation}
+\mu_k(\lambda)
+=\E\left[R_k\tau_k(Y_k,C_k)
++(1-R_k)\delta_{k0}(Z_k,C_k)\right]
+\label{eq:repprotectedidentity}
+\end{equation}
+が成立する。Representer を別解 $\delta_{k0}+h_k$ に変えても \eqref{eq:repnullprotected} により右辺は不変である。従って representer nuisance の null directions は $p_\lambda$ 個の protected moment coordinates 上でゼロであり，latent derivative は $D_\lambda\mu$ である。\eqref{eq:mujacobian} と inverse function theorem により local quotient injectivity が成立する。Genericity は \Cref{thm:genericquotient} による。有限 support では \eqref{eq:repRG} は linear system $H_k(c)\delta_k(c)=\tau_k(c)$ であり，解の存在は \eqref{eq:RGfiniterange} と同値である。
+\end{proof}
+
+\begin{remark}[実応用で必要な representer 仮定]\label{rem:appgeneric}
+\Cref{thm:representergeneric}の維持仮定は，(i) observable shadow exclusion と overlap，(ii) latent coordinate 数と同数の target-specific range conditions，(iii) 一つの low-dimensional Jacobian witness である。全 measurable functions を分離する completeness は不要で，representer も一意でなくてよい。Finite support では (ii) と (iii) は通常の matrix range と determinant で確認できる。
+\end{remark}
+
+\subsection{有限 latent class の mixture-logit 例}
+$F\in\{1,\ldots,r\}$，$W\in\{w_1,\ldots,w_L\}$ とし，anchor pair probability vector を
+\[
+p_\ell=\operatorname{vec}P(Y_a,Y_b\mid W=w_\ell)
+=K_{ab}\lambda_\ell,
+\qquad
+K_{ab}=M_b\odot M_a
+\]
+とする。$\lambda_\ell$ の自由座標を baseline-category logits
+\[
+\beta_{\ell f}=\log\{\lambda_{\ell f}/\lambda_{\ell r}\},
+\qquad f=1,\ldots,r-1
+\]
+とし，$\beta=(\beta_1',\ldots,\beta_L')'$ と置く。
+
+\begin{corollary}[Representable pair contrasts による generic mixing identification]\label{cor:mixinggeneric}
+$d_a=|\cY_a|\ge r$，$d_b=|\cY_b|\ge r$ とする。各 $\ell$ について $(r-1)\times d_ad_b$ contrast matrix $A_\ell$ の各 row が target-specific representer を持ち，
+\begin{equation}
+\det\{A_\ell K_{ab}D_\ell\}\neq0,
+\qquad
+D_\ell=\frac{\partial\lambda_\ell}{\partial\beta_\ell'}
+\label{eq:paircontrastcondition}
+\end{equation}
+を満たすとする。このとき $\beta$ は inverse-selection bridge の一意性なしに local quotient identified である。
+
+さらに $M_a,M_b$ が full column rank となる positive stochastic matrices と，\eqref{eq:paircontrastcondition}を満たす representable contrasts が一つの interior law で存在すれば，この性質は primitive cell probabilities に関して generic である。必要な representer は各 $w_\ell$ で $r-1$ 個だけであり，anchor-pair law 全体の回復は不要である。
+\end{corollary}
+
+\begin{proof}
+Positive simplex 上の baseline softmax map $\beta_\ell\mapsto\lambda_\ell$ は $\R^{r-1}$ から simplex interior への diffeomorphism なので $D_\ell$ は full column rank $r-1$ である。Representer により識別される contrast vector は
+\[
+\mu(\beta)
+=\bigl((A_1p_1)',\ldots,(A_Lp_L)'\bigr)'
+\]
+であり，その Jacobian は block diagonal matrix
+\[
+D_\beta\mu(\beta)
+=\operatorname{diag}\{A_1K_{ab}D_1,\ldots,A_LK_{ab}D_L\}.
+\]
+\eqref{eq:paircontrastcondition}により正則なので \Cref{thm:representergeneric}を適用できる。なお $M_a,M_b$ が full column rank なら
+\[
+K_{ab}'K_{ab}=(M_a'M_a)\ast(M_b'M_b)
+\]
+は Schur product theorem により positive definite であり，$K_{ab}$ も full column rank である。Rank failure は minors の zero set なので，one-witness argument と \Cref{thm:genericquotient}から genericity が従う。
+\end{proof}
+
+\section{連続潜在変数に対する無限次元理論：totality・transversality・singular values}\label{sec:continuousprimitive}
+
+有限 latent class では，正規化後の latent tangent は有限次元であり，\Cref{sec:generic}の Rado--Hall 条件が primitive genericity を与える。これに対し，$F$ が連続で，潜在密度，測定曲線，または誤差分布をノンパラメトリックに動かすと，tangent space は無限次元になる。この場合，有限本の rank 条件や有限次元 Lebesgue measure による genericity は適切ではない。本節では，(i) shadow selection probability を消去した conditional-expectation operator，(ii) latent score directions の totality，(iii) bridge-null space と latent score space の transversality，(iv) spectral fibers ごとの Baire-generic injectivity，および (v) 有効特異値の primitive decomposition を与える。
+
+以下の Hilbert spaces は実または複素でよい。Fourier 表現では実空間を複素化する。各 block の context $C_S=c$ は条件付けに吸収し，記法から省く。連続 $F$ であっても latent parameter が有限次元なら \Cref{sec:generic} を適用できることに注意する。本節が必要なのは，正規化後の latent tangent $\mathbb H_\lambda$ 自体が無限次元である場合である。
+
+\subsection{連続 outcome における selection cancellation}
+
+各 $S\in\cS$ について，$P_{Y_S}$ と $P_{Z_S}$ を真の marginal law とし，
+\[
+\mathbb Y_S=L^2_0(P_{Y_S}),
+\qquad
+\mathbb Z_S=L^2_0(P_{Z_S})
+\]
+と置く。下付き $0$ は平均ゼロ部分空間を表す。Shadow conditional-expectation operator を
+\begin{equation}
+(\Cop_S f)(z)=\E\{f(Y_S)\mid Z_S=z\},
+\qquad
+\Cop_S:\mathbb Y_S\to\mathbb Z_S
+\label{eq:Cconditional}
+\end{equation}
+とする。Jensen inequality により $\norm{\Cop_S}_{\op}\le1$ である。
+Latent model $\lambda\mapsto P_{Y_S,\lambda}$ は $\lambda_0$ で quadratic-mean differentiable とし，separable Hilbert tangent space $\mathbb H_\lambda$ 上の bounded score operator
+\begin{equation}
+\Jcal_S:\mathbb H_\lambda\to\mathbb Y_S,
+\qquad
+\left.\frac{\dd}{\dd t}\log p_{S,\lambda_0+th}(Y_S)\right|_{t=0}
+=(\Jcal_Sh)(Y_S)
+\label{eq:Jscorecontinuous}
+\end{equation}
+を持つとする。複数 block を積み上げ，
+\[
+\mathbb Y=\bigoplus_{S\in\cS}\mathbb Y_S,
+\qquad
+\mathbb Z=\bigoplus_{S\in\cS}\mathbb Z_S,
+\qquad
+\Cop=\bigoplus_{S\in\cS}\Cop_S,
+\qquad
+\Jcal h=(\Jcal_Sh:S\in\cS)
+\]
+と置く。
+
+選択確率 $\pi_S(y)=P(R_S=1\mid Y_S=y)$ は a.s. 正とするが，一様な lower bound は要求しない。Bridge tangent space を
+\begin{equation}
+\mathbb U_S
+=\left\{u:\pi_Su\in L^2_0(P_{Y_S})\right\},
+\qquad
+\norm{u}_{\mathbb U_S}=\norm{\pi_Su}_{L^2(P_{Y_S})}
+\label{eq:weightedbridgespace}
+\end{equation}
+と定義する。この norm の下で multiplication operator
+\[
+\Pi_S:\mathbb U_S\to\mathbb Y_S,
+\qquad
+\Pi_Su=\pi_Su
+\]
+は unitary onto である。従って pointwise overlap だけでよく，$1/\pi_S$ の boundedness は識別定理には不要である。
+
+\begin{assumption}[Continuous primitive shadow--latent system]\label{as:continuousprimitive}
+各 $S\in\cS$ について次を仮定する。
+\begin{enumerate}[label=(CP\arabic*)]
+\item $R_S\ind Z_S\mid Y_S$ かつ $0<\pi_S(Y_S)\le1$ a.s.
+\item latent block law は \eqref{eq:Jscorecontinuous} の意味で DQM であり，$\Jcal_S$ は bounded である。
+\item joint linearization は，shadow bridge score と block-density consistency score を積み上げた
+\begin{equation}
+\Aop_c(u,h)
+=
+\left(
+(\Cop_S\Pi_Su_S)_{S\in\cS},
+(\Pi_Su_S-\Jcal_Sh)_{S\in\cS}
+\right)
+\in\mathbb Z\oplus\mathbb Y
+\label{eq:Accontinuous}
+\end{equation}
+で表される。
+\end{enumerate}
+\end{assumption}
+
+CP3 は full likelihood を仮定していない。第一成分は
+\[
+\left.\frac{\dd}{\dd t}
+\E\{R_S(\omega_{S0}+tu_S)(Y_S)\mid Z_S\}
+\right|_{t=0}
+=\E\{\pi_S(Y_S)u_S(Y_S)\mid Z_S\}
+\]
+であり，第二成分は weighted block law と latent block law の tangent consistency である。
+
+
+\begin{theorem}[Continuous selection cancellation と exact effective factorization]\label{thm:continuousfactor}
+\Cref{as:continuousprimitive}の下で次が成立する。
+\begin{enumerate}[label=(\roman*)]
+\item $(u,h)$ が $\Aop_c(u,h)=0$ を満たすための必要十分条件は
+\begin{equation}
+\Cop\Jcal h=0,
+\qquad
+u_S=\Pi_S^{-1}\Jcal_Sh
+=\frac{\Jcal_Sh}{\pi_S}
+\quad(S\in\cS)
+\label{eq:continuouscancelnull}
+\end{equation}
+である。従って selection probabilities $\{\pi_S\}$ は latent quotient-null condition から正確に消去される。
+\item $A=\Cop^*\Cop$ とし，canonical effective operator を
+\begin{equation}
+\Kop
+=\Cop(I+A)^{-1/2}\Jcal:
+\mathbb H_\lambda\to\mathbb Z
+\label{eq:Kcanonical}
+\end{equation}
+と定義する。このとき任意の $h\in\mathbb H_\lambda$ について
+\begin{align}
+\inf_{u\in\bigoplus_{S\in\cS}\mathbb U_S}
+\norm{\Aop_c(u,h)}^2
+&=\inner{\Jcal h}{A(I+A)^{-1}\Jcal h}_{\mathbb Y}
+\notag\\
+&=\norm{\Kop h}_{\mathbb Z}^2.
+\label{eq:exactprimitiveprofile}
+\end{align}
+従って一般 partialling operator $\Sop$ と $\Kop$ は同じ Gram operator を持ち，null space と singular values が一致する。
+\item $\norm{\Cop}_{\op}\le1$ なので
+\begin{equation}
+\frac1{\sqrt2}\norm{\Cop\Jcal h}
+\le
+\norm{\Kop h}
+\le
+\norm{\Cop\Jcal h}
+\qquad(h\in\mathbb H_\lambda).
+\label{eq:CJKequivalence}
+\end{equation}
+特に
+\[
+\Null(\Kop)=\Null(\Cop\Jcal).
+\]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(i) $\Aop_c(u,h)=0$ の第二成分は $\Pi_Su_S=\Jcal_Sh$ を与える。$\Pi_S$ は onto isometry なので $u_S=\Pi_S^{-1}\Jcal_Sh$ は一意である。これを第一成分へ代入すると $\Cop_S\Jcal_Sh=0$。逆向きは同じ代入で従う。
+
+(ii) $v=(\Pi_Su_S)_S\in\mathbb Y$ と置くと，$u\mapsto v$ は unitary であるから
+\begin{equation}
+\inf_u\norm{\Aop_c(u,h)}^2
+=
+\inf_{v\in\mathbb Y}
+\left\{\norm{\Cop v}^2+\norm{v-\Jcal h}^2\right\}.
+\label{eq:profilev}
+\end{equation}
+$g=\Jcal h$ と書けば右辺は
+\[
+\inner v{(I+A)v}-2\Re\inner vg+\norm g^2.
+\]
+$I+A$ は bounded positive definite で逆を持つため，唯一の minimizer は
+\[
+v^*=(I+A)^{-1}g.
+\]
+平方完成により minimum は
+\begin{align*}
+\norm g^2-\inner g{(I+A)^{-1}g}
+&=\inner g{A(I+A)^{-1}g}\\
+&=\norm{\Cop(I+A)^{-1/2}g}^2,
+\end{align*}
+ここで $A$ と $(I+A)^{-1/2}$ は functional calculus により可換である。これが \eqref{eq:exactprimitiveprofile} である。一般の orthogonal partialling operator は同じ profiled quadratic form を定めるため，その Gram operator は $\Kop^*\Kop$ に等しい。
+
+(iii) $0\preceq A\preceq I$ なので spectral calculus により
+\[
+\frac12A\preceq A(I+A)^{-1}\preceq A.
+\]
+両辺を $g=\Jcal h$ に適用して平方根を取れば \eqref{eq:CJKequivalence} が従う。最後の null-space equality も直ちに従う。
+\end{proof}
+
+\begin{remark}[有限 support の selection cancellation との対応]\label{rem:continuousfinitecorrespondence}
+有限 support では $\Jcal_Sh$ は block probability score，$\Cop_S$ は conditional-probability matrixによる平均作用素である。基準確率を掛け戻すと $\Cop_S\Jcal_Sh=0$ は \Cref{lem:selectioncancellation} の $\mathsf C_SJ_Sh=0$ と同じ式になる。従って \Cref{thm:continuousfactor} は有限 cell cancellation の無限次元版である。
+\end{remark}
+
+\subsection{Totality と restricted completeness}
+
+Full-law shadow completeness は $\Null(\Cop_S)=\{0\}$ を各 block で要求する。本稿に必要なのははるかに弱く，latent tangent image が shadow-null directions と交差しないことである。
+
+\begin{theorem}[Infinite-dimensional totality theorem]\label{thm:continuoustotality}
+\Cref{as:continuousprimitive}の下で，次の条件は同値である。
+\begin{enumerate}[label=(\alph*)]
+\item 連続 latent tangent は locally quotient identified，すなわち
+\[
+\Null(\Kop)=\{0\}.
+\]
+\item
+\begin{equation}
+\{h\in\mathbb H_\lambda:\Jcal_Sh\in\Null(\Cop_S)
+\text{ for every }S\in\cS\}=\{0\}.
+\label{eq:restrictedcompleteness}
+\end{equation}
+$\Jcal$ が injective なら，これは
+\begin{equation}
+\Range(\Jcal)\cap\Null(\Cop)=\{0\}
+\label{eq:transverseintersection}
+\end{equation}
+と同値である。
+\item Protected adjoint features が total，すなわち
+\begin{equation}
+\overline{
+\sum_{S\in\cS}
+\Range(\Jcal_S^*\Cop_S^*)
+}
+=\mathbb H_\lambda.
+\label{eq:adjointtotality}
+\end{equation}
+\item 各 $\mathbb Z_S$ の任意の countable dense set $\{q_{S\ell}:\ell\ge1\}$ に対し，
+\begin{equation}
+\phi_{S\ell}
+=\Jcal_S^*\Cop_S^*q_{S\ell}
+=\Jcal_S^*\E\{q_{S\ell}(Z_S)\mid Y_S\}
+\label{eq:protectedfeatures}
+\end{equation}
+の collection $\{\phi_{S\ell}:S\in\cS,\ell\ge1\}$ が $\mathbb H_\lambda$ で total である。
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\Cref{thm:continuousfactor}(iii)より $\Null(\Kop)=\Null(\Cop\Jcal)$ なので (a) と (b) は同値である。$\Jcal$ が injective なら，$\Cop\Jcal h=0$ は $\Jcal h\in\Range(\Jcal)\cap\Null(\Cop)$ と同値である。
+
+Hilbert-space identity
+\[
+\Null(\Cop\Jcal)^\perp
+=\overline{\Range\{(\Cop\Jcal)^*\}}
+=\overline{\Range(\Jcal^*\Cop^*)}
+\]
+を用いる。Direct-sum adjoint は
+\[
+\Jcal^*\Cop^*(q_S)_S
+=\sum_{S\in\cS}\Jcal_S^*\Cop_S^*q_S
+\]
+なので，右辺の closure は \eqref{eq:adjointtotality} である。従って (a) と (c) は同値である。
+
+$q_{S\ell}$ が $\mathbb Z_S$ で dense なら，continuity of $\Jcal_S^*\Cop_S^*$ により
+\[
+\overline{\Span\{\Jcal_S^*\Cop_S^*q_{S\ell}:\ell\ge1\}}
+=\overline{\Range(\Jcal_S^*\Cop_S^*)}.
+\]
+有限個または可算個の block について和を取り closure を取れば (c) と (d) の同値性が従う。
+\end{proof}
+
+\begin{corollary}[Continuous target identification と regularity]\label{cor:continuoustarget}
+Scalar target の derivative を $\dot\chi(h)=\inner{d_\chi}{h}_{\mathbb H_\lambda}$ とする。
+\begin{enumerate}[label=(\roman*)]
+\item target が strong first-order identified であるための必要十分条件は
+\begin{equation}
+ d_\chi\in
+\overline{\sum_{S\in\cS}\Range(\Jcal_S^*\Cop_S^*)}.
+\label{eq:continuoustargetclosure}
+\end{equation}
+\item finite-variance regular representer が primitive profiled experiment 内で存在するための必要十分条件は
+\begin{equation}
+ d_\chi\in\Range(\Kop^*)
+=\Range\left\{
+\Jcal^*(I+\Cop^*\Cop)^{-1/2}\Cop^*
+\right\}.
+\label{eq:continuoustargetrange}
+\end{equation}
+\end{enumerate}
+従って全 latent curve が識別されなくても，$d_\chi$ が protected feature space に属すれば target は識別される。Full completeness は必要ない。
+\end{corollary}
+
+\begin{proof}
+(i) は \Cref{thm:continuoustotality} の証明と $\Null(\Kop)^\perp=\overline{\Range(\Kop^*)}$ を target direction に適用する。\Cref{thm:continuousfactor}(iii)より $\Null(\Kop)=\Null(\Cop\Jcal)$ なので，Hilbert-space identity $\overline{\Range(A^*)}=\Null(A)^\perp$ を両作用素へ適用すれば，$\overline{\Range(\Kop^*)}=\overline{\Range(\Jcal^*\Cop^*)}$ が従う。(ii) は \Cref{thm:localeffective}(iii) を $\Kop$ に適用する。
+\end{proof}
+
+\subsection{Sieve transversality と singular-value bounds}
+
+$\mathbb H_n\subset\mathbb H_\lambda$ を $n$ 次元 sieve とし，$\Jcal$ は $\mathbb H_n$ 上 injective とする。$\mathbb M_n=\Jcal\mathbb H_n\subset\mathbb Y$，$\mathbb N=\Null(\Cop)$ と置く。$P_{\mathbb N^\perp}$ を $\mathbb N^\perp$ への projection とする。三つの primitive moduli を
+\begin{align}
+ a_n
+&=\inf_{\substack{h\in\mathbb H_n\\\norm h=1}}
+\norm{\Jcal h},
+\label{eq:anJ}\\
+ \tau_n
+&=\inf_{\substack{g\in\mathbb M_n\\\norm g=1}}
+\norm{P_{\mathbb N^\perp}g},
+\label{eq:taunangle}\\
+ \chi_n
+&=\inf_{\substack{v\in P_{\mathbb N^\perp}\mathbb M_n\\\norm v=1}}
+\norm{\Cop v}
+\label{eq:chinshadow}
+\end{align}
+と定義する。$\tau_n$ は latent score sieve と shadow-null space の最小 principal angle の sine，$\chi_n$ はその transverse component における shadow operator の reduced singular value である。
+
+\begin{theorem}[Transversality decomposition と effective singular values]\label{thm:continuoussv}
+\Cref{as:continuousprimitive}の下で次が成立する。
+\begin{enumerate}[label=(\roman*)]
+\item $\mathbb M_n\cap\mathbb N=\{0\}$ なら $a_n,\tau_n,\chi_n>0$ であり，
+\begin{equation}
+\inf_{\substack{h\in\mathbb H_n\\\norm h=1}}
+\norm{\Kop h}
+\ge
+\frac1{\sqrt2}\,a_n\tau_n\chi_n.
+\label{eq:sievetranslower}
+\end{equation}
+逆に左辺が正なら $\mathbb M_n\cap\mathbb N=\{0\}$ である。
+\item $\Jcal$ が compact で，$\mathbb H_n$ を最初の $n$ 個の right singular vectors of $\Jcal$ の span とする。このとき
+\begin{equation}
+\frac1{\sqrt2}\tau_n\chi_n s_n(\Jcal)
+\le s_n(\Kop)
+\le s_n(\Jcal).
+\label{eq:svcontinuousbound}
+\end{equation}
+従って integrated ill-posedness は latent measurement attenuation $s_n(\Jcal)$，geometric transversality $\tau_n$，および shadow attenuation $\chi_n$ の積で支配される。
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+$\mathbb H_n$ は有限次元で $\Jcal$ は injective なので $a_n>0$。$\mathbb M_n\cap\mathbb N=\{0\}$ なら unit sphere of $\mathbb M_n$ は compact で，continuous function $g\mapsto\norm{P_{\mathbb N^\perp}g}$ はゼロを取らないから $\tau_n>0$。同様に $P_{\mathbb N^\perp}\mathbb M_n$ は有限次元で $\Cop$ はその上 injective なので $\chi_n>0$。
+
+任意の $g\in\mathbb M_n$ について $v=P_{\mathbb N^\perp}g$ と置くと，$\Cop g=\Cop v$ かつ
+\[
+\norm v\ge\tau_n\norm g,
+\qquad
+\norm{\Cop v}\ge\chi_n\norm v.
+\]
+従って $h\in\mathbb H_n$ に対し
+\[
+\norm{\Cop\Jcal h}
+\ge\chi_n\tau_n\norm{\Jcal h}
+\ge a_n\chi_n\tau_n\norm h.
+\]
+\Cref{thm:continuousfactor}(iii) を適用すれば \eqref{eq:sievetranslower}。逆に $0\ne g=\Jcal h\in\mathbb M_n\cap\mathbb N$ なら $\Kop h=0$ なので左辺はゼロである。
+
+(ii) Courant--Fischer formula において $\mathbb H_n$ を候補 subspace とすれば
+\[
+s_n(\Kop)
+\ge
+\inf_{\substack{h\in\mathbb H_n\\\norm h=1}}
+\norm{\Kop h}
+\ge\frac1{\sqrt2}\tau_n\chi_ns_n(\Jcal),
+\]
+ここで $a_n=s_n(\Jcal)$ を用いた。上側は $\norm{\Cop(I+\Cop^*\Cop)^{-1/2}}\le1$ と approximation-number ideal inequality
+\[
+s_n(AB)\le\norm A_{\op}s_n(B)
+\]
+から従う。
+\end{proof}
+
+\begin{remark}[弱い仮定と弱識別の区別]\label{rem:weakcontinuousassumptions}
+Point identification に必要なのは，各固定 $n$ で $\tau_n\chi_n>0$ であること，または極限空間で totality が成立することだけである。$\inf_n\tau_n\chi_n>0$ は要求しない。従って仮定は full completeness より弱いが，$\tau_n\chi_n\downarrow0$ なら inverse problem は ill-posed になる。これは \Cref{sec:weakuniform} の identification-robust confidence sets を必要とする領域である。
+\end{remark}
+
+\subsection{Spectral fibers と Baire-generic injectivity}
+
+一般 totality theorem は basis-free である。一方，additive error，convolution，functional data，および latent-rank Fourier moments では，operator が countable spectral fibers に分解される。この場合，有限次元 Rado--Hall theorem に代わる sharp infinite-dimensional genericity が得られる。
+
+\begin{assumption}[Finite-dimensional spectral fibers]\label{as:spectralfibers}
+次を仮定する。
+\begin{enumerate}[label=(SF\arabic*)]
+\item separable Hilbert spaces は
+\[
+\mathbb H_\lambda=\bigoplus_{k\ge1}H_k,
+\qquad
+\mathbb G=\bigoplus_{k\ge1}G_k
+\]
+と直交分解され，$1\le d_k=\dim H_k<\infty$ である。
+\item primitive profiled operator は parameter $\xi$ に依存し，
+\begin{equation}
+\Kop_\xi=\bigoplus_{k\ge1}K_k(\xi_k),
+\qquad
+K_k(\xi_k):H_k\to G_k,
+\label{eq:fiberoperator}
+\end{equation}
+と分解され，$\sup_k\norm{K_k(\xi_k)}_{\op}<\infty$ である。
+\item $\Xi_k$ は connected real-analytic finite-dimensional manifold で completely metrizable であり，$\Xi=\prod_{k\ge1}\Xi_k$ は product topology を持つ。各 matrix representation of $K_k(\xi_k)$ は $\xi_k$ の real-analytic function である。
+\item 各 $k$ について one-mode witness $\xi_k^\dagger\in\Xi_k$ が存在し，
+\begin{equation}
+\rank K_k(\xi_k^\dagger)=d_k.
+\label{eq:onemodewitness}
+\end{equation}
+\end{enumerate}
+\end{assumption}
+
+\begin{theorem}[Infinite-dimensional Baire genericity]\label{thm:bairespectralgeneric}
+\Cref{as:spectralfibers}の下で
+\begin{equation}
+\mathfrak G
+=\left\{\xi\in\Xi:
+\rank K_k(\xi_k)=d_k\text{ for every }k\ge1
+\right\}
+\label{eq:residualG}
+\end{equation}
+は $\Xi$ の dense $G_\delta$，従って residual set である。任意の $\xi\in\mathfrak G$ について $\Kop_\xi$ は injective であり，continuous latent parameter は locally quotient identified である。
+
+さらに，同一の finite-dimensional connected open parameter $\vartheta\in\Theta\subset\R^d$ が全 fibers を動かし，各 $K_k(\vartheta)$ が real analytic かつ各 $k$ で一つの full-rank witness を持つなら，
+\[
+\{\vartheta:K_k(\vartheta)\text{ is full column rank for all }k\}
+\]
+の補集合は Lebesgue measure zero かつ meager である。
+\end{theorem}
+
+\begin{proof}
+固定 $k$ について，$K_k$ のある $d_k\times d_k$ minor determinant を $\Delta_k$ とする。SF4 により，少なくとも一つの minor は $\xi_k^\dagger$ で非零であり，従って恒等的にゼロではない。非零 real-analytic function の zero set は interior を持たないので，
+\[
+G_k=\{\xi_k\in\Xi_k:\rank K_k(\xi_k)=d_k\}
+\]
+は open dense である。Cylinder set
+\[
+\widetilde G_k
+=\{\xi\in\Xi:\xi_k\in G_k\}
+\]
+も open dense である。$\Xi$ は completely metrizable spaces の countable product なので Baire space であり，Baire category theorem から
+\[
+\mathfrak G=\bigcap_{k\ge1}\widetilde G_k
+\]
+は dense $G_\delta$ である。
+
+$\xi\in\mathfrak G$ とし，$\Kop_\xi h=0$ とする。直交 direct-sum decomposition により $K_k(\xi_k)h_k=0$ for every $k$。各 $K_k$ は injective なので $h_k=0$ for every $k$，従って $h=0$。
+
+共通 finite-dimensional $\vartheta$ の場合，各 bad set
+\[
+E_k=\{\vartheta:\rank K_k(\vartheta)<d_k\}
+\]
+は，非自明な analytic minor の zero set に含まれるため Lebesgue null かつ nowhere dense である。$\cup_{k\ge1}E_k$ は countable union なので Lebesgue null かつ meager である。
+\end{proof}
+
+\begin{remark}[有限次元 genericity との違い]\label{rem:bairevslebesgue}
+無限次元 primitive parameter space には canonical Lebesgue measure がないため，continuous nonparametric model では residuality を genericity の基本概念とする（measure-theoretic な代替概念として prevalence もある \cite{HuntSauerYorke1992}）。\Cref{thm:bairespectralgeneric}は各 mode に one witness があることだけを要求し，modewise lower bound は要求しない。従って injectivity は generic でも，fiber margins はゼロへ任意に速く近づき得る。
+\end{remark}
+
+\begin{theorem}[Direct-sum singular spectrum]\label{thm:directsumspectrum}
+\Cref{as:spectralfibers}の下で $\norm{K_k(\xi_k)}_{\op}\to0$ とする。このとき $\Kop_\xi$ は compact であり，その非零 singular values は，有限行列 $K_k(\xi_k)$ の非零 singular values を重複度込みで集めた multiset の decreasing rearrangement に等しい。
+
+特に $d_k=1$ で
+\[
+K_k(\xi_k)h_k=\rho_k(\xi_k)h_kv_k,
+\qquad
+\norm{v_k}=1,
+\]
+なら
+\begin{equation}
+\{s_n(\Kop_\xi):n\ge1\}
+=\operatorname{sort}_{\downarrow}
+\{\abs{\rho_k(\xi_k)}:k\ge1\}.
+\label{eq:scalarsingulars}
+\end{equation}
+従って $\abs{\rho_k}\asymp k^{-\alpha}$ なら mildly ill-posed order $\alpha$，$\abs{\rho_k}\asymp\exp(-ck^\beta)$ なら severely ill-posed order $\beta$ である。
+\end{theorem}
+
+\begin{proof}
+$\Kop_\xi^*\Kop_\xi=\bigoplus_{k\ge1}K_k(\xi_k)^*K_k(\xi_k)$。$\norm{K_k}_{\op}\to0$ かつ各 block が finite rank なので，finite partial sums は finite-rank operators であり，operator norm で $\Kop_\xi$ へ収束する。従って $\Kop_\xi$ は compact である。Positive compact operator $\Kop_\xi^*\Kop_\xi$ の非零 eigenvalues は block positive matrices $K_k^*K_k$ の非零 eigenvalues の multiset union である。平方根を取れば singular-value statement が従う。Scalar case と decay classification は直ちに従う。
+\end{proof}
+
+\subsection{Primitive Fourier shadow law：連続版の明示的 witness}
+
+前節の one-mode witness が probability law と整合することを明示する。$Y,Z\in[0,1)$ を unit torus 上の変数とし，$e_k(x)=\exp(2\pi\ii kx)$ と置く。
+
+\begin{lemma}[Positive Fourier shadow kernel]\label{lem:fouriershadowkernel}
+Complex sequence $\rho=(\rho_k)_{k\in\mathbb Z\setminus\{0\}}$ が
+\[
+\rho_{-k}=\overline{\rho_k},
+\qquad
+\sum_{k\ne0}\abs{\rho_k}<1
+\]
+を満たすとする。このとき
+\begin{equation}
+h_\rho(z,y)
+=1+\sum_{k\ne0}\rho_ke_k(z-y)
+\label{eq:fourierkernel}
+\end{equation}
+は strictly positive joint density on $[0,1)^2$ であり，$Y$ と $Z$ の marginal はともに uniform である。また conditional-expectation operator は
+\begin{equation}
+\Cop_\rho e_k=\rho_ke_k,
+\qquad k\ne0.
+\label{eq:fouriermultiplier}
+\end{equation}
+任意の measurable $\pi(y)\in(0,1]$ に対し $R\mid Y=y\sim\operatorname{Bernoulli}\{\pi(y)\}$ を $Z$ と条件付き独立に生成すれば，$R\ind Z\mid Y$ が成立し，selection mechanism は任意の MNAR でよい。
+\end{lemma}
+
+\begin{proof}
+Absolute convergence から \eqref{eq:fourierkernel} は continuous real-valued で，
+\[
+h_\rho(z,y)
+\ge1-\sum_{k\ne0}\abs{\rho_k}>0.
+\]
+非零 Fourier modes は各変数について積分するとゼロなので，両 marginal は uniform である。従って $p(y\mid z)=h_\rho(z,y)$。$\ell\ne0$ に対し
+\begin{align*}
+\E\{e_\ell(Y)\mid Z=z\}
+&=\int_0^1e_\ell(y)
+\left\{1+\sum_{k\ne0}\rho_ke_k(z-y)\right\}\dd y\\
+&=\rho_\ell e_\ell(z),
+\end{align*}
+ここで Fourier orthogonality を用いた。最後の主張は construction から明らかである。
+\end{proof}
+
+\begin{theorem}[Continuous shadow genericity and exact singular values]\label{thm:fouriershadowgeneric}
+Admissible parameter space を
+\[
+\mathfrak R_\epsilon
+=\left\{\rho:\rho_{-k}=\overline{\rho_k},
+\sum_{k\ne0}\abs{\rho_k}<\epsilon\right\},
+\qquad0<\epsilon<1,
+\]
+とし，$\ell^1$ topology を入れる。このとき
+\begin{equation}
+\mathfrak R_\epsilon^{\mathrm{id}}
+=\{\rho\in\mathfrak R_\epsilon:\rho_k\ne0\text{ for every }k\ne0\}
+\label{eq:rhoidset}
+\end{equation}
+は dense $G_\delta$ である。各 $\rho\in\mathfrak R_\epsilon^{\mathrm{id}}$ について $\Cop_\rho$ は $L^2_0[0,1]$ 上 injective で，その singular values は $\{|\rho_k|:k\ne0\}$ の decreasing rearrangement である。
+
+さらに任意の $\delta>0$ に対し，$\norm\rho_{\ell^1}<\delta$ かつ $\rho_k\ne0$ for all $k$ となる admissible law が存在する。従って continuous shadow relevance は independence に任意に近くても point identification を与え得るが，uniformly strong identification は従わない。
+\end{theorem}
+
+\begin{proof}
+各 $k\ne0$ について coordinate hyperplane
+\[
+H_k=\{\rho\in\mathfrak R_\epsilon:\rho_k=0\}
+\]
+は closed である。任意の $\rho\in H_k$ と任意の $\ell^1$ neighborhood において，$k$ と $-k$ coordinates を conjugate-symmetrically微小摂動すれば $H_k$ の外へ出られるため，$H_k$ は interior を持たず nowhere dense である。従って
+\[
+\mathfrak R_\epsilon^{\mathrm{id}}
+=\bigcap_{k\ne0}(\mathfrak R_\epsilon\setminus H_k)
+\]
+は dense $G_\delta$。\Cref{lem:fouriershadowkernel}により $\Cop_\rho$ は Fourier basis 上 diagonal であるから，injectivity は全 $\rho_k\ne0$ と同値で，singular values は multiplier moduli の rearrangement である。
+
+最後に，例えば $\rho_k=c2^{-|k|}$ with conjugate symmetry とし，$c>0$ を十分小さく取れば全 coordinates は非零で $\ell^1$ norm を任意に小さくできる。
+\end{proof}
+
+\subsection{Continuous additive calibration-anchor への適用}
+
+\Cref{thm:continuousanchor}の model で $U\in[0,1]$ とし，$0<\underline f\le f_U\le\overline f<\infty$ とする。$q_j=g_jf_U\in L^2[0,1]$ と置き，Fourier coefficient を
+\[
+q_{j,k}=\int_0^1q_j(u)e^{-2\pi\ii ku}\dd u
+\]
+とする。$t_k=2\pi k$ での pair moment は
+\begin{equation}
+\mu_{j,k}
+=\E\{Y_je^{-\ii t_kY_a}\}
+=\varphi_a(-t_k)q_{j,k}.
+\label{eq:additivefouriermoment}
+\end{equation}
+これは \Cref{lem:gcurve2} の離散 Fourier version である。
+
+Pair-moment coordinates に対する primitive profiled shadow operator が frequency-separable で，mode $k$ の quotient transversality multiplier を $\tau_{j,k}\in[0,1]$ とする。すなわち normalized output vectors $v_{j,k}$ が存在し，
+\begin{equation}
+\Kop_j e_k
+=\tau_{j,k}\varphi_a(-t_k)v_{j,k},
+\qquad
+\inner{v_{j,k}}{v_{j,\ell}}=\one(k=\ell)
+\label{eq:additiveeffectivemode}
+\end{equation}
+とする。Target-specific representer が Fourier momentごとに exact に存在する場合は，moment geometry の正規化により $\tau_{j,k}=1$ と置ける。Nonunique bridge を latent restrictions と同時に用いる場合には $\tau_{j,k}$ が mode-specific angle を表す。
+
+\begin{corollary}[Continuous measurement curve の totality と primitive ill-posedness]\label{cor:additivefouriertheory}
+上記条件の下で次が成立する。
+\begin{enumerate}[label=(\roman*)]
+\item $q_j$，従って $g_j=q_j/f_U$ が $L^2[0,1]$ で識別されるための必要十分条件は
+\begin{equation}
+\tau_{j,k}\varphi_a(-2\pi k)\ne0
+\qquad\text{for every }k\in\mathbb Z.
+\label{eq:additiveidfreq}
+\end{equation}
+\item $\Kop_j$ の singular values は
+\begin{equation}
+\operatorname{sort}_{\downarrow}
+\left\{
+\abs{\tau_{j,k}\varphi_a(2\pi k)}:k\in\mathbb Z
+\right\}.
+\label{eq:additivesingulars}
+\end{equation}
+\item ordinary-smooth anchor error と shadow transversality が
+\[
+\abs{\varphi_a(2\pi k)}\asymp(1+\abs k)^{-\alpha},
+\qquad
+\tau_{j,k}\asymp(1+\abs k)^{-\beta}
+\]
+を満たすなら effective inverse problem は order $\alpha+\beta$ の mildly ill-posed problem である。もし
+\[
+\abs{\varphi_a(2\pi k)}\asymp
+\exp(-c\abs k^\gamma)
+\]
+なら，$\tau_{j,k}$ が polynomial order であっても severely ill-posed order $\gamma$ である。
+\item Point identification には \eqref{eq:additiveidfreq} だけでよく，$\inf_k\tau_{j,k}>0$ や error characteristic function の一様な lower bound は不要である。従って実応用では弱い仮定で識別を保ちつつ，推論は \Cref{sec:weakuniform} の profile/AR set を用いることができる。
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+\eqref{eq:additiveeffectivemode} と Fourier basis の completeness により，$\Kop_jq=0$ は
+\[
+\tau_{j,k}\varphi_a(-2\pi k)q_{j,k}=0
+\quad\text{for every }k
+\]
+と同値である。従って (i)。$f_U$ は上下から有界なので multiplication by $f_U$ は $L^2[0,1]$ 上 bounded invertible であり，$q_j$ と $g_j$ の識別は同値である。(ii) は \Cref{thm:directsumspectrum} の scalar-fiber case。(iii) は multiplier の積の decay order を計算すればよい。(iv) は (i) と \Cref{sec:weakuniform} の coverage theorem から従う。
+\end{proof}
+
+\begin{remark}[仮定の実応用上の強さ]\label{rem:continuouspractical}
+Continuous theory の substantive assumptions は，observable shadow exclusion，latent score map の DQM，および protected features の totality である。各 $\Cop_S$ の full completeness，uniform overlap，uniform principal-angle bound，または全周波数で同じ強さの shadow は要求しない。Additive calibration-anchor special case では，二つの calibration measurements，error independence，および latent scale normalization が別途必要である。これらは data だけから証明できないため，複数 anchor，negative-control moments，局所依存を許す sensitivity analysis と併用すべきである。
+\end{remark}
+
+
+\section{局所識別・安定識別と有効統合作用素}\label{sec:local}
+
+\subsection{Linearization と nuisance partialling}
+$\Psi$ が $\lambda_0$ で Fr\'echet differentiable で derivative $\Lop=D\Psi_{\lambda_0}:\mathbb H_\lambda\to\mathbb K_2$ を持つとする。差分 moment の線形化を
+\begin{equation}
+\Aop(h_\omega,h_\lambda)
+=\begin{pmatrix}
+\Top h_\omega\\
+\Bop h_\omega-\Lop h_\lambda
+\end{pmatrix}
+\in\mathbb K_1\oplus\mathbb K_2
+\label{eq:Adef}
+\end{equation}
+とする。ここで
+\[
+\Gop h_\omega=(\Top h_\omega,\Bop h_\omega),
+\qquad
+\Jop h_\lambda=(0,\Lop h_\lambda),
+\]
+と置けば $\Aop=\Gop-\Jop$ である。$P_{\overline{\Range(\Gop)}^\perp}$ を $\overline{\Range(\Gop)}$ の直交補への射影とし，
+\begin{equation}
+\Sop=P_{\overline{\Range(\Gop)}^\perp}\Jop
+\label{eq:Seffective}
+\end{equation}
+を latent parameter に対する有効統合作用素と呼ぶ。
+
+\begin{theorem}[Exact nuisance-partialling identity]\label{thm:partialling}
+任意の $h_\lambda\in\mathbb H_\lambda$ について
+\begin{equation}
+\inf_{h_\omega\in\mathbb H_\omega}
+\norm{\Aop(h_\omega,h_\lambda)}
+=\norm{\Sop h_\lambda}.
+\label{eq:distanceidentity}
+\end{equation}
+従って，exact null directions と approximate null directions を
+\begin{align}
+\cN_{\mathrm{ex}}
+&=\{h_\lambda:\exists h_\omega,
+\Aop(h_\omega,h_\lambda)=0\},
+\label{eq:Nex}\\
+\cN_{\mathrm{ap}}
+&=\{h_\lambda:\exists h_{\omega,n}\text{ with }
+\norm{\Aop(h_{\omega,n},h_\lambda)}\to0\}
+=\Null(\Sop)
+\label{eq:nullS}
+\end{align}
+と定義すると，常に $\cN_{\mathrm{ex}}\subseteq\cN_{\mathrm{ap}}$ である。$\Range(\Gop)$ が閉なら両者は一致する。
+\end{theorem}
+
+\begin{proof}
+$\Aop(h_\omega,h_\lambda)=\Gop h_\omega-\Jop h_\lambda$ なので
+\begin{align*}
+\inf_{h_\omega}\norm{\Aop(h_\omega,h_\lambda)}
+&=\dist\{\Jop h_\lambda,\Range(\Gop)\}\\
+&=\dist\{\Jop h_\lambda,\overline{\Range(\Gop)}\}\\
+&=\norm{P_{\overline{\Range(\Gop)}^\perp}\Jop h_\lambda}
+=\norm{\Sop h_\lambda}.
+\end{align*}
+これが \eqref{eq:distanceidentity}。距離がゼロであることは $\Jop h_\lambda\in\overline{\Range(\Gop)}$ と同値なので \eqref{eq:nullS} が従う。$\Range(\Gop)$ が閉なら closure を外せる。
+\end{proof}
+
+\begin{remark}[統合逆問題の意味]
+$\Sop$ は latent score $\Jop h_\lambda$ から，bridge nuisance により説明可能な成分 $\overline{\Range(\Gop)}$ を除いた残差である。したがって joint estimation の情報量は $\Top$ と $\Lop$ の単純な積ではなく，bridge score space に対する latent score の直交残差で決まる。
+\end{remark}
+
+\subsection{局所 target identification と正則性}
+$\dot\theta:\mathbb H_\lambda\to\R^q$ を target の bounded linear derivative とする。
+
+\begin{theorem}[Exact identification，strong identification，regularity]\label{thm:localeffective}
+次が成立する。
+\begin{enumerate}[label=(\roman*)]
+\item latent parameter 全体が exact first-order identified であるための必要十分条件は $\cN_{\mathrm{ex}}=\{0\}$ である。観測 moment norm をゼロへ近づける nuisance sequence まで排除する strong first-order identification の必要十分条件は $\cN_{\mathrm{ap}}=\Null(\Sop)=\{0\}$ である。
+\item target $\dot\theta$ が exact first-order identified であるための必要十分条件は $\cN_{\mathrm{ex}}\subseteq\Null(\dot\theta)$ である。Strongly first-order identified であるための必要十分条件は
+\begin{equation}
+\Null(\Sop)=\cN_{\mathrm{ap}}\subseteq\Null(\dot\theta).
+\label{eq:targetnull}
+\end{equation}
+$\Range(\Gop)$ が閉なら exact と strong の条件は一致する。
+\item scalar target $\dot\theta(h)=\inner{d_\theta}{h}_{\mathbb H_\lambda}$ について，ある $C<\infty$ が存在して
+\begin{equation}
+\abs{\dot\theta(h)}\le C\norm{\Sop h}
+\quad\text{for all }h
+\label{eq:targetstable}
+\end{equation}
+となるための必要十分条件は
+\begin{equation}
+ d_\theta\in\Range(\Sop^*).
+\label{eq:rangeSstar}
+\end{equation}
+このとき minimum-norm solution
+\[
+r_\theta^\dagger=\argmin\{\norm r:\Sop^*r=d_\theta\}
+\]
+が存在し，最小の $C$ は $\norm{r_\theta^\dagger}$ である。
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(i) と (ii) は \Cref{thm:partialling} の $\cN_{\mathrm{ex}}$ と $\cN_{\mathrm{ap}}$ の characterization から直ちに従う。
+
+(iii) $d_\theta=\Sop^*r$ なら Cauchy--Schwarz により
+\[
+\abs{\inner{d_\theta}{h}}
+=\abs{\inner r{\Sop h}}
+\le\norm r\norm{\Sop h}.
+\]
+逆に \eqref{eq:targetstable} が成立すると，$\ell(\Sop h)=\inner{d_\theta}{h}$ は $\Range(\Sop)$ 上で well-defined かつ bounded である。Hahn--Banach により $\overline{\Range(\Sop)}$ へ連続拡張し，Riesz representation によりある $r$ が存在して $\ell(k)=\inner r k$。従って $\inner{\Sop^*r}{h}=\inner{d_\theta}{h}$ for all $h$，すなわち $\Sop^*r=d_\theta$。minimum-norm solution の存在と最小 norm 性は閉凸集合への射影定理による。
+\end{proof}
+
+\begin{corollary}[Strong identification と root-$n$ 正則性の差]\label{cor:closurevsrange}
+$\dot\theta$ が strongly first-order identified であることは
+\[
+d_\theta\in\overline{\Range(\Sop^*)}
+\]
+と同値である。一方，有限分散の regular representer が存在するには $d_\theta\in\Range(\Sop^*)$ が必要である。従って target が strong first-order identified でも，root-$n$ 推論が不可能な場合がある。Exact first-order identification との一致には，例えば $\Range(\Gop)$ の閉性が十分である。
+\end{corollary}
+
+\begin{proof}
+Hilbert space identity $\overline{\Range(\Sop^*)}=\Null(\Sop)^\perp$ と \Cref{thm:localeffective}(ii)--(iii) を用いる。
+\end{proof}
+
+\subsection{Primitive operator による特異値の特徴づけ}
+$\cN_T=\Null(\Top)$，$\cR_N=\overline{\Bop\cN_T}$ とし，$\Qop=P_{\cR_N^\perp}:\mathbb K_2\to\mathbb K_2$ と置く。$\mathbb H_\omega=\cN_T\oplus\cN_T^\perp$ と直交分解する。
+
+\begin{assumption}[Shadow operator の transversal stability]\label{as:Tstable}
+ある $\alpha_T>0$ が存在し，すべての $u\in\cN_T^\perp$ について
+\begin{equation}
+\norm{\Top u}\ge\alpha_T\norm u.
+\label{eq:Tbelow}
+\end{equation}
+\end{assumption}
+
+\begin{theorem}[原始 quotient operator との norm equivalence]\label{thm:primitiveSV}
+\Cref{as:Tstable}の下で，任意の $h\in\mathbb H_\lambda$ について
+\begin{equation}
+\frac{\alpha_T}{\alpha_T+\norm{\Qop\Bop}_{\op}}
+\norm{\Qop\Lop h}
+\le
+\norm{\Sop h}
+\le
+\norm{\Qop\Lop h}.
+\label{eq:normequiv}
+\end{equation}
+従って $\Sop$ が injective であることと $\Qop\Lop$ が injective であることは同値である。さらに $\Qop\Lop$ が compact なら，特異値 $s_k(\cdot)$ は
+\begin{equation}
+ c_T s_k(\Qop\Lop)
+\le s_k(\Sop)\le s_k(\Qop\Lop),
+\qquad
+c_T=\frac{\alpha_T}{\alpha_T+\norm{\Qop\Bop}_{\op}}.
+\label{eq:svcompare}
+\end{equation}
+を満たす。
+\end{theorem}
+
+\begin{proof}
+\Cref{thm:partialling}により
+\[
+\norm{\Sop h}
+=\inf_{v\in\mathbb H_\omega}
+\left\{\norm{\Top v}^2+\norm{\Bop v-\Lop h}^2\right\}^{1/2}.
+\]
+上側評価では $v\in\cN_T$ に制限する。$\Top v=0$ なので
+\begin{align*}
+\norm{\Sop h}
+&\le \inf_{v\in\cN_T}\norm{\Bop v-\Lop h}\\
+&=\dist(\Lop h,\overline{\Bop\cN_T})
+=\norm{\Qop\Lop h}.
+\end{align*}
+
+下側評価のため任意の $v=u+n$，$u\in\cN_T^\perp$，$n\in\cN_T$ と書く。$a=\{\norm{\Top v}^2+\norm{\Bop v-\Lop h}^2\}^{1/2}$ と置く。\eqref{eq:Tbelow}から $\norm u\le a/\alpha_T$。また $\Qop\Bop n=0$ なので
+\begin{align*}
+\norm{\Qop\Lop h}
+&\le\norm{\Qop(\Bop v-\Lop h)}+\norm{\Qop\Bop u}\\
+&\le a+\norm{\Qop\Bop}_{\op}\frac{a}{\alpha_T}
+=\frac{\alpha_T+\norm{\Qop\Bop}_{\op}}{\alpha_T}a.
+\end{align*}
+任意の $v$ について成立するので infimum を取り下側評価を得る。injectivity は \eqref{eq:normequiv}から従う。
+
+compact case では \eqref{eq:normequiv}を二乗して
+\[
+c_T^2(\Qop\Lop)^*(\Qop\Lop)
+\preceq \Sop^*\Sop
+\preceq (\Qop\Lop)^*(\Qop\Lop)
+\]
+という quadratic-form order を得る。Courant--Fischer min--max principle により固有値，従って特異値について \eqref{eq:svcompare} が従う。
+\end{proof}
+
+\begin{remark}[原始的意味]
+$\Qop\Lop$ は latent moment perturbation のうち，shadow equation の null directions が生成できない成分だけを残す。$\alpha_T$ は bridge の identifiable component の強さ，$\norm{\Qop\Bop}$ はその component が latent moments に漏れ込む強さである。$\alpha_T$ が小さいと，latent separation が十分でも integrated problem は悪条件化する。
+\end{remark}
+
+\begin{corollary}[Sieve restricted singular values]\label{cor:sievesv}
+有限次元 sieve $\mathbb H_{\omega,n}$ 上で
+\[
+\alpha_{T,n}
+=\inf_{u\in\cN_{T,n}^\perp,\ \norm u=1}\norm{\Top_nu}>0,
+\quad
+\cN_{T,n}=\Null(\Top_n)
+\]
+とする。対応する $\Sop_n,\Qop_n,\Lop_n,\Bop_n$ について
+\[
+\frac{\alpha_{T,n}}{\alpha_{T,n}+\norm{\Qop_n\Bop_n}_{\op}}
+ s_k(\Qop_n\Lop_n)
+\le s_k(\Sop_n)
+\le s_k(\Qop_n\Lop_n).
+\]
+従って sieve dimension とともに $\alpha_{T,n}\downarrow0$ なら，shadow inverse problem の ill-posedness が latent rate に明示的に現れる。
+\end{corollary}
+
+\subsection{非線形 model への持ち上げ}
+$\eta=(\omega,\lambda)$ とし，population moment map を
+\[
+\Mop(\eta)=\bigl(\Top\omega-b,\ \Bop\omega-\Psi(\lambda)\bigr)
+\]
+と書く。
+
+\begin{assumption}[Tangential cone と target modulus]\label{as:nonlinear}
+$\eta_0$ の近傍 $\cV$，$0\le\kappa<1$ が存在し，すべての $\eta\in\cV$ について
+\begin{equation}
+\norm{\Mop(\eta)-\Mop(\eta_0)-\Aop(\eta-\eta_0)}
+\le\kappa\norm{\Aop(\eta-\eta_0)}.
+\label{eq:tcone}
+\end{equation}
+さらに target metric $d_\theta$ と増加関数 $\varphi$，$\varphi(0)=0$ が存在し，
+\begin{equation}
+ d_\theta\{\theta(\lambda),\theta(\lambda_0)\}
+\le\varphi\bigl(\norm{\Sop(\lambda-\lambda_0)}\bigr)
+\label{eq:targetmodulus}
+\end{equation}
+が成立する。
+\end{assumption}
+
+\begin{theorem}[Nonlinear local target identification]\label{thm:nonlinearid}
+\Cref{as:nonlinear}の下で，$\eta\in\cV$ が $\Mop(\eta)=\Mop(\eta_0)=0$ を満たせば
+\[
+\theta(\lambda)=\theta(\lambda_0).
+\]
+特に $\varphi(t)=Ct$ なら target inverse map は局所 Lipschitz stable である。
+\end{theorem}
+
+\begin{proof}
+$h=\eta-\eta_0$ とする。$\Mop(\eta)-\Mop(\eta_0)=0$ と \eqref{eq:tcone}から
+\[
+\norm{\Aop h}
+\le\kappa\norm{\Aop h}.
+\]
+$\kappa<1$ なので $\Aop h=0$。\Cref{thm:partialling}より
+\[
+\norm{\Sop(\lambda-\lambda_0)}
+\le\norm{\Aop(\omega-\omega_0,\lambda-\lambda_0)}=0.
+\]
+\eqref{eq:targetmodulus}から target distance はゼロである。
+\end{proof}
+
+\section{主結果の特殊ケース}\label{sec:special}
+
+\subsection{完全ケースが存在する通常の shadow model}
+$S_\mathrm{all}=\{1,\ldots,m\}$，$R^{\mathrm{cc}}=\one\{D=\one_m\}$ とする。$P(R^{\mathrm{cc}}=1)>0$ で，常時観測 vector shadow $Z$ が
+\[
+R^{\mathrm{cc}}\ind Z\mid(Y,X)
+\]
+を満たす場合，$\Top$ は標準的な complete-case shadow operator になる。
+
+\begin{corollary}[Complete-case benchmark と strict extension]\label{cor:completecase}
+\begin{enumerate}[label=(\roman*)]
+\item $\Top$ が injective なら inverse-selection bridge と full-data moments が一意に回復され，latent identification は $\Psi$ の injectivity に還元される。
+\item $\Top$ が noninjective でも，$q_{\Bop\Null(\Top)}\circ\Psi$ が injective なら latent parameter は識別される。
+\item 従って complete-case positivity が成立しても，joint theory は full-law identification を中間目標にする必要がない。
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+(i) は \Cref{cor:uniquebridge}。(ii) は \Cref{thm:quotient}。(iii) は (ii) の解釈である。
+\end{proof}
+
+\subsection{任意の sparse pattern support と \texorpdfstring{exact top-$K$}{exact top-K}}
+Supported blocks の collection $\cS$ は任意でよい。完全ケースがなくても，$\Psi$ を分離する block moments が存在すればよい。
+
+\begin{corollary}[Observation hypergraph theorem]\label{cor:hypergraph}
+観測 hypergraph
+\[
+\cH_{\mathrm{obs}}
+=\{S\subseteq\{1,\ldots,m\}:P(R_S=1)>0\}
+\]
+から有限 subcollection $\cS_0$ を選ぶ。$\cS_0$ に対する joint operator が \eqref{eq:globalidcond} を満たすなら，$P(D=\one_m)=0$ であっても latent parameter は識別される。exact top-$K$ は
+\[
+\cH_{\mathrm{obs}}\subseteq\{S:|S|\le K\}
+\]
+という特殊ケースにすぎず，必要な blocks が $|S|\le K$ に入れば同じ定理が適用される。
+\end{corollary}
+
+\begin{proof}
+\Cref{thm:quotient}は $D$ の全支持や complete-case positivity を用いず，選択した $\cS_0$ の operator だけを用いる。exact top-$K$ では supported block の大きさが制約されるだけである。
+\end{proof}
+
+\begin{remark}[元の capacity-constrained 問題との関係]
+以前の exact top-$K$ 理論では，完全ケースの構造的ゼロと supported blocks の幾何が中心であった。本稿では容量制約を外し，識別原理を $\Bop\Null(\Top)$ と $\Psi(\Lambda)$ の交差へ抽象化した。exact top-$K$ は，完全ケース route が使えないにもかかわらず quotient identification が機能する重要な stress test である。
+\end{remark}
+
+\subsection{離散 \texorpdfstring{$F$}{F}：有限潜在クラス，anchor pair と常時観測 shifter}
+$X=x$ を固定し，$F\in\{1,\ldots,r\}$ とする。$W$ は $L$ 個の support points $w_1,\ldots,w_L$ を持ち，全員について観測される。各 $Y_j$ は有限集合 $\cY_j$ を取り，
+\begin{equation}
+P(Y_j=y\mid F=f,W=w)=M_j(y,f),
+\qquad
+Y_1,\ldots,Y_m\text{ are independent given }F
+\label{eq:latentclass}
+\end{equation}
+とする。$\Gamma\in\R^{L\times r}$ を
+\[
+\Gamma_{\ell f}=P(F=f\mid W=w_\ell)
+\]
+と定義する。
+
+\begin{assumption}[Finite-class anchor conditions]\label{as:finiteanchor}
+\begin{enumerate}[label=(FC\arabic*)]
+\item anchor pair $\{a,b\}$ の law $P(Y_a,Y_b\mid W=w_\ell)$ が各 $\ell$ で shadow bridge により識別される。
+\item 各 item $j$ の singleton law $P(Y_j\mid W=w_\ell)$ が各 $\ell$ で識別される。
+\item $M_a,M_b,\Gamma$ の Kruskal ranks を $k_a,k_b,k_\Gamma$ とすると
+\begin{equation}
+ k_a+k_b+k_\Gamma\ge2r+2.
+\label{eq:kruskal}
+\end{equation}
+\item $\rank(\Gamma)=r$。
+\item 既知 anchor score $s_a$ により
+\[
+\E\{s_a(Y_a)\mid F=1\}<\cdots<\E\{s_a(Y_a)\mid F=r\}
+\]
+と label を固定する。
+\end{enumerate}
+\end{assumption}
+
+\begin{theorem}[Anchor-pair--$W$ tensor による有限 latent class 識別]\label{thm:finiteclass}
+\Cref{as:finiteanchor}の下で，観測法則は
+\[
+M_1,\ldots,M_m,\qquad \Gamma
+\]
+を一意に識別する。従って任意の item set $A$ と $w_\ell$ について
+\begin{equation}
+P(Y_A=y_A\mid W=w_\ell)
+=\sum_{f=1}^r\Gamma_{\ell f}\prod_{j\in A}M_j(y_j,f)
+\label{eq:counterjointfinite}
+\end{equation}
+が識別される。必要なのは anchor pair と singleton laws に対応する protected statistics である。
+\end{theorem}
+
+\begin{proof}
+識別された pair laws を第三 mode $W$ に沿って積み上げ，tensor
+\[
+\cT_{abW}(u,v,\ell)
+=P(Y_a=u,Y_b=v\mid W=w_\ell)
+\]
+を作る。\eqref{eq:latentclass}から
+\begin{equation}
+\cT_{abW}
+=\sum_{f=1}^rM_a(:,f)\otimes M_b(:,f)\otimes\Gamma(:,f).
+\label{eq:cpfinite}
+\end{equation}
+Kruskal (1977) の一意性定理と \eqref{eq:kruskal}により，この rank-$r$ CP decomposition は共通列置換と componentwise scaling を除いて一意である。$M_a(:,f),M_b(:,f)$ は確率ベクトルで列和が1なので，両 factor の scaling は1に固定される。各 rank-one term の scaling product が1であるため $\Gamma(:,f)$ の scaling も1である。FC5 が共通列置換を固定する。従って $M_a,M_b,\Gamma$ が識別される。
+
+各 $j$ について，singleton probability matrix
+\[
+P_j=[P(Y_j=y\mid W=w_\ell)]_{y,\ell}
+\]
+は
+\begin{equation}
+P_j=M_j\Gamma'.
+\label{eq:singletonmatrix}
+\end{equation}
+FC4 により $\Gamma'$ は full row rank で，右逆
+\[
+R_\Gamma=\Gamma(\Gamma'\Gamma)^{-1}
+\]
+を持つ。従って
+\[
+M_j=P_jR_\Gamma
+=P_j\Gamma(\Gamma'\Gamma)^{-1}
+\]
+として一意に識別される。全 $j$ について繰り返し，\eqref{eq:counterjointfinite}は条件付き独立性から従う。
+\end{proof}
+
+\begin{corollary}[Exact top-$K$ への適用]\label{cor:finiteTopK}
+Exact top-$K$ で $K\ge2$，anchor pair $\{a,b\}$ と必要な各 singleton が supported なら，\Cref{thm:finiteclass}は適用可能である。従って有限 latent class では $K\ge3$ は不要であり，$W$ が tensor の第三 mode を担う。
+\end{corollary}
+
+\begin{proof}
+\Cref{thm:finiteclass}が必要とする observed blocks は pair $\{a,b\}$ と singletons のみである。exact top-$K$ で $K\ge2$ ならこれらは support 上許される。
+\end{proof}
+
+\begin{corollary}[有限 latent class の global genericity]\label{cor:finiteclassgeneric}
+$r\ge2$，$|\cY_a|\ge r$，$|\cY_b|\ge r$，$L\ge r$ とし，anchor score $s_a$ は少なくとも $r$ 個の異なる値を取るとする。FC1--FC2 により必要な pair/singleton laws が識別されることを条件とする。$M_a,M_b$ の各 column が strictly positive probability vector，$\Gamma$ の各 row が strictly positive mixing probability vector である interior parameter space 上で，
+\[
+k_a=k_b=k_\Gamma=r,
+\qquad
+\rank(\Gamma)=r,
+\]
+かつ anchor-score expectations が互いに異なる parameter set は open dense で，その補集合は Lebesgue measure zero である。従って label permutation を score ordering で固定すれば，\Cref{thm:finiteclass}の global identification は probability-generic に成立する。
+\end{corollary}
+
+\begin{proof}
+$M_a$ のある $r\times r$ minor を考える。$r$ 個の異なる score categories に対応する rows へ各 column の mass を集中させ，残りの cells に小さい正の mass を配分すれば，strictly positive stochastic matrix でその minor が非零となる。同じ構成を $M_b$ に用いる。$\Gamma$ については最初の $r$ rows をそれぞれ異なる latent class へ集中させ，残りへ小さい正の mass を配分すれば，strictly positive row-stochastic matrix で $r\times r$ minor が非零となる。従って各 full-column-rank condition を表す minor は stochastic-simplex interior 上の非自明 polynomial である。
+
+非零 polynomial の zero set は measure zero かつ nowhere dense なので，$M_a,M_b,\Gamma$ は generic に full column rank $r$ を持つ。各 matrix はちょうど $r$ columns を持つため，full column rank は Kruskal rank $r$ と同値である。$r\ge2$ なら
+\[
+k_a+k_b+k_\Gamma=3r\ge2r+2,
+\]
+ゆえに FC3 が成立し，$\rank(\Gamma)=r$ から FC4 も成立する。
+
+Score expectation の equality
+\[
+\sum_y s_a(y)M_a(y,f)
+=\sum_y s_a(y)M_a(y,g),\qquad f\ne g,
+\]
+は $M_a$ の entries に関する nontrivial linear equation である。Score が少なくとも $r$ 個の異なる値を取るので，前述の near-canonical construction では全 component means を異ならせられる。従ってこれら有限個の equality hyperplanes の union も measure zero であり，その外では期待値を昇順に並べて label を一意に固定できる。Kruskal uniqueness と \Cref{thm:finiteclass}から global identification が従う。
+\end{proof}
+
+\subsection{連続 \texorpdfstring{$F$}{F}：additive calibration-anchor model}
+基準層を固定し，
+\begin{equation}
+Y_a=U+\varepsilon_a,
+\qquad
+Y_b=U+\varepsilon_b,
+\qquad
+Y_j=g_j(U)+\varepsilon_j
+\label{eq:additive}
+\end{equation}
+とする。$U,\varepsilon_1,\ldots,\varepsilon_m$ は相互独立，$\E\varepsilon_j=0$ とする。$U$ は区間 $I$ 上に密度 $f_U$ を持つ。
+
+\begin{assumption}[Fourier regularity]\label{as:fourier}
+\begin{enumerate}[label=(FR\arabic*)]
+\item $\varphi_U,\varphi_a,\varphi_b$ は全実数上で非零で，必要な一次微分を持つ。
+\item $f_U(u)\ge\underline f>0$ a.e. on $I$。
+\item $g_jf_U\in L_1(\R)\cap L_2(\R)$ で Fourier inversion が a.e. 成立する。
+\item pair laws $P(Y_a,Y_b)$ と $P(Y_a,Y_j)$ が各 $j$ について shadow moments から識別される。
+\end{enumerate}
+\end{assumption}
+
+$M_{ab}(t,s)=\E e^{\ii(tY_a+sY_b)}$，$M_{aj}(t,s)=\E e^{\ii(tY_a+sY_j)}$ と書く。
+
+\begin{lemma}[Kotlarski recovery]\label{lem:kotlarski2}
+\Cref{as:fourier}の下で
+\begin{align}
+\varphi_U(t)
+&=\exp\left\{\int_0^t
+\frac{\partial_sM_{ab}(u,0)}{M_{ab}(u,0)}\dd u\right\},
+\label{eq:kotU}\\
+\varphi_a(t)&=\frac{M_{ab}(t,0)}{\varphi_U(t)},
+\qquad
+\varphi_b(t)=\frac{M_{ab}(0,t)}{\varphi_U(t)}.
+\label{eq:koterrors}
+\end{align}
+従って $F_U,F_{\varepsilon_a},F_{\varepsilon_b}$ は識別される。
+\end{lemma}
+
+\begin{proof}
+独立性から
+\[
+M_{ab}(t,s)=\varphi_U(t+s)\varphi_a(t)\varphi_b(s).
+\]
+$s$ で微分し $s=0$ と置くと
+\[
+\partial_sM_{ab}(t,0)
+=\varphi_U'(t)\varphi_a(t)+\varphi_U(t)\varphi_a(t)\varphi_b'(0).
+\]
+$\varphi_b'(0)=\ii\E\varepsilon_b=0$ かつ $M_{ab}(t,0)=\varphi_U(t)\varphi_a(t)$ なので
+\[
+\frac{\partial_sM_{ab}(t,0)}{M_{ab}(t,0)}
+=\frac{\varphi_U'(t)}{\varphi_U(t)}.
+\]
+非零性により連続な logarithm branch を取り，$\varphi_U(0)=1$ から積分して \eqref{eq:kotU}。軸上の characteristic functions を割れば \eqref{eq:koterrors}。characteristic function の一意性により分布が識別される。
+\end{proof}
+
+\begin{lemma}[Measurement curve recovery]\label{lem:gcurve2}
+各 $j\notin\{a,b\}$ について
+\begin{equation}
+G_j(t)
+=\frac{1}{\ii\varphi_a(t)}
+\left.\frac{\partial}{\partial s}M_{aj}(t,s)\right|_{s=0}
+=\int_Ig_j(u)f_U(u)e^{\ii tu}\dd u.
+\label{eq:Gj2}
+\end{equation}
+従って
+\begin{equation}
+g_j(u)
+=\frac{1}{2\pi f_U(u)}
+\int_{\R}e^{-\ii tu}G_j(t)\dd t
+\quad\text{a.e. }u\in I.
+\label{eq:gcurve2}
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+独立性から
+\[
+M_{aj}(t,s)
+=\varphi_a(t)\varphi_j(s)
+\int e^{\ii\{tu+sg_j(u)\}}f_U(u)\dd u.
+\]
+$s=0$ で微分すると
+\begin{align*}
+\partial_sM_{aj}(t,0)
+&=\varphi_a(t)\varphi_j'(0)\varphi_U(t)
++\ii\varphi_a(t)\int g_j(u)e^{\ii tu}f_U(u)\dd u.
+\end{align*}
+$\varphi_j'(0)=\ii\E\varepsilon_j=0$ なので \eqref{eq:Gj2}。Fourier inversion と $f_U>0$ から \eqref{eq:gcurve2}。
+\end{proof}
+
+\begin{theorem}[Continuous calibration-anchor identification]\label{thm:continuousanchor}
+\Cref{as:shadow,as:fourier}に加え，必要な pair moments が joint system または unique bridge benchmark により識別されるとする。このとき
+\[
+F_U,\ F_{\varepsilon_a},\ F_{\varepsilon_b},\ g_j\ (j\notin\{a,b\})
+\]
+は calibration coordinate \eqref{eq:additive} の下で一意に識別される。
+\end{theorem}
+
+\begin{proof}
+Pair laws から $M_{ab}$ と $M_{aj}$ が得られる。\Cref{lem:kotlarski2}で $F_U,F_{\varepsilon_a},F_{\varepsilon_b}$，\Cref{lem:gcurve2}で各 $g_j$ を回復する。
+\end{proof}
+
+\begin{remark}[本定理の新規性の境界]
+Kotlarski/Fourier inversion 自体は既知である。本稿における役割は，常時観測 shadow を持つ MNAR data から必要な pair moments を full-law recovery なしに joint に決める一般定理の，具体的かつ検証可能な latent special case を与えることである。
+\end{remark}
+
+\section{具体的測定モデルへの応用：線形因子分析と Rasch IRT}\label{sec:factorrasch}
+
+本節は，抽象的な quotient identification が実務で何を意味するかを，二つの標準的測定モデルで示す。共通する要点は，欠測モデル
+\(P(D\mid Y,F,X)\) を logistic/probit などに指定せず，測定モデルの識別に実際に必要な完全データ統計だけを shadow representer で保護することである。線形一因子モデルでは平均・分散・一部の共分散，Rasch モデルでは二つの discordant pair-cell probabilities だけでよい。
+
+\subsection{有限個の protected statistics への還元}
+分析 block $S_\ell$ と完全データ統計 $\tau_\ell(Y_{S_\ell},C_{S_\ell})$，$\ell=1,\ldots,L$ を選び，
+\[
+m(\lambda)
+=\bigl(\E_\lambda\tau_1,\ldots,\E_\lambda\tau_L\bigr)'
+\]
+とする。各 $\tau_\ell$ に対し representer $\delta_\ell$ が
+\begin{equation}
+\E\{\delta_\ell(Z_{S_\ell},C_{S_\ell})\mid
+R_{S_\ell}=1,Y_{S_\ell},C_{S_\ell}\}
+=\tau_\ell(Y_{S_\ell},C_{S_\ell})
+\label{eq:protectedrepresenter}
+\end{equation}
+を満たすなら，
+\begin{equation}
+\E\tau_\ell
+=\E\left[R_{S_\ell}\tau_\ell
+ +(1-R_{S_\ell})\delta_\ell\right]
+\label{eq:protectedstat}
+\end{equation}
+は観測法則の汎関数である。
+
+\begin{proposition}[Protected-statistic reduction]\label{prop:protectedreduction}
+$\lambda\mapsto m(\lambda)$ が parameter space 上で injective なら，\eqref{eq:protectedrepresenter} の各解が非一意でも $\lambda$ は識別される。局所的には，正規化後の finite-dimensional parameter $\lambda\in\R^p$ に対し
+\[
+\rank D_\lambda m(\lambda_0)=p
+\]
+なら $\lambda_0$ は局所識別される。Full-data law，inverse-selection bridge の一意性，および parametric selection equation は不要である。
+\end{proposition}
+
+\begin{proof}
+\eqref{eq:protectedstat} により $m(\lambda_0)$ は観測法則から一意に定まる。Representer が二つ存在し，差を $h_\ell$ とすると $h_\ell\in\Null(T_{S_\ell}^*)$ であり，shadow exclusion と反復期待値から
+\[
+\E\{(1-R_{S_\ell})h_\ell(Z_{S_\ell},C_{S_\ell})\}=0
+\]
+なので右辺は representer の選択に依存しない。Injectivity から $m(\lambda)=m(\lambda_0)$ は $\lambda=\lambda_0$ を含意する。局所主張は inverse function theorem による。
+\end{proof}
+
+\subsection{線形一因子分析：潜在分布を正規としなくてもよい}
+
+\begin{assumption}[Semiparametric one-factor measurement model]\label{as:onefactor}
+$j=1,\ldots,m$ について
+\begin{equation}
+Y_j=\nu_j+\lambda_jF+\varepsilon_j
+\label{eq:onefactor}
+\end{equation}
+とする。次を仮定する。
+\begin{enumerate}[label=(FA\arabic*)]
+\item $\E F=0$，$\Var(F)=1$，$\E\varepsilon_j=0$，$\Cov(F,\varepsilon_j)=0$。
+\item $\Cov(\varepsilon_j,\varepsilon_k)=0$ for $j\ne k$，$\psi_j=\Var(\varepsilon_j)>0$。
+\item $F$ と $\varepsilon$ の分布は，有限二次モーメント以外には指定しない。
+\item 各 $j$ について $\E Y_j$ と $\E Y_j^2$ が protected statistic として識別される。ある edge set $\cE\subset\{\{j,k\}:j<k\}$ について $\E(Y_jY_k)$ が識別される。
+\end{enumerate}
+\end{assumption}
+
+$G_\cE=(\{1,\ldots,m\},\cE)$ を protected covariance graph とする。\Cref{as:onefactor} の下で
+\begin{equation}
+\mu_j:=\E Y_j=\nu_j,\qquad
+v_j:=\Var(Y_j)=\lambda_j^2+\psi_j,
+\qquad
+c_{jk}:=\Cov(Y_j,Y_k)=\lambda_j\lambda_k.
+\label{eq:factorsecondmoments}
+\end{equation}
+
+\begin{theorem}[Shadow-protected one-factor identification]\label{thm:factorgraph}
+\Cref{as:onefactor} に加え，
+\begin{enumerate}[label=(\roman*)]
+\item $G_\cE$ は connected and non-bipartite，
+\item $\lambda_j\ne0$ for every $j$，
+\item global sign を $\lambda_{j_0}>0$ で固定する，
+\end{enumerate}
+とする。このとき
+\[
+(\nu_1,\ldots,\nu_m),\quad
+(\lambda_1,\ldots,\lambda_m),\quad
+(\psi_1,\ldots,\psi_m)
+\]
+は観測データ法則から一意に識別される。欠測機構の link，$F$ の正規性，および誤差分布の正規性は必要ない。
+\end{theorem}
+
+\begin{proof}
+$\nu_j=\mu_j$ は直ちに識別される。同じ protected covariances を生成する別の loading vector $\wt\lambda$ を考える。$\lambda_j\ne0$ より $r_j=\wt\lambda_j/\lambda_j$ と置け，すべての edge $\{j,k\}\in\cE$ で
+\[
+r_jr_k=1.
+\]
+$t_j=\log|r_j|$ と置くと $t_j+t_k=0$ on every edge。Connected graph 上では path に沿って $t$ の符号が交互に変わる。Odd cycle を一周すると $t_j=-t_j$ なので $t_j=0$，connectedness により全頂点で $|r_j|=1$ となる。さらに $r_jr_k=1$ なので adjacent vertices の符号は同じであり，connectedness から全 $r_j$ は同符号である。従って $\wt\lambda=\lambda$ または $\wt\lambda=-\lambda$。$\lambda_{j_0}>0$ が後者を排除する。最後に
+\[
+\psi_j=v_j-\lambda_j^2
+\]
+により uniquenesses が識別される。
+\end{proof}
+
+\begin{proposition}[Bipartite graph における sharp nonidentification]\label{prop:factorbipartite}
+$G_\cE$ が connected bipartite で，vertex partition を $A\cup B$ とする。全 $\psi_j>0$ なら，$a=1$ の十分小さい近傍にある任意の $a>0$ について
+\[
+\wt\lambda_j=
+\begin{cases}
+a\lambda_j,&j\in A,\\
+a^{-1}\lambda_j,&j\in B,
+\end{cases}
+\qquad
+\wt\psi_j=v_j-\wt\lambda_j^2
+\]
+は同じ protected variances and covariances を生成し，$\wt\psi_j>0$ を保つ。従って loading magnitudes は識別されない。
+\end{proposition}
+
+\begin{proof}
+Bipartite graph の全 edge は $A$ と $B$ を結ぶため，$\wt\lambda_j\wt\lambda_k=\lambda_j\lambda_k$。また $\wt\lambda_j\to\lambda_j$ as $a\to1$ なので，strict positivity of $\psi_j$ により $a$ の十分小さい近傍で $\wt\psi_j>0$。Diagonal variances も $\wt\lambda_j^2+\wt\psi_j=v_j$ で不変である。
+\end{proof}
+
+\begin{corollary}[Calibrated loading がある場合]\label{cor:factorcalibrated}
+$G_\cE$ が connected で，一つの loading $\lambda_{j_0}$ の符号と大きさが既知なら，non-bipartite condition は不要であり，全 loading と uniquenesses が識別される。
+\end{corollary}
+
+\begin{proof}
+$j_0$ から任意の $j$ への path に沿って $\lambda_k=c_{\ell k}/\lambda_\ell$ を逐次適用する。Connectedness で全頂点へ到達し，model consistency により異なる paths は同じ値を与える。
+\end{proof}
+
+\begin{proposition}[Signless Laplacian と factor weak identification]\label{prop:factorsignless}
+Positive weights $w_{jk}>0$ を edge-specific shadow precision と complete-data information の積とし，loading Jacobian
+\[
+(J_{\mathrm{FA}}h)_{jk}
+=\sqrt{w_{jk}}\{\lambda_kh_j+\lambda_jh_k\},
+\qquad \{j,k\}\in\cE
+\]
+を考える。$x_j=h_j/\lambda_j$ と置けば
+\begin{equation}
+\norm{J_{\mathrm{FA}}h}^2
+=x'Q_+x,
+\qquad
+Q_+=B_+'\diag\{w_{jk}\lambda_j^2\lambda_k^2\}B_+,
+\label{eq:signlesslaplacian}
+\end{equation}
+ここで $B_+$ は各 edge row が両端点に $1$ を持つ signless incidence matrix である。従って $J_{\mathrm{FA}}$ が injective であるための必要十分条件は，positive-weight graph の各 connected component が non-bipartite であることである。
+\end{proposition}
+
+\begin{proof}
+$\lambda_kh_j+\lambda_jh_k=\lambda_j\lambda_k(x_j+x_k)$ なので \eqref{eq:signlesslaplacian}。$B_+x=0$ は全 edge で $x_j=-x_k$ を意味する。Connected component に非零解が存在することと，その component が bipartite であることは同値である。
+\end{proof}
+
+\begin{remark}[Gaussian factor analysis との区別]
+\eqref{eq:onefactor} と FA1--FA3 は likelihood 全体を指定する Gaussian factor model ではなく，二次モーメントに基づく semiparametric factor model である。$F$ と $\varepsilon$ を Gaussian と追加すれば $Y$ の law は $(\nu,\Sigma_Y)$ で決まるが，\Cref{thm:factorgraph} の loading identification 自体には正規性は不要である。多因子の場合は rotation normalization と Gram-completion/rigidity condition が別途必要である。
+\end{remark}
+
+\subsection{Rasch IRT：item difficulty は能力分布を指定せずに識別できる}
+
+\begin{assumption}[Rasch measurement model]\label{as:rasch}
+$Y_j\in\{0,1\}$ とし，潜在能力 $F\sim G$ を条件として items は独立で，
+\begin{equation}
+P(Y_j=1\mid F=f)
+=\frac{\exp(f-b_j)}{1+\exp(f-b_j)},
+\qquad j=1,\ldots,m.
+\label{eq:rasch}
+\end{equation}
+$G$ は任意の probability distribution とする。Pair set $\cE_R$ について
+\[
+p_{jk}^{10}=P(Y_j=1,Y_k=0),
+\qquad
+p_{jk}^{01}=P(Y_j=0,Y_k=1)
+\]
+が target-specific shadow representers により識別され，strictly positive とする。
+\end{assumption}
+
+\begin{theorem}[Distribution-free Rasch pair-ratio identification]\label{thm:raschpair}
+\Cref{as:rasch} の下で，すべての $\{j,k\}\in\cE_R$ について
+\begin{equation}
+\frac{p_{jk}^{10}}{p_{jk}^{01}}
+=\exp(b_k-b_j),
+\qquad
+b_k-b_j=\log\frac{p_{jk}^{10}}{p_{jk}^{01}}.
+\label{eq:raschratio}
+\end{equation}
+従って pair graph $G_R=(\{1,\ldots,m\},\cE_R)$ が connected なら，全 difficulty vector $b$ は一つの location normalization，例えば $b_1=0$ または $\sum_jb_j=0$，の下で一意に識別される。能力分布 $G$，欠測 link，および latent response-propensity model は不要である。
+\end{theorem}
+
+\begin{proof}
+固定した $f$ に対し
+\begin{align*}
+P(Y_j=1,Y_k=0\mid F=f)
+&=\frac{e^{f-b_j}}
+{(1+e^{f-b_j})(1+e^{f-b_k})},\\
+P(Y_j=0,Y_k=1\mid F=f)
+&=\frac{e^{f-b_k}}
+{(1+e^{f-b_j})(1+e^{f-b_k})}.
+\end{align*}
+第一式は第二式の $e^{b_k-b_j}$ 倍であり，この比は $f$ に依存しない。$G$ に関して積分して \eqref{eq:raschratio} を得る。Connected graph 上で基準頂点から各頂点への path に沿って edge differences を加えれば全 $b_j-b_1$ が得られる。Location normalization が残る共通加法変換を固定する。
+\end{proof}
+
+\begin{proposition}[Graph Laplacian と Rasch weak identification]\label{prop:raschlaplacian}
+Edge-specific positive weights $w_{jk}$ を用いて
+\[
+(J_Rh)_{jk}=\sqrt{w_{jk}}(h_k-h_j)
+\]
+と置く。Oriented incidence matrixを $B$ とすると
+\[
+J_R'J_R=B'\diag(w_{jk})B=:L_W.
+\]
+従って $\one'h=0$ の normalized tangent 上で $J_R$ が injective であるための必要十分条件は positive-weight graph の connectedness であり，最小二乗識別強度は $\lambda_2(L_W)^{1/2}$ である。
+\end{proposition}
+
+\begin{proof}
+Weighted graph Laplacian の null space は各 connected component 上で定数の vectors からなる。Graph が connected なら null space は $\Span(\one)$ であり，$\one^\perp$ との交差は zero。Conversely disconnected なら component indicator contrasts が normalized null directions になる。Rayleigh quotient characterization から最小非零 singular value は $\lambda_2(L_W)^{1/2}$。
+\end{proof}
+
+\subsection{Rasch のパラメトリック能力分布}
+Difficulty vector $b$ の識別後に，能力分布を $G=G_\gamma$，$\gamma\in\Gamma\subset\R^q$ という有限次元族へ限定する場合を考える。ここで正規分布，有限混合，または低次元の形状族を許す。Shadow IV の役割は必要な score/pattern probabilities を保護することであり，$G_\gamma$ の識別自体は complete-data manifest map の quotient Jacobian によって決まる。
+
+\begin{corollary}[Parametric ability distribution]\label{cor:raschparamG}
+$G=G_\gamma$，$\gamma\in\Gamma\subset\R^q$ を finite-dimensional family とし，location/scale invariance を正規化済みとする。$b$ が \Cref{thm:raschpair} で識別され，protected pattern or score probability vector
+\[
+m_G(\gamma)=\bigl(P_{b,G_\gamma}(T=s):s\in\cS_T\bigr)
+\]
+の Jacobian が
+\[
+\rank D_\gamma m_G(\gamma_0)=q
+\]
+を満たすなら $\gamma_0$ は局所識別される。特に $F\sim N(0,\sigma_F^2)$ では，ある protected score probability の $\sigma_F^2$ derivative が非零なら $\sigma_F^2$ は局所識別される。
+\end{corollary}
+
+\begin{proof}
+\Cref{prop:protectedreduction} と inverse function theorem を適用する。Rasch location invariance のため normal mean と全 difficulties を同時に自由にせず，例えば $E(F)=0$ を固定する必要がある。
+\end{proof}
+
+\begin{remark}[2PL との相違]
+2PL model $P(Y_j=1\mid F=f)=\operatorname{logit}^{-1}\{a_j(f-b_j)\}$ では，discordant conditional odds ratio は
+\[
+\exp\{a_j(f-b_j)-a_k(f-b_k)\}
+\]
+となり，$a_j\ne a_k$ なら $f$ に依存する。従って Rasch の pair-ratio simplification は失われる。Parametric $G$，calibrated discriminations，より豊富な protected pattern probabilities，または一般 quotient Jacobian の full rank が必要になる。
+\end{remark}
+
+\subsection{三層のパラメトリック性という観点からの二例の位置づけ}
+\begin{center}
+\small
+\begin{tabularx}{0.98\textwidth}{>{\bfseries}p{32mm}p{35mm}p{38mm}X}
+\toprule
+対象 & ①欠測モデル & ②測定モデル & ③潜在分布と識別結論\\
+\midrule
+一因子の $\nu,\lambda,\psi$
+& Selection probability は nonparametric。対象 moments の shadow range のみ。
+& 線形・局所無相関という structural-parametric model。Gaussian likelihood は不要。
+& $F$ の分布は arbitrary with $E F=0,\Var F=1$。Connected non-bipartite graph で測定 parameter を識別。Full $G_F$ は対象外。\\
+Rasch difficulties $b$
+& Selection probability は nonparametric。Pair cells $10,01$ の representer のみ。
+& Parametric Rasch link。
+& $G_F$ は arbitrary。Connected pair graph で $b$ を location まで識別。\\
+Rasch ability family $G_\gamma$
+& 同上。
+& Rasch link。
+& Normal/finite-mixture など finite-dimensional $G_\gamma$ は protected score/pattern Jacobian の full-rank 条件下で局所識別。Pure shadow はこの complete-data rank condition を代替しない。\\
+Gaussian factor full law
+& Selection probability は nonparametricでも，必要な全 mean/covariance を保護すればよい。
+& Gaussian conditional measurement model。
+& Gaussian latent/error assumptions により $P(Y)$ は mean/covariance で決まるが，factor rotation/decomposition の通常の正規化は残る。\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+この比較は，shadow IV の主な役割が「①を parametric にすること」ではなく，②と③が完全データ下で必要とする統計だけを recover/protect することにあると示す。どの統計で十分かは測定モデル固有であり，その網羅的整理を \Cref{app:three-layer-taxonomy} に与える。
+
+\section{識別境界と反例}\label{sec:boundary}
+
+\subsection{Latent variable を積分しても shadow exclusion は保存されない}
+\begin{proposition}[Conditional exclusion の周辺化失敗]\label{prop:marginalshadowfail}
+一般に
+\[
+D\ind Z\mid(Y,F,X)
+\]
+は
+\[
+D\ind Z\mid(Y,X)
+\]
+を含意しない。
+\end{proposition}
+
+\begin{proof}
+$X$ を省略する。$Z\sim\operatorname{Bernoulli}(1/2)$，$F=Z$，$Y=F+E$ とし，$E\sim N(0,1)$ は $Z$ と独立とする。$D=F$ と置く。$(Y,F)$ を条件とすれば $D$ は $F$ の決定論的関数であり，$Z$ の追加情報は $D$ の条件付き分布を変えないので $D\ind Z\mid(Y,F)$。しかし $F=Z$ なので $D=Z$ a.s. であり，$Y$ を条件としても $D$ と $Z$ は独立でない。従って含意は失敗する。
+\end{proof}
+
+\begin{remark}
+$Z$ を潜在分布の shifter と欠測 shadow の双方に使う場合，必要なのは周辺化後の observable exclusion $D\ind Z\mid(Y,X)$ である。$D\ind Z\mid(Y,F,X)$ だけでは不十分である。
+\end{remark}
+
+\subsection{Quotient collision があるときの非識別}
+\begin{proposition}[商空間条件の必要性]\label{prop:quotientnecessary}
+$\lambda_1\neq\lambda_0$ が
+\[
+\Psi(\lambda_1)-\Psi(\lambda_0)\in\Bop\Null(\Top)
+\]
+を満たすなら，$\lambda_0$ は joint model で点識別されない。さらに $\theta(\lambda_1)\neq\theta(\lambda_0)$ なら target $\theta$ も非識別である。
+\end{proposition}
+
+\begin{proof}
+\Cref{thm:quotient}により $\lambda_1$ は observed-data solution fiber に属する。従って同じ観測 moment system が異なる latent parameter を許す。target 値も異なるなら target は点識別されない。
+\end{proof}
+
+\subsection{潜在座標の非線形再パラメータ化}
+\begin{proposition}[Calibration のない非線形 latent scale]\label{prop:reparam2}
+一般モデル $Y_j=g_j(F)+\varepsilon_j$ を考える。任意の狭義単調全単射 $h$ に対し
+\[
+F^\dagger=h(F),\qquad
+g_j^\dagger(u)=g_j\{h^{-1}(u)\}
+\]
+と置けば，観測データ法則は不変である。$\E F=0$，$\Var(F)=1$，符号の固定だけでは，非線形 $h$ の後に affine standardization を行うことで一般に無限個の観測同値表現が残る。
+\end{proposition}
+
+\begin{proof}
+点ごとに $g_j^\dagger(F^\dagger)=g_j(F)$ であり，measurement equation は変わらない。$\varepsilon_j\ind F$ なら $\varepsilon_j\ind h(F)$。非線形 $h(F)$ を平均と標準偏差で再標準化すれば moment normalization も満たせる。従って calibration anchor，基準分布全体，または latent-rank coordinate などの追加正規化が必要である。
+\end{proof}
+
+\subsection{Support disconnect と singleton-only data}
+\begin{proposition}[孤立項目の非識別]\label{prop:isolated2}
+$U\sim N(0,1)$ が既知であっても，項目 $j$ が他項目と一度も同時観測されず，$\varepsilon_j$ の分布が未知なら $g_j$ は一般に識別されない。観測 marginal $Y_j\sim N(0,2)$ は
+\[
+(g_j(u),\varepsilon_j)=(u,N(0,1))
+\quad\text{と}\quad
+(g_j(u),\varepsilon_j)=(0,N(0,2))
+\]
+の双方で生成される。
+\end{proposition}
+
+\begin{proof}
+両モデルの singleton law は $N(0,2)$ で一致する。$Y_j$ と latent variable または既知 anchor の joint moment が存在しないため，signal と error の分解を区別できない。
+\end{proof}
+
+\subsection{\texorpdfstring{Exact top-$K$ の $K=1$ 境界}{Exact top-K の K=1 境界}}
+\begin{proposition}[$K=1$ での反復測定分解の非識別]\label{prop:k1again}
+$m=2$，exact top-$1$ で各 item が確率 $1/2$ で観測され，選択は $Y$ と独立とする。次の二モデルを考える。
+\begin{align*}
+\cP_A:&\quad U\sim N(0,1),\quad
+\varepsilon_a,\varepsilon_b\stackrel{\mathrm{iid}}\sim N(0,1),\\
+\cP_B:&\quad U\sim N(0,1/2),\quad
+\varepsilon_a,\varepsilon_b\stackrel{\mathrm{iid}}\sim N(0,3/2),
+\end{align*}
+全て独立で $Y_a=U+\varepsilon_a$，$Y_b=U+\varepsilon_b$ とする。両モデルは同じ観測法則を持つが $F_U$ は異なる。
+\end{proposition}
+
+\begin{proof}
+両モデルで各 singleton marginal は $N(0,2)$。$K=1$ では同一個体の pair covariance が観測されないため，観測法則は item labels，選択確率，singleton marginals だけからなり両モデルで一致する。一方 $\Var_A(U)=1\neq1/2=\Var_B(U)$。
+\end{proof}
+
+\subsection{Fourier blind region}
+\begin{proposition}[Anchor characteristic function の zero set]\label{prop:fourierblind}
+連続 additive model で $A=\{t:\varphi_a(t)=0\}$ が正の Lebesgue 測度を持つとする。非零の実関数 $q$ が parameter space の admissible tangent で，$q\in L_1\cap L_2$，$\supp(\Fop q)\subseteq A$ を満たし，十分小さい $|\epsilon|$ に対して $(g_jf_U)+\epsilon q$ が許容されるとする。このとき $g_jf_U$ と $(g_jf_U)+\epsilon q$ は全ての moments
+\[
+\varphi_a(t)\Fop(g_jf_U)(t)
+\]
+を一致させる。従って対応する curve direction は識別されない。
+\end{proposition}
+
+\begin{proof}
+差は $\epsilon\varphi_a(t)\Fop q(t)$。$t\notin A$ では $\Fop q(t)=0$，$t\in A$ では $\varphi_a(t)=0$ なので全 $t$ でゼロとなる。
+\end{proof}
+
+\section{Joint penalized sieve minimum distance}\label{sec:estimation}
+
+\subsection{観測可能な有限 moment system}
+Conditional shadow moments は instrument basis $q_{S1},\ldots,q_{SK_{S,n}}$ を用いて
+\[
+\E\bigl[q_{Sk}(Z_S,C_S)
+\{R_S\omega_S(Y_S,C_S)-1\}\bigr]=0
+\]
+と unconditional moments に変換する。Latent restrictions は test functions $\psi_{S\ell}$ に対し
+\[
+\E\{R_S\omega_S(Y_S,C_S)\psi_{S\ell}(Y_S,C_S)\}
+-\Psi_{S\ell}(\lambda)=0
+\]
+とする。これらを積み上げた observed moment vector を
+\begin{equation}
+m_n(O;\eta)\in\R^{J_n},
+\qquad
+M_n(\eta)=\E m_n(O;\eta),
+\qquad \eta=(\omega,\lambda)
+\label{eq:mn}
+\end{equation}
+と書く。$\wh M_n(\eta)=\Pp_n m_n(O;\eta)$ である。
+
+Sieve $\Theta_n$ は bridge，latent density，measurement curves を有限 basis で表す。正値 bridge には bounded logistic series，密度には exponential series，curve には B-splines または wavelets を用いることができる。
+
+\begin{definition}[Joint PSMD estimator]\label{def:jointpsmd2}
+$W_n$ を固有値が $[\underline w,\overline w]$ に入る正定値行列，$J(\eta)\ge0$ を penalty とする。許容最適化誤差 $r_n^{\mathrm{opt}}\ge0$ に対し
+\begin{equation}
+\wh\eta_n\in\Theta_n:\quad
+\norm{\wh M_n(\wh\eta_n)}_{W_n}^2+\lambda_nJ(\wh\eta_n)
+\le
+\inf_{\eta\in\Theta_n}
+\{\norm{\wh M_n(\eta)}_{W_n}^2+\lambda_nJ(\eta)\}
++r_n^{\mathrm{opt}}
+\label{eq:psmd2}
+\end{equation}
+を joint penalized sieve minimum distance estimator と呼ぶ。
+\end{definition}
+
+\subsection{有限次元 sieve の entropy と一様確率誤差}
+$\Theta_n$ を $p_n$ 次元 coefficient vector $\gamma$ で parameterize し，$\Gamma_n\subset\R^{p_n}$ は Euclidean ball $\norm\gamma\le R_n$ に含まれるとする。
+
+\begin{assumption}[Bounded Lipschitz moment class]\label{as:boundedlip}
+ある deterministic $F_n,L_n<\infty$ が存在し，すべての $o$ と $\gamma,\gamma'\in\Gamma_n$ について
+\begin{align}
+\norm{m_n(o;\gamma)}_2&\le F_n,
+\label{eq:boundm}\\
+\norm{m_n(o;\gamma)-m_n(o;\gamma')}_2
+&\le L_n\norm{\gamma-\gamma'}_2.
+\label{eq:lipm}
+\end{align}
+\end{assumption}
+
+\begin{theorem}[Entropy からの uniform moment bound]\label{thm:entropy}
+\Cref{as:boundedlip}の下で
+\begin{equation}
+\sup_{\eta\in\Theta_n}
+\norm{\wh M_n(\eta)-M_n(\eta)}_2
+=O_p(\delta_n),
+\label{eq:uniformrate}
+\end{equation}
+ただし
+\begin{equation}
+\delta_n
+=F_n\sqrt{\frac{p_n\log A_n+1}{n}}
++\frac{F_n}{n},
+\qquad
+A_n=3+\frac{6R_nL_nn}{F_n}.
+\label{eq:deltan}
+\end{equation}
+特に $F_n^2p_n\log A_n=o(n)$ なら $\delta_n=o(1)$。
+\end{theorem}
+
+\begin{proof}
+$\epsilon_n=F_n/(L_nn)$ とし，$\Gamma_n$ の $\epsilon_n$-net $\cN_n$ を取る。Euclidean ball の covering bound から
+\[
+|\cN_n|
+\le\left(1+\frac{2R_n}{\epsilon_n}\right)^{p_n}
+\le A_n^{p_n}.
+\]
+固定した $\gamma\in\cN_n$ について，$X_i=m_n(O_i;\gamma)-M_n(\gamma)$ は平均ゼロの Hilbert-valued random vector で $\norm{X_i}\le2F_n$。Hilbert-space Bernstein inequality により，ある universal constants $c_1,c_2>0$ について
+\[
+P\left(
+\norm{n^{-1}\sum_{i=1}^nX_i}>t
+\right)
+\le2\exp\left[-\frac{nt^2}{c_1F_n^2+c_2F_nt}\right].
+\]
+Union bound を $|\cN_n|$ 個に適用すると
+\[
+\max_{\gamma\in\cN_n}
+\norm{\wh M_n(\gamma)-M_n(\gamma)}
+=O_p\left(
+F_n\sqrt{\frac{p_n\log A_n+1}{n}}
++F_n\frac{p_n\log A_n+1}{n}
+\right).
+\]
+$p_n\log A_n\le n$ の領域では第二項は第一項以下であり，それ以外は結論が自明な粗い bound で成立する。
+
+任意の $\gamma$ に対し net point $\gamma^\sharp$ を $\norm{\gamma-\gamma^\sharp}\le\epsilon_n$ となるよう選ぶ。\eqref{eq:lipm}から
+\begin{align*}
+&\norm{(\Pp_n-P)m_n(\cdot;\gamma)
+-(\Pp_n-P)m_n(\cdot;\gamma^\sharp)}\\
+&\qquad\le
+\Pp_n\norm{m_n(\cdot;\gamma)-m_n(\cdot;\gamma^\sharp)}
++P\norm{m_n(\cdot;\gamma)-m_n(\cdot;\gamma^\sharp)}\\
+&\qquad\le2L_n\epsilon_n=2F_n/n.
+\end{align*}
+net bound と合わせて \eqref{eq:uniformrate}--\eqref{eq:deltan}を得る。
+\end{proof}
+
+\begin{remark}[Unbounded data]
+Sub-Gaussian または sub-exponential envelope の場合も，truncation と vector Bernstein により同型の bound が得られる。本文では proof を透明にするため bounded moment class を採用した。
+\end{remark}
+
+\subsection{Spline approximation error}
+\begin{lemma}[Tensor-product spline approximation]\label{lem:splineapprox}
+$f\in W^{s,2}([0,1]^d)$，$s>0$ とし，次数 $q\ge\lceil s\rceil$ の tensor-product B-spline space を各座標 $K$ 分割で構成する。dimension を $p_K\asymp K^d$ とすると，ある spline $f_K$ が存在して
+\begin{equation}
+\norm{f-f_K}_{L_2}
+\le C K^{-s}\norm f_{W^{s,2}}
+\le C' p_K^{-s/d}\norm f_{W^{s,2}}.
+\label{eq:splineapprox}
+\end{equation}
+$L_\infty$ boundedness や積分ゼロなど有限個の連続線形制約は，projection または coefficient normalization により同じ order を保って課せる。
+\end{lemma}
+
+\begin{proof}
+一変量 spline quasi-interpolant $Q_K$ は Sobolev approximation theorem により
+$\norm{f-Q_Kf}_{L_2}\le CK^{-s}\norm f_{W^{s,2}}$ を満たす。$d$ 次元では各座標の quasi-interpolant の tensor product を取り，telescoping decomposition と各 operator の $L_2$ boundedness を用いると同じ $K^{-s}$ order を得る。dimension は各座標 basis 数の積なので $p_K\asymp K^d$。有限個の線形制約への orthogonal correction は有限 rank であり，approximation order を変えない。
+\end{proof}
+
+\subsection{Target consistency と局所 rate}
+Bridge が非一意なので，真の solution set
+\[
+\cZ_0=\{\eta:\Mop(\eta)=0\}
+\]
+を考える。target は $\cZ_0$ 上で一定と仮定し，その値を $\theta_0$ と書く。$\eta_{0n}\in\Theta_n$ を sieve approximation とし
+\[
+a_{\theta,n}=d_\theta\{\theta(\lambda_{0n}),\theta_0\},
+\qquad
+b_n=\norm{M_n(\eta_{0n})}
+\]
+と置く。
+
+\begin{assumption}[Sieve separation と local cone]\label{as:sieverate}
+\begin{enumerate}[label=(SR\arabic*)]
+\item 任意の $\epsilon>0$ に対し
+\[
+\inf_{\eta\in\Theta_n:
+ d_\theta\{\theta(\lambda),\theta_0\}\ge\epsilon}
+\norm{M_n(\eta)}
+\]
+は十分大きい $n$ で正に離れる。
+\item 高確率で $\wh\eta_n,\eta_{0n}$ は同一局所近傍に入り，ある $\kappa<1$ について
+\begin{equation}
+\norm{M_n(\eta)-M_n(\eta_{0n})-
+\Aop_n(\eta-\eta_{0n})}
+\le\kappa\norm{\Aop_n(\eta-\eta_{0n})}+b_n
+\label{eq:sievecone}
+\end{equation}
+が成立する。
+\item latent sieve 上の effective operator $\Sop_n$ は
+\begin{equation}
+\norm{\Sop_n h_\lambda}
+\ge\mu_n\norm{h_\lambda}
+\quad\text{for all }h_\lambda\in\mathbb H_{\lambda,n}
+\label{eq:mun}
+\end{equation}
+を満たす。
+\item $J(\eta_{0n})=O(1)$，$r_n^{\mathrm{opt}}=o_p(1)$。
+\end{enumerate}
+\end{assumption}
+
+\begin{theorem}[Joint PSMD の consistency と curve rate]\label{thm:psmdrate2}
+\Cref{thm:entropy,as:sieverate}の下で
+\[
+d_\theta\{\theta(\wh\lambda_n),\theta_0\}\to_p0.
+\]
+さらに
+\begin{equation}
+\norm{\wh\lambda_n-\lambda_0}
+=O_p\left[
+ a_{\lambda,n}
++\mu_n^{-1}
+\left\{
+\delta_n+b_n+\sqrt{\lambda_n}
++\sqrt{r_n^{\mathrm{opt}}}
+\right\}
+\right],
+\label{eq:curverate}
+\end{equation}
+ここで $a_{\lambda,n}=\norm{\lambda_{0n}-\lambda_0}$。bridge の一意性は不要である。
+\end{theorem}
+
+\begin{proof}
+目的関数比較を $\eta_{0n}$ に対して行い，$W_n$ の eigenvalue bounds と \Cref{thm:entropy}を用いると
+\begin{equation}
+\norm{M_n(\wh\eta_n)}
+=O_p\left(
+\delta_n+b_n+\sqrt{\lambda_n}
++\sqrt{r_n^{\mathrm{opt}}}
+\right)
+=:O_p(\rho_n).
+\label{eq:popmomentbound}
+\end{equation}
+SR1 と標準的な contradiction argument から target consistency が従う。
+
+局所 rate では \eqref{eq:sievecone} と三角不等式により
+\[
+(1-\kappa)
+\norm{\Aop_n(\wh\eta_n-\eta_{0n})}
+\le
+\norm{M_n(\wh\eta_n)}+\norm{M_n(\eta_{0n})}+b_n
+=O_p(\rho_n).
+\]
+\Cref{thm:partialling}の sieve 版と \eqref{eq:mun}から
+\begin{align*}
+\mu_n\norm{\wh\lambda_n-\lambda_{0n}}
+&\le\norm{\Sop_n(\wh\lambda_n-\lambda_{0n})}\\
+&\le\norm{\Aop_n(\wh\omega_n-\omega_{0n},
+\wh\lambda_n-\lambda_{0n})}
+=O_p(\rho_n).
+\end{align*}
+最後に triangle inequality で $a_{\lambda,n}$ を加える。
+\end{proof}
+
+\begin{corollary}[Sobolev sieve の明示 rate]\label{cor:sobolevrate}
+Bridge と latent curves がそれぞれ $s_\omega$，$s_\lambda$ smooth で，sieve dimensions が $p_{\omega,n},p_{\lambda,n}$，total dimension $p_n$ とする。bounded moment class の下で
+\begin{align*}
+a_{\lambda,n}&\lesssim p_{\lambda,n}^{-s_\lambda/d_\lambda},\\
+b_n&\lesssim p_{\omega,n}^{-s_\omega/d_\omega}
++p_{\lambda,n}^{-s_\lambda/d_\lambda},\\
+\delta_n&\lesssim
+F_n\sqrt{p_n\log A_n/n}.
+\end{align*}
+従って \eqref{eq:curverate} にこれらを代入した rate が得られる。$\mu_n$ は \Cref{cor:sievesv}により primitive shadow strength と quotient latent singular value に分解できる。
+\end{corollary}
+
+\begin{proof}
+Approximation bounds は \Cref{lem:splineapprox}。Empirical bound は \Cref{thm:entropy}。\Cref{thm:psmdrate2}に代入する。
+\end{proof}
+
+\subsection{Joint と naive sequential の差を示す局所実験}
+\begin{proposition}[Nuisance cancellation]\label{prop:nuisancecancel2}
+独立標準正規 noise を持つ
+\begin{align*}
+X_{1k}&=a_k\nu_k+n^{-1/2}\xi_{1k},\\
+X_{2k}&=b_k\theta_k+c_k\nu_k+n^{-1/2}\xi_{2k},\\
+X_{3k}&=b_k\theta_k-c_k\nu_k+n^{-1/2}\xi_{3k}
+\end{align*}
+を考える。Joint estimator
+\[
+\wh\theta_k^{\mathrm{joint}}=(X_{2k}+X_{3k})/(2b_k)
+\]
+は
+\[
+\Var(\wh\theta_k^{\mathrm{joint}})=1/(2nb_k^2)
+\]
+を持ち $a_k$ に依存しない。一方，$X_{1k}$ から $\nu_k$ を推定して $X_{2k}$ に plug-in する
+\[
+\wh\theta_k^{\mathrm{seq}}
+=(X_{2k}-c_kX_{1k}/a_k)/b_k
+\]
+は
+\[
+\Var(\wh\theta_k^{\mathrm{seq}})
+=\frac1{nb_k^2}\left(1+\frac{c_k^2}{a_k^2}\right).
+\]
+\end{proposition}
+
+\begin{proof}
+Joint estimator では $c_k\nu_k$ と $-c_k\nu_k$ が相殺され，二つの noise の平均の分散を計算すればよい。Sequential estimator は独立な $\xi_{1k},\xi_{2k}$ の分散和を取れば表示式を得る。
+\end{proof}
+
+\begin{remark}
+この命題は効率的に orthogonalize された二段階法より joint 法が常に優れるという主張ではない。強い completeness の下で最適二段階法と joint 法は漸近同値になり得る。重要なのは，bridge 自体の weak identification が target の weak identificationを必ずしも意味しない点である。
+\end{remark}
+
+\section{統合逆問題の特異値と minimax theory}\label{sec:minimax}
+
+\subsection{Effective Gaussian sequence experiment}
+Moment covariance を whitening した有効作用素も $\Sop$ と書く。$\Sop$ が compact で singular system $(\mu_k,u_k,v_k)$ を持つとする。
+\[
+\Sop v_k=\mu_ku_k,
+\qquad
+\Sop^*u_k=\mu_kv_k,
+\qquad
+\mu_k\downarrow0.
+\]
+Local Gaussian sequence experiment は
+\begin{equation}
+X_k=\mu_k\theta_k+n^{-1/2}\xi_k,
+\qquad
+\xi_k\stackrel{\mathrm{iid}}\sim N(0,1).
+\label{eq:gaussseq2}
+\end{equation}
+Smoothness class を
+\begin{equation}
+\Theta_s(R)=\left\{\theta:\sum_{k\ge1}k^{2s}\theta_k^2\le R^2\right\}
+\label{eq:ellipsoid2}
+\end{equation}
+とする。
+
+\begin{theorem}[Spectral cutoff upper bound]\label{thm:cutoff2}
+Estimator
+\[
+\wh\theta_k=X_k/\mu_k\quad(k\le J),
+\qquad
+\wh\theta_k=0\quad(k>J)
+\]
+について次が成立する。
+\begin{enumerate}[label=(\roman*)]
+\item $\mu_k\asymp k^{-\alpha}$ なら，$J\asymp n^{1/(2s+2\alpha+1)}$ により
+\begin{equation}
+\sup_{\theta\in\Theta_s(R)}
+\E_\theta\norm{\wh\theta-\theta}_{\ell_2}^2
+\lesssim n^{-2s/(2s+2\alpha+1)}.
+\label{eq:mildupper2}
+\end{equation}
+\item $c_-e^{-ck^\alpha}\le\mu_k\le c_+e^{-ck^\alpha}$ なら，$J$ を
+\begin{equation}
+2cJ^\alpha+(2s+1)\log J=\log n+O(1)
+\label{eq:Jsevere2}
+\end{equation}
+で選ぶと
+\begin{equation}
+\sup_{\theta\in\Theta_s(R)}
+\E_\theta\norm{\wh\theta-\theta}_{\ell_2}^2
+\lesssim(\log n)^{-2s/\alpha}.
+\label{eq:severeupper2}
+\end{equation}
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Risk は
+\[
+\E\norm{\wh\theta-\theta}^2
+=n^{-1}\sum_{k\le J}\mu_k^{-2}
++\sum_{k>J}\theta_k^2.
+\]
+\eqref{eq:ellipsoid2}から bias は $\sum_{k>J}\theta_k^2\le R^2J^{-2s}$。Mild case の variance は $n^{-1}\sum_{k\le J}k^{2\alpha}\asymp n^{-1}J^{2\alpha+1}$ なので，bias と balance すれば \eqref{eq:mildupper2}。Severe case の variance は定数倍を除き $n^{-1}Je^{2cJ^\alpha}$ 以下であり，\eqref{eq:Jsevere2}がこれを $J^{-2s}$ と同 order にする。$J\asymp(\log n)^{1/\alpha}$ より \eqref{eq:severeupper2}。
+\end{proof}
+
+\begin{theorem}[Minimax lower bound]\label{thm:minimax2}
+\eqref{eq:gaussseq2}--\eqref{eq:ellipsoid2}において，ある $c_0>0$ が存在し，
+\begin{enumerate}[label=(\roman*)]
+\item $\mu_k\asymp k^{-\alpha}$ なら
+\begin{equation}
+\inf_{\wt\theta}
+\sup_{\theta\in\Theta_s(R)}
+\E_\theta\norm{\wt\theta-\theta}^2
+\ge c_0n^{-2s/(2s+2\alpha+1)};
+\label{eq:mildlower2}
+\end{equation}
+\item severe bounds が成立するなら
+\begin{equation}
+\inf_{\wt\theta}
+\sup_{\theta\in\Theta_s(R)}
+\E_\theta\norm{\wt\theta-\theta}^2
+\ge c_0(\log n)^{-2s/\alpha}.
+\label{eq:severelower2}
+\end{equation}
+\end{enumerate}
+従って \Cref{thm:cutoff2}の rates は effective integrated inverse experiment で minimax optimal である。
+\end{theorem}
+
+\begin{proof}
+Mild caseでは $J\asymp n^{1/(2s+2\alpha+1)}$ とし，$k\in\{J+1,\ldots,2J\}$ 上に
+\[
+\theta_k^{(\epsilon)}=a_J\epsilon_k,
+\qquad
+a_J=cJ^{-s-1/2},
+\quad\epsilon_k\in\{-1,1\}
+\]
+を置く。$c$ を十分小さくすれば全 vertices は $\Theta_s(R)$ に属する。隣接 vertices の KL divergence は
+\[
+\KL(P_\epsilon,P_{\epsilon^{(k)}})
+=2n\mu_k^2a_J^2
+\lesssim nJ^{-2\alpha}J^{-2s-1}\asymp1.
+\]
+Assouad lemma により risk は $Ja_J^2\asymp J^{-2s}$ 以上で，\eqref{eq:mildlower2}を得る。
+
+Severe case では一つの coordinate $J$ に $\theta_J=\pm a_J$，$a_J=cJ^{-s}$ を置く。二分布の KL divergence は
+\[
+2n\mu_J^2a_J^2
+\lesssim ne^{-2cJ^\alpha}J^{-2s}.
+\]
+これが定数以下となる $J$ は $J\asymp(\log n)^{1/\alpha}$。Le Cam two-point lemma により risk は定数倍の $a_J^2$ 以上で \eqref{eq:severelower2}。
+\end{proof}
+
+\subsection{Primitive singular values との接続}
+\begin{corollary}[Shadow と latent separation の rate decomposition]\label{cor:rateprimitive}
+\Cref{thm:primitiveSV}の条件が成立し，$s_k(\Qop\Lop)\asymp k^{-\alpha}$ または $e^{-ck^\alpha}$ なら，$s_k(\Sop)$ は同じ decay order を持つ。従って $\alpha_T$ が正に離れている場合，joint inverse problem の minimax exponent は quotient latent operator $\Qop\Lop$ により決まる。Sieve 上で $\alpha_{T,n}\downarrow0$ の場合は \Cref{cor:sievesv}の factor が追加の悪条件化を表す。
+\end{corollary}
+
+\begin{proof}
+\eqref{eq:svcompare}で特異値が定数倍で挟まれるため decay order は一致する。Minimax rates は \Cref{thm:cutoff2,thm:minimax2}に代入する。
+\end{proof}
+
+\subsection{Tikhonov benchmark}
+\begin{theorem}[Source condition 下の deterministic Tikhonov rate]\label{thm:tikh2}
+$y=\Sop x_0$，$\norm{\wh y-y}\le\delta$ とし，
+\[
+x_0=(\Sop^*\Sop)^\nu v,
+\qquad0<\nu\le1,
+\quad\norm v\le R.
+\]
+Tikhonov estimator
+\[
+\wh x_\lambda
+=(\Sop^*\Sop+\lambda I)^{-1}\Sop^*\wh y
+\]
+は
+\begin{equation}
+\norm{\wh x_\lambda-x_0}
+\le\frac{\delta}{2\sqrt\lambda}
++C_\nu R\lambda^\nu.
+\label{eq:tikhbound2}
+\end{equation}
+従って $\lambda\asymp\delta^{2/(2\nu+1)}$ で
+\[
+\norm{\wh x_\lambda-x_0}
+=O\{\delta^{2\nu/(2\nu+1)}\}.
+\]
+\end{theorem}
+
+\begin{proof}
+$T=\Sop^*\Sop$ とする。Noise term の singular multiplier は $s/(s^2+\lambda)$ で，supremum は $1/(2\sqrt\lambda)$。Bias は
+\[
+\lambda(T+\lambda I)^{-1}T^\nu v
+\]
+であり，multiplier $\lambda t^\nu/(t+\lambda)$ の supremum は $C_\nu\lambda^\nu$。二項を balance する。
+\end{proof}
+
+\section{DQM/LAN と滑らかな潜在汎関数の推論}\label{sec:dqminference}
+
+\subsection{Coarsening は DQM を保存する}
+Full data を $V$，観測データを measurable coarsening $O=\kappa(V)$ とする。欠測は，$V=(X,W,Z,D,Y,F)$ から $O=(X,W,Z,D,Y_D)$ への Markov kernel とみなせる。
+
+\begin{theorem}[DQM under coarsening]\label{thm:dqmcoarsen}
+Dominated full-data model $\{P_t^V:t\in(-\epsilon,\epsilon)\}$ が $t=0$ で differentiable in quadratic mean (DQM) で，score $\ell_V\in L_2^0(P_0^V)$ を持つとする。すなわち density $p_t$ について
+\begin{equation}
+\int\left[
+\sqrt{p_t}-\sqrt{p_0}
+-\frac t2\ell_V\sqrt{p_0}
+\right]^2\dd\mu=o(t^2).
+\label{eq:dqmfull}
+\end{equation}
+$O=\kappa(V)$ が誘導する observed-data model $\{P_t^O\}$ は DQM で，observed score は
+\begin{equation}
+\ell_O(O)=\E_0\{\ell_V(V)\mid O\}.
+\label{eq:observedscore}
+\end{equation}
+Observed Fisher information は
+\[
+I_O=\E\ell_O^2\le\E\ell_V^2=I_V.
+\]
+\end{theorem}
+
+\begin{proof}
+DQM は square-root density map の $L_2$ differentiabilityである。Markov kernel $K$ による marginalization は Hellinger distance を増加させないため，$p_t$ の remainder $o(t)$ は induced measures においても $o(t)$ である。誘導 model の Hellinger tangent は，full tangent $\ell_V/2$ の observed sigma-field $\sigma(O)$ への $L_2(P_0)$ 直交射影である。直交射影は conditional expectation なので tangent は $\E(\ell_V\mid O)/2$，すなわち score は \eqref{eq:observedscore}。最後の information inequality は conditional Jensen inequality による。
+\end{proof}
+
+\begin{corollary}[Fixed-dimensional LAN]\label{cor:lanfixed}
+$k$ 次元 regular submodel $t\mapsto P_t^V$ が vector score $\ell_V\in L_2^0(P_0)^k$ を持つとする。$n$ 個の i.i.d. observed data について，固定 $h\in\R^k$ に対し
+\begin{equation}
+\log\frac{\dd P_{h/\sqrt n}^{O,n}}{\dd P_0^{O,n}}
+=h'\Delta_n-\frac12h'I_Oh+o_{P_0}(1),
+\qquad
+\Delta_n=n^{-1/2}\sum_{i=1}^n\ell_O(O_i)
+\rightsquigarrow N(0,I_O).
+\label{eq:LANfixed}
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+\Cref{thm:dqmcoarsen}により observed model は DQM。i.i.d. DQM model の標準 LAN theorem を適用する。
+\end{proof}
+
+\begin{remark}[Full minimax lower bound への使用]
+\Cref{thm:minimax2}の Gaussian lower bound を full MNAR model へ移すには，特異方向 $v_k$ を通る finite-dimensional submodels を構成し，その observed scores が effective operator $\Sop v_k$ を生成することを確認する。\Cref{thm:dqmcoarsen}は，full-data smooth submodel から observed-data LAN を得る技術的基礎を与える。
+\end{remark}
+
+\subsection{Whitened moment experiment と representer}
+Population moment residualを $m(O;\eta_0)\in\mathbb K$，covariance operator を
+\[
+\Omega k=\E\{m(O;\eta_0)\inner{m(O;\eta_0)}{k}\}
+\]
+とし，relevant subspace 上で正定値とする。Whitened derivative を
+\[
+\bar\Aop=\Omega^{-1/2}\Aop
+=\bar\Gop-\bar\Jop,
+\qquad
+\bar\Sop=P_{\overline{\Range(\bar\Gop)}^\perp}\bar\Jop
+\]
+とする。Scalar target $\chi(\lambda)$ の derivative を
+\[
+\dot\chi(h_\lambda)=\inner{d_\chi}{h_\lambda}
+\]
+と書く。
+
+\begin{theorem}[Regular latent functional の必要十分条件]\label{thm:regularfunctional}
+Gaussian moment experiment において次は同値である。
+\begin{enumerate}[label=(\roman*)]
+\item $\chi$ は finite-variance regular root-$n$ estimable である。
+\item $d_\chi\in\Range(\bar\Sop^*)$。
+\item ある $r\in\mathbb K$ が存在して
+\begin{equation}
+\bar\Aop^*r=(0,d_\chi).
+\label{eq:fullriesz}
+\end{equation}
+\end{enumerate}
+Minimum-norm solution $r_0$ は $\overline{\Range(\bar\Gop)}^\perp$ に属し，
+\begin{equation}
+-\bar\Sop^*r_0=d_\chi
+\label{eq:Sriesz}
+\end{equation}
+を満たす。Moment experiment 内の効率分散は
+\begin{equation}
+V_\chi=\norm{r_0}^2.
+\label{eq:Vchi}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+\eqref{eq:fullriesz}を $\bar\Aop=\bar\Gop-\bar\Jop$ に分解すると
+\[
+\bar\Gop^*r=0,
+\qquad
+-\bar\Jop^*r=d_\chi.
+\]
+第一式は $r\in\Null(\bar\Gop^*)=\overline{\Range(\bar\Gop)}^\perp$ と同値である。この subspace 上では $\bar\Jop^*r=\bar\Sop^*r$ なので，\eqref{eq:fullriesz}と \eqref{eq:Sriesz} は同値。\Cref{thm:localeffective}(iii)を whitened operator に適用すれば，finite norm representer の存在は $d_\chi\in\Range(\bar\Sop^*)$ と同値である。
+
+Gaussian shift experiment では，influence statistic $-\inner r{Y}$ が正しい local derivative を持つ条件が \eqref{eq:fullriesz}。全 solution のうち minimum norm のものが最小分散を持つため \eqref{eq:Vchi}。
+\end{proof}
+
+\begin{remark}[Bennett et al. との関係]
+Nonunique bridge であっても $d_\chi\in\Range(\bar\Sop^*)$ なら，nuisance 全体の安定推定を必要とせず target は strongly identified である。本稿では，その operator が単一 conditional moment ではなく，shadow equations と latent restrictions を統合して nuisance-partialling した $\bar\Sop$ である。
+\end{remark}
+
+\subsection{Cross-fitted one-step estimator}
+標本を folds $I_1,\ldots,I_L$ に分ける。Training sample $I_\ell^c$ で $\wh\eta^{(-\ell)},\wh\Omega^{(-\ell)},\wh r^{(-\ell)}$ を推定する。$i\in I_\ell$ に対し
+\[
+\wh\psi_i
+=-\inner{\wh r^{(-\ell)}}{
+\{\wh\Omega^{(-\ell)}\}^{-1/2}
+ m(O_i;\wh\eta^{(-\ell)})}.
+\]
+One-step estimator は
+\begin{equation}
+\wt\chi
+=\frac1L\sum_{\ell=1}^L
+\left[
+\chi\{\wh\lambda^{(-\ell)}\}
++\frac1{|I_\ell|}\sum_{i\in I_\ell}\wh\psi_i
+\right].
+\label{eq:onestep2}
+\end{equation}
+
+\begin{assumption}[Orthogonal remainder conditions]\label{as:onestep2}
+各 training fold について次を仮定する。
+\begin{enumerate}[label=(OS\arabic*)]
+\item
+\[
+\chi(\wh\lambda)-\chi(\lambda_0)
+-\inner{d_\chi}{\wh\lambda-\lambda_0}
+=o_p(n^{-1/2}).
+\]
+\item
+\[
+\norm{\Mop(\wh\eta)-\Aop(\wh\eta-\eta_0)}
+\norm{r_0}=o_p(n^{-1/2}).
+\]
+\item
+\[
+\norm{\wh r-r_0}\,\norm{\Mop(\wh\eta)}
+=o_p(n^{-1/2}),
+\]
+かつ covariance whitening の置換誤差も $o_p(n^{-1/2})$。
+\item $\wh\psi\to\psi_0$ in $L_2(P)$，ここで
+\begin{equation}
+\psi_0(O)
+=-\inner{r_0}{\Omega^{-1/2}m(O;\eta_0)},
+\label{eq:psi0}
+\end{equation}
+かつ $\E\psi_0^2<\infty$。
+\end{enumerate}
+\end{assumption}
+
+\begin{theorem}[One-step asymptotic normality]\label{thm:onestep2}
+\Cref{thm:regularfunctional,as:onestep2}の下で
+\begin{equation}
+\sqrt n\{\wt\chi-\chi(\lambda_0)\}
+=\frac1{\sqrt n}\sum_{i=1}^n\psi_0(O_i)+o_p(1)
+\rightsquigarrow N(0,V_\chi),
+\label{eq:asymnormal2}
+\end{equation}
+ここで $V_\chi=\E\psi_0^2$。Cross-fitted sample variance は $V_\chi$ に一致する。
+\end{theorem}
+
+\begin{proof}
+一つの fold を固定して training estimates を条件付ける。OS1 と \eqref{eq:fullriesz}から
+\begin{align*}
+\chi(\wh\lambda)-\chi(\lambda_0)
+&=\inner{(0,d_\chi)}{\wh\eta-\eta_0}+o_p(n^{-1/2})\\
+&=\inner{r_0}{\bar\Aop(\wh\eta-\eta_0)}+o_p(n^{-1/2})\\
+&=\inner{r_0}{\Omega^{-1/2}\Mop(\wh\eta)}+o_p(n^{-1/2}),
+\end{align*}
+ここで OS2 を用いた。補正項の conditional expectation は負の同量であるため一次 bias が相殺される。OS3--OS4 と cross-fitting により，estimated nuisance を真値に置換した remainder は $o_p(n^{-1/2})$。従って fold contribution は
+\[
+|I_\ell|^{-1}\sum_{i\in I_\ell}\psi_0(O_i)+o_p(n^{-1/2}).
+\]
+fold を平均し Lindeberg--Feller CLT を適用すれば \eqref{eq:asymnormal2}。Variance consistency は $L_2$ convergence と law of large numbers による。
+\end{proof}
+
+\subsection{Moment efficiency と full semiparametric efficiency}
+\begin{proposition}[効率性の範囲]\label{prop:effscope}
+$r_0$ は統合 moment experiment 内で最小分散 representer を与える。さらに，full observed-data tangent score space の target-relevant component が whitened moment residual span の閉包と一致する場合に限り，$\psi_0$ は full semiparametric efficient influence function である。
+\end{proposition}
+
+\begin{proof}
+前半は \Cref{thm:regularfunctional}の minimum-norm characterization。後半は semiparametric projection theorem により，moment score span が full target-relevant tangent space を saturate するとき canonical gradient が一致する。Saturation がなければ moment experiment の bound は full model bound の上界にとどまる。
+\end{proof}
+
+\subsection{局所 shadow violation の一次 bias}
+\begin{proposition}[Exclusion violation sensitivity]\label{prop:violationbias}
+真の population moment が局所的に
+\[
+\E m(O;\eta_0)=n^{-1/2}b
+\]
+へずれる sequence を考える。\Cref{thm:onestep2}の estimator は
+\begin{equation}
+\sqrt n\{\wt\chi-\chi(\lambda_0)\}
+\rightsquigarrow N\bigl(-\inner{r_0}{\Omega^{-1/2}b},V_\chi\bigr).
+\label{eq:localbias}
+\end{equation}
+従って $\inner{r_0}{\Omega^{-1/2}b}$ が target-specific first-order sensitivity である。
+\end{proposition}
+
+\begin{proof}
+\Cref{thm:onestep2}の expansion で moment residual の平均が $n^{-1/2}b$ だけずれるため，influence term の平均は $-n^{-1/2}\inner{r_0}{\Omega^{-1/2}b}$。中心化 CLT と Slutsky theorem から従う。
+\end{proof}
+
+\section{Weak identification に一様な projection inference}\label{sec:weakuniform}
+
+Generic rank は exact failure を measure-zero set に押し込むが，exceptional set への接近を排除しない。特に，\Cref{thm:primitivegenericity}の witness は shadow independence に任意に近く構成できるため，point identification が generic でも effective singular value は任意に小さくなり得る。Wald/one-step inference は有限 norm の Riesz representer を利用するため，このような sequence では正規近似が非一様になり得る。本節では Anderson--Rubin 型の発想 \cite{AndersonRubin1949,StockWright2000,Kleibergen2005} に従い，inverse operator を推定せず，null-restricted moment feasibility を反転する projection confidence sets を構成する。Coverage のために $s_{\min}(\Sop_n)$ の正の lower bound，bridge uniqueness，nuisance consistency，または target の point identification を仮定しない。
+
+有限個または growing number の observable moments を
+\begin{equation}
+m_n(O;\eta)
+=\begin{pmatrix}
+\{[R_S\omega_S(Y_S,C_S)-1]\phi_{S\ell}(Z_S,C_S)\}_{S,\ell}\\[1mm]
+\{R_S\omega_S(Y_S,C_S)\psi_{Sr}(Y_S,W,X)-M_{Sr}(\lambda)\}_{S,r}
+\end{pmatrix}
+\in\R^{J_n}
+\label{eq:weakobservablemoments}
+\end{equation}
+とする。$\eta=(\omega,\lambda)\in\Theta_n$，
+\[
+\wh M_n(\eta)=\Pp_nm_n(O;\eta),
+\qquad
+M_{P,n}(\eta)=\E_Pm_n(O;\eta).
+\]
+Exact population solution set と target identified set を
+\begin{equation}
+\cZ_n(P)=\{\eta\in\Theta_n:M_{P,n}(\eta)=0\},
+\qquad
+\cI_n(P)=\{\chi(\lambda):(\omega,\lambda)\in\cZ_n(P)\}
+\label{eq:weakidentifiedset}
+\end{equation}
+と置く。以下の test-inversion results は $\cI_n(P)$ の任意の点を identification strength に依存せず cover する。
+
+\subsection{Identification-agnostic test inversion}
+
+\begin{theorem}[一般 test-inversion principle]\label{thm:generaltestinversion}
+各 $n$ と candidate value $t$ に対して，観測標本だけから定まる rejection event $A_n(t)$ を考え，
+\begin{equation}
+\sup_{P\in\mathfrak P_n}\sup_{t\in\cI_n(P)}
+P\{A_n(t)\}\le \alpha+\delta_n
+\label{eq:testsizeidentified}
+\end{equation}
+を満たすとする。ただし $0\le\delta_n<1-\alpha$ である。Test inversion set
+\begin{equation}
+\cC_n=\{t:A_n(t)^c\text{ occurs}\}
+\label{eq:generaltestinversionset}
+\end{equation}
+は
+\begin{equation}
+\inf_{P\in\mathfrak P_n}\inf_{t\in\cI_n(P)}
+P\{t\in\cC_n\}\ge1-\alpha-\delta_n
+\label{eq:generaltestinversioncoverage}
+\end{equation}
+を満たす。従って $\delta_n=0$ なら finite-sample honesty，$\delta_n=o(1)$ なら weak-identification sequence 全体に一様な asymptotic honesty を得る。結論は $\cI_n(P)$ が singleton であることを要求しない。
+
+さらに，構造的 target $\chi_P$ に対して，ある $t_{P,n}\in\cI_n(P)$ が
+$|t_{P,n}-\chi_P|\le a_n$ を満たすなら，Minkowski enlargement
+\[
+\cC_n^{+a_n}=\cC_n\oplus[-a_n,a_n]
+\]
+は $\chi_P$ を probability at least $1-\alpha-\delta_n$ で含む。
+\end{theorem}
+
+\begin{proof}
+$t\in\cI_n(P)$ を固定する。\eqref{eq:generaltestinversionset}より
+\[
+P\{t\notin\cC_n\}=P\{A_n(t)\}\le\alpha+\delta_n.
+\]
+この bound は $P$ と $t$ に一様なので，両辺で infimum を取れば
+\eqref{eq:generaltestinversioncoverage} が従う。後半では，$t_{P,n}\in\cC_n$ の event 上で
+$\operatorname{dist}(\chi_P,\cC_n)\le|\chi_P-t_{P,n}|\le a_n$ なので
+$\chi_P\in\cC_n^{+a_n}$ である。
+\end{proof}
+
+\begin{remark}[何を反転するか]\label{rem:testinversionmeaning}
+\Cref{thm:generaltestinversion}は識別定理ではなく，null $t\in\cI_n(P)$ に対する size control を confidence set coverage へ移す論理を明示したものである。以下の Hoeffding/MOM sets では ``candidate $t$ と整合する population solution が sample moment tolerance 内に存在しない'' ことを reject event とし，profile/AR set では null-restricted minimum moment norm が critical radius を超えることを reject event とする。
+\end{remark}
+
+\subsection{有限標本で honest な feasibility projection}
+
+\begin{theorem}[Hoeffding projection confidence set]\label{thm:hoeffdingprojection}
+独立標本 $O_1,\ldots,O_n\sim P$ を考える。各 $k\le J_n$ について既知の定数 $a_{kn}<b_{kn}$ が存在し，全ての $P\in\mathfrak P_n$ と全ての $\eta\in\cZ_n(P)$ について
+\begin{equation}
+a_{kn}\le m_{kn}(O;\eta)\le b_{kn}
+\quad P\text{-a.s.}
+\label{eq:boundedtruemoment}
+\end{equation}
+とする。$R_{kn}=b_{kn}-a_{kn}$，
+\[
+r_{kn}(\alpha)
+=R_{kn}\sqrt{\frac{\log(2J_n/\alpha)}{2n}}
+\]
+と置き，
+\begin{equation}
+\cC^{\mathrm H}_{n}(1-\alpha)
+=\left\{t:\exists\eta=(\omega,\lambda)\in\Theta_n,
+\ \chi(\lambda)=t,
+\ \abs{\wh M_{n,k}(\eta)}\le r_{kn}(\alpha)
+\ \forall k\le J_n
+\right\}
+\label{eq:hoeffdingprojectionset}
+\end{equation}
+と定義する。このとき任意の有限標本 $n$ で
+\begin{equation}
+\inf_{P\in\mathfrak P_n}
+\inf_{t\in\cI_n(P)}
+P\{t\in\cC^{\mathrm H}_{n}(1-\alpha)\}
+\ge1-\alpha.
+\label{eq:finitehonestHoeffding}
+\end{equation}
+結論は identification strength，solution の一意性，または covariance estimation を必要としない。
+\end{theorem}
+
+\begin{proof}
+$P\in\mathfrak P_n$ と $t\in\cI_n(P)$ を固定する。定義により，ある $\eta_t\in\cZ_n(P)$ が存在して $\chi(\lambda_t)=t$，かつ $E_Pm_{kn}(O;\eta_t)=0$ for every $k$。Hoeffding inequality から
+\[
+P\left\{\abs{\wh M_{n,k}(\eta_t)}>r_{kn}(\alpha)\right\}
+\le2\exp\left\{-\frac{2nr_{kn}(\alpha)^2}{R_{kn}^2}\right\}
+=\frac{\alpha}{J_n}.
+\]
+Union bound により probability at least $1-\alpha$ で全 coordinates の inequalities が同時に成立する。その event 上では $\eta_t$ 自身が \eqref{eq:hoeffdingprojectionset} の feasibility certificate なので $t\in\cC_n^{\mathrm H}(1-\alpha)$。Bound は $P,t$ に依存しないため \eqref{eq:finitehonestHoeffding} が従う。
+\end{proof}
+
+\begin{remark}[Boundedness は moment design の仮定である]\label{rem:boundedmomentdesign}
+Ordinal outcomes，cell indicators，trigonometric characteristic-function moments は自然に bounded である。Continuous outcomes でも $\psi_{Sr}$ を bounded spline，wavelet，Huber score，または $e^{\ii tY}$ とすればよい。Inverse-selection weights には practical overlap class $0<\omega_S\le\bar\omega_S$ を課すか，target-specific representer moments を用いる。従って \Cref{thm:hoeffdingprojection} は outcome 自体の boundedness を要求せず，\emph{推論に用いる有限個の moment coordinates} を bounded に設計すればよい。
+\end{remark}
+
+\begin{theorem}[有限 variance の median-of-means projection set]\label{thm:momprojection}
+\eqref{eq:boundedtruemoment}を仮定せず，既知の保守的上界 $\bar\sigma_{kn}^2$ が存在して
+\begin{equation}
+\Var_P\{m_{kn}(O;\eta)\}\le\bar\sigma_{kn}^2
+\qquad
+(P\in\mathfrak P_n,\ \eta\in\cZ_n(P))
+\label{eq:MOMvariancebound}
+\end{equation}
+とする。奇数 $B_n$ を
+\[
+8\log(J_n/\alpha)\le B_n\le n/2
+\]
+となるよう選び，最初の $B_n\lfloor n/B_n\rfloor$ observations を等しい大きさの $B_n$ 個の disjoint blocks に分け，残りは捨てる。$\wt M_{n,k}^{\mathrm{MOM}}(\eta)$ を block means の median とし，
+\begin{equation}
+\cC^{\mathrm{MOM}}_{n}(1-\alpha)
+=\left\{t:\exists\eta\in\Theta_n,\ \chi(\lambda)=t,
+\ \abs{\wt M_{n,k}^{\mathrm{MOM}}(\eta)}
+\le4\bar\sigma_{kn}\sqrt{\frac{B_n}{n}}
+\ \forall k\le J_n
+\right\}.
+\label{eq:MOMprojectionset}
+\end{equation}
+このとき
+\begin{equation}
+\inf_{P\in\mathfrak P_n}
+\inf_{t\in\cI_n(P)}
+P\{t\in\cC^{\mathrm{MOM}}_{n}(1-\alpha)\}
+\ge1-\alpha
+\label{eq:finitehonestMOM}
+\end{equation}
+が有限標本で成立する。
+\end{theorem}
+
+\begin{proof}
+$P,t$ と対応する $\eta_t\in\cZ_n(P)$ を固定する。各 block size を $s=\lfloor n/B_n\rfloor$ とすると $s\ge n/(2B_n)$。Coordinate $k$ の block mean $\bar m_{bk}$ に Chebyshev inequality を適用すると
+\[
+P\left\{\abs{\bar m_{bk}}>2\bar\sigma_{kn}/\sqrt s\right\}
+\le\frac14.
+\]
+また $2/\sqrt s\le2\sqrt{2B_n/n}<4\sqrt{B_n/n}$。Median が \eqref{eq:MOMprojectionset} の threshold を超えるには，少なくとも $B_n/2$ blocks が bad でなければならない。独立 blocks と Hoeffding binomial-tail bound により，その probability は高々 $\exp(-B_n/8)\le\alpha/J_n$。Coordinates に union bound を適用すると probability at least $1-\alpha$ で $\eta_t$ が全 inequalities を満たす。従って \eqref{eq:finitehonestMOM} が従う。
+\end{proof}
+
+\begin{corollary}[Sieve approximation bias を許す finite-sample enlargement]\label{cor:finitebiasenlarge}
+構造的 target $\chi_P$ に対し，ある $\eta_{P,n}\in\Theta_n$ が存在して
+\[
+\abs{\chi(\lambda_{P,n})-\chi_P}\le a_n,
+\qquad
+\abs{M_{P,n,k}(\eta_{P,n})}\le d_{kn}
+\]
+を満たすとする。Hoeffding set の radius を $r_{kn}(\alpha)+d_{kn}$，MOM set の radius を $4\bar\sigma_{kn}\sqrt{B_n/n}+d_{kn}$ に置き換え，得られた target set を両側に $a_n$ だけ Minkowski enlargement する。この enlarged set は $\chi_P$ を finite-sample probability at least $1-\alpha$ で含む。
+\end{corollary}
+
+\begin{proof}
+$\eta_{P,n}$ で sample moment を centered fluctuation と population bias に分解する。前二定理の concentration event 上で centered part は元の radius 以下，population part は $d_{kn}$ 以下である。Target approximation error は $a_n$ enlargement で吸収される。
+\end{proof}
+
+\subsection{Studentized profile Anderson--Rubin set}
+Finite-sample sets は強いが保守的になり得る。次に，low-dimensional protected moments を studentize した profile statistic を与える。Triangular array of laws を $P\in\mathfrak P_n$ とする。Scalar target $\chi(\lambda)$ に対し
+\[
+\Theta_n(t)=\{\eta=(\omega,\lambda)\in\Theta_n:\chi(\lambda)=t\}
+\]
+と置く。Candidate-specific covariance estimator $\wh\Omega_n(\eta)$ を用いる。候補点で singular となる場合は，固有値を deterministic $\tau_n>0$ で下から切り上げた matrix を用い，記法上これも $\wh\Omega_n(\eta)$ と書く。Oracle covariance が \eqref{eq:omegaboundsAR} を満たし $\tau_n<\underline\sigma/2$ なら，この切り上げは oracle asymptotics を変えない。
+\begin{equation}
+AR_n(t)
+=\inf_{\eta\in\Theta_n(t)}
+\left\|
+\wh\Omega_n(\eta)^{-1/2}\sqrt n\,\wh M_n(\eta)
+\right\|_2
+\label{eq:ARprofile}
+\end{equation}
+を定義する。$\wh\Omega_n(\eta)$ が positive definite でない candidate では objective を $+\infty$ とする。理論上は exact infimum を用いる。数値的に objective norm で $a_n^{\mathrm{opt}}$ 以内の profile solution を用いる場合，critical radius に $a_n^{\mathrm{opt}}$ を加えればよい。
+
+\begin{assumption}[Uniform projection conditions]\label{as:uniformAR}
+各 $P\in\mathfrak P_n$ に structural target value $\chi_P$ があり，次を仮定する。
+\begin{enumerate}[label=(UI\arabic*)]
+\item ある oracle sieve element $\eta_{P,n}\in\Theta_n(\chi_P)$ が存在し，
+\begin{equation}
+\left\|
+\Omega_{P,n}^{-1/2}M_{P,n}(\eta_{P,n})
+\right\|_2\le b_n,
+\qquad
+\Omega_{P,n}=\Var_P\{m_n(O;\eta_{P,n})\},
+\label{eq:oraclebias}
+\end{equation}
+ここで $b_n\ge0$ は deterministic である。Finite-support exact model では $b_n=0$ とできる。
+\item ある $0<\underline\sigma\le\overline\sigma<\infty$ が存在して
+\begin{equation}
+\underline\sigma I_{J_n}\preceq\Omega_{P,n}
+\preceq\overline\sigma I_{J_n}
+\label{eq:omegaboundsAR}
+\end{equation}
+が全 $P,n$ について成立する。これは moment redundancy を除いた後の sampling nondegeneracy であり，identification strength の仮定ではない。
+\item Standardized centered moment
+\[
+X_{P,n}
+=\Omega_{P,n}^{-1/2}
+\{m_n(O;\eta_{P,n})-M_{P,n}(\eta_{P,n})\}
+\]
+について
+\begin{equation}
+\beta_{3,n}
+=\sup_{P\in\mathfrak P_n}\E_P\norm{X_{P,n}}_2^3<\infty,
+\qquad
+\frac{J_n^{1/4}\beta_{3,n}}{\sqrt n}\longrightarrow0.
+\label{eq:Bentkuscondition}
+\end{equation}
+\item ある deterministic $\epsilon_n\downarrow0$ に対し
+\begin{equation}
+\sup_{P\in\mathfrak P_n}
+P\left(
+\left\|
+\wh\Omega_n(\eta_{P,n})^{-1/2}
+\Omega_{P,n}^{1/2}-I_{J_n}
+\right\|_{\op}>\epsilon_n
+\right)\longrightarrow0.
+\label{eq:covuniformAR}
+\end{equation}
+Covariance estimate は independent training fold で構成してもよい。
+\end{enumerate}
+\end{assumption}
+
+UI1 は exact specification を要求せず，sieve approximation bias を critical value に明示的に入れる。UI3 は fixed $J$ なら一様 bounded third momentだけで成立する。Inference moments を固定または低次元に保ち，high-dimensional nuisance は profile optimization の内部だけで扱う設計が実応用では最も弱い。
+
+$G_J\sim N(0,I_J)$ とし，$c_{J,1-\alpha}$ を $\norm{G_J}_2$ の $(1-\alpha)$ quantile とする。Bias-aware projection confidence set を
+\begin{equation}
+\cC_n^{AR}(1-\alpha)
+=\left\{
+ t:\ AR_n(t)
+\le(1+\epsilon_n)
+\{c_{J_n,1-\alpha}+\sqrt n\,b_n\}
+\right\}
+\label{eq:ARCS}
+\end{equation}
+と定義する。
+
+\begin{theorem}[Weak-ID-uniform coverage]\label{thm:uniformAR}
+\Cref{as:uniformAR}の下で
+\begin{equation}
+\liminf_{n\to\infty}
+\inf_{P\in\mathfrak P_n}
+P\{\chi_P\in\cC_n^{AR}(1-\alpha)\}
+\ge1-\alpha.
+\label{eq:uniformcoverageAR}
+\end{equation}
+この結論は $s_{\min}(\Sop_n)$ が任意の rate でゼロへ近づく場合，$\Null(\Top_n)\neq\{0\}$ の場合，nuisance solution が非一意な場合，および target が limit experiment で非識別になる sequence を含む。Coverage のための identification-strength assumption はない。
+\end{theorem}
+
+\begin{proof}
+$P\in\mathfrak P_n$ を固定する。Profile infimum と $\eta_{P,n}\in\Theta_n(\chi_P)$ から
+\begin{equation}
+AR_n(\chi_P)
+\le
+\left\|
+\wh\Omega_n(\eta_{P,n})^{-1/2}
+\sqrt n\,\wh M_n(\eta_{P,n})
+\right\|_2.
+\label{eq:ARoracleupper}
+\end{equation}
+\[
+Z_{P,n}=n^{-1/2}\sum_{i=1}^nX_{P,n,i}
+\]
+と置くと
+\[
+\sqrt n\,\wh M_n(\eta_{P,n})
+=\Omega_{P,n}^{1/2}Z_{P,n}
++\sqrt n\,M_{P,n}(\eta_{P,n}).
+\]
+\eqref{eq:covuniformAR}の event 上で
+\begin{align}
+AR_n(\chi_P)
+&\le(1+\epsilon_n)
+\left\|
+Z_{P,n}
++\sqrt n\,\Omega_{P,n}^{-1/2}M_{P,n}(\eta_{P,n})
+\right\|_2\notag\\
+&\le(1+\epsilon_n)
+\{\norm{Z_{P,n}}_2+\sqrt n\,b_n\}.
+\label{eq:ARboundoracle}
+\end{align}
+Bentkus の multivariate Berry--Esseen inequality を centered vectors $X_{P,n,i}/\sqrt n$ に適用すると，ある universal constant $C$ に対し convex Borel sets $A\subset\R^{J_n}$ について
+\begin{equation}
+\sup_{P\in\mathfrak P_n}
+\sup_{A\text{ convex}}
+\left|
+P(Z_{P,n}\in A)-P(G_{J_n}\in A)
+\right|
+\le C\frac{J_n^{1/4}\beta_{3,n}}{\sqrt n}=o(1).
+\label{eq:Bentkusapply}
+\end{equation}
+Euclidean balls は convex なので
+\[
+\inf_{P\in\mathfrak P_n}
+P\{\norm{Z_{P,n}}_2\le c_{J_n,1-\alpha}\}
+\ge1-\alpha-o(1).
+\]
+この event と covariance event の共通部分では \eqref{eq:ARboundoracle} により $\chi_P\in\cC_n^{AR}(1-\alpha)$。Covariance event の補集合確率は UI4 により一様に $o(1)$ なので \eqref{eq:uniformcoverageAR} が従う。
+\end{proof}
+
+\begin{corollary}[Target approximation を許す enlargement]\label{cor:ARtargetapprox}
+UI1 を次の弱い条件に置き換える。各 $P\in\mathfrak P_n$ について，ある $t_{P,n}$ と
+$\eta_{P,n}\in\Theta_n(t_{P,n})$ が存在し，
+\[
+|t_{P,n}-\chi_P|\le a_n,
+\qquad
+\|\Omega_{P,n}^{-1/2}M_{P,n}(\eta_{P,n})\|_2\le b_n,
+\]
+かつ UI2--UI4 を満たす。このとき
+\[
+\cC_n^{AR,+a_n}(1-\alpha)
+=\cC_n^{AR}(1-\alpha)\oplus[-a_n,a_n]
+\]
+は
+\[
+\liminf_n\inf_{P\in\mathfrak P_n}
+P\{\chi_P\in\cC_n^{AR,+a_n}(1-\alpha)\}\ge1-\alpha
+\]
+を満たす。従って structural target が sieve target space に厳密に属することは不要である。
+\end{corollary}
+
+\begin{proof}
+\Cref{thm:uniformAR}の proof を $t_{P,n}$ と $\eta_{P,n}$ に適用すれば，$t_{P,n}\in\cC_n^{AR}$ が一様 probability $1-\alpha-o(1)$ で成立する。その event 上で
+$|t_{P,n}-\chi_P|\le a_n$ なので $\chi_P\in\cC_n^{AR,+a_n}$ である。
+\end{proof}
+
+\begin{corollary}[Pointwise coverage over the exact identified set]\label{cor:exactidentifiedsetAR}
+$b_n=0$ とし，各 $P\in\mathfrak P_n$ と各 $t\in\cI_n(P)$ に対して，対応する $\eta_t\in\cZ_n(P)$ が UI2--UI4 を一様に満たすとする。このとき
+\[
+\liminf_n\inf_{P\in\mathfrak P_n}\inf_{t\in\cI_n(P)}
+P\{t\in\cC_n^{AR}(1-\alpha)\}
+\ge1-\alpha.
+\]
+従って target が set identified でも，projection set は identified set の各点を一様に cover する。これは各 $t$ に対する pointwise-in-set coverage であり，追加の entropy 条件なしに $\cI_n(P)\subseteq\cC_n^{AR}$ を同時に主張するものではない。
+\end{corollary}
+
+\begin{proof}
+\Cref{thm:uniformAR}の証明を各 $\eta_t$ に適用し，assumption の一様性を用いる。
+\end{proof}
+
+\begin{corollary}[Fixed low-dimensional inference moments]\label{cor:fixedJAR}
+$J_n=J<\infty$ を固定し，\eqref{eq:omegaboundsAR}，
+\[
+\sup_{P\in\mathfrak P_n}\E_P\norm{X_{P,n}}^3<\infty
+\]
+および oracle point での covariance consistency が成立すれば，\Cref{thm:uniformAR}が適用できる。従って bridge と latent curves を growing sieve で profile しても，inference 用の protected moments を固定次元に保てば，弱識別に一様な coverage を得られる。
+\end{corollary}
+
+\begin{corollary}[Gaussian finite-sample benchmark]\label{cor:gaussianARexact}
+$b_n=0$，$\wh\Omega_n(\eta_{P,n})=\Omega_{P,n}$，かつ $Z_{P,n}\sim N(0,I_{J_n})$ が有限標本で厳密に成立するなら，任意の $n$ と任意の identification strength について
+\[
+P\{\chi_P\in\cC_n^{AR}(1-\alpha)\}\ge1-\alpha.
+\]
+\end{corollary}
+
+\begin{proof}
+\eqref{eq:ARboundoracle}で $\epsilon_n=b_n=0$ とし，Gaussian quantile の定義を用いる。
+\end{proof}
+
+\begin{remark}[Conditional/GEL refinement]\label{rem:conditionalrefinement}
+\Cref{thm:uniformAR}は保守的な profile/Anderson--Rubin construction である。Gaussian moment-process approximation が十分精密なら，functional nuisance に条件付ける conditional test \cite{AndrewsMikusheva2016} や identification-robust GEL statistic に置き換えて power を改善できる。ただし，本稿の coverage theorem はその追加構造を必要としない。
+\end{remark}
+
+\subsection{Power，confidence-set diameter，および weak-ID lower bound}
+Uniform coverage は identification strength を要求しないが，confidence set が縮小するには population profile separation が必要である。Positive definite weighting matrix $W_{P,n}(\eta)$ を用いて
+\begin{equation}
+\Delta_{P,n}(t)
+=\inf_{\eta\in\Theta_n(t)}
+\norm{W_{P,n}(\eta)^{1/2}M_{P,n}(\eta)}_2
+\label{eq:profilesep}
+\end{equation}
+と置く。
+
+\begin{lemma}[Infimum の一様近似]\label{lem:profileinfapprox}
+非負関数 $f_n(\eta),g_n(\eta)$ が同じ parameter set 上で
+\[
+\sup_{\eta\in\Theta_n}|f_n(\eta)-g_n(\eta)|\le r_n
+\]
+を満たすなら，全ての $t$ について
+\[
+\left|
+\inf_{\eta\in\Theta_n(t)}f_n(\eta)
+-
+\inf_{\eta\in\Theta_n(t)}g_n(\eta)
+\right|\le r_n.
+\]
+\end{lemma}
+
+\begin{proof}
+任意の $\eta$ について $f_n(\eta)\le g_n(\eta)+r_n$ なので第一 infimum は第二 infimum $+r_n$ 以下である。$f_n,g_n$ を入れ替えて逆向きも得る。
+\end{proof}
+
+\begin{assumption}[Uniform profile approximation]\label{as:profileapprox}
+ある $r_n\ge0$ に対し，一様確率 $1-o(1)$ で
+\begin{equation}
+\sup_t
+\left|
+\frac{AR_n(t)}{\sqrt n}-\Delta_{P,n}(t)
+\right|\le r_n
+\label{eq:profileapprox}
+\end{equation}
+が成立する。例えば \Cref{thm:entropy}の一様 moment bound，weighting matrix の一様 consistency，および \Cref{lem:profileinfapprox}から導ける。
+\end{assumption}
+
+\begin{theorem}[Uniform power と adaptive diameter]\label{thm:ARpowerdiameter}
+\Cref{as:uniformAR,as:profileapprox}を仮定し，
+\[
+h_n=(1+\epsilon_n)
+\left\{\frac{c_{J_n,1-\alpha}}{\sqrt n}+b_n\right\}
+\]
+と置く。
+\begin{enumerate}[label=(\roman*)]
+\item Sequence $t_{P,n}$ が
+\begin{equation}
+\inf_{P\in\mathfrak P_n}
+\{\Delta_{P,n}(t_{P,n})-h_n-r_n\}>0
+\label{eq:powersep}
+\end{equation}
+を満たすなら
+\[
+\sup_{P\in\mathfrak P_n}
+P\{t_{P,n}\in\cC_n^{AR}(1-\alpha)\}\to0.
+\]
+\item ある neighborhood $\mathcal I_{P,n}$ と $\kappa_{P,n}>0$ が存在し，
+\begin{equation}
+\Delta_{P,n}(t)
+\ge\kappa_{P,n}|t-\chi_P|
+\qquad(t\in\mathcal I_{P,n})
+\label{eq:localseparationchi}
+\end{equation}
+を満たすとする。Confidence set が高確率で $\mathcal I_{P,n}$ に入るなら
+\begin{equation}
+\sup_{t\in\cC_n^{AR}(1-\alpha)}
+|t-\chi_P|
+\le\frac{h_n+r_n}{\kappa_{P,n}}
+\label{eq:ARdiameter}
+\end{equation}
+が一様確率 $1-o(1)$ で成立する。
+\end{enumerate}
+従って $\inf_P\kappa_{P,n}>c>0$ なら fixed $J$，$b_n,r_n=o(n^{-1/2})$ の下で root-$n$ diameter を得る。一方 $\kappa_{P,n}\to0$ を許しても coverage は維持され，set は情報量に応じて自動的に広がる。
+\end{theorem}
+
+\begin{proof}
+\eqref{eq:profileapprox}の event 上で，$t\in\cC_n^{AR}$ なら
+\[
+\Delta_{P,n}(t)
+\le AR_n(t)/\sqrt n+r_n
+\le h_n+r_n.
+\]
+(i) は \eqref{eq:powersep} と矛盾するので inclusion probability は profile-approximation event の補集合確率以下となる。(ii) は上式と \eqref{eq:localseparationchi}を組み合わせて得る。
+\end{proof}
+
+Local linear experiment では $\kappa_{P,n}$ は effective operator と直接結びつく。Scalar derivative $\dot\chi(h)=\inner{d_\chi}{h}$ に対し
+\begin{equation}
+\kappa_{\chi,n}
+=\inf\{\norm{\bar\Sop_nh}:\dot\chi(h)=1\}
+\label{eq:kappachi}
+\end{equation}
+と置く。
+
+\begin{proposition}[Target strength と Riesz norm の双対性]\label{prop:kappaRiesz}
+$d_\chi\in\Range(\bar\Sop_n^*)$ で minimum-norm representer $r_{\chi,n}^\dagger$ が存在するなら
+\begin{equation}
+\kappa_{\chi,n}
+=\frac{1}{\norm{r_{\chi,n}^\dagger}}.
+\label{eq:kappaRieszidentity}
+\end{equation}
+$d_\chi\notin\Range(\bar\Sop_n^*)$ なら $\kappa_{\chi,n}=0$。従って weak target identification は $\norm{r_{\chi,n}^\dagger}\to\infty$ または representer の不存在と同値であり，strong-ID Wald standard error と projection-set diameter は同じ strength parameter により支配される。
+\end{proposition}
+
+\begin{proof}
+$d_\chi\in\Range(\bar\Sop_n^*)$ の場合，\Cref{thm:localeffective}(iii)より
+\[
+|\dot\chi(h)|
+\le\norm{r_{\chi,n}^\dagger}\norm{\bar\Sop_nh}
+\]
+で，best possible constant は $\norm{r_{\chi,n}^\dagger}$ である。従って
+\[
+\sup_{h:\bar\Sop_nh\neq0}
+\frac{|\dot\chi(h)|}{\norm{\bar\Sop_nh}}
+=\norm{r_{\chi,n}^\dagger}.
+\]
+左辺の reciprocal は homogeneity により \eqref{eq:kappachi} と等しい。$d_\chi\notin\Range(\bar\Sop_n^*)$ ならこの functional は $\norm{\bar\Sop_nh}$ に関して bounded でなく，任意の $M$ に対し $|\dot\chi(h)|>M\norm{\bar\Sop_nh}$ となる $h$ が存在する。Scaling して $\dot\chi(h)=1$ とすれば $\norm{\bar\Sop_nh}<1/M$ なので $\kappa_{\chi,n}=0$。
+\end{proof}
+
+最後に，weak identification の下で confidence set が広がることは単なる保守性ではなく，Dufour 型の impossibility logic \cite{Dufour1997} と整合的な情報理論的必然である。
+
+\begin{theorem}[Gaussian experiment における honest-diameter lower bound]\label{thm:weakIDdiameterlower}
+有限次元 Gaussian experiment
+\begin{equation}
+Y_n\sim N(\bar\Sop_n h,n^{-1}I),
+\qquad
+\chi(h)=\inner{d_n}{h}
+\label{eq:weakGaussian}
+\end{equation}
+を考え，
+\[
+\kappa_n=\inf\{\norm{\bar\Sop_nh}:\inner{d_n}{h}=1\}
+\]
+とする。Confidence set $C_n(Y_n)$ が全 $h$ について
+\begin{equation}
+\inf_hP_h\{\chi(h)\in C_n\}\ge1-\alpha
+\label{eq:honestGaussian}
+\end{equation}
+を満たすとする。任意の $\delta>0$ と $\varepsilon>0$ に対し
+\begin{equation}
+P_0\{\operatorname{diam}(C_n)\ge\delta\}
+\ge1-2\alpha-\frac{\delta\sqrt n}{2}(\kappa_n+\varepsilon).
+\label{eq:diameterlower}
+\end{equation}
+特に $\sqrt n\kappa_n\to0$ なら，任意の固定 $\delta>0$ について
+\[
+\liminf_nP_0\{\operatorname{diam}(C_n)\ge\delta\}
+\ge1-2\alpha.
+\]
+従って weak-ID sequence 全体で honest な confidence set は一様に縮小できない。
+\end{theorem}
+
+\begin{proof}
+$\inner{d_n}{h_n}=1$，$\norm{\bar\Sop_nh_n}\le\kappa_n+\varepsilon$ を満たす $h_n$ を選ぶ。$P_0$ を $h=0$ の law，$P_1$ を $h=\delta h_n$ の law とする。Gaussian means の差は $\delta\bar\Sop_nh_n$ であり，
+\[
+\KL(P_1,P_0)
+=\frac{n\delta^2}{2}\norm{\bar\Sop_nh_n}^2.
+\]
+Pinsker inequality により
+\begin{equation}
+\operatorname{TV}(P_1,P_0)
+\le\sqrt{\KL(P_1,P_0)/2}
+\le\frac{\delta\sqrt n}{2}(\kappa_n+\varepsilon).
+\label{eq:TVweak}
+\end{equation}
+Honesty から $P_0(0\in C_n)\ge1-\alpha$，$P_1(\delta\in C_n)\ge1-\alpha$。従って
+\[
+P_0(\delta\in C_n)
+\ge P_1(\delta\in C_n)-\operatorname{TV}(P_1,P_0)
+\ge1-\alpha-\operatorname{TV}(P_1,P_0).
+\]
+Union bound により
+\[
+P_0(0\in C_n,\ \delta\in C_n)
+\ge1-2\alpha-\operatorname{TV}(P_1,P_0).
+\]
+この event では $\operatorname{diam}(C_n)\ge\delta$ なので \eqref{eq:TVweak} を代入して \eqref{eq:diameterlower} を得る。
+\end{proof}
+
+\begin{corollary}[Honest diameter の最適 order]\label{cor:honestdiameterorder}
+$0<c<2(1-2\alpha)$ とする。$\kappa_n>0$ なら，任意の honest confidence set について
+\begin{equation}
+\lim_{\varepsilon\downarrow0}
+P_0\left\{
+\operatorname{diam}(C_n)
+\ge\frac{c}{\sqrt n(\kappa_n+\varepsilon)}
+\right\}
+\ge1-2\alpha-\frac c2.
+\label{eq:diameterorderlower}
+\end{equation}
+一方，\Cref{thm:ARpowerdiameter}の local separation constant が $\kappa_{P,n}\asymp\kappa_n$ で，$b_n,r_n=o((\sqrt n)^{-1})$ なら，profile/AR set の diameter は
+\[
+O_p\{(\sqrt n\kappa_n)^{-1}\}.
+\]
+従って Gaussian local experiment では projection set は honest diameter の order で rate-optimal である。
+\end{corollary}
+
+\begin{proof}
+\Cref{thm:weakIDdiameterlower}で $\delta=c/\{\sqrt n(\kappa_n+\varepsilon)\}$ と置けば total-variation term は $c/2$ 以下であり \eqref{eq:diameterorderlower} が従う。上界は \eqref{eq:ARdiameter} と $h_n=O(n^{-1/2})$ から得る。
+\end{proof}
+
+\begin{remark}[推奨する実証報告]\label{rem:weakreporting}
+実証では one-step/Wald interval と有限標本または studentized projection set を併記し，$\wh\kappa_{\chi,n}=1/\norm{\wh r_{\chi,n}^\dagger}$，$s_{\min}(\wh\Sop_n)$，profile objective，および sieve-bias allowance を報告する。Strong regime では両 interval は近くなり，weak regime では projection set が広がるか非有界になり得る。それは推定法の失敗ではなく，\Cref{thm:weakIDdiameterlower,cor:honestdiameterorder}が示す情報不足の正しい反映である。
+\end{remark}
+
+\section{Bridge benchmark と target-specific recovery}\label{sec:bridgebenchmark}
+
+\subsection{B-completeness による unique bridge}
+\begin{assumption}[Conditional B-completeness]\label{as:Bcomplete2}
+各必要 block $S$ について，任意の下に有界で可積分な $a$ に対し
+\[
+\E\{a(Y_S,C_S)\mid Z_S,C_S\}=0
+\quad\Longrightarrow\quad
+a(Y_S,C_S)=0\quad\text{a.s.}
+\]
+が成立する。
+\end{assumption}
+
+\begin{proposition}[Inverse-selection bridge と block law の一意性]\label{prop:uniquebridge2}
+\Cref{as:shadow,as:Bcomplete2}の下で，正値関数 $\omega_S$ が
+\[
+\E\{R_S\omega_S(Y_S,C_S)\mid Z_S,C_S\}=1
+\]
+を満たすなら $\omega_S=1/\pi_S$ a.s. である。さらに任意の可積分 $h$ に対し
+\begin{equation}
+\E h(Y_S,Z_S,C_S)
+=\E\{R_S\omega_S(Y_S,C_S)h(Y_S,Z_S,C_S)\}.
+\label{eq:blocklawrecover2}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+真値 $\omega_{S0}=1/\pi_S$ と候補 $\omega_S$ の差を取り
+\[
+0=\E\{R_S(\omega_S-\omega_{S0})\mid Z_S,C_S\}
+=\E\{\pi_S(\omega_S-\omega_{S0})\mid Z_S,C_S\}.
+\]
+$a=\pi_S(\omega_S-\omega_{S0})$ は仮定した関数 class に入り，B-completeness から $a=0$。$\pi_S>0$ なので $\omega_S=\omega_{S0}$。また shadow exclusion から
+\[
+\E\{R_S\omega_{S0}h\mid Y_S,Z_S,C_S\}
+=\pi_S\omega_{S0}h=h.
+\]
+周辺化して \eqref{eq:blocklawrecover2}。
+\end{proof}
+
+\subsection{Representer bridge による target-only recovery}
+$\tau(Y_S,C_S)$ を可積分 target function とする。
+
+\begin{proposition}[Target-specific representer]\label{prop:representer2}
+ある $\delta_\tau(Z_S,C_S)$ が存在して
+\begin{equation}
+\E\{\delta_\tau(Z_S,C_S)\mid R_S=1,Y_S,C_S\}
+=\tau(Y_S,C_S)
+\label{eq:repbridge2}
+\end{equation}
+を満たすとする。\Cref{as:shadow}の下で
+\begin{equation}
+\E\tau(Y_S,C_S)
+=\E\left[
+R_S\tau(Y_S,C_S)
++(1-R_S)\delta_\tau(Z_S,C_S)
+\right].
+\label{eq:targetrep2}
+\end{equation}
+従って representer の一意性や full block law の識別なしに target は識別される。
+\end{proposition}
+
+\begin{proof}
+Shadow exclusion により $Z_S\mid(Y_S,C_S)$ の conditional law は $R_S$ に依存しない。従って \eqref{eq:repbridge2}は $R_S=0$ でも
+\[
+\E\{\delta_\tau(Z_S,C_S)\mid R_S=0,Y_S,C_S\}
+=\tau(Y_S,C_S)
+\]
+を含意する。ゆえに
+\[
+\E\{(1-R_S)\delta_\tau\}
+=\E\{(1-R_S)\tau(Y_S,C_S)\}.
+\]
+観測部分 $\E\{R_S\tau\}$ を加えれば \eqref{eq:targetrep2}。
+\end{proof}
+
+\begin{corollary}[Finite-support range condition]\label{cor:finiterange2}
+$Y_S$ と $Z_S$ が有限 support を持ち，固定 $c$ で
+\[
+H_S(c)=
+[P(Z_S=z\mid R_S=1,Y_S=y,C_S=c)]_{y,z}
+\]
+とする。$\tau_c=(\tau(y,c):y)'$ に対する representer が存在するための必要十分条件は
+\begin{equation}
+\tau_c\in\Range\{H_S(c)\}.
+\label{eq:finiterange2}
+\end{equation}
+全 target に対する completeness は $H_S(c)$ の full row rank を要求するが，特定 target には \eqref{eq:finiterange2} だけでよい。
+\end{corollary}
+
+\begin{proof}
+\eqref{eq:repbridge2}は有限 support では linear system $H_S(c)\delta(c)=\tau_c$ である。解の存在は右辺が column range に属することと同値。
+\end{proof}
+
+\begin{remark}[本稿の joint theory との違い]
+\Cref{prop:representer2}は単一 block target の回復である。本稿の中心は，個々の bridge または representer が非一意でも，複数 block を共有 latent structure により結合した商空間で latent target を識別する点にある。
+\end{remark}
+
+\section{識別監査・計算・検証計画}\label{sec:diagnostics}
+
+\subsection{識別監査}
+実証または simulation では少なくとも次を確認する。
+\begin{enumerate}[label=(\arabic*)]
+\item $Z_S$ は全員について，かつ selection より前に観測されているか。
+\item $Y_S,C_S$ を固定した後に $Z_S$ が selection へ直接入らないという制度的説明があるか。
+\item $Z$ と $W$ の役割を分け，$W$ の direct measurement effect を排除できるか。
+\item Finite sieve Jacobian で \eqref{eq:rankcriterion} が成立するか。
+\item $\wh\alpha_{T,n}$，$s_{\min}(\wh\Qop_n\wh\Lop_n)$，$s_{\min}(\wh\Sop_n)$，および $\wh\kappa_{\chi,n}=1/\norm{\wh r_{\chi,n}^\dagger}$ を報告したか。
+\item 潜在 label，location，scale，orientation，または nonlinear coordinate を固定したか。
+\item Supported hypergraph が target items を anchor component に接続しているか。
+\end{enumerate}
+
+\subsection{計算}
+Joint PSMD は nonconvex になり得る。実装では，
+\begin{enumerate}[label=(\roman*)]
+\item finite-class tensor または unique-bridge benchmark による spectral initialization，
+\item bridge block と latent block の alternating proximal update，
+\item joint objective の multiple starts，
+\item bias-aware profile/AR objective による weak-ID-uniform target confidence set，
+\item regularization path と effective singular values の同時表示
+\end{enumerate}
+を用いる。理論上の global minimizer と数値的 stationary point を混同しないため，本文 estimator は approximate global minimizer として定義した。
+
+\subsection{Simulation の相図}
+Simulation は単なる RMSE 表ではなく，次の軸を系統的に変える。
+\begin{center}
+\begin{tabularx}{0.96\textwidth}{>{\bfseries}p{36mm}X}
+\toprule
+軸 & 変化させる量\\
+\midrule
+Shadow strength & $\alpha_{T,n}$，stacked shadows の rank\\
+Latent separation & $s_k(\Qop\Lop)$，spectral gap，Kruskal rank\\
+Bridge uniqueness & $\Null(\Top)=\{0\}$ と非自明 null space\\
+Support geometry & complete case，sparse hypergraph，exact top-$K$\\
+Ill-posedness & polynomial と exponential singular decay\\
+Violation & shadow direct effect，local dependence，$W$ direct effect\\
+Estimator & naive，efficient sequential，joint PSMD，projection inference\\
+\bottomrule
+\end{tabularx}
+\end{center}
+特に，(i) bridge は非一意だが quotient target は識別，(ii) unique bridge 下で joint と efficient sequential が同値，(iii) quotient collision により joint でも非識別，の三領域を分ける必要がある。
+
+\section{Annals of Statistics を狙う際の理論的中心}\label{sec:positioning}
+
+\subsection{仮定の実応用上の強さ}
+本稿の正の結果は，full-law completeness や identification-strength lower bound を外す代わりに，どの仮定が識別に必要で，どの仮定が推論の正規近似だけに必要かを分離している。
+\begin{center}
+\begin{tabularx}{0.97\textwidth}{>{\bfseries}p{34mm}X X}
+\toprule
+結果 & 主な維持仮定 & 要求しないもの\\
+\midrule
+Primitive genericity
+& 使用 cell の pointwise positivity，observable shadow exclusion，latent block probabilities の局所微分可能性，Rado--Hall capacity
+& bridge completeness，known selection link，一様 relevance lower bound，complete-case positivity\\
+Representer route
+& overlap，shadow exclusion，対象ごとの range condition，低次元 $D_\lambda\mu$ の一つの nonsingular witness
+& full-data law，representer uniqueness，全関数に対する completeness\\
+Finite-sample projection
+& 独立標本と，設計した moments の既知 bounded range，または finite variance の保守的上界
+& point identification，nuisance consistency，operator inversion，Gaussian approximation\\
+Profile/AR uniform inference
+& low-dimensional inference moments の sampling covariance 非退化，uniform third moment，oracle point での covariance consistency，明示的 sieve bias allowance
+& $s_{\min}(\Sop_n)$ の lower bound，bridge uniqueness，root-$n$ nuisance estimation\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+最も substantive でデータだけから検証できない仮定は shadow exclusion であり，genericity はその妥当性を代替しない。実応用では，事前測定，時点付きログ，複数 shadow，negative controls，および\Cref{prop:violationbias}の局所 bias formula を併用する必要がある。また pointwise overlap だけで識別は成立するが，極端に小さい回答確率は stability を悪化させる。この場合は weight truncation を無条件に正当化するのではなく，truncation bias を $b_n$ または $d_{kn}$ に含めた projection inference を報告する。
+
+\subsection{主張すべきこと}
+本稿の中心的な novelty claim は次である。
+\begin{quote}
+A collection of shadow-variable equations may fail to identify their bridge functions individually. Once their solution sets are coupled through a shared latent measurement system, however, latent parameters are identified exactly by the injectivity of a quotient moment map. The same quotient geometry induces an effective inverse operator that determines stability, minimax rates, and regular inference.
+\end{quote}
+この主張は容量制約に依存しない。Complete-case model，sparse pattern，exact top-$K$ は同じ theorem の異なる observation geometries である。
+
+\subsection{主張してはならないこと}
+次は本稿単独の新規性ではない。
+\begin{enumerate}[label=(\roman*)]
+\item 常時観測 shadow を用いる MNAR 識別そのもの。
+\item Latent MNAR を EM，Bayes，variational likelihood で同時推定することそのもの。
+\item Full law を unique bridge で回復し，既存 latent decomposition を順に適用すること。
+\item Additive nonlinear measurement curve の完全データ下での推定そのもの。
+\end{enumerate}
+新規性は，nonunique bridge の fiber を latent restrictions が商空間上で切り分ける exact theorem と，その quotient geometry が統計的 ill-posedness と推論を一貫して決める点に置く。
+
+\subsection{完成稿で追加すべきもの}
+本メモから実際の投稿稿へ進む際には，次を追加する価値が高い。
+\begin{enumerate}[label=(\arabic*)]
+\item Growing-sieve DQM/LAN の一様展開と，continuous spectral lower bound を full observed-data experiment へ移す local asymptotic minimax embedding。
+\item 本稿の conservative projection/AR set を改善する conditional likelihood-ratio または GEL refinement と，多数 moments に対する sharper Gaussian approximation。
+\item Nonconvex joint algorithm の basin-of-attraction または statistical-computational guarantee。
+\item Shadow exclusion と latent local independence の感度分析を伴う oracle validation data。
+\end{enumerate}
+
+\section{結論}\label{sec:conclusion}
+容量制約がなく，shadow IV が常時観測される場合でも，研究上の新規性は残る。ただし中心は complete-case positivity や pattern support ではなく，bridge と latent structure の joint geometry にある。本稿は，
+\[
+\Top\omega=b,
+\qquad
+\Bop\omega=\Psi(\lambda)
+\]
+という最小構造から出発し，latent identified set を $\Psi(\lambda)-\Psi(\lambda_0)\in\Bop\Null(\Top)$ で完全に特徴づけた。局所的には，bridge nuisance を partial out した $\Sop$ が strong identification，特異値，推定率，および smooth functional の正則性を一つの作用素として決める。Exact first-order identification は algebraic range，strong identification はその closure により区別される。Unique bridge は本理論の十分条件にすぎず，必要条件ではない。
+
+有限離散 $F$ と連続 $F$ では genericity の意味が異なる。有限-dimensional tangent では selection cancellation と Rado--Hall condition が quotient rank の可能性を必要十分に特徴づけ，rank failure は algebraic exceptional set となる。連続 nonparametric $F$ では，selection probability を消去した $\Cop\Jcal$ の injectivityが識別を決め，protected adjoint features の totalityが必要十分条件となる。Sieve principal angle $\tau_n$，shadow attenuation $\chi_n$，latent attenuation $s_n(\Jcal)$ は有効特異値を primitive quantities へ分解する。Spectral-fiber model では各 mode の one-witness condition から injectivity が Baire-generic に成立し，Fourier shadow construction はこの条件が実際の正の probability law と整合することを示す。
+
+Target-specific range conditions は full cell/full curve recovery を避けるさらに弱い route を与える。推論面では regular one-step procedure に加え，bounded moments または finite variances だけで finite-sample honest な projection sets と，effective singular value の lower bound を一切要求しない bias-aware profile confidence setを与えた。Gaussian lower bound は，generic point identification の下でも confidence set が弱い mode に沿って広がることが不可避であると示す。
+
+Complete-case shadow model，weak-but-many shadows，sparse pattern，exact top-$K$ は同一 framework の特殊ケースである。従って Annals of Statistics を狙う論文の中心は，「MNAR と latent model を同時に推定した」ことではなく，\textbf{離散 $F$ では Rado--Hall geometry，連続 $F$ では totality/transversality/spectral geometry が非一意 bridge の商空間を切り分け，同じ有効作用素が最適推定率・正則推論・weak-ID robust inference を決める}という一般原理に置くべきである。
+
+\appendix
+\section{補助証明と技術補足}
+
+\subsection{Real-analytic zero set}
+次の事実は Mityagin (2020) でも示されているが，参照に依存しないよう証明を記す。
+\begin{lemma}[非零 real-analytic function の zero set]\label{lem:analyticzero}
+Connected open set $U\subset\R^d$ 上の real-analytic function $f$ が恒等的にゼロでないとする。このとき
+\[
+Z(f)=\{x\in U:f(x)=0\}
+\]
+は Lebesgue measure zero であり，$U$ 内に nonempty open set を含まない。
+\end{lemma}
+
+\begin{proof}
+$d$ に関する帰納法で示す。$d=1$ では，非零 analytic function の zeros は各 compact interval 上で isolated であり，高々可算なので measure zero である。また open interval 上でゼロなら identity theorem により恒等的にゼロとなる。
+
+$d-1$ 次元まで成立するとする。$U$ を closure が $U$ に含まれる可算個の open rectangles $B=B'\times(a,b)$ で被覆する。$f$ がある $B$ 上で恒等的にゼロなら analytic continuation により connected set $U$ 上で恒等的にゼロとなり矛盾する。従って各 $B$ で $f$ は非零である。$t_0\in(a,b)$ を固定し，
+\[
+a_k(x')=\frac{1}{k!}\partial_t^kf(x',t_0),
+\qquad x'\in B'
+\]
+と置く。全ての $a_k$ が $B'$ 上で恒等的にゼロなら，各固定 $x'\in B'$ に対する一変量 analytic function $t\mapsto f(x',t)$ は $t_0$ における全 Taylor coefficients がゼロである。従って一変量 identity theorem により $(a,b)$ 全体でゼロとなり，$f$ は $B$ 上で恒等的にゼロとなるので矛盾する。よってある $k_0$ で $a_{k_0}$ は非零 analytic function である。
+
+Section $t\mapsto f(x',t)$ が恒等的にゼロとなる $x'$ の集合を $A$ とすると $A\subseteq Z(a_{k_0})$。帰納法により $A$ は $d-1$ 次元 Lebesgue measure zero である。$x'\notin A$ では一変量 analytic function $t\mapsto f(x',t)$ は非零なので，その zero set は $(a,b)$ 内で measure zero である。Fubini theorem により $Z(f)\cap B$ は $d$ 次元 measure zero。可算被覆を取れば $Z(f)$ 全体も measure zero である。最後に $Z(f)$ が nonempty open ball を含めば，その ball 上で全 Taylor coefficients がゼロとなり，overlapping balls に沿う analytic continuation で $f\equiv0$ on $U$ となるため，interior は空である。$Z(f)$ は continuous function の inverse image として $U$ 内で closed なので，interior が空であることは nowhere dense であることも意味する。
+\end{proof}
+
+\subsection{Finite-dimensional target row-space condition}
+\begin{lemma}[Row-space characterization]\label{lem:rowspace}
+$A\in\R^{q\times p}$，$P\in\R^{r\times p}$ とする。次は同値である。
+\begin{enumerate}[label=(\roman*)]
+\item $\Null(A)\subseteq\Null(P)$。
+\item $\row(P)\subseteq\row(A)$。
+\item ある $V\in\R^{r\times q}$ が存在して $P=VA$。
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Fundamental theorem of linear algebra により $\row(A)=\Null(A)^\perp$。(i) は $P$ の各行が $\Null(A)^\perp$ に属することなので (ii) と同値。(ii) は各行が $A$ の行の線形結合であることなので (iii) と同値。
+\end{proof}
+
+\subsection{Quadratic remainder から tangential cone}
+\begin{lemma}[Lipschitz derivative の十分条件]\label{lem:tconeLipschitz}
+$\Mop$ が $\eta_0$ の ball $B(\eta_0,r)$ 上で Fr\'echet differentiable で
+\[
+\norm{D\Mop_\eta-D\Mop_{\eta_0}}_{\op}
+\le L\norm{\eta-\eta_0}
+\]
+を満たすとする。また secant directions について
+\[
+\norm{\eta-\eta_0}
+\le C\norm{\Aop(\eta-\eta_0)}
+\]
+が成立する。$LCr/2<1$ なら \eqref{eq:tcone} は $\kappa=LCr/2$ で成立する。
+\end{lemma}
+
+\begin{proof}
+Fundamental theorem of calculus から $h=\eta-\eta_0$ に対し
+\[
+\Mop(\eta)-\Mop(\eta_0)-\Aop h
+=\int_0^1\{D\Mop_{\eta_0+th}-D\Mop_{\eta_0}\}h\dd t.
+\]
+従って norm は
+\[
+\le\int_0^1Lt\norm h^2\dd t
+=\frac L2\norm h^2
+\le\frac{LCr}{2}\norm{\Aop h}.
+\]
+\end{proof}
+
+\subsection{Notation table}
+\begin{longtable}{p{34mm}p{112mm}}
+\toprule
+記号 & 意味\\
+\midrule
+$R_S,Y_S,Z_S,C_S$ & block observation indicator，block outcome，常時観測 shadow，context\\
+$\omega_S$ & inverse-selection bridge candidate\\
+$\Top$ & stacked shadow conditional-moment operator\\
+$\Bop$ & bridge から weighted latent moments を生成する linear operator\\
+$\Psi(\lambda)$ & shared latent model が生成する moment map\\
+$\cN_T$ & $\Null(\Top)$，bridge equation の非一意方向\\
+$\cR_B$ & $\Bop\Null(\Top)$，非一意 bridge が生成できる latent-moment directions\\
+$q_B$ & $\mathbb K_2/\cR_B$ への quotient map\\
+$\Aop$ & joint linearized operator\\
+$\Gop,\Jop$ & bridge nuisance score map と latent score map\\
+$\Sop$ & nuisance-partialled effective integrated operator\\
+$\Qop$ & $\overline{\Bop\Null(\Top)}^\perp$ への projection\\
+$\alpha_T$ & identifiable bridge component に対する lower bound\\
+$\mu_k$ & $\Sop$ の singular values\\
+$\mu_n$ & latent sieve 上の restricted minimum singular value\\
+$r_0$ & minimum-norm debiasing representer\\
+$\kappa_{\chi,n}$ & target direction の effective strength，$1/\norm{r_{\chi,n}^\dagger}$\\
+$\mathbf G(\vartheta),\mathbf J(\vartheta)$ & primitive probability chart 上の nuisance/latent Jacobian matrices\\
+$\mathsf T_S,\mathsf D_S,\mathsf C_S$ & selected-cell matrix，selected mass diagonal，standardized shadow contrast\\
+$\mathsf K(\beta_0,\mathsf C)$ & stacked primitive quotient Jacobian\\
+$\Cop_S$ & continuous block の conditional-expectation shadow operator\\
+$\Jcal_S$ & continuous latent block score operator\\
+$\Kop=\Cop(I+\Cop^*\Cop)^{-1/2}\Jcal$ & continuous primitive profiled effective operator\\
+$\tau_n,\chi_n$ & latent-score/shadow-null principal angle と transverse shadow singular value\\
+$K_k(\xi_k),\rho_k$ & spectral-fiber operator と scalar mode multiplier\\
+$V_S,r_S$ & blockwise latent tangent row space と shadow contrast capacity $q_S-1$\\
+$\mathcal E_{\beta_0},\mathcal E$ & algebraic / real-analytic exceptional sets\\
+$\cC_n^{\mathrm H},\cC_n^{\mathrm{MOM}}$ & finite-sample Hoeffding / median-of-means projection sets\\
+$AR_n(t),\cC_n^{AR}$ & null-restricted profile moment norm と bias-aware confidence set\\
+\bottomrule
+\end{longtable}
+
+
+\section{三層モデルのパラメトリック性と欠測IVの識別範囲}
+\label{app:three-layer-taxonomy}
+
+本付録は，応用で最も重要な model-design question を明示する。すなわち，
+\begin{center}
+\begin{tabular}{ll}
+① & 欠測 indicator と顕在変数の関係，\(D,Y,F,X)\mapsto P(D\mid Y,F,X)\)，\\
+② & 顕在変数と潜在変数の測定関係，\(Y,F,X)\mapsto P(Y\mid F,X)\)，\\
+③ & 潜在変数分布，\(F,X\mapsto P(F\mid X)\)，
+\end{tabular}
+\end{center}
+のどこを finite-dimensional parametric model とし，どこを unspecified にできるか，という問題である。最初に欠測がない場合の②--③ identification を監査し，その後に欠測 IV が①の指定をどこまで不要にするかを整理する。
+
+\subsection{用語と三層分解}
+
+条件変数 $X$ を省略すると，完全データ law は
+\begin{equation}
+ P_{\beta,G}(\dd y)
+ =\int p_\beta(y\mid f)\,G(\dd f)\,\mu(\dd y),
+\label{eq:threelevelmanifest}
+\end{equation}
+観測データ law は
+\begin{equation}
+ P_O(d,\dd y_d,\dd z)
+ =\int\!\int
+ p_\alpha(d\mid y,f,z)
+ p_\beta(y\mid f)
+ K_Z(\dd z\mid y,f)
+ G(\dd f)\,\mu(\dd y_{d^c})\mu(\dd y_d)
+\label{eq:threelevelobserved}
+\end{equation}
+で表される。本付録では次の分類を用いる。
+\begin{description}[leftmargin=24mm,style=nextline]
+\item[Parametric (P)] 未知部分が固定有限次元 parameter により完全に記述される。例は logistic selection，Gaussian factor likelihood，normal ability distribution である。
+\item[Structural semiparametric (SP)] 科学的 parameter は有限次元だが，誤差分布または潜在分布を有限モーメント以外には指定しない。例は \Cref{as:onefactor} の線形一因子 moment model である。
+\item[Nonparametric (NP)] 条件付き law，測定曲線，または mixing distribution 全体を無限次元 nuisance/target とする。
+\end{description}
+「線形」または「Rasch」という語は②の構造を指し，③が parametric であることを意味しない。逆に③を normal としても②の loading/response functions の識別が自動的に従うわけではない。
+
+\begin{proposition}[Parametricity は識別の必要十分条件ではない]
+\label{prop:parametricitynotidentification}
+P/NP のラベルだけから識別可否は決まらない。
+\begin{enumerate}[label=(\roman*)]
+\item ②と③がともに P でも，latent label，位置・尺度，factor rotation，mixture aliasing，または selection equivalence が残れば非識別である。
+\item ③が NP でも，線形一因子の loading は二次モーメントから，Rasch difficulty は discordant pair ratios から識別され得る。
+\item ②と③がともに NP でも，適切な multi-view conditional independence，作用素 injectivity，および latent-coordinate normalization があれば識別され得る。
+\end{enumerate}
+従って必要なのは，各 model class の manifest map の injectivity または target map の injectivity である。
+\end{proposition}
+
+\begin{proof}
+(i) は finite mixture の label permutation，factor model の orthogonal rotation，および IRT の位置・尺度変換から従う。(ii) は \Cref{thm:factorgraph,thm:raschpair}。(iii) は \Cref{thm:continuousanchor} および Hu and Schennach~\cite{HuSchennach2008} 型 multi-view 識別から従う。
+\end{proof}
+
+\subsection{欠測がない場合の識別が上限を定める}
+
+まず $D\equiv\one_m$ とし，manifest map
+\[
+ \mathfrak M:(\beta,G)\longmapsto P_{\beta,G}(Y\in\cdot)
+\]
+を考える。潜在 parameter の同値関係（label，位置・尺度，符号，rotation）を $\sim$ と書く。
+
+\begin{theorem}[Complete-data ceiling と pure-shadow impossibility]
+\label{thm:completedataceiling}
+次を仮定する。
+\begin{enumerate}[label=(\roman*)]
+\item $Z$ は pure missingness shadow であり，その kernel は $K_Z(\dd z\mid y,x)$ の形を取り，$F$ に追加的に依存しない。
+\item Selection law は $\pi(d\mid y,x)$ の形を取り，latent representation に依存しない。
+\end{enumerate}
+このとき次が成立する。
+\begin{enumerate}[label=(\alph*)]
+\item $\mathfrak M(\beta,G)=\mathfrak M(\wt\beta,\wt G)$ なら，同じ $K_Z$ と $\pi$ の下で二つの latent models は同じ観測データ law を生成する。
+\item 従って pure shadow IV は，完全データから既に識別不能な②--③の差を識別できない。
+\item 逆に，shadow assumptions が $P(Y)$ 全体を識別し，$\mathfrak M$ が $\sim$ を除いて injective なら，$(\beta,G)/{\sim}$ は識別される。
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(a) $P_{\beta,G}=P_{\wt\beta,\wt G}=:P_Y$ とする。観測 law は
+\[
+ P_O(d,\dd y_d,\dd z)
+ =\int \pi(d\mid y,x)K_Z(\dd z\mid y,x)P_Y(\dd y)
+\]
+の $y_{d^c}$ に関する周辺化であり，latent representation を通じては $P_Y$ のみに依存する。従って二つは同一の $P_O$ を与える。(b) は (a) の反証法。(c) は観測 law から $P_Y$ を回復し，injective map $\mathfrak M^{-1}$ を適用すればよい。
+\end{proof}
+
+\begin{remark}[Shadow が latent proxy/shifter を兼ねる場合]
+\Cref{thm:completedataceiling} は pure shadow に関する上限である。$K_Z(\dd z\mid f)$ を構造化して $Z$ を latent proxy として使う，または常時観測 $W$ が $G(\dd f\mid W)$ を動かす場合，$(Y,Z)$ や $(Y,W)$ は $Y$ 単独より多くの latent information を持ち得る。この場合の識別は「欠測 IV が②--③を識別した」のではなく，proxy/shifter measurement model を②--③へ追加した結果である。
+\end{remark}
+
+\begin{theorem}[Protected-statistic transfer theorem]
+\label{thm:protectedtransferappendix}
+完全データ統計 $\tau=(\tau_1,\ldots,\tau_L)'$ と
+\[
+ m_\tau(\beta,G)=\E_{\beta,G}\{\tau(Y)\}
+\]
+を考える。各 $\tau_\ell$ が target-specific shadow representer を持つなら $m_\tau(\beta_0,G_0)$ は観測 law から識別される。従って，
+\begin{enumerate}[label=(\roman*)]
+\item $m_\tau$ が $(\beta,G)/{\sim}$ 上で injective なら full-data law を回復せずに $(\beta,G)/{\sim}$ が識別される。
+\item finite-dimensional parameter $\vartheta$ について normalized Jacobian $D_\vartheta m_\tau(\vartheta_0)$ が full column rank なら局所識別される。
+\item $m_\tau$ が target $\chi(\beta,G)$ だけを分離するなら，full $(\beta,G)$ が非識別でも $\chi$ は識別される。
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+各 component は \eqref{eq:protectedstat} により観測 law の一意な汎関数である。(i) は injectivity，(ii) は inverse function theorem，(iii) は $m_\tau(\vartheta)=m_\tau(\vartheta_0)\Rightarrow\chi(\vartheta)=\chi(\vartheta_0)$ から従う。
+\end{proof}
+
+\subsection{欠測なし：②と③の組合せ}
+
+次表は complete-data manifest map の識別可能性を整理する。記号「可」は常に自動的という意味ではなく，表中の追加条件下での識別可能性を表す。
+
+\begin{center}
+\footnotesize
+\begin{tabularx}{0.99\textwidth}{>{\bfseries}p{18mm}>{\bfseries}p{18mm}p{36mm}p{39mm}X}
+\toprule
+②測定 & ③分布 & 完全データ下の一般的位置 & 識別され得る対象 & 必要な限定・代表例\\
+\midrule
+P & P
+& 可だが自動ではない
+& 測定 parameter と latent-distribution parameter
+& Location/scale/label/rotation を固定し，manifest Jacobian または tensor rank を満たす。Gaussian factor，normal-ogive/logistic IRT，有限 latent class。Finite mixtures は model-specific な tensor rank と separation 条件の下で generic identification を持ち得る~\cite{Allman2009}。\\
+\addlinespace
+SP & NP
+& 有限次元測定 parameter は可，$G$ 全体は通常不可
+& Means/loadings/uniquenesses，item contrasts
+& 線形一因子では $E F=0,\Var F=1$ と誤差無相関の下で loadings を二次モーメントから識別。$G$ の shape は識別しない。\\
+\addlinespace
+P & NP
+& Model-specific
+& $G$ に不変な測定 parameter，または有限個の $G$-functionals
+& Rasch difficulty は $G$ を指定せず識別可能。$G$ 自体を対象にする場合は，別途 complete-data manifest map の injectivity が必要である。Nonparametric margins による item estimation はこの分離と整合する~\cite{Follmann1988}。Known-error repeated measurements では deconvolution により $G$ を識別できる場合がある。\\
+\addlinespace
+NP & P
+& Parametric ③だけでは一般に不可
+& 正規化された測定曲線またはその smooth functionals
+& Latent coordinate を固定し，multi-view operator injectivity，monotonicity，または calibration structure が必要。\\
+\addlinespace
+NP & NP
+& 強い multi-view 構造なしには不可
+& Measurement kernels，mixing law，smooth targets
+& Multi-view conditional independence，completeness/totality，spectral simplicity，calibration normalization。Hu--Schennach 型作用素，Kotlarski 型 repeated measurements，または finite-class tensor decomposition。\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsubsection{線形因子分析}
+完全データ covariance graph が connected non-bipartite なら，\Cref{thm:factorgraph} により，②を線形 SP，③を NP としても $(\nu,\lambda,\psi)$ は識別できる。ここで識別されないのは $G_F$ の shape である。Gaussian $F$ と Gaussian errors を追加すれば②--③は P/P になり，manifest Gaussian law は平均・共分散で決まるが，multi-factor rotation と factor-number/decomposition の問題は残る。Classical factor analysis の identifiability が単なる parameter count ではなく loading structure と uniqueness に依存することは Anderson--Rubin 型条件および subsequent generic results で知られている~\cite{AndersonRubin1956,BekkerTenBerge1997}。
+
+\subsubsection{Rasch IRT}
+Rasch difficulty は②が P，③が NP でも conditional/pair-ratio invariance により識別される~\cite{Rasch1960,Andersen1970,Follmann1988}。能力分布またはその汎関数を対象にする場合は，difficulty の識別とは別に complete-data manifest map の injectivity を検討する。Normal $G_\gamma$ や有限 mixture に限定すれば，③は finite-dimensional となり，protected score/pattern probability Jacobian の rank problem に変わる。
+
+\subsection{欠測 IV がない MNAR：①が担う識別}
+
+\begin{theorem}[Unrestricted MNAR selection の基本的非識別]
+\label{thm:noivunrestrictednonid}
+単一 response indicator $R$ を考え，観測 law が respondent subprobability
+\[
+ G_1(A)=P(R=1,Y\in A),\qquad p=G_1(\cY)\in(0,1)
+\]
+を与えるとする。①を unrestricted な $\pi(y)=P(R=1\mid Y=y)$ とし，$Y$ の full law に制限を置かない。任意の probability measure $Q$ に対し
+\begin{equation}
+ P_Q=G_1+(1-p)Q,
+ \qquad
+ \pi_Q=\frac{\dd G_1}{\dd P_Q}
+\label{eq:noivconstruction}
+\end{equation}
+と置けば，$0\le\pi_Q\le1$ であり，すべての $Q$ が同一の観測 law を生成する。従って unrestricted ①の下では，②--③を通じた $P_Y$ の候補が二つ以上ある限り一般に識別されない。
+\end{theorem}
+
+\begin{proof}
+$P_Q$ は mass $p+(1-p)=1$ の probability measure で，$G_1\ll P_Q$ である。$G_1(A)=\int_A\pi_Q(y)P_Q(\dd y)$ なので $(P_Q,\pi_Q)$ は respondent sublaw を厳密に再現する。$R=0$ では $Y$ が観測されないため，$Q$ の選択は観測 law を変えない。異なる $Q$ は異なる full laws を与える。
+\end{proof}
+
+\Cref{thm:noivunrestrictednonid} は，欠測 IV がないときに①へ何らかの制限が不可欠であることを示す。その制限には次の異なる種類がある。
+
+\begin{center}
+\footnotesize
+\begin{tabularx}{0.99\textwidth}{>{\bfseries}p{32mm}p{37mm}p{42mm}X}
+\toprule
+No-IV の① & ②--③に置く典型仮定 & 識別の情報源 & 限界\\
+\midrule
+Fully parametric selection
+& Parametric factor/IRT と normal または finite-mixture latent distribution
+& $p_\alpha(D\mid Y,F)$，$p_\beta(Y\mid F)$，$G_\gamma$ の joint likelihood map
+& Model-specific。Parametric であっても自動ではなく，link の tail behavior と exclusion に依存する。Normal outcome selection でも probit と logistic で結論が異なり，logistic には非識別例がある~\cite{MiaoDingGeng2016}。\\
+\addlinespace
+Shared-parameter / latent response propensity
+& ②を factor/IRT，③を multivariate normal または latent class とすることが多い
+& $D_j$ 自体を latent propensity $U$ の indicators とし，$F$ と $U$ の関連で MNAR を表す
+& Response-propensity measurement の rank/separation，loading restrictions，local independence，$(F,U)$ distribution が必要。欠測 mechanism は NP ではない~\cite{MuthenKaplanHollis1987,HolmanGlas2005,RoseVonDavierXu2010,RoseVonDavierNagengast2017,KuhaKatsikatsouMoustaki2018}。\\
+\addlinespace
+Bayesian/likelihood SEM with logistic missingness
+& Nonlinear SEM/factor structure と parametric latent/error distributions
+& Joint posterior/likelihood through specified logistic selection equation
+& Prior を置くことと likelihood identification は別。Selection model misspecification に敏感~\cite{Lee2006}。\\
+\addlinespace
+Finite-mixture response propensity
+& ② parametric，③ finite discrete joint law of ability and propensity
+& Multiple response/omission indicators across latent classes
+& Normalityは不要だが class number，label，separation，measurement invariance が新しい仮定~\cite{BacciBartolucci2015}。\\
+\addlinespace
+Self-censoring / no-self-censoring
+& ②--③は complete-data baseline で識別可能であればよい
+& 特殊な conditional-independence graph と pattern positivity/support recursion
+& ①を finite link にしないが，強い censoring independence と upward closure または complete-case positivity を置く~\cite{LiMiaoShpitserTT2023,Malinsky2022}。\\
+\addlinespace
+MAR / latent ignorability
+& Standard complete-data model
+& Missing values を条件付き分布から extrapolate する ignorability
+& 観測 $Y$ を固定した後の MNAR を許さない。Latent ignorability は shared latent model の正しさに依存。\\
+\addlinespace
+Protective conditional likelihood / sufficient statistic
+& Rasch 等の exponential-family structure
+& Missingness nuisance が target score から消える特殊な likelihood factorization
+& 一般 full law ではなく，限られた parameters/contrasts のみ。適用可能性は model-specific~\cite{RabeHeskethSkrondal2023}。\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{remark}[No-IV latent-MNAR 文献の位置づけ]
+従来の SEM/IRT MNAR 文献は，①②③を一つの parametric または finite-mixture joint model として推定する。Muth\'en, Kaplan and Hollis~\cite{MuthenKaplanHollis1987}，Lee~\cite{Lee2006}，Holman and Glas~\cite{HolmanGlas2005}，Rose et al.~\cite{RoseVonDavierXu2010,RoseVonDavierNagengast2017}，Kuha, Katsikatsou and Moustaki~\cite{KuhaKatsikatsouMoustaki2018} はこの系列に属する。近年も response time，omission，not-reached behavior を含む richer joint IRT model が提案されている~\cite{WuMaChen2026}。これらは重要な model-based identification であるが，①を unrestricted にした識別ではない。
+\end{remark}
+
+\subsection{欠測 IV がある MNAR：①をどこまで unspecified にできるか}
+
+常時観測 shadow $Z$ について
+\[
+ R_S\ind Z_S\mid(Y_S,C_S)
+\]
+を置くと，①の functional form を直接指定せずに次の三 route が得られる。
+
+\begin{enumerate}[label=\textbf{Route \Alph*.},leftmargin=26mm]
+\item \textbf{Full-law recovery.} Positivity と completeness の下で inverse-selection bridge を一意化し，supported $P(Y_S)$ を NP に回復する。その後の②--③ identification は complete-data baseline に従う~\cite{dHaultfoeuille2010,MiaoTT2016,MiaoEtAl2024}。
+\item \textbf{Target-specific recovery.} 必要な $\tau$ についてのみ $\tau\in\Range(T_S^*)$ を要求する。①は NP，bridge は非一意でもよく，有限個の moments/cells から②--③を識別できる~\cite{LiMiaoTT2023}。
+\item \textbf{Joint quotient recovery.} 各 bridge が単独には非識別でも，$\Psi(\lambda)-\Psi(\lambda_0)\in\Bop\Null(\Top)$ を満たす latent collision が存在しなければ target を識別する。これは本稿の主結果である。
+\end{enumerate}
+
+\begin{theorem}[三層 transfer principle]
+\label{thm:threelayertransfer}
+①に shadow exclusion と pointwise positivity を置く。②--③ parameter を $\lambda=(\beta,G)$ とする。
+\begin{enumerate}[label=(\roman*)]
+\item Full-law route が $P_Y$ を識別する場合，$\lambda/{\sim}$ が識別されるための必要十分条件は，完全データ manifest map $\mathfrak M$ が $\lambda_0$ の fiber 上で $\sim$ を除いて singleton であることである。
+\item Target-specific route では，protected statistic map $m_\tau$ が分離する component のみが識別される。従って ①は NP のまま，②または③の有限次元 parameter を識別できる。
+\item Joint quotient route では，bridge/full law が非一意でも
+\[
+ \Psi(\lambda)-\Psi(\lambda_0)\in\Bop\Null(\Top)
+ \quad\Longrightarrow\quad
+ \lambda\sim\lambda_0
+\]
+なら識別される。
+\item Pure shadow のみを用いる限り，完全データ manifest map に残る latent equivalence は除去できない。
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(i) は \Cref{thm:completedataceiling}(c) と fiber characterization。(ii) は \Cref{thm:protectedtransferappendix}。(iii) は \Cref{thm:quotient}。(iv) は \Cref{thm:completedataceiling}(a)--(b)。
+\end{proof}
+
+\begin{center}
+\footnotesize
+\begin{tabularx}{0.99\textwidth}{>{\bfseries}p{18mm}>{\bfseries}p{18mm}p{36mm}p{43mm}X}
+\toprule
+② & ③ & Shadow-IV で①に不要となる指定 & 識別可能性 & なお必要な②--③の条件\\
+\midrule
+P & P
+& Selection link/logistic-probit equation を不要にできる
+& Protected finite moments/pattern cells の Jacobian が full rank なら可
+& Latent normalizations と model-specific Jacobian/tensor rank。\\
+\addlinespace
+SP & NP
+& ①は NP のまま
+& 測定 parameter は可，$G$ full law は通常不可
+& Factor moment equations の graph/rigidity。$G$ を対象にするなら追加 repeated measurements/proxy。\\
+\addlinespace
+P & NP
+& ①は NP のまま
+& $G$-invariant measurement contrasts は可。Arbitrary $G$ full law は complete-data ceiling に従う
+& Rasch difficulties は可。能力分布を対象にする場合は別途 complete-data injectivity が必要。\\
+\addlinespace
+NP & P
+& ①の functional form は不要
+& Full-law or sufficiently rich protected moments と operator injectivity で可
+& Latent-coordinate normalization，multi-view totality，smoothness。Normal ③だけでは②の reparameterization を除けない。\\
+\addlinespace
+NP & NP
+& ①は NP にできるが，full-law completeness または target range が必要
+& Multi-view totality があれば可，なければ不可
+& Calibration anchors，conditional independence，operator injectivity，singular-value control。\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{単純な②：線形因子分析と Rasch の三層比較}
+
+\subsubsection{線形一因子モデル}
+\begin{center}
+\footnotesize
+\begin{tabularx}{0.99\textwidth}{>{\bfseries}p{33mm}p{34mm}p{34mm}X}
+\toprule
+Data regime & ①欠測 model & ②測定 model & ③分布と識別結論\\
+\midrule
+欠測なし
+& 不要
+& $Y_j=\nu_j+\lambda_jF+\varepsilon_j$，誤差無相関
+& $G_F$ arbitrary with mean 0, variance 1。Complete covariance graph から $(\nu,\lambda,\psi)$ は識別。$G_F$ の shape は非識別。\\
+\addlinespace
+MNAR, no IV
+& Unrestricted なら非識別。Logistic/probit selection または response-propensity factor を指定
+& 通常 Gaussian/linear factor
+& Normal/finite-mixture $(F,U)$ と loading restrictions により joint model 内で識別を狙う。結論は①と③の specification に依存。\\
+\addlinespace
+MNAR, shadow IV
+& Selection law は NP。Means, variances, selected covariances の representers のみ
+& 同じ linear SP model
+& $G_F$ arbitrary。Protected covariance graph が connected non-bipartite なら $(\nu,\lambda,\psi)$ を識別。Normalityも selection link も不要。\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Shadow IV が弱めるのは主に①と③である。②の linear/local-uncorrelated structure は維持するが，selection equation と factor distribution shape を指定しない。Multi-factor model では protected covariance graph の normalized rigidity と rotation restrictions が必要であり，shadow IV はその factor-analytic nonidentification を解消しない。
+
+\subsubsection{Rasch IRT}
+\begin{center}
+\footnotesize
+\begin{tabularx}{0.99\textwidth}{>{\bfseries}p{33mm}p{34mm}p{34mm}X}
+\toprule
+Data regime & ①欠測 model & ②測定 model & ③分布と識別結論\\
+\midrule
+欠測なし
+& 不要
+& Rasch link
+& Difficulties は arbitrary $G_F$ 下で location まで識別。能力分布を finite-dimensional family に限定すれば protected-statistic Jacobian の rank problem。\\
+\addlinespace
+MNAR, no IV
+& Missing-response Rasch/MIRT，latent response propensity，sequential omission/not-reached model 等を指定
+& Rasch/2PL と response-indicator measurement model
+& Normalまたは finite-mixture $(F,U)$ が一般的。Identification は propensity indicators と constraints に依存~\cite{HolmanGlas2005,RoseVonDavierNagengast2017,WuMaChen2026}。\\
+\addlinespace
+MNAR, shadow IV
+& Selection law は NP。Discordant cells $P(10),P(01)$ の representers のみ
+& Rasch link
+& Arbitrary $G_F$ のまま difficulties を connected pair graph から識別。$G_F$ 自体には complete-data ceiling が残る。\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Rasch では②が特殊な exponential-family invariance を持つため，①と③の双方を弱くできる。2PL ではこの cancellation が消え，normal $G$，calibrated discriminations，または richer protected pattern probabilities が必要になる。
+
+\subsection{③を normal など parametric family に限定する場合}
+
+③を $G_\gamma$，$\gamma\in\R^q$ とすると，無限次元 totality は有限次元 quotient Jacobian に置き換わる。しかしこれは識別を保証する theorem ではなく，識別問題を有限次元化する assumption である。
+
+\begin{proposition}[Parametric latent distribution の局所識別]
+\label{prop:parametriclatentjacobian}
+②の parameter を $\beta\in\R^p$，③を $G_\gamma$，$\gamma\in\R^q$ とする。Latent symmetry を正規化後，protected statistic vector $m(\beta,\gamma)$ が観測 law から識別されるとする。もし
+\[
+ \rank D_{(\beta,\gamma)}m(\beta_0,\gamma_0)=p+q,
+\]
+なら $(\beta_0,\gamma_0)$ は局所識別される。逆に nonzero $h$ がこの Jacobian の null space に入り，higher-order terms がその方向を分離しなければ first-order weak/nonidentification が残る。
+\end{proposition}
+
+\begin{proof}
+Full-rank case は inverse function theorem。Null direction の主張は local derivative がゼロであることから従い，strong identification には本稿の effective operator または higher-order analysis が必要である。
+\end{proof}
+
+\begin{center}
+\footnotesize
+\begin{tabularx}{0.99\textwidth}{>{\bfseries}p{35mm}p{41mm}X}
+\toprule
+Parametric ③ & 利点 & 必要な注意\\
+\midrule
+$F\sim N(0,1)$ in factor analysis
+& Infinite-dimensional $G_F$ を除き，Gaussian likelihood なら manifest law は mean/covariance で決まる
+& One-factor sign，multi-factor rotation，loading zero pattern，factor number は別。Normality misspecification は tail/functionals に影響。\\
+\addlinespace
+$F\sim N(0,\sigma^2)$ in Rasch
+& Difficulty 識別後の unknown ③を $\sigma^2$ 一つに縮約
+& Rasch location invariance のため mean と all difficulties を同時に自由にしない。Protected score probabilities が $\sigma^2$ を実際に動かす rank condition が必要。\\
+\addlinespace
+$F\sim N(0,1)$ in 2PL
+& Standard finite-dimensional marginal likelihood
+& Ability scale と discriminations が confounded するため mean/variance または anchor discrimination の固定が必要。Selection model は shadow IV がなければ別途指定。\\
+\addlinespace
+Finite mixture $G=\sum_{r=1}^R\pi_r\delta_{f_r}$
+& Skewness/multimodality を normal より柔軟に表現し，tensor/generic rank theoryを使える
+& $R$，label switching，support separation，tensor/mixture separation rank，boundary components。$R$ を増やすだけでは NP identification にならない。\\
+\addlinespace
+Spline/sieve $G_K$
+& Sensitivity analysis と近似 flexibility
+& $K$ が増えると smallest singular values が減衰し，weak-ID-uniform inference と approximation bias control が必要。\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{remark}[正規性の役割は IV の有無で異なる]
+No-IV selection/shared-parameter model では normality は未観測領域を extrapolate し，①との joint likelihood identification を担う。Shadow-IV model では①を NP に保てるため，normality は主として③を finite-dimensional にし，②--③ manifest map を計算可能にするために使われる。この違いは応用上重要である。
+\end{remark}
+
+\subsection{応用での model-choice audit}
+
+実証研究では次の順序で仮定を置くべきである。
+\begin{enumerate}[label=\textbf{Step \arabic*.},leftmargin=25mm]
+\item \textbf{Complete-data audit.} 欠測を一旦無視し，②--③の manifest map がどの normalization/rank/totality の下で何を識別するかを明示する。Pure shadow はこの上限を超えない。
+\item \textbf{Target audit.} Full $G_F$，測定 parameter，latent mean/tail，または有限 cells/moments のどれが科学的 target かを分ける。Rasch difficulty と ability distribution のように識別結果は target ごとに異なる。
+\item \textbf{No-IV route の科学的妥当性.} Parametric selection，latent response propensity，self/no-self-censoring のいずれを採用するか，その仮定が実験・制度・時間順序から説明できるかを確認する。
+\item \textbf{Shadow-IV route の最小化.} Full-law completeness より先に，測定 model が必要とする有限 statistics の representer range を検討する。①の functional form を置くのはその後でよい。
+\item \textbf{Proxy/shifter と shadow の分離.} $Z$ が欠測 exclusion を担うのか，$F$ の proxy なのか，$W$ が latent distribution を動かすのかを分ける。役割を兼ねる場合は両方の structural assumptions を明示する。
+\item \textbf{Weak identification.} Protected moment Jacobian，factor graph Laplacian，Rasch graph Laplacian，または continuous effective singular values を報告し，弱い場合は \Cref{sec:weakuniform} の projection/profile inference を用いる。
+\end{enumerate}
+
+本付録の中心的な結論は次である。
+\begin{quote}
+欠測 IV の価値は，②と③に必要な complete-data information を保護することで，①を logistic/probit/shared-propensity model に限定しなくてよくする点にある。ただし pure shadow IV は，欠測がない完全データに残る②--③の latent nonidentification を解消しない。従って最も弱い実用的仮定は，完全データ識別に必要な②--③の構造と，その構造が使う statistics に限定した target-specific shadow range condition の組合せである。
+\end{quote}
+
+\begin{thebibliography}{99}
+\small
+
+\bibitem{AiChen2003}
+Ai, C. and Chen, X. (2003).
+Efficient estimation of models with conditional moment restrictions containing unknown functions.
+\emph{Econometrica}, 71, 1795--1843.
+
+
+\bibitem{Allman2009}
+Allman, E. S., Matias, C. and Rhodes, J. A. (2009).
+Identifiability of parameters in latent structure models with many observed variables.
+\emph{Annals of Statistics}, 37, 3099--3132.
+
+\bibitem{AndersonRubin1949}
+Anderson, T. W. and Rubin, H. (1949).
+Estimation of the parameters of a single equation in a complete system of stochastic equations.
+\emph{Annals of Mathematical Statistics}, 20, 46--63.
+DOI: 10.1214/aoms/1177730090.
+
+\bibitem{AndrewsMikusheva2016}
+Andrews, I. and Mikusheva, A. (2016).
+Conditional inference with a functional nuisance parameter.
+\emph{Econometrica}, 84, 1571--1612.
+DOI: 10.3982/ECTA12868.
+
+\bibitem{Bentkus2003}
+Bentkus, V. (2003).
+On the dependence of the Berry--Esseen bound on dimension.
+\emph{Journal of Statistical Planning and Inference}, 113, 385--402.
+
+\bibitem{Bennett2026}
+Bennett, A., Kallus, N., Mao, X., Newey, W. K., Syrgkanis, V. and Uehara, M. (2026).
+Inference on strongly identified functionals of weakly identified functions.
+\emph{Journal of the Royal Statistical Society, Series B}, 88, 998--1028.
+DOI: 10.1093/jrsssb/qkaf075.
+
+\bibitem{Bickel1993}
+Bickel, P. J., Klaassen, C. A. J., Ritov, Y. and Wellner, J. A. (1993).
+\emph{Efficient and Adaptive Estimation for Semiparametric Models}.
+Johns Hopkins University Press.
+
+\bibitem{Cavalier2008}
+Cavalier, L. (2008).
+Nonparametric statistical inverse problems.
+\emph{Inverse Problems}, 24, 034004.
+
+\bibitem{ChenPouzo2012}
+Chen, X. and Pouzo, D. (2012).
+Estimation of nonparametric conditional moment models with possibly nonsmooth generalized residuals.
+\emph{Econometrica}, 80, 277--321.
+
+\bibitem{ChenReiss2011}
+Chen, X. and Reiss, M. (2011).
+On rate optimality for ill-posed inverse problems in econometrics.
+\emph{Econometric Theory}, 27, 497--521.
+
+\bibitem{dHaultfoeuille2010}
+d'Haultfoeuille, X. (2010).
+A new instrumental method for dealing with endogenous selection.
+\emph{Journal of Econometrics}, 154, 1--15.
+
+
+\bibitem{Dufour1997}
+Dufour, J.-M. (1997).
+Some impossibility theorems in econometrics, with applications to structural and dynamic models.
+\emph{Econometrica}, 65, 1365--1387.
+
+\bibitem{EdmondsFulkerson1965}
+Edmonds, J. and Fulkerson, D. R. (1965).
+Transversals and matroid partition.
+\emph{Journal of Research of the National Bureau of Standards, Section B}, 69B, 147--153.
+
+\bibitem{Engl1996}
+Engl, H. W., Hanke, M. and Neubauer, A. (1996).
+\emph{Regularization of Inverse Problems}.
+Kluwer Academic Publishers.
+
+
+\bibitem{GuggenbergerSmith2005}
+Guggenberger, P. and Smith, R. J. (2005).
+Generalized empirical likelihood estimators and tests under partial, weak, and strong identification.
+\emph{Econometric Theory}, 21, 667--709.
+
+\bibitem{Kleibergen2005}
+Kleibergen, F. (2005).
+Testing parameters in GMM without assuming that they are identified.
+\emph{Econometrica}, 73, 1103--1123.
+
+\bibitem{HallHorowitz2005}
+Hall, P. and Horowitz, J. L. (2005).
+Nonparametric methods for inference in the presence of instrumental variables.
+\emph{Annals of Statistics}, 33, 2904--2929.
+
+
+
+\bibitem{HuntSauerYorke1992}
+Hunt, B. R., Sauer, T. and Yorke, J. A. (1992).
+Prevalence: a translation-invariant ``almost every'' on infinite-dimensional spaces.
+\emph{Bulletin of the American Mathematical Society}, 27, 217--238.
+
+\bibitem{HuSchennach2008}
+Hu, Y. and Schennach, S. M. (2008).
+Instrumental variable treatment of nonclassical measurement error models.
+\emph{Econometrica}, 76, 195--216.
+
+\bibitem{Kotlarski1967}
+Kotlarski, I. (1967).
+On characterizing the gamma and normal distribution.
+\emph{Pacific Journal of Mathematics}, 20, 69--76.
+
+\bibitem{Kruskal1977}
+Kruskal, J. B. (1977).
+Three-way arrays: rank and uniqueness of trilinear decompositions, with application to arithmetic complexity and statistics.
+\emph{Linear Algebra and its Applications}, 18, 95--138.
+
+\bibitem{LiMiaoTT2023}
+Li, W., Miao, W. and Tchetgen Tchetgen, E. J. (2023).
+Non-parametric inference about mean functionals of non-ignorable non-response data without identifying the joint distribution.
+\emph{Journal of the Royal Statistical Society, Series B}, 85, 913--935.
+
+\bibitem{LiMiaoShpitserTT2023}
+Li, Y., Miao, W., Shpitser, I. and Tchetgen Tchetgen, E. J. (2023).
+A self-censoring model for multivariate nonignorable nonmonotone missing data.
+\emph{Biometrics}, 79, 3203--3214.
+
+\bibitem{Malinsky2022}
+Malinsky, D., Shpitser, I. and Tchetgen Tchetgen, E. J. (2022).
+Semiparametric inference for nonmonotone missing-not-at-random data: the no self-censoring model.
+\emph{Journal of the American Statistical Association}, 117, 1415--1423.
+
+\bibitem{MiaoTT2016}
+Miao, W. and Tchetgen Tchetgen, E. J. (2016).
+On varieties of doubly robust estimators under missingness not at random with a shadow variable.
+\emph{Biometrika}, 103, 475--482.
+
+\bibitem{MiaoEtAl2024}
+Miao, W., Liu, L., Li, Y., Tchetgen Tchetgen, E. J. and Geng, Z. (2024).
+Identification and semiparametric efficiency theory of nonignorable missing data with a shadow variable.
+\emph{ACM/IMS Journal of Data Science}, 1(2), 1--23.
+DOI: 10.1145/3592389.
+
+\bibitem{Mityagin2020}
+Mityagin, B. S. (2020).
+The zero set of a real analytic function.
+\emph{Mathematical Notes}, 107, 529--530.
+DOI: 10.1134/S0001434620030189.
+
+\bibitem{NeweyPowell2003}
+Newey, W. K. and Powell, J. L. (2003).
+Instrumental variable estimation of nonparametric models.
+\emph{Econometrica}, 71, 1565--1578.
+
+
+\bibitem{Otsu2006}
+Otsu, T. (2006).
+Generalized empirical likelihood inference for nonlinear and time series models under weak identification.
+\emph{Econometric Theory}, 22, 513--527.
+
+\bibitem{Perfect1969}
+Perfect, H. (1969).
+A generalization of Rado's theorem on independent transversals.
+\emph{Proceedings of the Cambridge Philosophical Society}, 66, 513--515.
+
+\bibitem{Rado1942}
+Rado, R. (1942).
+A theorem on independence relations.
+\emph{Quarterly Journal of Mathematics}, os-13, 83--89.
+DOI: 10.1093/qmath/os-13.1.83.
+
+\bibitem{SchennachHu2013}
+Schennach, S. M. and Hu, Y. (2013).
+Nonparametric identification and semiparametric estimation of classical measurement error models without side information.
+\emph{Journal of the American Statistical Association}, 108, 177--186.
+
+\bibitem{Shen1997}
+Shen, X. (1997).
+On methods of sieves and penalization.
+\emph{Annals of Statistics}, 25, 2555--2591.
+
+
+\bibitem{StockWright2000}
+Stock, J. H. and Wright, J. H. (2000).
+GMM with weak identification.
+\emph{Econometrica}, 68, 1055--1096.
+
+\bibitem{Tsiatis2006}
+Tsiatis, A. A. (2006).
+\emph{Semiparametric Theory and Missing Data}.
+Springer.
+
+\bibitem{vanderVaart1998}
+van der Vaart, A. W. (1998).
+\emph{Asymptotic Statistics}.
+Cambridge University Press.
+
+\bibitem{vanderVaartWellner1996}
+van der Vaart, A. W. and Wellner, J. A. (1996).
+\emph{Weak Convergence and Empirical Processes}.
+Springer.
+
+\bibitem{Xie2026}
+Xie, H., Xue, F. and Wang, X. (2026).
+Identifiable deep latent variable models for MNAR data.
+\emph{arXiv preprint arXiv:2603.24771}.
+
+
+
+\bibitem{Andersen1970}
+Andersen, E. B. (1970).
+Asymptotic properties of conditional maximum-likelihood estimators.
+\emph{Journal of the Royal Statistical Society, Series B}, 32, 283--301.
+DOI: 10.1111/j.2517-6161.1970.tb00842.x.
+
+\bibitem{AndersonRubin1956}
+Anderson, T. W. and Rubin, H. (1956).
+Statistical inference in factor analysis.
+In J. Neyman (ed.), \emph{Proceedings of the Third Berkeley Symposium on Mathematical Statistics and Probability}, Vol. V, 111--150.
+University of California Press.
+
+\bibitem{BacciBartolucci2015}
+Bacci, S. and Bartolucci, F. (2015).
+A multidimensional finite mixture structural equation model for nonignorable missing responses to test items.
+\emph{Structural Equation Modeling: A Multidisciplinary Journal}, 22, 352--365.
+DOI: 10.1080/10705511.2014.937376.
+
+\bibitem{BekkerTenBerge1997}
+Bekker, P. A. and ten Berge, J. M. F. (1997).
+Generic global identification in factor analysis.
+\emph{Linear Algebra and its Applications}, 264, 255--263.
+DOI: 10.1016/S0024-3795(96)00363-1.
+
+\bibitem{Follmann1988}
+Follmann, D. (1988).
+Consistent estimation in the Rasch model based on nonparametric margins.
+\emph{Psychometrika}, 53, 553--562.
+DOI: 10.1007/BF02294407.
+
+\bibitem{HolmanGlas2005}
+Holman, R. and Glas, C. A. W. (2005).
+Modelling non-ignorable missing-data mechanisms with item response theory models.
+\emph{British Journal of Mathematical and Statistical Psychology}, 58, 1--17.
+DOI: 10.1111/j.2044-8317.2005.tb00312.x.
+
+\bibitem{KuhaKatsikatsouMoustaki2018}
+Kuha, J., Katsikatsou, M. and Moustaki, I. (2018).
+Latent variable modelling with non-ignorable item nonresponse: multigroup response propensity models for cross-national analysis.
+\emph{Journal of the Royal Statistical Society, Series A}, 181, 1169--1192.
+DOI: 10.1111/rssa.12350.
+
+\bibitem{Lee2006}
+Lee, S.-Y. (2006).
+Bayesian analysis of nonlinear structural equation models with nonignorable missing data.
+\emph{Psychometrika}, 71, 541--564.
+DOI: 10.1007/s11336-006-1177-1.
+
+\bibitem{MiaoDingGeng2016}
+Miao, W., Ding, P. and Geng, Z. (2016).
+Identifiability of normal and normal mixture models with nonignorable missing data.
+\emph{Journal of the American Statistical Association}, 111, 1673--1683.
+DOI: 10.1080/01621459.2015.1105808.
+
+\bibitem{MuthenKaplanHollis1987}
+Muth\'en, B., Kaplan, D. and Hollis, M. (1987).
+On structural equation modeling with data that are not missing completely at random.
+\emph{Psychometrika}, 52, 431--462.
+
+\bibitem{RabeHeskethSkrondal2023}
+Rabe-Hesketh, S. and Skrondal, A. (2023).
+Ignoring non-ignorable missingness.
+\emph{Psychometrika}, 88, 31--50.
+DOI: 10.1007/s11336-022-09895-1.
+
+\bibitem{Rasch1960}
+Rasch, G. (1960).
+\emph{Probabilistic Models for Some Intelligence and Attainment Tests}.
+Danish Institute for Educational Research, Copenhagen.
+
+\bibitem{RoseVonDavierXu2010}
+Rose, N., von Davier, M. and Xu, X. (2010).
+Modeling nonignorable missing data with item response theory.
+ETS Research Report RR-10-11, Educational Testing Service, Princeton, NJ.
+
+\bibitem{RoseVonDavierNagengast2017}
+Rose, N., von Davier, M. and Nagengast, B. (2017).
+Modeling omitted and not-reached items in IRT models.
+\emph{Psychometrika}, 82, 795--819.
+DOI: 10.1007/s11336-016-9544-7.
+
+\bibitem{WuMaChen2026}
+Wu, J., Ma, Z. and Chen, M.-H. (2026).
+Bayesian modeling and inference for item response model with nonignorable missing data.
+\emph{Psychometrika}, First View, 1--42.
+DOI: 10.1017/psy.2026.10121.
+
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,808 @@
+\documentclass[11pt,a4paper]{ltjsarticle}
+\usepackage[margin=22mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,bm}
+\usepackage{booktabs,longtable,array,tabularx,multirow}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{fancyhdr}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\hypersetup{colorlinks=true,linkcolor=blue!55!black,citecolor=blue!55!black,urlcolor=blue!55!black}
+\definecolor{navy}{HTML}{17365D}
+\definecolor{accent}{HTML}{267CB9}
+\definecolor{soft}{HTML}{F2F7FA}
+\definecolor{risk}{HTML}{A13D3D}
+\definecolor{green}{HTML}{287A5A}
+\pagestyle{fancy}\fancyhf{}\lhead{構造的 MNAR・欠測 IV・潜在測定モデル}\rhead{改稿研究メモ}\cfoot{\thepage}
+\setlength{\headheight}{18pt}
+\setlist{nosep,leftmargin=2em}
+\setlength{\parskip}{0.25em}
+\setlength{\parindent}{1em}
+\setlength{\emergencystretch}{2em}
+
+\newtheorem{assumption}{仮定}[section]
+\newtheorem{theorem}{定理}[section]
+\newtheorem{proposition}{命題}[section]
+\newtheorem{lemma}{補題}[section]
+\newtheorem{corollary}{系}[section]
+\newtheorem{definition}{定義}[section]
+\theoremstyle{remark}\newtheorem{remark}{注意}[section]
+\newtheorem{example}{例}[section]
+
+\newcommand{\E}{\mathbb E}
+\newcommand{\Pp}{\mathbb P}
+\newcommand{\ind}{\perp\!\!\!\perp}
+\newcommand{\R}{\mathbb R}
+\newcommand{\cY}{\mathcal Y}
+\newcommand{\cW}{\mathcal W}
+\newcommand{\cF}{\mathcal F}
+\newcommand{\cE}{\mathcal E}
+\newcommand{\cD}{\mathcal D}
+\newcommand{\cH}{\mathcal H}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\Range}{\operatorname{Range}}
+\newcommand{\col}{\operatorname{col}}
+\newcommand{\vecop}{\operatorname{vec}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\given}{\,\middle|\,}
+\newcommand{\one}{\bm 1}
+\newcommand{\od}{\odot}
+\newcommand{\T}{\mathsf T}
+\newcommand{\plus}{\mathord{+}}
+
+\title{\vspace{-1.7cm}\textcolor{navy}{\bfseries 構造的 MNAR 下の欠測 IV と潜在測定モデルの識別}\\[2mm]
+\large supported-block bridges・covariate-assisted pair tensors・識別境界}
+\author{研究討議用・全面改稿版}
+\date{2026年7月19日}
+
+\begin{document}
+\maketitle
+
+\begin{tcolorbox}[colback=soft,colframe=accent,boxrule=.8pt,arc=2mm]
+\textbf{要旨．}
+完全ケースが構造的に存在しない exact top-$K$ 型の多変量 MNAR を考える。本稿は，第一段階で supported block の法則を blockwise shadow variable により回復し，第二段階で回復済みの低次元周辺分布を潜在測定モデルで接続する二段階の識別論を与える。第一段階では，分布全体を回復する inverse-selection bridge と，特定のセル確率・平均汎関数だけを回復する target-specific representer bridge を明確に分離する。第二段階の主結果は，常時観測される mixture shifter $W$ の変動をテンソルの第三モードとして用いることで，従来メモの anchor triple を必要とせず，\textbf{一つの supported anchor pair があれば exact top-$K$ の $K\ge2$ で有限潜在クラスの測定核を識別できる}条件を示す。さらに，$W$ による混合比率行列が full column rank なら，非 anchor 項目は singleton laws だけから回復できる。三測定版についても，Khatri--Rao rank を用いて証明上の不足を修正し，単一の基準点でテンソル分解した後に全ての混合比率を線形反転する証明へ改める。連続潜在変数については，非線形再パラメータ化の問題を明示し，作用素同値式と追加正規化の下での条件付き結果に主張を限定する。2024--2026年の shadow-variable 効率理論，target-law 識別，弱い shadow による部分識別，sparse pattern support のグラフィカル識別，識別可能な深層潜在モデルまでを比較し，本研究の新規性を「完全ケース不在」一般ではなく，\textbf{blockwise shadow recovery と pairwise covariate tensor を exact top-$K$ support geometry 上で統合する点}に絞る。
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=white,colframe=green,boxrule=.7pt,arc=2mm,title=今回の主要な改稿点]
+\begin{enumerate}[label=\textbf{R\arabic*.}]
+\item 潜在分布を動かす $W$ と，欠測を補正する block-specific shadow $Z_S$ を分離した。
+\item full-law bridge より弱い，セルごとの target-specific representer bridge を導入した。
+\item anchor triple を anchor pair $+$ $W$ の変動へ置き換え，必要な同時観測数を $K\ge3$ から $K\ge2$ へ低下させた。
+\item 非 anchor 項目を supported-pair graph に沿って逐次回復する一般定理と，$\rank\Gamma=r$ のとき singleton laws だけで回復する強い系を与えた。
+\item 三測定版の証明を，個々の測定行列の full rank ではなく Khatri--Rao 積の full rank により修正した。
+\item $K=1$ の連続的非識別反例，rank failure，support-graph failure を識別境界として追加した。
+\item 連続 $F$ では平均・分散・符号だけでは非線形再パラメータ化を除けないことを明示した。
+\end{enumerate}
+\end{tcolorbox}
+
+\tableofcontents
+
+\section{問題設定と二種類の常時観測変数}
+
+個体添字 $i$ を省略する。潜在的測定ベクトルと観測指標を
+\[
+Y=(Y_1,\ldots,Y_m),\qquad D=(D_1,\ldots,D_m)\in\{0,1\}^m
+\]
+とし，$Y_j$ は $D_j=1$ のときだけ観測される。$X$ は常時観測共変量，$F$ は未観測の潜在変数である。本稿では，常時観測変数を役割により明示的に分ける。
+\begin{itemize}
+\item $W$：潜在クラス比率 $P(F\mid W,X)$ を変化させる \emph{mixture shifter}。測定核には直接入らない。
+\item $Z_S$：block $S$ の欠測指標 $R_S$ に対する \emph{shadow variable}。$Y_S$ を固定した後に $R_S$ へ直接影響しない。
+\end{itemize}
+観測データは概念的に
+\[
+O=(X,W,Z,D,Y_D),\qquad Y_D=\{Y_j:D_j=1\}
+\]
+である。ここで $Z$ は，必要な block ごとの $Z_S$ を含む常時観測情報の集合である。
+
+exact top-$K$ では
+\[
+\sum_{j=1}^mD_j=K<m
+\]
+であり，$D=\one_m$ は構造的に起こらない。$K$ は固定でも，$X$ の一部として観測される層別変数でもよい。
+
+潜在測定モデルは
+\begin{align}
+F\mid(W,X)&\sim Q_F(\cdot\mid W,X),\label{eq:mixing}\\
+Y_j\mid(F,X)&\sim Q_j(\cdot\mid F,X),\label{eq:measurement}\\
+Y_1,\ldots,Y_m&\text{ are conditionally independent given }(F,X),\label{eq:localind}\\
+Y&\ind W\mid(F,X)\label{eq:wexclusion}
+\end{align}
+とする。式\eqref{eq:wexclusion}は，$W$ が潜在分布を動かしても測定項目に直接入らないという exclusion である。
+
+\subsection{同じ変数を latent proxy と shadow に兼用する危険}
+仮に
+\[
+D\ind W\mid(Y,F,X)
+\]
+であっても，
+\begin{equation}
+P(D=d\mid Y=y,W=w,X=x)
+=\int P(D=d\mid y,f,x)\,dP(f\mid y,w,x)\label{eq:integrateF}
+\end{equation}
+である。$W$ が $F$ を予測すれば，通常 $P(f\mid y,w,x)$ は $w$ に依存するため，
+$D\ind W\mid(Y,X)$ は従わない。とくに top-$K$ では block $S$ の選択が未観測の $Y_{-S}$ を介して $F$ に依存し得るため，$W$ をそのまま $Z_S$ として用いるのは危険である。
+
+\begin{remark}[分離は概念上の標準設定]
+同一の観測変数が $W$ と $Z_S$ の両方を兼ねることを論理的に排除するものではない。ただしその場合は，潜在分布を動かす経路と，$Y_S$ を固定した後の欠測への直接経路が切れていることを原始的条件から別途示す必要がある。本稿の主定理では，議論の混線を避けるため役割を分離する。
+\end{remark}
+
+\section{第一段階：supported block の回復}
+
+集合 $S\subseteq\{1,\ldots,m\}$ に対して
+\[
+R_S=\prod_{j\in S}D_j,\qquad Y_S=(Y_j:j\in S)
+\]
+と置く。$R_S=1$ なら $Y_S$ の全成分が同時観測される。$C_S$ は $X,W,K$ と block 固有の常時観測文脈を含むが，shadow $Z_S$ は含めない。
+
+\begin{definition}[supported block]
+$S$ が \emph{supported} であるとは，対象とする $(y,c)$ の領域で
+\[
+\pi_S(y,c):=P(R_S=1\mid Y_S=y,C_S=c)>0
+\]
+が成立することをいう。exact top-$K$ では $|S|\le K$ が必要条件であるが，十分条件ではない。
+\end{definition}
+
+\subsection{分布全体を回復する inverse-selection bridge}
+
+\begin{assumption}[blockwise missing IV と B-completeness]\label{as:fullbridge}
+ほとんどすべての $c$ について，
+\begin{enumerate}[label=(B\arabic*)]
+\item $\pi_S(Y_S,C_S)>0$ a.s.;
+\item $R_S\ind Z_S\mid(Y_S,C_S)$;
+\item 任意の下に有界かつ可積分な $g$ に対して
+\[
+\E\{g(Y_S,C_S)\mid Z_S,C_S\}=0
+\quad\Longrightarrow\quad g(Y_S,C_S)=0\quad a.s.
+\]
+が成立する。
+\end{enumerate}
+\end{assumption}
+
+\begin{proposition}[inverse-selection bridge と supported-block law]\label{prop:blockfull}
+仮定\ref{as:fullbridge}の下で，$\pi_S$ は
+\begin{equation}
+\E\left\{\frac{R_S}{q(Y_S,C_S)}\given Z_S,C_S\right\}=1\label{eq:inverse-moment}
+\end{equation}
+を満たす正値関数 $q$ の唯一解である。従って任意の可積分な $h$ に対し
+\begin{equation}
+\E\{h(Y_S,Z_S,C_S)\}
+=
+\E\left\{\frac{R_S}{\pi_S(Y_S,C_S)}h(Y_S,Z_S,C_S)\right\},\label{eq:block-ipw}
+\end{equation}
+すなわち $P(Y_S,Z_S,C_S)$ が観測データ法則から識別される。
+\end{proposition}
+
+\begin{proof}
+排除条件より，真の $\pi_S$ は
+\[
+\E\left\{\frac{R_S}{\pi_S(Y_S,C_S)}\given Y_S,Z_S,C_S\right\}
+=\frac{P(R_S=1\mid Y_S,Z_S,C_S)}{\pi_S(Y_S,C_S)}=1
+\]
+を満たすので，反復期待値により\eqref{eq:inverse-moment}を満たす。別の正値解 $q$ に対し
+\[
+g(Y_S,C_S)=\frac{\pi_S(Y_S,C_S)}{q(Y_S,C_S)}-1
+\]
+と置く。条件付きモーメントの差を取ると
+\begin{align*}
+0
+&=\E\left[R_S\left\{\frac1q-\frac1{\pi_S}\right\}\given Z_S,C_S\right]\\
+&=\E\left\{\frac{\pi_S}{q}-1\given Z_S,C_S\right\}
+=\E\{g(Y_S,C_S)\mid Z_S,C_S\}.
+\end{align*}
+また $g\ge-1$ であり，\eqref{eq:inverse-moment}を周辺化すれば $\E(\pi_S/q)=1$ なので，$\E g=0$ かつ $\E|g|\le2$ である。B-completeness により $g=0$ a.s.，従って $q=\pi_S$。最後に
+\[
+\E\left\{\frac{R_Sh}{\pi_S}\given Y_S,Z_S,C_S\right\}=h
+\]
+を周辺化すれば\eqref{eq:block-ipw}を得る。
+\end{proof}
+
+\subsection{特定の対象だけを回復する representer bridge}
+分布全体の識別は必ずしも必要ではない。後段の有限潜在クラス定理で必要なのが有限個のセル確率であれば，それらの indicator functions に対する representer だけで十分である。この点は Li, Miao and Tchetgen Tchetgen (2023) の target-law 識別の考え方を blockwise に移植したものである。
+
+\begin{assumption}[target-specific block representer]\label{as:targetbridge}
+対象関数 $\tau(Y_S,C_S)$ について，
+\begin{enumerate}[label=(R\arabic*)]
+\item $\pi_S(Y_S,C_S)>0$ on the target support;
+\item $R_S\ind Z_S\mid(Y_S,C_S)$;
+\item ある可積分関数 $\delta_{S,\tau}(Z_S,C_S)$ が存在し，
+\begin{equation}
+\E\{\delta_{S,\tau}(Z_S,C_S)\mid R_S=1,Y_S,C_S\}
+=\tau(Y_S,C_S)\label{eq:repr-bridge}
+\end{equation}
+を満たす。
+\end{enumerate}
+\end{assumption}
+
+\begin{theorem}[target-specific supported-block identification]\label{thm:targetbridge}
+仮定\ref{as:targetbridge}の下で
+\begin{equation}
+\E\{\tau(Y_S,C_S)\}
+=
+\E\left[
+R_S\tau(Y_S,C_S)+(1-R_S)\delta_{S,\tau}(Z_S,C_S)
+\right].\label{eq:target-id}
+\end{equation}
+右辺は観測データだけの汎関数であり，$\E\tau$ は識別される。$\delta_{S,\tau}$ の一意性は必要ない。
+\end{theorem}
+
+\begin{proof}
+$R_S\ind Z_S\mid(Y_S,C_S)$ より，$Z_S\mid(Y_S,C_S,R_S=0)$ と $Z_S\mid(Y_S,C_S,R_S=1)$ は同じ分布を持つ。従って\eqref{eq:repr-bridge}は $R_S=0$ にも同じ条件付き平均を与え，
+\[
+\E\{(1-R_S)\delta_{S,\tau}(Z_S,C_S)\mid Y_S,C_S\}
+=(1-\pi_S)\tau(Y_S,C_S).
+\]
+一方，
+\[
+\E\{R_S\tau(Y_S,C_S)\mid Y_S,C_S\}=\pi_S\tau(Y_S,C_S).
+\]
+両者を加えて周辺化すれば\eqref{eq:target-id}が従う。
+\end{proof}
+
+\begin{remark}[二つの bridge の役割]
+Inverse-selection bridge は $1/\pi_S$ を一意に回復し，supported-block law 全体を識別する。Representer bridge は一つの $\tau$ の平均だけを識別し，解の一意性を要求しない。有限カテゴリの場合，後段で必要な全セル indicator に対して\eqref{eq:repr-bridge}が存在すれば，B-completeness を仮定せずに必要な確率表だけを回復できる。
+\end{remark}
+
+\subsection{有限サポートでの rank/range 診断}
+$Y_S\in\{y_1,\ldots,y_s\}$，$Z_S\in\{z_1,\ldots,z_t\}$ とし，$C_S=c$ を固定する。回答者内の行列
+\[
+H_S(c)=\big[P(Z_S=z_b\mid R_S=1,Y_S=y_a,C_S=c)\big]_{a=1,\ldots,s;\ b=1,\ldots,t}
+\]
+を定義する。$\tau_c=(\tau(y_1,c),\ldots,\tau(y_s,c))^\top$ とすれば，representer equation は
+\[
+H_S(c)\delta_c=\tau_c.
+\]
+従って必要なのは
+\begin{equation}
+\tau_c\in\Range\{H_S(c)\},\label{eq:rangecondition}
+\end{equation}
+である。すべての $\tau$ を扱う十分条件は $\rank H_S(c)=s$ だが，特定のセルや平均には\eqref{eq:rangecondition}だけでよい。
+
+一方，B-completeness は
+\[
+G_S(c)=\big[P(Y_S=y_a\mid Z_S=z_b,C_S=c)\big]_{b,a}
+\]
+の full column rank に対応する。有限カテゴリ IV で completeness が成立しにくい場合，観測可能な rank/range 条件を用いる Beppu and Morikawa (2024) の方向は実装上重要である。
+
+\section{潜在構造を置かない場合の識別境界}
+
+\subsection{完全ケース欠如は有限標本問題ではない}
+exact top-$K<m$ では
+\[
+R^{cc}=1\{D=\one_m\}=0\quad a.s.
+\]
+であり，complete-case moment
+\[
+\E\left\{\frac{R^{cc}}{q(Y,X)}\given V,X\right\}=1
+\]
+を満たす $q$ は存在しない。従って complete-case 型 missing-IV 定理は定義段階で適用できない。
+
+\subsection{unsupported joint law は一般に識別されない}
+\begin{proposition}[supported blocks を超える依存構造の非識別]\label{prop:unsupported}
+$m=2,K=1$ とし，$P(D=(1,0))=P(D=(0,1))=1/2$，かつ $D\ind Y$ とする。次の二つの full-data laws を考える。
+\[
+P_A:\quad Y_1,Y_2\stackrel{iid}{\sim}\mathrm{Bernoulli}(1/2),
+\qquad
+P_B:\quad Y_1=Y_2\sim\mathrm{Bernoulli}(1/2).
+\]
+$P_A$ と $P_B$ は同じ観測データ法則を生成するが，
+\[
+\operatorname{Cov}_A(Y_1,Y_2)=0,
+\qquad
+\operatorname{Cov}_B(Y_1,Y_2)=1/4.
+\]
+従って追加構造なしに $P(Y_1,Y_2)$ は識別されない。
+\end{proposition}
+
+\begin{remark}[近年の graphical MNAR との整合的な位置づけ]
+上の命題は「完全ケースがなければ常に full law が非識別」という主張ではない。Nabi, Bhattacharya and Shpitser (2020)，Tikka and Karvanen (2024)，Phung et al. (2025) は，missing-data graph が課す追加の非パラメトリック制約を用い，sparse pattern support や完全ケース不在でも full law を識別できる場合を示している。本稿の境界は，\emph{そのような graph restrictions を置かず，supported-block laws だけを第一段階で回復する場合}のものである。
+\end{remark}
+
+\section{有限潜在クラス：準備}
+
+以下では $X=x$ を固定し，ほとんどすべての $x$ について議論する。$F\in\{1,\ldots,r\}$，$r\ge2$ とし，各 $Y_j$ は有限集合 $\cY_j$ を取り，$d_j=|\cY_j|$ とする。測定行列と混合比率を
+\begin{align*}
+M_j(x)&=\big[P(Y_j=y\mid F=f,X=x)\big]_{y\in\cY_j,\ f=1,\ldots,r},\\
+\lambda_f(w,x)&=P(F=f\mid W=w,X=x),\qquad
+\Lambda(w,x)=\diag\{\lambda_1(w,x),\ldots,\lambda_r(w,x)\}
+\end{align*}
+とする。各 $M_j$ の列は確率ベクトルである。
+
+$W$ の $L$ 個の値 $w_1,\ldots,w_L$ を選び，混合 profile 行列を
+\begin{equation}
+\Gamma(x)=\big[\lambda_f(w_\ell,x)\big]_{\ell=1,\ldots,L;\ f=1,\ldots,r}\in\R^{L\times r}\label{eq:Gamma}
+\end{equation}
+と置く。$M_j$ および $\Gamma$ の Kruskal rank をそれぞれ $k_j,k_\Gamma$ と書く。
+
+\begin{lemma}[Khatri--Rao rank]\label{lem:kr}
+$r$ 列を持つ行列 $A,B$ に対し
+\begin{equation}
+k_{B\od A}\ge \min\{k_A+k_B-1,r\}.\label{eq:kr-bound}
+\end{equation}
+特に $k_A+k_B\ge r+1$ なら $B\od A$ は full column rank である。
+\end{lemma}
+
+この標準補題は Sidiropoulos and Bro (2000) などで用いられる。以下の証明で重要なのは，$A$ と $B$ が個別に full column rank である必要はなく，Kruskal rank の和で十分だという点である。
+
+\section{主結果：mixture shifter を第三モードにする pairwise tensor 識別}
+
+\subsection{support graph と回復済み確率表}
+頂点集合を項目 $\{1,\ldots,m\}$ とし，pair $\{j,k\}$ の条件付き法則
+\[
+P_{jk}(w,x)=\big[P(Y_j=u,Y_k=v\mid W=w,X=x)\big]_{u,v}
+\]
+が第一段階から識別されるとき，辺 $\{j,k\}$ を support graph $G_x=(V,\cE_x)$ に置く。これは，pair block が inverse-selection bridge または全セル representer bridge によって回復されることを意味する。singleton law を
+\[
+p_j(w,x)=\big[P(Y_j=u\mid W=w,X=x)\big]_{u\in\cY_j}
+\]
+と書く。
+
+\begin{assumption}[pairwise latent-class conditions]\label{as:pair}
+ほとんどすべての $x$ について，次が成立する。
+\begin{enumerate}[label=(P\arabic*)]
+\item $F\in\{1,\ldots,r\}$ で，CP rank $r$ は既知または最小分解の rank として固定される。
+\item 式\eqref{eq:localind}--\eqref{eq:wexclusion}が成立する。
+\item anchor pair $\{a,b\}\in\cE_x$ と，$P(W=w_\ell\mid X=x)>0$ を満たす $W$ の support points $w_1,\ldots,w_L$ が存在し，
+\begin{equation}
+k_a+k_b+k_\Gamma\ge2r+2.\label{eq:pair-kruskal}
+\end{equation}
+\item 潜在ラベルを固定するため，既知の score $s_a$ に対し
+\[
+\E\{s_a(Y_a)\mid F=1,x\}<\cdots<\E\{s_a(Y_a)\mid F=r,x\}
+\]
+と正規化する。
+\item anchor から全項目へ至る順序 $j_1=a,j_2=b,j_3,\ldots,j_m$ があり，各 $q\ge3$ について，既に識別された親項目 $k_q\in\{j_1,\ldots,j_{q-1}\}$ と値集合 $I_q\subseteq\{1,\ldots,L\}$ が存在し，$\{j_q,k_q\}\in\cE_x$ かつ
+\begin{equation}
+\rank\,\mathcal C_{j_qk_q}(x)=r,\qquad
+\mathcal C_{jk}(x):=
+\big[\Lambda(w_\ell,x)M_k(x)^\top\big]_{\ell\in I_q}
+\label{eq:prop-rank}
+\end{equation}
+が成立する。右辺の角括弧は横方向の連結を表す。
+\end{enumerate}
+\end{assumption}
+
+\begin{theorem}[covariate-assisted anchor-pair identification]\label{thm:pair}
+仮定\ref{as:pair}の下で，観測データ法則から
+\[
+M_1(x),\ldots,M_m(x)
+\]
+が，anchor ordering によりラベルを固定した上で識別される。また，anchor-pair law $P_{ab}(w,x)$ が第一段階から識別される各 $w$ について
+\[
+\lambda(w,x)=\{\lambda_f(w,x):f=1,\ldots,r\}
+\]
+が識別される。従ってそのような $w$ と任意の項目集合 $A\subseteq\{1,\ldots,m\}$ について
+\begin{equation}
+P(Y_A=y_A\mid W=w,X=x)
+=\sum_{f=1}^r\lambda_f(w,x)\prod_{j\in A}M_j(y_j,f;x)\label{eq:latent-fulljoint}
+\end{equation}
+が識別される。$|A|>K$ で $Y_A$ が一度も同時観測されない場合も含む。$W$ が有限 support $\{w_1,\ldots,w_L\}$ を持つ場合には，この結論はその全 support 上で成立する。
+\end{theorem}
+
+\begin{proof}
+\textbf{Step 1: anchor pair と $W$ による三方向配列．}
+第一段階により，$\ell=1,\ldots,L$ について $P_{ab}(w_\ell,x)$ が識別される。三方向配列
+\[
+\mathcal T_{abW}(x)
+=\big[P(Y_a=u,Y_b=v\mid W=w_\ell,X=x)\big]_{u,v,\ell}
+\]
+を作る。局所独立性と measurement exclusion より
+\begin{equation}
+\mathcal T_{abW}(x)
+=\sum_{f=1}^r M_a(:,f;x)\otimes M_b(:,f;x)\otimes\Gamma(:,f;x).
+\label{eq:pair-cp}
+\end{equation}
+Kruskal の一意性定理と\eqref{eq:pair-kruskal}により，この CP 分解は列の共通置換と，各列ごとの三因子 scaling を除いて一意である。代替分解の第 $f$ 列を
+$\alpha_fM_a(:,\sigma(f))$，$\beta_fM_b(:,\sigma(f))$，$\gamma_f\Gamma(:,\sigma(f))$ と書けば，$\alpha_f\beta_f\gamma_f=1$ である。最初の二因子は確率ベクトルで列和が1なので $\alpha_f=\beta_f=1$，従って $\gamma_f=1$ である。P4 の順序制約が置換 $\sigma$ を固定する。よって $M_a,M_b,\Gamma$ が識別される。
+
+\textbf{Step 2: 任意の $w$ における混合比率．}
+\eqref{eq:pair-kruskal}と $k_\Gamma\le r$ から
+\[
+k_a+k_b\ge r+2.
+\]
+補題\ref{lem:kr}により $M_b\od M_a$ は full column rank である。任意の $w$ について
+\begin{equation}
+\vecop\{P_{ab}(w,x)\}
+=(M_b(x)\od M_a(x))\lambda(w,x).
+\label{eq:lambda-inversion}
+\end{equation}
+従って anchor pair law が識別される $w$ では
+\[
+\lambda(w,x)=(M_b\od M_a)^+\vecop\{P_{ab}(w,x)\}
+\]
+として一意に回復される。有限サポート $W\in\{w_1,\ldots,w_L\}$ なら，Step 1 の $\Gamma$ がその全てを既に与える。
+
+\textbf{Step 3: support graph に沿った測定核の伝播．}
+項目 $j=j_q$ と既知の親 $k=k_q$ を考える。$\ell\in I_q$ について
+\[
+P_{jk}(w_\ell,x)=M_j(x)\Lambda(w_\ell,x)M_k(x)^\top.
+\]
+これらを横に連結すると
+\begin{equation}
+\mathcal P_{jk}(x):=
+\big[P_{jk}(w_\ell,x)\big]_{\ell\in I_q}
+=M_j(x)\mathcal C_{jk}(x).
+\label{eq:propagate}
+\end{equation}
+P5 により $\mathcal C_{jk}$ は full row rank なので右逆を持ち，
+\begin{equation}
+M_j(x)=\mathcal P_{jk}(x)\mathcal C_{jk}(x)^+
+\label{eq:Mj-propagate}
+\end{equation}
+として一意に識別される。順序 $j_3,\ldots,j_m$ に沿って帰納すれば全測定行列が得られる。
+
+\textbf{Step 4: 未観測結合分布．}
+識別された $M_j$ と $\lambda$ を局所独立性に代入すれば\eqref{eq:latent-fulljoint}が従う。
+\end{proof}
+
+\begin{corollary}[full-rank shifter なら singleton laws だけで全項目を回復]\label{cor:singleton}
+定理\ref{thm:pair}の P5 を，
+\[
+\rank\Gamma(x)=r
+\]
+に置き換える。anchor pair 以外の各項目 $j$ について singleton laws $p_j(w_1,x),\ldots,p_j(w_L,x)$ が第一段階から識別されれば，全ての $M_j$ は識別される。実際，
+\begin{equation}
+\mathcal P_j(x):=
+\big[p_j(w_1,x),\ldots,p_j(w_L,x)\big]
+=M_j(x)\Gamma(x)^\top
+\end{equation}
+なので
+\begin{equation}
+M_j(x)=\mathcal P_j(x)\{\Gamma(x)^\top\}^+.
+\label{eq:singleton-recover}
+\end{equation}
+\end{corollary}
+
+\begin{remark}[exact top-$K$ に対する強化]
+従来の三測定構成では anchor triple を同時に観測するため $K\ge3$ が必要だった。定理\ref{thm:pair}は $W$ の変動を第三モードとして用いるため，必要な測定項目の同時観測は anchor pair の二項目だけである。従って，anchor pair が supported であれば exact top-$K$ の $K=2$ でも適用できる。さらに系\ref{cor:singleton}では，非 anchor 項目は singleton laws だけでよい。
+\end{remark}
+
+\begin{remark}[何が本当に必要か]
+「$W$ が $F$ を予測する」だけでは不十分である。必要なのは profile 行列 $\Gamma$ の Kruskal rank と，anchor measurement matrices の Kruskal rank の組合せである。また，観測確率が小さい pair は母集団上 supported でも有限標本で弱く，CP 分解は数値的に不安定になり得る。
+\end{remark}
+
+\section{三測定版の修正版：$W$ 変動が弱い場合の fallback}
+
+$W$ の profile 変動が pairwise CP を一意化するほど強くない場合，supported anchor triple を用いる従来構成は依然有用である。ただし証明は，個々の $M_a,M_b$ の full column rank を仮定するのではなく，Khatri--Rao rank に基づいて書く必要がある。
+
+\begin{assumption}[anchor-triple conditions]\label{as:triple}
+ほとんどすべての $x$ について，
+\begin{enumerate}[label=(T\arabic*)]
+\item $Y_1,\ldots,Y_m$ は $(F,X)$ 条件付き独立で，$Y\ind W\mid(F,X)$。
+\item anchor triple $\{a,b,c\}$ の法則が第一段階で識別される。
+\item 各 $j$ について triple $\{j,a,b\}$ の法則が第一段階で識別される。
+\item $k_a+k_b+k_c\ge2r+2$。
+\item ある基準値 $w_0$ で全ての $\lambda_f(w_0,x)>0$。
+\item anchor ordering が潜在ラベルを固定する。
+\end{enumerate}
+\end{assumption}
+
+\begin{theorem}[修正 anchor-triple identification]\label{thm:triple}
+仮定\ref{as:triple}の下で，$M_1(x),\ldots,M_m(x)$ と $\lambda(w,x)$ は識別され，式\eqref{eq:latent-fulljoint}が成立する。
+\end{theorem}
+
+\begin{proof}
+\textbf{Step 1: 一つの基準点だけで anchor decomposition を行う．}
+$w_0$ における anchor tensor は
+\begin{equation}
+\mathcal T_{abc}(w_0,x)
+=\sum_{f=1}^rM_a(:,f)\otimes M_b(:,f)\otimes
+\{\lambda_f(w_0,x)M_c(:,f)\}.
+\label{eq:triple-cp}
+\end{equation}
+$\lambda_f(w_0,x)>0$ なので第三因子の Kruskal rank は $k_c$ と同じである。Kruskal 条件により三因子は共通置換と scaling を除いて一意である。$M_a,M_b$ の列和を1に正規化し，第三因子の各列和を $\lambda_f(w_0,x)$ として取り出した後，その列を正規化すれば $M_c$ を得る。anchor ordering が置換を固定する。
+
+\textbf{Step 2: Khatri--Rao rank により全ての $\lambda(w,x)$ を回復する．}
+$k_c\le r$ と T4 から
+\[
+k_a+k_b\ge r+2.
+\]
+従って補題\ref{lem:kr}により $M_b\od M_a$ は full column rank である。よって任意の $w$ で式\eqref{eq:lambda-inversion}を反転し，$\lambda(w,x)$ を回復できる。
+
+\textbf{Step 3: 非 anchor 項目．}
+$\mathcal T_{jab}(w_0,x)$ の mode-$j$ matricization を $T_{j\mid ab}$ とすると
+\begin{equation}
+T_{j\mid ab}(w_0,x)
+=M_j(x)\Lambda(w_0,x)\{M_b(x)\od M_a(x)\}^\top.
+\end{equation}
+$M_b\od M_a$ は full column rank，$\Lambda(w_0,x)$ は正則なので，右辺第二因子は full row rank である。従って
+\begin{equation}
+M_j(x)=T_{j\mid ab}(w_0,x)
+\left[\Lambda(w_0,x)\{M_b\od M_a\}^\top\right]^+
+\end{equation}
+として一意に回復される。全ての $j$ に繰り返し，最後に局所独立性を用いる。
+\end{proof}
+
+\begin{remark}[従来証明からの実質的な修正]
+Kruskal 条件は $M_a$ と $M_b$ が個別に full column rank であることを必ずしも意味しない。しかし T4 は $k_a+k_b\ge r+2$ を意味し，補題\ref{lem:kr}から $M_b\od M_a$ の full column rank が従う。非 anchor 項目の線形反転に必要なのは後者であり，これが正しい証明経路である。また，CP 分解を各 $w$ で繰り返す必要はなく，$w_0$ で一度だけ分解し，その後は線形反転で $\lambda(w,x)$ を求めれば，$w$ ごとに潜在ラベルが入れ替わる問題を回避できる。
+\end{remark}
+
+\section{$K=1$ と rank failure の非識別}
+
+\begin{proposition}[$K=1$ における連続的非識別]\label{prop:k1}
+$F\in\{1,2\}$，各 $Y_j$ は Bernoulli，$W$ は有限 support を持つ常時観測変数とする。ある $\varepsilon>0$ について，全ての $j,f,w$ で $\theta_{jf},\lambda(w)\in[\varepsilon,1-\varepsilon]$ とする。$K=1$ で singleton laws しか回復できないとき，このパラメータの任意の十分小さい近傍に，観測 law を不変にする連続的な別パラメータが存在する。従って，既知 anchor，外部 pair sample，separability などの追加構造なしには潜在測定モデルは局所的にも識別されない。
+\end{proposition}
+
+\begin{proof}
+$\theta_{jf}=P(Y_j=1\mid F=f)$，$\lambda(w)=P(F=1\mid W=w)$ とすると観測される singleton probability は
+\begin{equation}
+p_j(w)=\theta_{j2}+(\theta_{j1}-\theta_{j2})\lambda(w).
+\label{eq:k1mix}
+\end{equation}
+$a$ を十分小さく，$b>0$ を1に十分近く取り，
+\[
+\lambda'(w)=a+b\lambda(w),\qquad
+\beta'_j=\frac{\theta_{j1}-\theta_{j2}}{b},\qquad
+\alpha'_j=\theta_{j2}-\frac{a}{b}(\theta_{j1}-\theta_{j2})
+\]
+と置く。さらに $\theta'_{j2}=\alpha'_j$，$\theta'_{j1}=\alpha'_j+\beta'_j$ と定義する。元のパラメータが $(0,1)$ の内部にあれば，$a,b$ を近傍で選ぶことで $\lambda',\theta'_{jf}\in(0,1)$ を保てる。そして
+\[
+\theta'_{j2}+(\theta'_{j1}-\theta'_{j2})\lambda'(w)=p_j(w)
+\]
+が全ての $j,w$ で成立する。一般の $(a,b)$ は潜在ラベルの交換ではないため，異なる測定核と混合比率が同じ観測 law を生成する。
+\end{proof}
+
+\begin{remark}[三つの failure mode]
+有限潜在クラスの正の結果には少なくとも次の三条件が必要である。
+\begin{enumerate}
+\item \textbf{anchor uniqueness}: $k_a+k_b+k_\Gamma\ge2r+2$ または三測定 Kruskal 条件。
+\item \textbf{mixture recovery}: $M_b\od M_a$ の full column rank。
+\item \textbf{item propagation}: $\mathcal C_{jk}$ の row rank または $\rank\Gamma=r$。
+\end{enumerate}
+いずれかが破れると，CP 分解，混合比率，非 anchor kernel のいずれかが非一意になる。実証では各段階の最小特異値を別々に診断すべきである。
+\end{remark}
+
+\section{連続潜在変数：主張の修正と作用素版}
+
+\subsection{位置・尺度・符号だけでは足りない}
+\begin{proposition}[非線形再パラメータ化]\label{prop:reparam}
+連続 $F$ の測定モデルで，$\phi:\cF\to\cF'$ が可測な一対一変換なら，
+\[
+F'=\phi(F),\quad
+p'(y_j\mid f',x)=p(y_j\mid\phi^{-1}(f'),x),\quad
+p'(f'\mid w,x)=p(\phi^{-1}(f')\mid w,x)|J_{\phi^{-1}}(f')|
+\]
+は同じ観測分布を生成する。従って $\E(F\mid x)=0$，$\operatorname{Var}(F\mid x)=1$，符号の固定だけでは一般の非線形単調変換を除けない。
+\end{proposition}
+
+\begin{proof}
+変数変換公式を局所独立な混合積分に代入すれば，$F$ を積分した全ての $Y$ の条件付き分布が不変である。非線形単調変換の後に affine standardization を施せば平均0・分散1を再び満たせるため，その正規化だけでは一意化しない。
+\end{proof}
+
+従って連続 $F$ を点識別するには，例えば基準 $w_0$ で
+\[
+F\mid(W=w_0,X=x)\sim\mathrm{Unif}(0,1)
+\]
+と分布全体を固定し，anchor kernel の単調性で向きを固定する，あるいは既知の calibration measurement を置く必要がある。
+
+\subsection{二測定 $+$ mixture shifter の作用素同値式}
+$x$ を固定し，
+\[
+(K_jh)(y)=\int h(f)p_j(y\mid f,x)\,d\mu_F(f)
+\]
+を測定作用素とする。回復済み pair density から
+\[
+(A_wg)(y_a)=\int p(y_a,y_b\mid w,x)g(y_b)\,d\mu_b(y_b)
+\]
+を定義する。$\lambda_w(f)=p(f\mid w,x)$ とし，$M_{\lambda_w}$ を $\lambda_w$ による乗算作用素とする。形式的に
+\begin{equation}
+A_w=K_aM_{\lambda_w}K_b^*.
+\label{eq:operator-factor}
+\end{equation}
+
+\begin{proposition}[operator ratio identity]\label{prop:operator}
+基準 $w_0$ で $\lambda_{w_0}>0$ a.e. とする。$K_a,K_b^*$ が適切な共通不変領域上で一対一で，$A_{w_0}^{-1}$ が $\Range(A_{w_0})$ 上に定義できるなら，
+\begin{equation}
+B_w:=A_wA_{w_0}^{-1}
+=K_aM_{\rho_w}K_a^{-1},
+\qquad
+\rho_w(f)=\frac{\lambda_w(f)}{\lambda_{w_0}(f)}
+\label{eq:operator-ratio}
+\end{equation}
+が $\Range(K_a)$ 上で成立する。
+\end{proposition}
+
+\begin{proof}
+\eqref{eq:operator-factor}と，指定された領域上で
+\[
+A_{w_0}^{-1}=(K_b^*)^{-1}M_{\lambda_{w_0}}^{-1}K_a^{-1}
+\]
+を代入し，中間作用素を相殺すれば\eqref{eq:operator-ratio}を得る。
+\end{proof}
+
+\begin{corollary}[条件付きの連続識別結果]\label{cor:continuous}
+命題\ref{prop:operator}に加え，
+\begin{enumerate}[label=(C\arabic*)]
+\item 作用素族 $\{B_w:w\in\cW\}$ の joint spectral representation が measure-space isomorphism を除いて一意である；
+\item $\{\rho_w:w\in\cW\}$ が $f$ を a.e. 分離する；
+\item Markov kernel positivity と積分正規化により $K_a,K_b$ の scaling が固定される；
+\item 基準分布 $F\mid w_0,x$ を既知分布に固定し，anchor monotonicity で orientation を固定する；
+\item 各非 anchor 項目 $j$ について，$P(Y_j,Y_a\mid w,x)$ の対応する積分方程式が injective である
+\end{enumerate}
+と仮定する。このとき $p(f\mid w,x)$ と $p(y_j\mid f,x)$ は null-set ambiguity を除いて識別される。
+\end{corollary}
+
+\begin{remark}[有限結果と連続結果の証明水準]
+定理\ref{thm:pair}と\ref{thm:triple}は有限次元の完全な代数的証明である。一方，系\ref{cor:continuous}は，非有界逆作用素の領域，joint spectrum の単純性，支配測度，Markov kernel の回復を全て仮定として明示した条件付き結果である。連続版を正式論文の主定理にするには，Hu and Schennach (2008) の作用素論に対応する関数空間と正規化を完全に書き下す必要がある。
+\end{remark}
+
+\section{2024--2026年を含む先行研究の精査}
+
+\subsection{shadow variable：full law，効率理論，検証可能条件}
+\begin{enumerate}
+\item d'Haultfoeuille (2010) は，欠測アウトカム $Y$ と shadow/IV の条件付き独立，positivity，B-completeness から選択確率と full observed-variable law を識別した。本稿の命題\ref{prop:blockfull}はこれを block indicator $R_S$ に適用する。
+\item Miao et al. (2024) は shadow variable 下の full-data law に対する一般的識別条件を整理し，任意の full-law functional に対する semiparametric efficiency theory を構築した。従って「shadow variable で full law と効率 bound を扱う」こと自体は既に強く発展している。
+\item Tian, Zeng and Zhao (to appear) は regression parameter を対象に，shadow variable と sieve により非パラメトリックな MNAR mechanism を扱い，semiparametric efficiency bound を達成する推定を提示している。第一段階の正則化・効率論を作る際の直接的な比較対象である。
+\item Beppu and Morikawa (2024) は categorical IV で completeness が成立しにくい問題に対し，観測データから確認しやすい識別条件を与える。本稿の有限 support の rank/range 診断と親和的である。
+\end{enumerate}
+
+\subsection{target law と partial identification}
+\begin{enumerate}
+\item Li, Miao and Tchetgen Tchetgen (2023) は full joint distribution が識別されなくても mean functional を識別する必要十分条件と representer equation を与え，解が非一意でも semiparametric inference が可能であることを示した。本稿の定理\ref{thm:targetbridge}はその blockwise/cellwise 版である。
+\item Chen, Simchi-Levi and Xiong (2026, preprint) は completeness を満たさない weak shadow variables を用い，線形計画による sharp partial-identification bounds を構築した。shadow が ill-conditioned な場合に点識別を強行せず，区間へ退避する実務的な基準を与える。
+\item Karvanen and Tikka (2026, arXiv v5) は target law と full law の識別を分け，標準的な正しい conditional imputation には full-law identification が必要であることを明確化した。supported-block target だけが識別される場合，通常の multiple imputation を機械的に適用すべきでない。
+\end{enumerate}
+
+\subsection{multivariate MNAR，graphical identification，sparse support}
+\begin{enumerate}
+\item Malinsky, Shpitser and Tchetgen Tchetgen (2022) の no-self-censoring，Li et al. (2023) の self-censoring は多変量 MNAR の主要モデルである。しかし exact top-$K$ は自己値と他項目の双方が選択を動かし，complete-case positivity や upward closure と両立しない場合が多い。
+\item Nabi, Bhattacharya and Shpitser (2020) は missing-data graph の full-law identification に必要十分な graphical conditions を与えた。Tikka and Karvanen (2024) は categorical colluder により一般には非識別な graph でも full law を回復できる必要十分条件を示した。
+\item Phung, Reese, Shpitser and Bhattacharya (2025, preprint) は sparse pattern support の下で，graph restrictions を用いて full law と imputation distributions を再帰的に構成し，完全ケースがない例も示している。このため，本稿の novelty を「完全ケースがない」だけに置くことはできない。
+\end{enumerate}
+
+\subsection{潜在測定モデル，tensor，covariates}
+\begin{enumerate}
+\item Hu and Schennach (2008) は三測定と operator injectivity により非古典的測定誤差モデルを識別した。連続版の基礎である。
+\item Kruskal (1977)，Allman, Matias and Rhodes (2009) は有限 mixture/latent structure model の generic/strict identifiability に tensor decomposition を用いる標準的基盤を与えた。
+\item Ouyang and Xu (2022) は covariates を持つ latent class models の global identifiability を体系化した。本稿の $W$ は latent class proportions を動かす covariate であり，pair tensor の第三モードとして使う点はこの系列と整合する。
+\item 本稿の理論的追加は，covariate-assisted mixture identification そのものではなく，MNAR 第一段階で回復した pair/singleton tables を exact top-$K$ support graph 上で接続し，$K=2$ まで同時観測要件を下げる統合定理にある。
+\end{enumerate}
+
+\subsection{識別可能な深層 MNAR モデル}
+Ma and Zhang (2021) は MNAR 下で識別保証を持つ深層生成モデルを提案した。Xie, Xue and Wang (2026, preprint) は latent variables を条件とする conditional no-self-censoring に基づく identifiable deep latent model を提示している。これらは柔軟な推定器として競合するが，本稿とは識別仮定が異なる。本稿は selection network を完全に深層パラメトリック化せず，blockwise shadow conditions と有限次元 tensor rank により識別を分解する。
+
+\subsection{比較表と最も防御可能な novelty}
+\begin{longtable}{p{.21\textwidth}p{.31\textwidth}p{.39\textwidth}}
+\toprule
+研究系列 & 主な識別対象・道具 & 本稿との関係 \\
+\midrule\endfirsthead
+\toprule 研究系列 & 主な識別対象・道具 & 本稿との関係 \\
+\midrule\endhead
+Shadow full-law & 選択確率，full law，効率 bound；completeness/bridge & 各 supported block の第一段階として利用。新規性の中心ではない。\\
+Target-specific shadow & mean/target law；representer equation & セル indicator だけを回復する弱い第一段階へ拡張。\\
+Self/no-self censoring & 多変量 MNAR の graph/conditional independence & exact top-$K$ の cross-item crowd-out と support geometry が異なる。\\
+Graphical sparse support & graph restrictions から full law，完全ケース不在も可 & 「no complete cases」一般の先行性を否定。仮定体系が異なる比較対象。\\
+Latent tensor/operator & 三測定，Kruskal，operator injectivity & 回復済み blocks の接続に利用。\\
+本稿 & blockwise shadow $+$ pair--$W$ tensor $+$ support-graph propagation & exact top-$K$ で $K\ge2$，未観測の高次 joint law を潜在構造により外挿。\\
+\bottomrule
+\end{longtable}
+
+\begin{tcolorbox}[colback=soft,colframe=navy,boxrule=.8pt,arc=2mm,title=推奨する novelty statement]
+\emph{We study capacity-constrained multivariate MNAR in which complete cases are structurally absent.  We first recover only the supported low-order blocks using block-specific shadow variables, and then connect these blocks through a latent measurement model.  A covariate-assisted pair tensor reduces the required joint observation from an anchor triple to a single anchor pair, making finite latent-class identification possible under exact top-$K$ with $K\ge2$.}
+\end{tcolorbox}
+
+\section{推定・推論へ進むための設計}
+
+\subsection{第一段階}
+\begin{enumerate}
+\item \textbf{Full-law route}: 各 supported block で sieve minimum distance / Tikhonov regularization により inverse-selection bridge を推定する。
+\[
+\widehat\omega_S
+=\arg\min_{\omega\in\Omega_n}
+\left\|\widehat\E\{R_S\omega(Y_S,C_S)-1\mid Z_S,C_S\}\right\|^2
++\rho_nJ(\omega).
+\]
+\item \textbf{Target route}: 必要なセル indicator ごとに representer solution set を推定する。解が非一意なら，Li et al. (2023) 型の適切な selection rule と orthogonal score を用いる。
+\item \textbf{Weak-shadow fallback}: 最小特異値が小さい場合，点識別推定を停止し，Chen et al. (2026) 型の bounds または直接効果感度分析へ移行する。
+\end{enumerate}
+
+\subsection{第二段階}
+\begin{enumerate}
+\item cross-fitting した第一段階 nuisance を用いて $P_{ab}(w_\ell,x)$ と singleton/pair tables を構成する。
+\item nonnegative stochastic constraints を課した CP decomposition で $M_a,M_b,\Gamma$ を推定する。
+\item $\lambda(w,x)$ は\eqref{eq:lambda-inversion}の constrained least squares，非 anchor $M_j$ は\eqref{eq:Mj-propagate}または\eqref{eq:singleton-recover}で推定する。
+\item target functional は識別された latent law の plug-in だけでなく，第一段階・tensor perturbation を直交化した one-step estimator を設計する。
+\end{enumerate}
+
+\subsection{必須の弱識別診断}
+少なくとも以下を別々に報告する。
+\begin{enumerate}
+\item bridge operator / finite matrix の対象方向における最小特異値；
+\item anchor CP の condition number と empirical Kruskal-rank proxy；
+\item $M_b\od M_a$ の最小特異値；
+\item 各 propagation matrix $\mathcal C_{jk}$ または $\Gamma$ の最小特異値；
+\item shadow exclusion の直接効果
+\[
+\operatorname{logit}P(R_S=1\mid Y_S,Z_S,C_S)
+=\eta(Y_S,C_S)+\gamma^\top Z_S
+\]
+に対する $\gamma$ 感度曲線。
+\end{enumerate}
+
+\section{応用設計への含意}
+
+\subsection{オンラインレビュー型 exact top-$K$}
+一人が多数の私的評価 $Y_1,\ldots,Y_m$ を持つが，公開枠 $K$ だけを選ぶ状況は，構造的ゼロと cross-item crowd-out を持つ本稿の直接的対象である。実験で $K$ をランダム化しても，$K$ 自体は通常 selection shifter であり mixture shifter $W$ とは異なる。$W$ としては，選択前に取得され，潜在的な評価タイプの構成を動かすが測定尺度を直接変えない属性・ランダム化情報が必要である。$Z_S$ はさらに，$Y_S$ を固定した後に公開選択へ直接入らない別の prior signal として設計する必要がある。
+
+\subsection{医学・公衆衛生データ}
+SPRINT-MIND，NACC UDS，PPMI，MIMIC-IV，NHANES PHQ-9 は，潜在 severity と informative test completion の応用候補である。ただし，本稿の pairwise theorem を使うには，
+\begin{enumerate}
+\item 少なくとも一つの clinically defensible anchor pair が同時観測されること；
+\item $W$ が latent severity distribution を十分に変化させ，measurement invariance が妥当であること；
+\item block-specific $Z_S$ が test ordering/completion に対する shadow exclusion を満たすこと
+\end{enumerate}
+が必要である。RCT assignment は $W$ の有力候補になり得るが，治療が item response function 自体を変える differential item functioning を起こすなら exclusion は破れる。死亡，administrative censoring，protocol-driven missing-by-design は MNAR selection と分けて扱う。
+
+\section{実行前の識別監査}
+\begin{tcolorbox}[colback=soft,colframe=risk,boxrule=.8pt,arc=2mm,title=理論をデータへ持ち込む前のチェック]
+\begin{enumerate}
+\item $W$ と $Z_S$ の役割を分離し，それぞれの causal/temporal rationale を図示したか。
+\item 各必要 singleton/pair/triple block は母集団上 supported か。exact top-$K$ の組合せ制約と整合するか。
+\item full-law bridge が本当に必要か。必要なセル indicator の representer だけで足りないか。
+\item $k_a+k_b+k_\Gamma\ge2r+2$ を dimension/rank 上満たし得るか。
+\item $\rank\Gamma=r$ か，または support graph 上の propagation rank が成立するか。
+\item class number $r$，潜在ラベル，連続 latent coordinate の正規化を明示したか。
+\item weak bridge，weak tensor，weak propagation を別々に診断し，部分識別への退避規則を事前指定したか。
+\item protocol missingness，死亡 truncation，administrative censoring と MNAR を区別したか。
+\end{enumerate}
+\end{tcolorbox}
+
+\section{結論}
+
+本稿の二段階構成は，第一段階で「観測可能な低次元 block を欠測 IV で回復する問題」と，第二段階で「回復済み block から潜在測定モデルを一意分解する問題」を分離する。分布全体を識別する B-completeness は強いため，必要なセルだけを回復する target-specific representer を併設した。有限潜在クラスでは，$W$ の混合 profile を第三モードとする pair tensor により，anchor triple なしで測定核を識別できる。これにより exact top-$K$ の最低容量要件は $K\ge3$ から $K\ge2$ へ下がり，$\rank\Gamma=r$ なら非 anchor 項目は singleton laws だけから回復できる。
+
+同時に，$K=1$ の非識別，rank failure，support-graph failure，連続 $F$ の非線形再パラメータ化を明示した。近年の graphical MNAR は完全ケース不在でも別の仮定から full law を識別し得るため，本研究の主張は「完全ケースがないこと」そのものではない。最も強く，かつ防御可能な貢献は，\textbf{capacity-constrained support geometry の下で，blockwise shadow recovery と covariate-assisted pairwise latent decomposition を一つの識別写像として接続したこと}である。
+
+\appendix
+\section{定理\ref{thm:pair}の行列次元と実装式}
+$P_{jk}(w)$ は $d_j\times d_k$，$M_j$ は $d_j\times r$，$\Lambda(w)$ は $r\times r$，$M_k^\top$ は $r\times d_k$ である。$q=|I|$ 個の $W$ 値を横連結すれば
+\[
+\mathcal P_{jk}\in\R^{d_j\times qd_k},\qquad
+\mathcal C_{jk}\in\R^{r\times qd_k}.
+\]
+$\rank\mathcal C_{jk}=r$ のとき，例えば
+\[
+\mathcal C_{jk}^+
+=\mathcal C_{jk}^\top
+(\mathcal C_{jk}\mathcal C_{jk}^\top)^{-1}
+\]
+を使える。推定では probability simplex 制約を課し，負の成分を単純に truncation するのではなく constrained least squares を使う方がよい。
+
+\section{第一段階をセル indicator だけで構成する方法}
+有限 $Y_S$ と有限 $W$ を考える。必要な条件付き表 $P(Y_S=y\mid W=w,X=x)$ を回復するには，
+\[
+\tau_{y,w,x}(Y_S,C_S)=1\{Y_S=y,W=w,X=x\}
+\]
+に対する representer が存在すれば，定理\ref{thm:targetbridge}から joint cell probability
+$P(Y_S=y,W=w,X=x)$ を識別できる。$P(W=w,X=x)>0$ で割れば条件付き表を得る。従って有限 latent-class theorem の第一段階は，selection probability $\pi_S$ 全体の一意識別を必須としない。
+
+\section{追加の反例：$\Gamma$ rank deficiency}
+$\Gamma$ の列 $f_1,f_2$ が比例し，$M_a(:,f_1),M_a(:,f_2)$ または $M_b(:,f_1),M_b(:,f_2)$ も十分に分離しない場合，pair--$W$ tensor の二成分を混合しても同じ配列を生成できる。特に $W$ が混合比率を全く動かさず $\Gamma(:,f)=\lambda_f\one_L$ なら，第三モードの Kruskal rank は1であり，二測定 mixture は一般に一意分解できない。これは $W$ の予測精度ではなく，class-specific profile の線形分離が必要であることを示す。
+
+\begin{thebibliography}{99}\small
+\bibitem{Allman2009} Allman, E. S., Matias, C. and Rhodes, J. A. (2009). Identifiability of parameters in latent structure models with many observed variables. \emph{Annals of Statistics}, 37, 3099--3132.
+\bibitem{Beppu2024} Beppu, K. and Morikawa, K. (2024). Verifiable identification condition for nonignorable nonresponse data with categorical instrumental variables. \emph{Statistical Theory and Related Fields}, 8, 40--50.
+\bibitem{Chen2026} Chen, H., Simchi-Levi, D. and Xiong, R. (2026). Partial identification under missing data using weak shadow variables from pretrained models. arXiv:2602.16061, v2. \emph{Preprint}.
+\bibitem{dh2010} d'Haultfoeuille, X. (2010). A new instrumental method for dealing with endogenous selection. \emph{Journal of Econometrics}, 154, 1--15.
+\bibitem{HS2008} Hu, Y. and Schennach, S. M. (2008). Instrumental variable treatment of nonclassical measurement error models. \emph{Econometrica}, 76, 195--216.
+\bibitem{Karvanen2026} Karvanen, J. and Tikka, S. (2026). Multiple imputation guided by full law and target law identifiability. arXiv:2410.18688, v5. \emph{Preprint}.
+\bibitem{Kruskal1977} Kruskal, J. B. (1977). Three-way arrays: rank and uniqueness of trilinear decompositions, with application to arithmetic complexity and statistics. \emph{Linear Algebra and its Applications}, 18, 95--138.
+\bibitem{LiMean2023} Li, W., Miao, W. and Tchetgen Tchetgen, E. J. (2023). Non-parametric inference about mean functionals of non-ignorable non-response data without identifying the joint distribution. \emph{Journal of the Royal Statistical Society Series B}, 85, 913--935.
+\bibitem{LiSelf2023} Li, Y., Miao, W., Shpitser, I. and Tchetgen Tchetgen, E. J. (2023). A self-censoring model for multivariate nonignorable nonmonotone missing data. \emph{Biometrics}, 79, 3203--3214.
+\bibitem{Ma2021} Ma, C. and Zhang, C. (2021). Identifiable generative models for missing not at random data imputation. \emph{Advances in Neural Information Processing Systems}, 34.
+\bibitem{Malinsky2022} Malinsky, D., Shpitser, I. and Tchetgen Tchetgen, E. J. (2022). Semiparametric inference for nonmonotone missing-not-at-random data: the no self-censoring model. \emph{Journal of the American Statistical Association}, 117, 1415--1423.
+\bibitem{Miao2016} Miao, W. and Tchetgen Tchetgen, E. J. (2016). On varieties of doubly robust estimators under missingness not at random with a shadow variable. \emph{Biometrika}, 103, 475--482.
+\bibitem{Miao2024} Miao, W., Liu, L., Li, Y., Tchetgen Tchetgen, E. J. and Geng, Z. (2024). Identification and semiparametric efficiency theory of nonignorable missing data with a shadow variable. \emph{ACM/IMS Journal of Data Science}, 1(2), 1--23.
+\bibitem{Nabi2020} Nabi, R., Bhattacharya, R. and Shpitser, I. (2020). Full law identification in graphical models of missing data: completeness results. \emph{Proceedings of the 37th International Conference on Machine Learning}, 7153--7163.
+\bibitem{Ouyang2022} Ouyang, J. and Xu, G. (2022). Identifiability of latent class models with covariates. \emph{Psychometrika}, 87, 1343--1360.
+\bibitem{Phung2025} Phung, T., Reese, J., Shpitser, I. and Bhattacharya, R. (2025). Recursive equations for imputation of missing not at random data with sparse pattern support. arXiv:2507.16107. \emph{Preprint}.
+\bibitem{Sidiropoulos2000} Sidiropoulos, N. D. and Bro, R. (2000). On the uniqueness of multilinear decomposition of $N$-way arrays. \emph{Journal of Chemometrics}, 14, 229--239.
+\bibitem{TianForthcoming} Tian, Q., Zeng, D. and Zhao, J. (to appear). Identification and efficient estimation in regression analysis with response missing not at random. \emph{Statistica Sinica}, to appear, DOI: 10.5705/ss.202024.0204.
+\bibitem{Tikka2024} Tikka, S. and Karvanen, J. (2024). Full law identification under missing data with categorical variables. arXiv:2402.05633. \emph{Preprint}.
+\bibitem{Xie2026} Xie, H., Xue, F. and Wang, X. (2026). Identifiable deep latent variable models for MNAR data. arXiv:2603.24771, v2. \emph{Preprint}.
+\end{thebibliography}
+
+\end{document}
