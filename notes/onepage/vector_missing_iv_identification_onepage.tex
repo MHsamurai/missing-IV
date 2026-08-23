@@ -1,183 +1,182 @@
 \documentclass[a4paper,10pt]{article}
 \usepackage{xeCJK}
-\setCJKmainfont{Yu Mincho}
-\setCJKsansfont{Yu Gothic}
-\setCJKmonofont{Yu Gothic}
+\setCJKmainfont{Hiragino Mincho ProN}
+\setCJKsansfont{Hiragino Sans}
+\setCJKmonofont{Hiragino Sans}
 
-\usepackage[top=30mm,bottom=30mm,left=30mm,right=30mm]{geometry}
+\usepackage[top=12.5mm,bottom=12.5mm,left=13mm,right=13mm]{geometry}
 \usepackage{amsmath,amssymb,bm}
 \usepackage{multicol}
 \usepackage{enumitem}
 \usepackage{titlesec}
-\usepackage{indentfirst}
-\usepackage{tikz}
-\usetikzlibrary{arrows.meta,positioning}
 \usepackage[hidelinks]{hyperref}
 
 \pagestyle{empty}
 \setlength{\parindent}{1em}
 \setlength{\parskip}{0pt}
-\setlength{\columnsep}{6mm}
-\renewcommand{\baselinestretch}{1.00}
+\setlength{\columnsep}{5.8mm}
+\renewcommand{\baselinestretch}{0.95}
 
 \titleformat{\section}
   {\normalfont\bfseries\normalsize}
-  {\thesection.}{0.6em}{}
-\titlespacing*{\section}{0pt}{0.45\baselineskip}{0.1\baselineskip}
+  {\thesection.}{0.45em}{}
+\titlespacing*{\section}{0pt}{0.45\baselineskip}{0.12\baselineskip}
 
 \newcommand{\E}{\mathbb E}
 \newcommand{\Prb}{\mathbb P}
-\newcommand{\R}{\mathbb R}
 \newcommand{\indep}{\mathrel{\perp\!\!\!\perp}}
-\newcommand{\1}{\mathbf 1}
 \newcommand{\Y}{\bm Y}
 \newcommand{\Z}{\bm Z}
-\newcommand{\D}{\bm D}
-\newcommand{\eps}{\bm\varepsilon}
-\newcommand{\nuV}{\bm\nu}
 
 \newcommand{\papertitle}{欠測IVと潜在変数モデリングによる非無作為欠測の識別}
-\newcommand{\englishtitle}{Identification of Nonignorable Missingness via Missing IV and Latent Variable Modeling}
+\newcommand{\subtitle}{構造的MNAR・supported blocks・潜在測定核の1ページ要約}
 \newcommand{\authorblock}{%
   \begin{tabular}{c}
-    本多 将大\(^{1,2}\)、星野 崇宏\(^{1,2}\)、大津 泰介\(^{1,3}\)\\[1.0mm]
-    1. 慶應義塾大学、2. 理化学研究所、3. London School of Economics and Political Science\\[0.3mm]
-    Email: masahirohonda@keio.jp
+    本多 将大\(^{1,2}\)、星野 崇宏\(^{1,2}\)、大津 泰介\(^{1,3}\)\\[-0.1mm]
+    {\scriptsize 1. 慶應義塾大学、2. 理化学研究所、3. London School of Economics and Political Science}
   \end{tabular}
 }
 
 \begin{document}
 
-\vspace*{-11.5mm}
+\vspace*{-9mm}
 \begin{center}
-  {\Large\bfseries \papertitle\par}
+  {\large\bfseries \papertitle\par}
+  \vspace{0.2mm}
+  {\small \subtitle\par}
   \vspace{0.5mm}
-  {\normalsize \englishtitle\par}
-  \vspace{1mm}
-  {\normalsize \authorblock}
+  {\footnotesize \authorblock}
 \end{center}
-\vspace{-2.3mm}
+\vspace{-3.5mm}
 
-\small
-\setlength{\baselineskip}{13.0pt}
-\setlength{\abovedisplayskip}{1.5pt}
-\setlength{\belowdisplayskip}{1.5pt}
-\setlength{\abovedisplayshortskip}{1pt}
-\setlength{\belowdisplayshortskip}{1pt}
-\setlength{\jot}{1pt}
+\footnotesize
+\setlength{\baselineskip}{9.7pt}
+\setlength{\abovedisplayskip}{1.2pt}
+\setlength{\belowdisplayskip}{1.2pt}
+\setlength{\abovedisplayshortskip}{0.8pt}
+\setlength{\belowdisplayshortskip}{0.8pt}
+\setlength{\jot}{0pt}
 \begin{multicols}{2}
 
-\section{欠測IV法}
-欠測値，選択，反実仮想の非観測はマイクロデータで頻繁に生じる。とくに非無作為欠測（MNAR）では，未観測値そのものが観測確率に影響するため，観測集団のみに基づく推論は一般に偏る。また，選択には影響するがアウトカムには直接影響しない通常の操作変数（IV）だけでは，アウトカム分布全体の点識別は困難である。
-
-d'Haultfoeuille \cite{dhaultfoeuille2010} は，アウトカムを条件づけた後で操作変数と選択変数が独立になる欠測IV（missing IV / shadow variable 条件）により，欠測アウトカムの分布をノンパラメトリックに識別できることを示した。関連して，Zhao and Shao \cite{zhaoshao2015} は，スカラー応答のGLMで欠測機構を明示的に指定しない semiparametric な識別・推定を議論している。
-
-このような欠測IVは，アウトカムについて排除制約を持つ通常のIVとは異なり，アウトカムに関連する変数をIVとして用いうる点に特徴がある。なお，ノンパラメトリックな点識別には，通常のIV問題と同様に完備性条件が重要となる。
-
-\section{複数指標の同時欠測時への拡張}
-本研究では，従来1次元で議論されていた従属変数を，ベクトル値へ拡張するための条件を整理する。
-
-\(\D,\Y,\Z\) をそれぞれ，選択ダミー変数，従属変数，操作変数とする。\(\D,\Y\) は \(m\) 次元であり，
+\section{何を解きたいか}
+個体 \(i\) の添字を省略し，潜在的測定値と観測指標を
 \[
-\D=(D_1,\ldots,D_m)',\qquad
-\Y=(Y_1,\ldots,Y_m)'
+  Y=(Y_1,\ldots,Y_m),\qquad
+  D=(D_1,\ldots,D_m)\in\{0,1\}^m
 \]
-とする。
-以下の仮定を置く。
+とする。\(Y_j\) は \(D_j=1\) のときだけ観測される。特に exact top-\(K\) 型では
+\[
+  \sum_{j=1}^m D_j=K<m
+\]
+であり，完全ケース \(D=\bm1_m\) は構造的に起こらない。したがって通常の「全項目が観測された人だけで潜在因子を推定する」戦略は出発点から使えない。
 
-\begin{enumerate}[label={\textbf{仮定\arabic*.}},leftmargin=3.4em,itemsep=0pt,topsep=0pt,parsep=0pt,partopsep=0pt]
-\item \(\D\) に関する指示変数を \(R=\1\{\D=\bm1\}\) とする。\(R=1\) のとき \((\Y,\Z)\) が観測され，この事象を完全ケースと呼ぶ。\(R=0\) のとき，\(\Y\) の少なくとも一部は観測されない。
-\item 母集団における \(\Z\) の周辺分布 \(P(\Z)\) は識別されている。
-\item \(\Y\) を条件づけると，\(R\) と \(\Z\) は条件付き独立である：
-\(R\indep \Z\mid \Y\).
-\item \(\Y\) は関数クラス \(B_{\Y}\) に関して \(\Z\) に対して完備である。すなわち，任意の \(g\in B_{\Y}\) について
-\(\E\{g(\Y)\mid \Z\}=0\) a.s. ならば \(g(\Y)=0\) a.s. が成り立つ。
-\item \(\pi(\bm y)=\Prb(R=1\mid \Y=\bm y)\) とし，\(\pi(\Y)>0\) a.s.
-\end{enumerate}
-\(B_{\Y}\) は \(g(\Y)\) が下有界かつ可積分となる関数のクラスである。仮定4は，\(\Z\) が \(\Y\) について十分豊かな情報を持つことを求める。
+潜在測定モデルは
+\[
+\begin{gathered}
+F\mid(W,X)\sim Q_F,\qquad
+Y_j\mid(F,X)\sim Q_j,\\
+Y_1,\ldots,Y_m\indep\mid(F,X).
+\end{gathered}
+\]
+で表す。ここで \(W\) は潜在分布 \(P(F\mid W,X)\) を動かす常時観測変数であり，\(Z_S\) は block \(S\) の欠測を補正する shadow IV である。重要なのは，\(W\) と \(Z_S\) の役割を分ける点である。仮に
+\[
+  D\indep W\mid(Y,F,X)
+\]
+でも，\(F\) を積分すると \(P(F\mid Y,W,X)\) が \(W\) に依存し得るため，一般に \(D\indep W\mid(Y,X)\) は従わない。
+
+\section{基本アイデア}
+noteの主張は，構造的に完全ケースがない多変量MNARを，二段階で識別するというものである。
+
+\[
+\begin{aligned}
+O=(X,W,Z,D,Y_D)&\Longrightarrow P(Y_S,Z_S,C_S),\\
+&\Longrightarrow \{P(F\mid W,X),P(Y_j\mid F,X)\}.
+\end{aligned}
+\]
+
+\noindent\textbf{第1段階：supported blockの回復.}
+集合 \(S\subset\{1,\ldots,m\}\) について
+\[
+  R_S=\prod_{j\in S}D_j,\qquad Y_S=(Y_j:j\in S)
+\]
+とおく。\(R_S=1\) なら \(Y_S\) は同時観測される。文脈 \(C_S\) の下で
+\[
+\begin{gathered}
+\pi_S(y,c)=\Prb(R_S=1\mid Y_S=y,C_S=c)>0,\\
+R_S\indep Z_S\mid(Y_S,C_S)
+\end{gathered}
+\]
+を仮定し，さらに \(Y_S\) が \(Z_S\) に対して十分豊かに動くという完備性を置く。このとき d'Haultfoeuille 型の条件付きモーメント
+\[
+  \E\left\{\frac{R_S}{q(Y_S,C_S)}\mid Z_S,C_S\right\}=1
+\]
+の唯一の正値解が \(q=\pi_S\) となる。したがって
+\[
+  \E\{h(Y_S,Z_S,C_S)\}
+  =
+  \E\left\{
+    \frac{R_S}{\pi_S(Y_S,C_S)}h(Y_S,Z_S,C_S)
+  \right\}
+\]
+により，観測された block から \(P(Y_S,Z_S,C_S)\) を回復できる。分布全体が不要な場合は，特定の平均・セル確率だけを representer bridge で回復すればよい。
 
 \columnbreak
-\par\vspace{2mm}
-\noindent{\centering
-\begin{tikzpicture}[
-  x=0.88cm,y=0.84cm,
-  obs/.style={draw, rounded corners=1pt, minimum width=10mm, minimum height=6.2mm, inner sep=1pt, font=\scriptsize},
-  err/.style={draw, circle, dashed, minimum size=6.8mm, inner sep=0.5pt, font=\scriptsize},
-  arr/.style={-{Stealth[length=1.7mm]},line width=0.32pt},
-  none/.style={dotted,line width=0.3pt},
-  note/.style={font=\scriptsize, inner sep=0.5pt, align=center}
-]
-\node[obs] (Z) at (0,0) {\(\Z\)};
-\node[err] (epsnode) at (1.3,0.88) {\(\eps\)};
-\node[obs] (Y) at (2.6,0) {\(\Y\)};
-\node[err] (nunode) at (3.9,0.88) {\(\nuV\)};
-\node[obs] (Rnode) at (5.2,0) {\(R\)};
-\draw[arr] (Z) -- node[note,above] {\(\varphi\)} (Y);
-\draw[arr] (Y) -- node[note,above] {\(\psi\)} (Rnode);
-\draw[arr] (epsnode) -- (Y);
-\draw[arr] (nunode) -- (Rnode);
-\draw[none] (Z.south) .. controls +(1.4,-0.75) and +(-1.4,-0.75) .. node[note,below,pos=.5] {\(\Z\nrightarrow R\)} (Rnode.south);
-\end{tikzpicture}\\[-0.4mm]
-{\scriptsize 図1：欠測IVのDAG}
-\par}
-\vspace{0.4mm}
 
-\smallskip
-\begingroup
-\setlength{\abovedisplayskip}{1pt}
-\setlength{\belowdisplayskip}{1pt}
-\setlength{\abovedisplayshortskip}{0pt}
-\setlength{\belowdisplayshortskip}{0pt}
-\setlength{\jot}{0pt}
-\noindent\textbf{命題1（条件付き独立性）.}
-可測関数 \(\varphi,\psi\) が存在し，
-誤差ベクトルを \(\eps=(\varepsilon_1,\ldots,\varepsilon_m)'\), \(\nuV=(\nu_1,\ldots,\nu_m)'\) とする。ただし，その分散共分散行列 \(\operatorname{Cov}(\eps)\), \(\operatorname{Cov}(\nuV)\) は非対角でもよい。このとき，
-\par\vspace{-0.12\baselineskip}
-\noindent\hfil{\footnotesize
-\(\Y=\varphi(\Z,\eps),\quad
-\D=\psi(\Y,\nuV),\quad
-\nuV\indep(\Z,\eps)\)}\hfil\par
-\vspace{-0.12\baselineskip}
-を満たすならば，\(R\indep \Z\mid \Y\) が成立する。
-
-\smallskip
-\noindent\textbf{命題1の証明.}
-固定した \((\bm y,\bm z,\bm d)\)（ただし \(\bm d\in\{0,1\}^m\)）に対して，誤差ベクトルの逆像集合を
+\section{潜在因子への接続}
+\noindent\textbf{第2段階：blockを潜在測定モデルでつなぐ.}
+第1段階で回復した複数の低次元分布を，潜在因子 \(F\) を共有する測定モデルとして接続する。
+有限潜在クラス \(F\in\{1,\ldots,r\}\) では
 \[
-\mathcal A=\{u:\psi(\bm y,u)=\bm d\},\quad
-\mathcal C=\{e:\varphi(\bm z,e)=\bm y\}
+\begin{aligned}
+M_j(x)&=\bigl[\Prb(Y_j=y\mid F=f,X=x)\bigr]_{y,f},\\
+\lambda_f(w,x)&=\Prb(F=f\mid W=w,X=x).
+\end{aligned}
 \]
-とおく。このとき，
-\par\vspace{0.08\baselineskip}
-\noindent\hfil{\footnotesize
-\(\begin{aligned}
-\Prb(\D=\bm d\mid \Y=\bm y,\Z=\bm z)
-&=\Prb(\nuV\in\mathcal A\mid \eps\in\mathcal C,\Z=\bm z)\\
-&=\Prb(\nuV\in\mathcal A)\\
-&=\Prb(\nuV\in\mathcal A\mid \Y=\bm y)\\
-&=\Prb(\D=\bm d\mid\Y=\bm y).
-\end{aligned}\)}\hfil\par
-\vspace{0.02\baselineskip}
-ただし，第二および第三の等号は \(\nuV\indep(\Z,\eps)\) と \(\Y=\varphi(\Z,\eps)\) による。最初と最後を比較すると，条件付き独立となる。任意の \(\bm d\) について成り立つため \(\D\indep\Z\mid\Y\) であり，\(R\) は \(\D\) の関数なので \(R\indep\Z\mid\Y\) も従う。
-\endgroup
-
-\medskip
-\noindent\textbf{識別方針.}
-仮定1--5の下では，
+とおく。supported な anchor pair または anchor triple と，\(W\) による混合比率の変動が十分に rank を持てば，回復済みテンソルを分解して
 \[
-\E\left\{\frac{R}{\pi(\Y)}\mid\Z\right\}=1
+  \{M_j(x):j=1,\ldots,m\},\qquad
+  \{\lambda_f(w,x):f=1,\ldots,r\}
 \]
-という条件付きモーメント方程式が得られる。この方程式の解の一意性は，\(\Y\) の \(\Z\) に関する完備性に依存している。本発表では，その識別や \(\Y\) 全体の選択確率の回復のほか，本手法の応用可能性等について報告する。
+を識別できる。結果として，一度も同時観測されない \(|A|>K\) の項目集合についても
+\[
+  \Prb(Y_A=y_A\mid W=w,X=x)
+  =
+  \sum_{f=1}^r \lambda_f(w,x)
+  \prod_{j\in A} M_j(y_j,f;x)
+\]
+を外挿できる。
 
-\begin{thebibliography}{9}
-\setlength{\itemsep}{-1pt}
-\bibitem{dhaultfoeuille2010}
-X. d'Haultfoeuille, A new instrumental method for dealing with endogenous selection,
-\textit{Journal of Econometrics} 154, 1--15, 2010.
-\bibitem{zhaoshao2015}
-J. Zhao and J. Shao, Semiparametric pseudo-likelihoods in generalized linear models with nonignorable missing data,
-\textit{Journal of the American Statistical Association} 110, 1577--1590, 2015.
-\end{thebibliography}
+連続 \(F\) では，行列rankの代わりに条件付き期待値作用素の injectivity と同時対角化を用いる。ただし平均・分散・符号だけでは非線形な再パラメータ化を完全には除けないため，主張は追加正規化と作用素の定義域条件の下に限定する。
+
+\section{JoE 2010との違い}
+d'Haultfoeuille (2010) は，スカラー欠測アウトカムで shadow IV と完備性により選択確率と観測変数の同時分布を識別する。本noteが狙う拡張は，単にその結果を繰り返すことではない。
+
+\begin{itemize}[leftmargin=1.4em,itemsep=0pt,topsep=0pt]
+\item 完全ケースが構造的に存在しない top-\(K\) / pattern MNAR を扱う。
+\item supported block ごとに欠測IVで law を回復する。
+\item 回復した block laws をテンソル分解・作用素分解で接続し，潜在分布と測定核を識別する。
+\item \(K=1\)，anchor support 欠如，rank deficiency，shadow violation は識別境界として明示する。
+\end{itemize}
+
+したがって防御可能な新規性は，「潜在変数MNAR一般を解く」ことではなく，\textbf{blockwise shadow recovery と latent measurement identification を exact top-\(K\) support geometry 上で統合する}点にある。
+
+\section{実行前チェック}
+応用に進む前に，少なくとも次を監査する。
+\begin{enumerate}[label=\arabic*.,leftmargin=1.6em,itemsep=0pt,topsep=0pt]
+\item \(Z_S\) は全員について，選択より前に測定されているか。
+\item \(Y_S,C_S\) を固定した後，\(Z_S\) が \(R_S\) に直接影響しない説明が可能か。
+\item 必要な supported pair/triple の同時観測確率が十分か。
+\item weighted tensor/operator の最小特異値がゼロから離れているか。
+\item latent class の数，scale，sign，label の正規化を明示したか。
+\item protocol missing-by-design，死亡 truncation，administrative censoring と MNAR を区別したか。
+\end{enumerate}
+
+\vspace{0.3mm}
+\noindent\textbf{まとめ.}
+noteの中心は，\(F\) を単に積分して欠測IV条件を得るのではなく，supported block を先に回復し，その後で潜在測定モデルとして block を接続する点にある。この二段階を推定・感度分析・医学応用と一体化できれば，JoE 2010 の単純な多変量化を超える研究になる。
+
+\vspace{0.2mm}
+\noindent{\scriptsize 主要文献：d'Haultfoeuille (2010, JoE), Hu and Schennach (2008, Econometrica), Li et al. (2023, JRSS-B).}
 
 \end{multicols}
 \end{document}
