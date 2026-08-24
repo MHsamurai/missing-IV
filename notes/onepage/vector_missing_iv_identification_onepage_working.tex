@@ -1,0 +1,91 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage{xeCJK}
+\setCJKmainfont{Hiragino Mincho ProN}
+\setCJKsansfont{Hiragino Sans}
+\setCJKmonofont{Hiragino Sans}
+
+\usepackage[top=12.5mm,bottom=12.5mm,left=13mm,right=13mm]{geometry}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{multicol}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{empty}
+\setlength{\parindent}{1em}
+\setlength{\parskip}{0pt}
+\setlength{\columnsep}{5.8mm}
+\renewcommand{\baselinestretch}{0.95}
+
+\titleformat{\section}
+  {\normalfont\bfseries\normalsize}
+  {\thesection.}{0.45em}{}
+\titlespacing*{\section}{0pt}{0.45\baselineskip}{0.12\baselineskip}
+
+\newcommand{\E}{\mathbb E}
+\newcommand{\Prb}{\mathbb P}
+\newcommand{\indep}{\mathrel{\perp\!\!\!\perp}}
+\newcommand{\Y}{\bm Y}
+\newcommand{\Z}{\bm Z}
+
+\newcommand{\papertitle}{欠測IVと潜在変数モデリングによる非無作為欠測の識別}
+\newcommand{\subtitle}{対話用ワーキングドラフト}
+\newcommand{\authorblock}{%
+  \begin{tabular}{c}
+    本多 将大\(^{1,2}\)、星野 崇宏\(^{1,2}\)、大津 泰介\(^{1,3}\)\\[-0.1mm]
+    {\scriptsize 1. 慶應義塾大学、2. 理化学研究所、3. London School of Economics and Political Science}
+  \end{tabular}
+}
+
+\newcommand{\draftprompt}[1]{%
+  \noindent{\color{gray}\footnotesize #1}\par\vspace{1.5mm}
+}
+
+\begin{document}
+
+\vspace*{-9mm}
+\begin{center}
+  {\large\bfseries \papertitle\par}
+  \vspace{0.2mm}
+  {\small \subtitle\par}
+  \vspace{0.5mm}
+  {\footnotesize \authorblock}
+\end{center}
+\vspace{-3.5mm}
+
+\footnotesize
+\setlength{\baselineskip}{9.7pt}
+\setlength{\abovedisplayskip}{1.2pt}
+\setlength{\belowdisplayskip}{1.2pt}
+\setlength{\abovedisplayshortskip}{0.8pt}
+\setlength{\belowdisplayshortskip}{0.8pt}
+\setlength{\jot}{0pt}
+\begin{multicols}{2}
+
+\section{問題設定}
+\draftprompt{最初の一行：観測単位は何か。}
+\draftprompt{各単位について、どの変数が存在するか。}
+\draftprompt{そのうち何が観測され、何が欠測するか。}
+\draftprompt{欠測はどのような仕組みで生じるか。}
+
+% 問題設定は、ユーザーが確定した一文だけを順に追加する。
+
+\section{識別したい対象}
+\draftprompt{最終的に知りたい分布、母数、または効果を一文で置く。}
+
+% 問題設定が固まるまでは空欄でもよい。
+
+\columnbreak
+
+\section{識別のアイデア}
+\draftprompt{必要な仮定と識別の論理を、確定した順に追加する。}
+
+% 未確定の主張は定理として書かず、仮説またはメモとして扱う。
+
+\section{未解決点}
+\draftprompt{まだ決めていない点、反例、既存研究との差を残す。}
+
+% 対話中の保留事項をここに追加する。
+
+\end{multicols}
+\end{document}

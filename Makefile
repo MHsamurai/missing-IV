@@ -2,6 +2,8 @@ TEX := manuscript/main.tex
 PDF := build/formal/main/main.pdf
 ABSTRACT_TEX := notes/onepage/vector_missing_iv_identification_onepage.tex
 ABSTRACT_PDF := build/formal/vector_missing_iv_identification_onepage/vector_missing_iv_identification_onepage.pdf
+WORKING_ONEPAGE_TEX := notes/onepage/vector_missing_iv_identification_onepage_working.tex
+WORKING_ONEPAGE_PDF := build/formal/vector_missing_iv_identification_onepage_working/vector_missing_iv_identification_onepage_working.pdf
 PROOF_TEX := manuscript/vector_missing_iv_identification_proof.tex
 PROOF_PDF := build/formal/vector_missing_iv_identification_proof/vector_missing_iv_identification_proof.pdf
 BEAMER_TEX := manuscript/vector_missing_iv_identification_beamer.tex
@@ -15,7 +17,7 @@ READING_ZHAO_SHAO_PDF := build/supplementary_reading/zhao_shao2015/zhao_shao2015
 READING_KANO_TAKAI_TEX := notes/reading/kano_takai2011_nmar_latent_annotated_ja.tex
 READING_KANO_TAKAI_PDF := build/supplementary_reading/kano_takai2011/kano_takai2011_nmar_latent_annotated_ja.pdf
 
-.PHONY: pdf abstract proof beamer template reading-dhaultfoeuille2010 reading-zhao-shao2015 reading-kano-takai2011 clean
+.PHONY: pdf abstract working-onepage proof beamer template reading-dhaultfoeuille2010 reading-zhao-shao2015 reading-kano-takai2011 clean
 
 pdf: $(PDF)
 
@@ -26,6 +28,11 @@ abstract: $(ABSTRACT_PDF)
 
 $(ABSTRACT_PDF): $(ABSTRACT_TEX) .latexmkrc
 	latexmk -outdir=build/formal/vector_missing_iv_identification_onepage $(ABSTRACT_TEX)
+
+working-onepage: $(WORKING_ONEPAGE_PDF)
+
+$(WORKING_ONEPAGE_PDF): $(WORKING_ONEPAGE_TEX) .latexmkrc
+	latexmk -outdir=build/formal/vector_missing_iv_identification_onepage_working $(WORKING_ONEPAGE_TEX)
 
 proof: $(PROOF_PDF)
 
@@ -60,6 +67,7 @@ $(READING_KANO_TAKAI_PDF): $(READING_KANO_TAKAI_TEX) .latexmkrc
 clean:
 	latexmk -C $(TEX)
 	latexmk -C $(ABSTRACT_TEX)
+	latexmk -C $(WORKING_ONEPAGE_TEX)
 	latexmk -C $(PROOF_TEX)
 	latexmk -C $(BEAMER_TEX)
 	latexmk -C $(TEMPLATE_TEX)
