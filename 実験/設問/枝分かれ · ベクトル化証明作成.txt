@@ -1,0 +1,460 @@
+## 結論
+
+かなり広く洗った結果、次の境界が見えます。
+
+**「極端な経験ほどレビューされる」「レビューを書く人・書く対象が自己選択される」「公開レビューは母集団の私的評価を代表しない」こと自体は、すでに確立した先行研究です。** とくに Schoenmueller, Netzer, and Stahl は、直近の経験を強制的に評価させる条件と、最もレビューしたい経験を自己選択させる条件を比較し、後者で1・5つ星が増えることを実験的に示しています。したがって、単に「10個の中から3個を選ばせると極端なレビューが残る」だけでは、この研究の追試・精緻化と評価される可能性があります。([columbia.edu](https://www.columbia.edu/~on2110/Papers/Schoenmueller_Netzer_Stahl_2020.pdf))
+
+一方、今回の検索範囲では、次の組合せに直接一致するレビュー研究は確認できませんでした。
+
+\[
+\boxed{
+\begin{gathered}
+\text{全員について共通の }J\text{ 個の私的評価ベクトルを取得し、}\\
+\text{公開可能数 }k\text{ を外生的に変化させ、}\\
+\text{各レビューが他のレビュー候補との競争によって欠測することを示す}
+\end{gathered}}
+\]
+
+したがって、新規性の中心は「極端なレビューが選ばれる」ではなく、
+
+> **レビュー投稿は項目ごとの独立な意思決定ではなく、有限の開示枠をめぐる経験間の競争である**
+
+と置くべきです。
+
+より短く言えば、
+
+> **Capacity-constrained review generation creates competitive underreporting bias.**
+
+です。
+
+---
+
+## 検索範囲
+
+ユーザーが挙げた検索語に加え、次を組み合わせて検索しました。
+
+- `polarity self-selection`
+- `review incidence`
+- `review target selection`
+- `reviewer frequency`
+- `which product to review`
+- `strategic review posting`
+- `scarce attention online reviews`
+- `review effort cost`
+- `selective disclosure evidence`
+- `communication capacity`
+- `strategic sample selection`
+- `top-k evidence selection`
+- `cross-item review selection`
+- `review system design`
+
+また、2019年のレビューシステム設計に関するスコーピングレビューと、2025年のオンラインレビュー研究の包括的レビューから、前方・後方の関連研究を確認しました。前者は312本のオンラインレビュー研究を抽出し、そのうち58本がレビューシステム設計を明示的に扱っています。後者はレビュー過程を creation、engagement、impact、insight に分けて整理しています。([sciencedirect.com](https://www.sciencedirect.com/science/article/pii/S0963868717302263?utm_source=chatgpt.com))
+
+これは広範なスコーピング検索ですが、厳密な「先行研究が存在しない」という主張を論文に書く段階では、WoS・Scopusの検索結果を保存し、引用文献検索まで記録する必要があります。
+
+## 直接競合するオンラインレビュー研究
+
+### 1. Li and Hitt：購入者・時点の自己選択
+
+Li and Hitt は、初期購入者と後期購入者の嗜好差が、レビューの時系列的な変化と消費者厚生を歪めることを理論・実証的に扱っています。これは主として「誰がその商品を購入し、いつレビューするか」という purchase/intertemporal self-selection です。今回の「同一個人が複数の購入経験からどれを投稿するか」とは異なりますが、レビューの自己選択研究の基礎です。([faculty.wharton.upenn.edu](https://faculty.wharton.upenn.edu/wp-content/uploads/2012/04/Self-selection.pdf))
+
+### 2. Hu, Pavlou, and Zhang：underreporting bias
+
+この論文は、レビューの自己選択を大きく二つに分けています。
+
+- acquisition bias：そもそも商品を買う人が自己選択される
+- underreporting bias：購入者全員がレビューするわけではない
+
+underreporting bias については、レビューには時間と労力が必要なため、中程度の評価よりも非常に肯定的・否定的な評価が報告されやすいと整理しています。したがって、「投稿コストがあるため極端なレビューが残る」という大枠は既知です。([ink.library.smu.edu.sg](https://ink.library.smu.edu.sg/cgi/viewcontent.cgi?article=9015&context=sis_research))
+
+ただし、彼らの基本構造は項目単位の
+
+\[
+P(R_{ij}=1\mid Y_{ij})
+\]
+
+です。今回のような、
+
+\[
+P(R_{ij}=1\mid Y_{i1},\ldots,Y_{iJ})
+\]
+
+という、他の経験との競争を明示した構造ではありません。
+
+### 3. Schoenmueller, Netzer, and Stahl：最大の直接競合
+
+これが最も近い先行研究です。
+
+彼らは280百万件超、25プラットフォームのレビューを調べ、レビューを書く商品数が少ないレビュアーほど評価分布が極端になることを示しています。さらに実験では、
+
+- 直近に利用したレストラン・読んだ本をレビューする「強制条件」
+- 過去にレビューした、または最もレビューしたいレストラン・本を選ぶ「自己選択条件」
+
+を比較しています。自己選択条件の方が、1・5つ星の割合が有意に高くなりました。つまり、「経験した複数対象の中からレビュー対象を選ばせると極端化する」はすでに示されています。([columbia.edu](https://www.columbia.edu/~on2110/Papers/Schoenmueller_Netzer_Stahl_2020.pdf))
+
+さらに彼らは、プラットフォーム上でレビューを書く商品数が少ない人ほど、そのレビューがpolarであることも示しています。これは「投稿容量が小さいほど極端化する」という今回の比較静学にかなり近い観察結果です。([columbia.edu](https://www.columbia.edu/~on2110/Papers/Schoenmueller_Netzer_Stahl_2020.pdf))
+
+ただし、彼らには次の要素がありません。
+
+- 各参加者が評価した共通の \(J\) 財すべてについての完全評価
+- 明示的な容量 \(k\)
+- \(k\) のランダム化
+- ある財の投稿が他財の投稿を押し出す crowd-out
+- 容量制約によって生じる欠測指標間の依存構造
+
+したがって、今回の研究は Schoenmueller et al. を否定するものではなく、**彼らが polarity self-selection と呼んだ現象の経済的生成機構を、容量制約として識別する研究**と位置づけるのがよいです。
+
+### 4. Karaman：完全な私的評価と公開レビューの比較
+
+Karaman は、レビューを書かなかった顧客を含め、全顧客の私的満足度を観測できるデータを使っています。そのうえで、非依頼レビューには extremity bias と conformity があり、レビュー依頼によって中程度の評価者が参加しやすくなり、レビュー分布が母集団に近づくことを示しています。([pubsonline.informs.org](https://pubsonline.informs.org/doi/10.1287/mnsc.2020.3758))
+
+したがって、今回の次の部分も、それだけでは新しくありません。
+
+> 全員の非公開評価を取得し、公開者だけの評価とのずれを測る。
+
+新規性は、ずれの存在ではなく、**ずれが有限容量と経験間競争によってどのように発生するか**に置く必要があります。
+
+なお、出版社ページには supplemental material が掲載されていますが、出版社、著者所属機関、OSF・Dataverseを検索した範囲では、再分析可能な生データとコードの公開パッケージは確認できませんでした。したがって、同様の完全評価データを自前で取る意味はあります。([ink.library.smu.edu.sg](https://ink.library.smu.edu.sg/lkcsb_research/6586/?utm_source=chatgpt.com))
+
+### 5. Shen, Hu, and Rees Ulmer：どの商品をレビューするか
+
+この論文は、レビュアーが注目や評判を得るために、
+
+- どの商品をレビューするか
+- どのような評価を投稿するか
+
+を戦略的に選ぶことを扱っています。AmazonとBarnes & Nobleの書籍レビューを比較し、注目獲得競争が強い環境では差別化された評価が投稿されやすいとしています。([aisel.aisnet.org](https://aisel.aisnet.org/misq/vol39/iss3/10/))
+
+したがって、
+
+> 消費者はレビュー対象商品を選んでいる
+
+という主張も、それだけでは新しくありません。
+
+ただし、この論文のメカニズムは注目・評判獲得です。今回検討しているのは、インフルエンサー的な戦略ではなく、時間・認知・文章作成能力という有限の投稿資源です。ここは明確に区別できます。
+
+## 周辺のレビュー生成研究
+
+レビュー生成研究には、このほか次の流れがあります。
+
+- レビューを書くかと、どのような評価を付けるかを同時に扱う review incidence/evaluation モデル
+- 既存レビューへの同調
+- 期待と実際の経験の乖離
+- 時間経過・記憶・顧客離脱
+- レビュー依頼や金銭インセンティブ
+- プラットフォームUIやレビュー形式
+
+Schoenmueller et al. 自身も、レビュー選択は事前期待、実際の評価、期待不一致のいずれからも生じ得ると整理しています。([columbia.edu](https://www.columbia.edu/~on2110/Papers/Schoenmueller_Netzer_Stahl_2020.pdf))
+
+2025年の包括的レビューも、レビュー生成段階における behavioral biases、reviewer identity、managerial interventions、platform design を主要領域として整理しています。([merit.url.edu](https://merit.url.edu/en/publications/online-reviews-a-literature-review-and-roadmap-for-future-researc/))
+
+ただし、確認したレビュー論文群では、投稿者が持つ複数の経験を一つの選択集合として扱い、
+
+\[
+\sum_{j=1}^{J}R_{ij}\leq k
+\]
+
+という共通容量制約を置く枠組みは前面に出ていません。
+
+## 一般の selective disclosure 理論
+
+レビュー研究では直接一致しなくても、経済理論全体では「多数の情報から一部だけ選ぶ」は既存です。
+
+### Strategic Sample Selection
+
+Di Tillio, Ottaviani, and Sørensen は、大きな予備標本から高い観測値だけを選んで提示する strategic sample selection を分析しています。選ばれた標本が、ランダムな同数標本より情報的かどうかを理論化しています。([didattica.unibocconi.it](https://didattica.unibocconi.it/mypage/upload/48832_20210319_051402_ECTA17288.PDF))
+
+今回との対応は、
+
+\[
+\text{予備標本}
+\leftrightarrow
+\text{消費者が経験した }J\text{ 財},
+\]
+
+\[
+\text{選ばれた標本}
+\leftrightarrow
+\text{公開された }k\text{ 件のレビュー}
+\]
+
+です。
+
+ただし、彼らの選択者は意思決定者を説得する戦略的情報送信者であり、消費者の自然なレビュー生成とは異なります。
+
+### Selective Disclosure of Evidence
+
+Farina et al. は、情報を持つ送信者が、より大きな証拠集合から一部だけを選んで受信者へ提示する実験を行っています。結果として、単なる非開示よりも「何を選んで見せるか」が大きな歪みを生むと報告しています。2026年7月に Review of Economic Studies のadvance articleとして公刊されました。([academic.oup.com](https://academic.oup.com/restud/advance-article/doi/10.1093/restud/rdag076/8731868))
+
+したがって、
+
+\[
+N\text{ 個の情報から }K\text{ 個だけを開示する}
+\]
+
+という一般理論自体は新しくありません。
+
+今回の貢献は、これを消費者レビューに持ち込み、
+
+- 情報が客観的証拠ではなく主観的経験である
+- 各経験についての私的評価を完全に観測できる
+- 選択が多変量MNARを生む
+- 公開レビューから母集団評価を推測する問題になる
+
+という違いを作ることです。
+
+## 「top-k review」の検索で多く出たもの
+
+`top-k review` や `review selection` では、既に投稿されたレビューの中から、
+
+- どのレビューを上位表示するか
+- どのレビューを代表レビューとして抽出するか
+- helpfulnessを予測する
+- 推薦システムでtop-\(k\)商品を出す
+
+という研究が多数ヒットしました。これらは**プラットフォーム側の表示選択**であり、今回の**投稿者側のレビュー対象選択**とは異なります。([emerald.com](https://www.emerald.com/oir/article/41/6/877/315230/Providing-consumers-with-a-representative-subset))
+
+この用語の混同を避けるため、論文では `top-k review selection` より、
+
+- `capacity-constrained review generation`
+- `competitive underreporting`
+- `limited disclosure capacity`
+- `experience-level crowd-out`
+
+を使う方が適切です。
+
+## 何が既知で、何が新規になり得るか
+
+| 主張 | 評価 |
+|---|---|
+| 極端な経験ほどレビューされる | 既知 |
+| レビューを書かない中程度評価者が存在する | 既知 |
+| レビュー頻度が低い人ほど評価がpolarになる | 既知 |
+| 自己選択した対象の評価は、強制された対象より極端 | 既知 |
+| 全顧客の私的評価と公開レビューの分布を比較する | 既知 |
+| レビュアーがどの商品を投稿するか戦略的に選ぶ | 既知 |
+| 多数の情報から少数を選んで開示する一般理論 | 既知 |
+| 共通の \(J\) 財を全員が評価し、容量 \(k\) をランダム化する | 直接一致を未確認 |
+| 自分の評価を固定しても、他財の極端性が当該財を押し出す | 直接一致を未確認 |
+| 容量制約が欠測指標間に負の依存を生む | レビュー文脈で直接一致を未確認 |
+| この競合的MNARから母集団評価を回復する | 直接一致を未確認 |
+
+## 新規性を成立させるための最小モデル
+
+参加者 \(i\) が \(J\) 個の財について私的評価
+
+\[
+\bm Y_i=(Y_{i1},\ldots,Y_{iJ})
+\]
+
+を持つとします。
+
+財 \(j\) をレビューする純便益を
+
+\[
+V_{ij}
+=
+b(Y_{ij})-c_{ij}+\varepsilon_{ij}
+\]
+
+とし、参加者は
+
+\[
+S_i(k_i)
+\in
+\arg\max_{S\subseteq\{1,\ldots,J\}}
+\sum_{j\in S}V_{ij}
+\quad
+\text{s.t.}\quad
+|S|\leq k_i
+\]
+
+を選ぶとします。
+
+極端性を
+
+\[
+e_{ij}=|Y_{ij}-3|
+\]
+
+とし、
+
+\[
+b(Y_{ij})
+=
+\alpha e_{ij}
++
+\beta(Y_{ij}-3),
+\qquad \alpha>0
+\]
+
+なら、次が導かれます。
+
+**自己評価効果**
+
+\[
+e_{ij}\uparrow
+\quad\Longrightarrow\quad
+P(R_{ij}=1)\uparrow.
+\]
+
+これは既存の polarity self-selection に対応する既知の部分です。
+
+**競合経験効果**
+
+\[
+e_{i\ell}\uparrow,\quad \ell\neq j
+\quad\Longrightarrow\quad
+P(R_{ij}=1\mid Y_{ij})\downarrow.
+\]
+
+商品 \(j\) の評価が同じでも、他により強い経験があると \(j\) は投稿されにくくなります。これが今回の最も新しい検証対象です。
+
+**容量効果**
+
+\[
+k_i/J\downarrow
+\quad\Longrightarrow\quad
+E[e_{ij}\mid R_{ij}=1]\uparrow.
+\]
+
+投稿枠が厳しいほど、公開レビューは極端化します。
+
+このうち第一命題は既存研究に近く、第二・第三命題をランダム化実験で識別することが重要です。
+
+## 推奨する実験
+
+固定の \(k=3\) だけでは、Schoenmueller et al. の自己選択実験との差が弱いです。**\(k\) をランダム化することが不可欠**です。
+
+最も単純なのは、全員が同じカテゴリの10財を私的に評価した後、
+
+\[
+k_i\in\{1,3,10\}
+\]
+
+へランダム割当する一因子三群実験です。
+
+ただし10件すべてに自由記述を書かせる負担は大きいため、より現実的には、
+
+\[
+\begin{aligned}
+&\text{条件1：1件を選択},\\
+&\text{条件2：3件を選択},\\
+&\text{条件3：ランダムに3件を指定}
+\end{aligned}
+\]
+
+がよいです。
+
+最後の条件は、自己選択のないforced benchmarkです。自由記述レビューは選ばれた財についてのみ書かせます。
+
+この設計なら最大3件しか書かせないため、実験負荷を抑えつつ、
+
+1. 選択可能か否か  
+2. 投稿容量が1件か3件か  
+
+を識別できます。
+
+ただし、財は参加者が自由に貼ったAmazonリンクより、できれば全員が共通して評価できる財の方がよいです。例えば、
+
+- 10種類の飲料の試飲
+- 10種類の短いAIサービス
+- 10種類の広告・商品説明
+- 10種類の簡易デジタルサービス
+- 共通認知度の高いアプリ・サービス
+
+です。
+
+Amazonリンクを自由提出させると、商品知名度、価格、関与度、利用時期などが、評価の極端性と選択の双方に入ります。外的妥当性は上がりますが、容量効果の因果識別は弱くなります。
+
+## shadow variable研究との関係
+
+この容量制約モデルは、現在作成している完全ケース型のベクトル拡張とは、そのままでは接続しません。
+
+現状の拡張では、
+
+\[
+R_i=\mathbf 1\{\bm D_i=\bm 1\}
+\]
+
+として、全アウトカムが観測される完全ケースを利用しています。fileciteturn0file1
+
+しかし、
+
+\[
+\sum_{j=1}^{J}R_{ij}=k<J
+\]
+
+を設計上課すと、
+
+\[
+P(\bm R_i=\bm1)=0.
+\]
+
+完全ケースは一人も存在しません。
+
+また、財 \(j\) の投稿有無は \(Y_{ij}\) だけではなく、他財の評価 \(\bm Y_{i,-j}\) にも依存するため、
+
+\[
+R_{ij}\perp Z_{ij}\mid Y_{ij}
+\]
+
+という項目別shadow-variable条件は一般に成立しません。自然なのは、
+
+\[
+\bm R_i
+\perp\!\!\!\perp
+\bm Z_i
+\mid
+\bm Y_i
+\]
+
+または、top-\(k\)選択構造を直接使う識別です。
+
+d’Haultfoeuille の識別は、アウトカムを条件づけた選択と補助変数の独立性、完備性、正の観測確率を必要とします。容量制約では多くの欠測パターンが構造的にゼロになるため、現在の定理を単純に適用することはできません。fileciteturn0file0
+
+これは欠点ではなく、理論的には次の新しい課題になります。
+
+> **Identification under capacity-constrained multivariate nonresponse**
+
+ただし、これは Economic Letters の短報より重い問題です。EL版では容量制約による選択バイアスを主題にし、shadow-variableによる回復は別論文または補助分析とする方が安全です。
+
+## 最終評価
+
+この研究案の査読上の危険度は次の通りです。
+
+**弱い書き方**
+
+> 消費者に10財を評価させ、その中から3財を選ばせたところ、極端なレビューが増えた。
+
+これは Schoenmueller et al. の polarity self-selection の再現と見なされる可能性が高いです。
+
+**強い書き方**
+
+> 消費者は各商品を独立にレビューするのではなく、有限の開示容量を複数の経験へ配分する。容量をランダム化すると、容量が小さいほどレビューは極端化し、さらに、ある商品の投稿確率は、その商品の評価を固定しても、他商品の評価によって低下する。
+
+後者なら、既存研究との差は明確です。
+
+最も防御しやすいタイトルは、
+
+> **Which Experiences Get Reviewed? Capacity Constraints and Competitive Underreporting**
+
+または、
+
+> **Reviews Compete for Scarce Disclosure Slots**
+
+です。
+
+中心的な新規性は U字型分布そのものではなく、
+
+\[
+\boxed{
+\text{cross-item crowd-out}
++
+\text{randomized disclosure capacity}
++
+\text{dependent multivariate missingness}
+}
+\]
+
+にあります。
