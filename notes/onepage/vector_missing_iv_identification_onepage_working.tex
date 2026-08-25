@@ -194,37 +194,41 @@ $\E|g|\le2$。B-completenessより$g=0$ a.s.，従って$q=\pi_S$。
 \]
 を周辺化すれば(6)を得る。\hfill$\square$
 
+\begingroup
+\scriptsize
 \section{有限潜在クラスの統合識別}
-Allman, Matias and Rhodes (2009, Sections 2--5) は，既知の$r$個の
-潜在クラスと，$F$を条件とする顕在変数の独立性から生じる有限混合
-product modelを考える。識別とは観測分布からパラメータが一意に戻る
-こと（潜在ラベルの同時置換は許す）である。有限次元パラメータ空間
-$\Theta\subset\mathbb R^d$が$d$次元open ballを含むとき，proper
-algebraic subvarietyを除いて識別されることをgeneric identification
-という。例外集合はLebesgue measure zeroだが，strict identification
-ではない。
+Allman, Matias and Rhodes (2009, Sections 2--5) の有限潜在クラスに
+対する証明構造を応用する。同論文は，顕在変数を$F$の下で独立な3群へ
+まとめ，Kruskalのtensor一意性から潜在構造を識別する。本稿はこれを
+第2節の多変量MNAR識別と組み合わせ，まず欠測IVにより必要なblock
+tensorを回復し，次にその分解から潜在分布と測定核を識別する。
 
-同論文のgeneral approachは，多数の顕在変数を互いに素な3群へまとめ，
-$F$の下で独立な3つの合成変数として扱うことである。各群の条件付き
-確率行列を$A_1,A_2,A_3$，そのKruskal rankを$k_1,k_2,k_3$とすると，
-観測確率tensor
-\[
-T=\sum_{f=1}^r\lambda_f A_1(:,f)\otimes A_2(:,f)\otimes A_3(:,f)
-\]
-に対し，$k_1+k_2+k_3\ge2r+2$なら，Kruskalの定理により各因子は
-共通列置換を除いて一意に定まる。Allman et al.の役割は，この条件が
-proper subvarietyの外で成立することを示し，generic identificationへ
-接続した点にある。本稿のanchor tripleは各群を一項目とする同論文の
-Corollary 2に対応し，多項目をclumpするTheorem 4とは区別する。
-
-以下では$X=x$を固定し，$F\in\{1,\ldots,r\}$，各$Y_j$は有限集合
-$\mathcal Y_j$を取るとする。測定行列を
+$X=x$を固定し，$F\in\{1,\ldots,r\}$，$d_j=|\mathcal Y_j|$，
+$L_x=|\mathcal W_x|$とする。識別対象は
+$Q_F(x)=\{\lambda(w,x):w\in\mathcal W_x\}$と
+$Q_Y(x)=\{M_j(x):j=1,\ldots,m\}$であり，
 \begin{align*}
-M_j(x)&=\big[P(Y_j=y\mid F=f,X=x)\big]_
- {y\in\mathcal Y_j,\,f=1,\ldots,r},\\
-\lambda_f(w,x)&=P(F=f\mid W=w,X=x)
+\lambda_f(w,x)&=P(F=f\mid W=w,X=x),\\
+M_j(y,f;x)&=P(Y_j=y\mid F=f,X=x)
 \end{align*}
-と置く。
+と置く。パラメータ空間と回復済みtensorへの写像は
+\begin{align*}
+\Theta_x&=\prod_{w\in\mathcal W_x}\Delta_{r-1}
+ \times\prod_{j=1}^m(\Delta_{d_j-1})^r
+ \subset[0,1]^{\ell_x},\\
+\ell_x&=L_x(r-1)+r\sum_{j=1}^m(d_j-1)
+\end{align*}
+である。$T_S(w,x)=[P(Y_S=y_S\mid w,x)]_{y_S}$とし，
+\[
+\Phi_x:\Theta_x\to\mathcal T_x,\qquad
+\Phi_x(\theta)=
+\big(\{T_{abc}(w,x)\}_w,\{T_{jab}(w,x)\}_{j,w}\big)
+\]
+と定義する。識別とは$\Phi_x$の単射性である。有限クラスでは共通のclass
+permutationが観測分布を変えないため，まず置換を除く単射性を示し，
+anchor orderingで代表元を固定する。Allman et al.のgeneric identification
+は，非識別点が$\Theta_x$内のproper algebraic subvarietyに含まれることを
+意味し，$(W,X)$の確率零集合を除くという意味ではない。
 
 \noindent\textbf{仮定3.1（有限潜在クラス測定構造）.}
 $r$は既知で，仮定2--4が成立する。$W$は有限support
@@ -232,11 +236,14 @@ $\mathcal W_x$を持ち，各$w\in\mathcal W_x$は正の条件付き確率を持
 anchor items $a,b,c$が存在し，$\{a,b,c\}$と各$\{j,a,b\}$は各$w$で
 supportedかつ仮定6--7を満たす。$M_a,M_b,M_c$のcolumn Kruskal rankを
 $k_a,k_b,k_c$として$k_a+k_b+k_c\ge2r+2$である。ある$w_0$で全ての
-$\lambda_f(w_0,x)>0$であり，既知scoreによる$M_a$の列順序を固定する。
+$\lambda_f(w_0,x)>0$である。既知score $s_a$に対する
+$\mu_{af}(x)=\sum_y s_a(y)M_a(y,f;x)$について
+$\mu_{a1}(x)<\cdots<\mu_{ar}(x)$とし，class labelを固定する。
 
 \noindent\textbf{定理3.1（欠測IVから潜在測定モデルへの逐次識別）.}
-仮定3.1の下で，観測データ法則から全ての$M_j(x)$と
-$\lambda_f(w,x)$が識別される。従って任意の項目集合$A$について
+仮定3.1の下で$\Phi_x$はanchor orderingで正規化した$\Theta_x$上で
+単射であり，観測データ法則から$Q_F(x)$と$Q_Y(x)$が識別される。
+従って任意の項目集合$A$について
 \begin{equation}
 P(Y_A=y_A\mid W=w,X=x)
 =\sum_{f=1}^r\lambda_f(w,x)\prod_{j\in A}M_j(y_j,f;x)
@@ -259,11 +266,20 @@ label swappingを固定する。最後に各$w\in\mathcal W_x$で
 $\operatorname{vec}T_{ab}(w,x)=(M_b\odot M_a)\lambda(w,x)$を左反転し，
 全ての混合比率を回復する。\hfill$\square$
 
+\noindent\textbf{仮定3.2（連続因子の場合の正規化；定理3.1の外）.}
+$F\in\mathbb R$なら，各$x$で$\E(F\mid X=x)=0$，
+$\operatorname{Var}(F\mid X=x)=1$とし，anchor responseの条件付き平均を
+$F$について狭義単調増加として符号を固定する。これは位置・尺度・符号の
+affine不定性を除くが，未知の測定核を許す場合の$F\mapsto h(F)$という
+非線形再パラメータ化までは除かない。その場合は測定族，calibration，
+または作用素の追加制約が必要である。
+\endgroup
+
 \vspace{0.2mm}
 \noindent\textbf{\scriptsize 参考文献}
 \begin{enumerate}[label={[\arabic*]},leftmargin=4mm,itemsep=0pt,topsep=0pt,
   parsep=0pt,partopsep=0pt]
-\tiny
+\fontsize{4.3}{4.5}\selectfont
 \item d'Haultfoeuille, X. (2010). A new instrumental method for dealing with
 endogenous selection. \textit{Journal of Econometrics}, 154(1), 1--15.
 \href{https://doi.org/10.1016/j.jeconom.2009.06.005}{doi:10.1016/j.jeconom.2009.06.005}.
