@@ -57,10 +57,19 @@
 選択には影響するがアウトカムには直接影響しない通常の操作変数
 （IV）だけでは，アウトカム分布全体の点識別は困難である。
 
-d'Haultfoeuille (2010, Assumptions 3--5, Theorem 2.3) は，
+d'Haultfoeuille (2010, Assumptions 1--5, Theorem 2.3) は，
 アウトカムを条件づけた後でIVと選択指標が独立になるshadow条件，
 positivity，B-completenessから，欠測アウトカムの分布を
 ノンパラメトリックに識別した。
+
+Zhao and Shao (2015, Section 2.2, Lemma 1, Theorem 1) は，常時観測される
+共変量を通常の共変量$U$とnonresponse IV $Z$に分け，
+$R\indep Z\mid(Y,U)$という共変量調整済みの除外制約を用いる。
+同論文はcomplete-case分布$[Z\mid Y,U,R=1]=[Z\mid Y,U]$から
+一般化線形モデルの有限次元パラメータを識別する。これに対し本稿は，
+この共変量調整済みの除外制約をblockごとに採用しつつ，block law全体の
+ノンパラメトリックな回復にはd'Haultfoeuille (2010)型の
+B-completenessを用いる。
 
 本研究では，未観測潜在変数 $F$，常時観測変数 $W,X$，
 複数の潜在的測定値 $Y=(Y_1,\ldots,Y_m)$ について，
@@ -85,7 +94,8 @@ D\indep W\mid(Y,F,X)
 \end{align}
 である。$W$ が $F$ を予測すれば $P(f\mid y,w,x)$ は一般に $w$ に
 依存するため，$D\indep W\mid(Y,X)$ は従わない。そこで$W$をlatent
-shifter，$Z$をmissingness shadowとして分離する。
+shifter，$Z_S$を通常の共変量$U_S=(X,W)$で調整した後のmissingness
+IV（shadow）として分離する。
 
 \section{モデルと仮定}
 \noindent\textbf{仮定1（観測過程）.}
@@ -104,18 +114,21 @@ $Y_j\mid(F,X)\sim Q_j(\cdot\mid F,X;\theta_j)$，$j=1,\ldots,m$。
 
 \noindent\textbf{仮定4（局所独立性とexclusion）.}
 \[
-P(Y\mid F,W,X)=\prod_{j=1}^m Q_j(Y_j\mid F,X).
+P(Y\mid F,W,X,Z)=\prod_{j=1}^m Q_j(Y_j\mid F,X).
 \]
 すなわち$Y_1,\ldots,Y_m$は$(F,X)$の下で条件付き独立であり，$W$は
-測定核へ直接入らない。
+測定核へ直接入らない。$Z_S$も測定核へ直接入らないが，$(W,X)$の下で
+$F$と関連し，潜在分布を通じて$Y_S$を予測してよい。従って
+$F\mid(W,X)\sim Q_F$は$Z$を周辺化した分布であり，完全データ法則では
+$P(F,Z\mid W,X)$を制限しない。
 
 \noindent\textbf{仮定5（supported block）.}
 $S\subseteq\{1,\ldots,m\}$について
 \[
-R_S=\prod_{j\in S}D_j,\qquad Y_S=(Y_j:j\in S),\qquad C_S=(X,W).
+R_S=\prod_{j\in S}D_j,\qquad Y_S=(Y_j:j\in S),\qquad U_S=(X,W).
 \]
 $R_S=1$なら$Y_S$全体が観測される。block観測データは
-$O_S=(C_S,Z_S,R_S,Y_S^{\mathrm{obs}})$であり，
+$O_S=(U_S,Z_S,R_S,Y_S^{\mathrm{obs}})$であり，
 \[
 Y_S^{\mathrm{obs}}=
 \begin{cases}Y_S,&R_S=1,\\ \dagger,&R_S=0\end{cases}
@@ -123,63 +136,83 @@ Y_S^{\mathrm{obs}}=
 とする。
 $S$がsupportedであるとは，対象領域で
 \[
-\pi_S(y,c):=P(R_S=1\mid Y_S=y,C_S=c)>0
+\pi_S(y,u):=P(R_S=1\mid Y_S=y,U_S=u)>0
 \]
 が成立することをいう。
 
-\noindent\textbf{Global benchmark.}
-全ベクトルを直接扱うJoE routeは，$R_{[m]}=\prod_{j=1}^mD_j$の
+記号の対応は，Zhao and Shao (2015)の$(Y,U,Z,R)$をblockごとの
+$(Y_S,U_S,Z_S,R_S)$に置き換えたものである。とくに$W$は$F$の分布を
+動かすlatent shifterなので，nonresponse IV $Z_S$とは区別して$U_S$へ
+含め，その値を条件づけた上で除外制約を課す。
+
+\noindent\textbf{ノンパラメトリックなbenchmarkと共変量調整.}
+d'Haultfoeuille (2010)の全ベクトルを直接扱うrouteは，
+$R_{[m]}=\prod_{j=1}^mD_j$の
 positivityと
 \[
-\E\{g(Y,C)\mid Z,C\}=0\ \Longrightarrow\ g(Y,C)=0
+\E\{g(Y,U)\mid Z,U\}=0\ \Longrightarrow\ g(Y,U)=0
 \]
 というglobal B-completenessを要する。exact top-$K<m$では
 $R_{[m]}=0$ a.s.なので，以下のblock版を用いる。
 
-\noindent\textbf{仮定6（blockwise missing IV）.}
+\noindent\textbf{仮定6（Zhao--Shao型blockwise covariate-adjusted missing IV）.}
 各supported $S$について，
 \[
-R_S\indep Z_S\mid(Y_S,C_S).
+[R_S\mid Y_S,U_S,Z_S]=[R_S\mid Y_S,U_S],
+\qquad\text{すなわち}\qquad
+R_S\indep Z_S\mid(Y_S,U_S).
 \]
+従って任意の可測集合$A$について
+\[
+P(Z_S\in A\mid Y_S,U_S,R_S=1)
+=P(Z_S\in A\mid Y_S,U_S),
+\]
+これはZhao and Shao (2015)のcomplete-case関係
+$[Z\mid Y,U,R=1]=[Z\mid Y,U]$のblock版である。
 
 \noindent\textbf{仮定7（blockwise conditional B-completeness）.}
 各supported $S$について，任意の下に有界かつ可積分な$g$に対し
 \[
-\E\{g(Y_S,C_S)\mid Z_S,C_S\}=0
-\Longrightarrow g(Y_S,C_S)=0\quad\text{a.s.}
+\E\{g(Y_S,U_S)\mid Z_S,U_S\}=0
+\Longrightarrow g(Y_S,U_S)=0\quad\text{a.s.}
 \]
 が成立する。global版とblockwise版の間に一般的な包含関係はない。
+Zhao and Shao (2015)では一般化線形モデルの有限次元パラメータに対して
+Jacobian行列のfull-rank条件を用いる。本稿では$P(Y_S\mid U_S)$を
+パラメトリックに限定せずblock law全体を回復するため，対応する
+無限次元の単射条件としてB-completenessを仮定する。
 
 \noindent\textbf{命題2.1（supported-block lawの識別）.}
 仮定1，5，6，7の下で，$\pi_S$は
 \begin{equation}
-\E\left\{\frac{R_S}{q(Y_S,C_S)}\mid Z_S,C_S\right\}=1
+\E\left\{\frac{R_S}{q(Y_S,U_S)}\mid Z_S,U_S\right\}=1
 \end{equation}
 を満たし条件付き期待値が有限な正値関数$q$の唯一解である。従って任意の可積分$h$に対し
 \begin{equation}
-\E h(Y_S,Z_S,C_S)
-=\E\left\{\frac{R_Sh(Y_S,Z_S,C_S)}{\pi_S(Y_S,C_S)}\right\},
+\E h(Y_S,Z_S,U_S)
+=\E\left\{\frac{R_Sh(Y_S,Z_S,U_S)}{\pi_S(Y_S,U_S)}\right\},
 \end{equation}
-よって$P(Y_S,Z_S,C_S)$が識別される。これはd'Haultfoeuille
-(2010, Theorem 2.3)の識別論法を各supported blockへ条件付き適用した
-拡張である。
+よって$P(Y_S,Z_S,U_S)$が識別される。仮定6の共変量調整済み除外制約は
+Zhao and Shao (2015)型であり，$q$の一意性とfull lawの回復は
+d'Haultfoeuille (2010, Theorem 2.3)型である。命題は両者を各supported
+blockへ条件付き適用した拡張になっている。
 
 \noindent\textbf{証明.}
 排除条件より
 \[
-\E(R_S\mid Y_S,Z_S,C_S)=\pi_S(Y_S,C_S),
+\E(R_S\mid Y_S,Z_S,U_S)=\pi_S(Y_S,U_S),
 \]
 従って真の$\pi_S$は(5)を満たす。別の正値解$q$に対し
 $g=\pi_S/q-1$と置くと，
 \[
-0=\E\left[R_S\left\{q^{-1}-\pi_S^{-1}\right\}\mid Z_S,C_S\right]
-=\E(g\mid Z_S,C_S).
+0=\E\left[R_S\left\{q^{-1}-\pi_S^{-1}\right\}\mid Z_S,U_S\right]
+=\E(g\mid Z_S,U_S).
 \]
 (5)を周辺化すれば$\E(\pi_S/q)=1$なので$g\ge-1$かつ
 $\E|g|\le2$。B-completenessより$g=0$ a.s.，従って$q=\pi_S$。
 最後に
 \[
-\E\left\{R_Sh/\pi_S\mid Y_S,Z_S,C_S\right\}=h
+\E\left\{R_Sh/\pi_S\mid Y_S,Z_S,U_S\right\}=h
 \]
 を周辺化すれば(6)を得る。\hfill$\square$
 
@@ -187,8 +220,10 @@ $\E|g|\le2$。B-completenessより$g=0$ a.s.，従って$q=\pi_S$。
 Allman, Matias and Rhodes (2009, Sections 2--5) の有限潜在クラスに
 対する証明構造を応用する。同論文は，顕在変数を$F$の下で独立な3群へ
 まとめ，Kruskalのtensor一意性から潜在構造を識別する。本稿はこれを
-第2節の多変量MNAR識別と組み合わせ，まず欠測IVにより必要なblock
-tensorを回復し，次にその分解から潜在分布と測定核を識別する。
+第2節の多変量MNAR識別と組み合わせる。第一段階ではZhao and Shao
+(2015)型の共変量調整済み除外制約とd'Haultfoeuille (2010)型の
+B-completenessにより必要なblock tensorを回復し，第二段階ではその
+分解から潜在分布と測定核を識別する。
 
 $X=x$を固定し，$F\in\{1,\ldots,r\}$，$d_j=|\mathcal Y_j|$，
 $L_x=|\mathcal W_x|$とする。識別対象は
@@ -266,6 +301,10 @@ affine不定性を除くが，未知の測定核を許す場合の$F\mapsto h(F)
 \item d'Haultfoeuille, X. (2010). A new instrumental method for dealing with
 endogenous selection. \textit{Journal of Econometrics}, 154(1), 1--15.
 \href{https://doi.org/10.1016/j.jeconom.2009.06.005}{doi:10.1016/j.jeconom.2009.06.005}.
+\item Zhao, J. and Shao, J. (2015). Semiparametric pseudo-likelihoods in
+generalized linear models with nonignorable missing data. \textit{Journal of
+the American Statistical Association}, 110(512), 1577--1590.
+\href{https://doi.org/10.1080/01621459.2014.983234}{doi:10.1080/01621459.2014.983234}.
 \item Muth\'en, B. O., Kaplan, D., and Hollis, M. (1987). On structural
 equation modeling with data that are not missing completely at random.
 \textit{Psychometrika}, 52(3), 431--462.
