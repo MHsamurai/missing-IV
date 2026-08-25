@@ -1,11 +1,12 @@
-\documentclass[a4paper,11pt]{article}
+\documentclass[a4paper,10pt]{article}
 \usepackage{xeCJK}
 \setCJKmainfont{Hiragino Mincho ProN}
 \setCJKsansfont{Hiragino Sans}
 \setCJKmonofont{Hiragino Sans}
 
-\usepackage[top=24mm,bottom=25mm,left=24mm,right=24mm]{geometry}
+\usepackage[top=18mm,bottom=20mm,left=17mm,right=17mm]{geometry}
 \usepackage{amsmath,amssymb,bm}
+\usepackage{multicol}
 \usepackage{enumitem}
 \usepackage{titlesec}
 \usepackage{xcolor}
@@ -14,6 +15,7 @@
 \pagestyle{plain}
 \setlength{\parindent}{1em}
 \setlength{\parskip}{0.25em}
+\setlength{\columnsep}{7mm}
 \setlength{\emergencystretch}{3em}
 \renewcommand{\baselinestretch}{1.05}
 
@@ -49,6 +51,8 @@
   {\normalsize \authorblock}
 \end{center}
 \vspace{3mm}
+
+\begin{multicols}{2}
 
 \section{問題設定}
 欠測値，選択，反実仮想の非観測はマイクロデータで頻繁に生じる。
@@ -158,10 +162,13 @@ $R_{[m]}=0$ a.s.なので，以下のblock版を用いる。
 \noindent\textbf{仮定6（Zhao--Shao型blockwise covariate-adjusted missing IV）.}
 各supported $S$について，
 \[
-[R_S\mid Y_S,U_S,Z_S]=[R_S\mid Y_S,U_S],
-\qquad\text{すなわち}\qquad
-R_S\indep Z_S\mid(Y_S,U_S).
+\begin{aligned}
+\relax[R_S\mid Y_S,U_S,Z_S]
+  &=[R_S\mid Y_S,U_S],\\
+R_S&\indep Z_S\mid(Y_S,U_S).
+\end{aligned}
 \]
+ここで第2式は第1式の独立性による表記である。
 従って任意の可測集合$A$について
 \[
 P(Z_S\in A\mid Y_S,U_S,R_S=1)
@@ -242,9 +249,12 @@ M_j(y,f;x)&=P(Y_j=y\mid F=f,X=x)
 \end{align*}
 である。$T_S(w,x)=[P(Y_S=y_S\mid w,x)]_{y_S}$とし，
 \[
-\Phi_x:\Theta_x\to\mathcal T_x,\qquad
-\Phi_x(\theta)=
-\big(\{T_{abc}(w,x)\}_w,\{T_{jab}(w,x)\}_{j,w}\big)
+\begin{aligned}
+\Phi_x&:\Theta_x\to\mathcal T_x,\\
+\Phi_x(\theta)
+  &=\big(\{T_{abc}(w,x)\}_w,\\
+  &\hspace{8mm}\{T_{jab}(w,x)\}_{j,w}\big)
+\end{aligned}
 \]
 と定義する。識別とは$\Phi_x$の単射性である。有限クラスでは共通のclass
 permutationが観測分布を変えないため，まず置換を除く単射性を示し，
@@ -267,8 +277,11 @@ $\mu_{a1}(x)<\cdots<\mu_{ar}(x)$とし，class labelを固定する。
 単射であり，観測データ法則から$Q_F(x)$と$Q_Y(x)$が識別される。
 従って任意の項目集合$A$について
 \begin{equation}
+\begin{aligned}
 P(Y_A=y_A\mid W=w,X=x)
-=\sum_{f=1}^r\lambda_f(w,x)\prod_{j\in A}M_j(y_j,f;x)
+ &=\sum_{f=1}^r\lambda_f(w,x)\\
+ &\quad\times\prod_{j\in A}M_j(y_j,f;x)
+\end{aligned}
 \end{equation}
 が識別される。これは$|A|>K$で$Y_A$が同時観測されない場合も含む。
 
@@ -327,5 +340,7 @@ parameters in latent structure models with many observed variables.
 \textit{The Annals of Statistics}, 37(6A), 3099--3132.
 \href{https://doi.org/10.1214/09-AOS689}{doi:10.1214/09-AOS689}.
 \end{enumerate}
+
+\end{multicols}
 
 \end{document}
