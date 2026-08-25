@@ -7,6 +7,7 @@
 \usepackage[top=12.5mm,bottom=12.5mm,left=13mm,right=13mm]{geometry}
 \usepackage{amsmath,amssymb,bm}
 \usepackage{multicol}
+\usepackage{enumitem}
 \usepackage{titlesec}
 \usepackage{xcolor}
 \usepackage[hidelinks]{hyperref}
@@ -27,6 +28,7 @@
 \newcommand{\indep}{\mathrel{\perp\!\!\!\perp}}
 \newcommand{\Y}{\bm Y}
 \newcommand{\Z}{\bm Z}
+\newcommand{\one}{\bm 1}
 
 \newcommand{\papertitle}{欠測IVと潜在変数モデリングによる非無作為欠測の識別}
 \newcommand{\authorblock}{%
@@ -66,60 +68,136 @@
 選択には影響するがアウトカムには直接影響しない通常の操作変数
 （IV）だけでは，アウトカム分布全体の点識別は困難である。
 
-d'Haultfoeuille (2010) は，アウトカムを条件づけた後で操作変数と
-選択変数が独立になる欠測IV（missing IV / shadow variable 条件）
-により，欠測アウトカムの分布をノンパラメトリックに識別できる
-ことを示した。このような欠測IVは，アウトカムについて排除制約を
-持つ通常のIVとは異なり，アウトカムに関連する変数をIVとして
-用いうる点に特徴がある。ノンパラメトリックな点識別には，
-通常のIV問題と同様に完備性条件が重要となる。
+d'Haultfoeuille (2010, Assumptions 3--5, Theorem 2.3) は，
+アウトカムを条件づけた後でIVと選択指標が独立になるshadow条件，
+positivity，B-completenessから，欠測アウトカムの分布を
+ノンパラメトリックに識別した。
 
-本研究では，未観測潜在変数 $F$，常時観測変数 $V,X$，
+本研究では，未観測潜在変数 $F$，常時観測変数 $W,X$，
 複数の潜在的測定値 $Y=(Y_1,\ldots,Y_m)$ について，
 \begin{align}
-F\mid(V,X)&\sim Q_F(\cdot\mid V,X), \tag{1}\\
-Y_j\mid(F,X)&\sim Q_j(\cdot\mid F,X;\theta_j), \tag{2}\\
-Y_1,\ldots,Y_m&\indep\mid(F,X) \tag{3}
+F\mid(W,X)&\sim Q_F(\cdot\mid W,X),\\
+Y_j\mid(F,X)&\sim Q_j(\cdot\mid F,X;\theta_j),\\
+Y_1,\ldots,Y_m&\indep\mid(F,X)
 \end{align}
-という潜在測定モデルを考える。
+という潜在測定モデルを考える。この共有潜在構造は，因子分析・SEM・
+IRTのMNARモデルで広く用いられる（Muth\'en et al., 1987;
+Holman and Glas, 2005; Lee, 2006; Kuha et al., 2018）。
 
 ここで，仮に
 \[
-D\indep V\mid(Y,F,X)
+D\indep W\mid(Y,F,X)
 \]
 が成立しても，
 \begin{align}
-&P(D=d\mid Y=y,V=v,X=x) \notag\\
+&P(D=d\mid Y=y,W=w,X=x) \notag\\
 &\qquad=
-\int P(D=d\mid y,f,x)\,dP(f\mid y,v,x). \tag{4}
+\int P(D=d\mid y,f,x)\,dP(f\mid y,w,x).
 \end{align}
-である。$V$ が $F$ を予測する場合，
-$P(f\mid y,v,x)$ は一般に $v$ に依存する。
-したがって，$F$ を積分消去するだけでは
+である。$W$ が $F$ を予測すれば $P(f\mid y,w,x)$ は一般に $w$ に
+依存するため，$D\indep W\mid(Y,X)$ は従わない。そこで$W$をlatent
+shifter，$Z$をmissingness shadowとして分離する。
+
+\section{モデルと仮定}
+\noindent\textbf{仮定1（観測過程）.}
+$D=(D_1,\ldots,D_m)\in\{0,1\}^m$，$Y_j$は$D_j=1$のときだけ観測される。
+$X,W,Z,D$は常時観測され，
 \[
-D\indep V\mid(Y,X)
+O=(X,W,Z,D,Y_D),\qquad Y_D=\{Y_j:D_j=1\}.
 \]
-という通常の欠測IV条件は導かれない。
+ここで$Z$は必要なblockごとのshadow $Z_S$を含む情報の集合である。
 
-\section{識別したい対象}
-そこで本研究では，潜在変数を含まない欠測IVモデルへ還元するのでは
-なく，観測データから潜在分布 $P(F\mid V,X)$ と測定核
-$P(Y_j\mid F,X)$ までを識別できる条件を明らかにする。
+\noindent\textbf{仮定2（潜在分布のshift）.}
+$F\mid(W,X)\sim Q_F(\cdot\mid W,X)$。
 
-この問題は，景気などの未観測経済状態，潜在認知機能，認知症の
-重症度，潜在的な臓器障害，運動・認知機能とバイオマーカー，
-選択的な検査実施など，複数の測定値の背後に共通因子を想定する
-多くの場面で生じる。
+\noindent\textbf{仮定3（測定過程）.}
+$Y_j\mid(F,X)\sim Q_j(\cdot\mid F,X;\theta_j)$，$j=1,\ldots,m$。
 
-\section{識別のアイデア}
-\draftprompt{必要な仮定と識別の論理を、確定した順に追加する。}
+\noindent\textbf{仮定4（局所独立性とexclusion）.}
+\[
+P(Y\mid F,W,X)=\prod_{j=1}^m Q_j(Y_j\mid F,X).
+\]
+すなわち$Y_1,\ldots,Y_m$は$(F,X)$の下で条件付き独立であり，$W$は
+測定核へ直接入らない。
 
-% 未確定の主張は定理として書かず、仮説またはメモとして扱う。
+\noindent\textbf{仮定5（supported block）.}
+$S\subseteq\{1,\ldots,m\}$について
+\[
+R_S=\prod_{j\in S}D_j,\qquad Y_S=(Y_j:j\in S),\qquad C_S=(X,W).
+\]
+$R_S=1$なら$Y_S$全体が観測される。block観測データは
+$O_S=(C_S,Z_S,R_S,Y_S^{\mathrm{obs}})$であり，
+\[
+Y_S^{\mathrm{obs}}=
+\begin{cases}Y_S,&R_S=1,\\ \dagger,&R_S=0\end{cases}
+\]
+とする。
+$S$がsupportedであるとは，対象領域で
+\[
+\pi_S(y,c):=P(R_S=1\mid Y_S=y,C_S=c)>0
+\]
+が成立することをいう。
 
-\section{未解決点}
-\draftprompt{まだ決めていない点、反例、既存研究との差を残す。}
+\noindent\textbf{Global benchmark.}
+全ベクトルを直接扱うJoE routeは，$R_{[m]}=\prod_{j=1}^mD_j$の
+positivityと
+\[
+\E\{g(Y,C)\mid Z,C\}=0\ \Longrightarrow\ g(Y,C)=0
+\]
+というglobal B-completenessを要する。exact top-$K<m$では
+$R_{[m]}=0$ a.s.なので，以下のblock版を用いる。
 
-% 対話中の保留事項をここに追加する。
+\noindent\textbf{仮定6（blockwise missing IV）.}
+各supported $S$について，
+\[
+R_S\indep Z_S\mid(Y_S,C_S).
+\]
+
+\noindent\textbf{仮定7（blockwise conditional B-completeness）.}
+各supported $S$について，任意の下に有界かつ可積分な$g$に対し
+\[
+\E\{g(Y_S,C_S)\mid Z_S,C_S\}=0
+\Longrightarrow g(Y_S,C_S)=0\quad\text{a.s.}
+\]
+が成立する。global版とblockwise版の間に一般的な包含関係はない。
+
+\noindent\textbf{命題2.1（supported-block lawの識別）.}
+仮定1，5，6，7の下で，$\pi_S$は
+\begin{equation}
+\E\left\{\frac{R_S}{q(Y_S,C_S)}\mid Z_S,C_S\right\}=1
+\end{equation}
+を満たし条件付き期待値が有限な正値関数$q$の唯一解である。従って任意の可積分$h$に対し
+\begin{equation}
+\E h(Y_S,Z_S,C_S)
+=\E\left\{\frac{R_Sh(Y_S,Z_S,C_S)}{\pi_S(Y_S,C_S)}\right\},
+\end{equation}
+よって$P(Y_S,Z_S,C_S)$が識別される。これはd'Haultfoeuille
+(2010, Theorem 2.3)の識別論法を各supported blockへ条件付き適用した
+拡張である。
+
+\noindent\textbf{証明.}
+排除条件より
+\[
+\E(R_S\mid Y_S,Z_S,C_S)=\pi_S(Y_S,C_S),
+\]
+従って真の$\pi_S$は(5)を満たす。別の正値解$q$に対し
+$g=\pi_S/q-1$と置くと，
+\[
+0=\E\left[R_S\left\{q^{-1}-\pi_S^{-1}\right\}\mid Z_S,C_S\right]
+=\E(g\mid Z_S,C_S).
+\]
+(5)を周辺化すれば$\E(\pi_S/q)=1$なので$g\ge-1$かつ
+$\E|g|\le2$。B-completenessより$g=0$ a.s.，従って$q=\pi_S$。
+最後に
+\[
+\E\left\{R_Sh/\pi_S\mid Y_S,Z_S,C_S\right\}=h
+\]
+を周辺化すれば(6)を得る。\hfill$\square$
+
+\vspace{0.2mm}
+\noindent{\scriptsize 主要文献：d'Haultfoeuille (2010, JoE);
+Muth\'en et al. (1987); Holman and Glas (2005); Lee (2006);
+Kuha et al. (2018).}
 
 \end{multicols}
 \end{document}
