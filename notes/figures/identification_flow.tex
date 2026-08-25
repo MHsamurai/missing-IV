@@ -1,0 +1,30 @@
+\begin{tikzpicture}[
+  x=1cm,y=1cm,font=\sffamily,
+  box/.style={draw, rounded corners=1pt, fill=gray!10, minimum width=62mm,
+    minimum height=10mm, align=center, inner sep=1.5mm, font=\scriptsize},
+  tensor/.style={box,fill=gray!18,minimum height=14mm},
+  output/.style={box,fill=white,minimum height=12mm},
+  arrow/.style={-{Latex[length=2.3mm,width=1.5mm]},line width=.75pt},
+  lab/.style={fill=white,inner sep=1pt,font=\scriptsize,align=center}
+]
+  \node[box] (pobs) at (3.55,8.70)
+    {$P_{\mathrm{obs}}(O)$\\[-.2mm]$O=(X,W,Z,D,Y_D)$};
+  \node[box] (laws) at (3.55,6.55)
+    {supported block laws\\[-.2mm]
+     $\{\pi_S,\ P(Y_S,Z_S,U_S)\}_{S\in\mathcal S}$};
+  \node[tensor] (tensor) at (3.55,4.15)
+    {回復済みblock tensor\\[-.2mm]
+     $T_{abc}(w,x),\quad\{T_{jab}(w,x)\}_{j}$\\[-.2mm]
+     $T_{abc}=\sum_f\lambda_f M_a\otimes M_b\otimes M_c$};
+  \node[output] (latent) at (3.55,1.55)
+    {識別された潜在関数\\[-.2mm]
+     $Q_F(x)=\{\lambda_f(w,x)\}_{f,w},\quad
+      Q_Y(x)=\{M_j(y,f;x)\}_{j,y,f}$};
+
+  \draw[arrow] (pobs) -- node[lab]
+    {exclusion $+$ positivity $+$ B-completeness\\命題2.1} (laws);
+  \draw[arrow] (laws) -- node[lab] {周辺化・条件付け} (tensor);
+  \draw[arrow] (tensor) -- node[lab]
+    {Kruskal rank $+$ 逐次線形反転\\anchor orderingでlabel固定\quad 定理3.1}
+    (latent);
+\end{tikzpicture}

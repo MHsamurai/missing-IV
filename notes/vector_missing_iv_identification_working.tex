@@ -7,13 +7,14 @@
 \usepackage[top=18mm,bottom=20mm,left=17mm,right=17mm]{geometry}
 \usepackage{amsmath,amssymb,bm}
 \usepackage{multicol}
+\usepackage{graphicx}
 \usepackage{tikz}
 \usepackage{caption}
 \usepackage{enumitem}
 \usepackage{titlesec}
 \usepackage{xcolor}
 \usepackage[hidelinks]{hyperref}
-\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usetikzlibrary{arrows.meta,positioning,fit,calc,shapes.geometric}
 \captionsetup{font=small,labelfont=bf,hypcap=false}
 
 \pagestyle{plain}
@@ -130,6 +131,18 @@ $F$と関連し，潜在分布を通じて$Y_S$を予測してよい。従って
 $F\mid(W,X)\sim Q_F$は$Z$を周辺化した分布であり，完全データ法則では
 $P(F,Z\mid W,X)$を制限しない。
 
+\begin{center}
+\begin{minipage}{\linewidth}
+\centering
+\input{notes/figures/latent_mnar_dag.tex}
+\captionof{figure}{単一supported blockにおける潜在測定・欠測機構。
+円は潜在変数，四角は顕在変数，diamondはblock観測指標を表す。
+無向破線は$Z_S$と$F$の条件付き関連性を表す。$X$は潜在分布と測定核，
+$W$は潜在分布だけをshiftし，$Z_S$から測定核・$R_S$への直接辺はない。}
+\label{fig:latent-mnar-dag}
+\end{minipage}
+\end{center}
+
 \noindent\textbf{仮定5（supported block）.}
 $S\subseteq\{1,\ldots,m\}$について
 \[
@@ -193,6 +206,20 @@ Jacobian行列のfull-rank条件を用いる。本稿では$P(Y_S\mid U_S)$を
 パラメトリックに限定せずblock law全体を回復するため，対応する
 無限次元の単射条件としてB-completenessを仮定する。
 
+\begin{center}
+\begin{minipage}{\linewidth}
+\centering
+\resizebox{\linewidth}{!}{\input{notes/figures/supported_blocks_dag.tex}}
+\captionof{figure}{複数のsupported blocksにおける多次元missing IV，
+outcome，block indicatorの構造。各外枠は一つのsupported blockを表し，
+内部の小さな四角は$\bm Z_S$と$Y_S$の各成分，diamondは
+$R_S=\prod_{k\in S}D_k$を表す。anchor items $Y_a,Y_b$をblock間で
+共有することで，回復したtensorのclass labelを接続する。無向破線は
+$\bm Z_S$と$F$の条件付き関連性，灰色はblock間で同一のanchor itemを表す。}
+\label{fig:supported-blocks-dag}
+\end{minipage}
+\end{center}
+
 \noindent\textbf{命題2.1（supported-block lawの識別）.}
 仮定1，5，6，7の下で，$\pi_S$は
 \begin{equation}
@@ -228,13 +255,16 @@ $\E|g|\le2$。B-completenessより$g=0$ a.s.，従って$q=\pi_S$。
 を周辺化すれば(6)を得る。\hfill$\square$
 
 \begin{center}
-\input{notes/figures/block_identification_dag.tex}
-\captionof{figure}{観測データ法則から潜在測定構造への二段階識別。
-四角は顕在変数または観測法則から識別される関数，円は潜在変数を表す。
-Allman, Matias and Rhodes (2009, Sections 2--4) の条件付き独立な3群と
-3-way tensor分解を，命題2.1のblockwise MNAR回復へ接続している。
-縦方向の太い矢印は因果効果ではなく識別写像である。}
-\label{fig:block-identification-dag}
+\begin{minipage}{\linewidth}
+\centering
+\input{notes/figures/identification_flow.tex}
+\captionof{figure}{観測データ法則から潜在関数までの識別フロー。
+命題2.1が各supported blockの選択確率とfull lawを回復し，その周辺化から
+block tensorを構成する。Allman, Matias and Rhodes (2009, Sections 2--4)
+の3-way tensor一意性と逐次線形反転により，anchor orderingの下で
+$Q_F(x)$と$Q_Y(x)$を識別する。矢印は因果効果ではなく識別写像である。}
+\label{fig:identification-flow}
+\end{minipage}
 \end{center}
 
 \section{有限潜在クラスの統合識別}
