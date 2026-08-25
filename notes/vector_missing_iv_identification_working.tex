@@ -1,27 +1,26 @@
-\documentclass[a4paper,10pt]{article}
+\documentclass[a4paper,11pt]{article}
 \usepackage{xeCJK}
 \setCJKmainfont{Hiragino Mincho ProN}
 \setCJKsansfont{Hiragino Sans}
 \setCJKmonofont{Hiragino Sans}
 
-\usepackage[top=12.5mm,bottom=12.5mm,left=13mm,right=13mm]{geometry}
+\usepackage[top=24mm,bottom=25mm,left=24mm,right=24mm]{geometry}
 \usepackage{amsmath,amssymb,bm}
-\usepackage{multicol}
 \usepackage{enumitem}
 \usepackage{titlesec}
 \usepackage{xcolor}
 \usepackage[hidelinks]{hyperref}
 
-\pagestyle{empty}
+\pagestyle{plain}
 \setlength{\parindent}{1em}
-\setlength{\parskip}{0pt}
-\setlength{\columnsep}{5.8mm}
-\renewcommand{\baselinestretch}{0.95}
+\setlength{\parskip}{0.25em}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\baselinestretch}{1.05}
 
 \titleformat{\section}
-  {\normalfont\bfseries\normalsize}
+  {\normalfont\bfseries\large}
   {\thesection.}{0.45em}{}
-\titlespacing*{\section}{0pt}{0.45\baselineskip}{0.12\baselineskip}
+\titlespacing*{\section}{0pt}{1.4\baselineskip}{0.45\baselineskip}
 
 \newcommand{\E}{\mathbb E}
 \newcommand{\Prb}{\mathbb P}
@@ -44,22 +43,12 @@
 
 \begin{document}
 
-\vspace*{-9mm}
 \begin{center}
-  {\large\bfseries \papertitle\par}
-  \vspace{0.7mm}
-  {\footnotesize \authorblock}
+  {\LARGE\bfseries \papertitle\par}
+  \vspace{2mm}
+  {\normalsize \authorblock}
 \end{center}
-\vspace{-3.5mm}
-
-\footnotesize
-\setlength{\baselineskip}{9.7pt}
-\setlength{\abovedisplayskip}{1.2pt}
-\setlength{\belowdisplayskip}{1.2pt}
-\setlength{\abovedisplayshortskip}{0.8pt}
-\setlength{\belowdisplayshortskip}{0.8pt}
-\setlength{\jot}{0pt}
-\begin{multicols}{2}
+\vspace{3mm}
 
 \section{問題設定}
 欠測値，選択，反実仮想の非観測はマイクロデータで頻繁に生じる。
@@ -194,8 +183,6 @@ $\E|g|\le2$。B-completenessより$g=0$ a.s.，従って$q=\pi_S$。
 \]
 を周辺化すれば(6)を得る。\hfill$\square$
 
-\begingroup
-\scriptsize
 \section{有限潜在クラスの統合識別}
 Allman, Matias and Rhodes (2009, Sections 2--5) の有限潜在クラスに
 対する証明構造を応用する。同論文は，顕在変数を$F$の下で独立な3群へ
@@ -273,13 +260,9 @@ $F$について狭義単調増加として符号を固定する。これは位�
 affine不定性を除くが，未知の測定核を許す場合の$F\mapsto h(F)$という
 非線形再パラメータ化までは除かない。その場合は測定族，calibration，
 または作用素の追加制約が必要である。
-\endgroup
-
-\vspace{0.2mm}
-\noindent\textbf{\scriptsize 参考文献}
-\begin{enumerate}[label={[\arabic*]},leftmargin=4mm,itemsep=0pt,topsep=0pt,
+\section*{参考文献}
+\begin{enumerate}[label={[\arabic*]},leftmargin=7mm,itemsep=0.35em,topsep=0.2em,
   parsep=0pt,partopsep=0pt]
-\fontsize{4.3}{4.5}\selectfont
 \item d'Haultfoeuille, X. (2010). A new instrumental method for dealing with
 endogenous selection. \textit{Journal of Econometrics}, 154(1), 1--15.
 \href{https://doi.org/10.1016/j.jeconom.2009.06.005}{doi:10.1016/j.jeconom.2009.06.005}.
@@ -306,5 +289,4 @@ parameters in latent structure models with many observed variables.
 \href{https://doi.org/10.1214/09-AOS689}{doi:10.1214/09-AOS689}.
 \end{enumerate}
 
-\end{multicols}
 \end{document}
