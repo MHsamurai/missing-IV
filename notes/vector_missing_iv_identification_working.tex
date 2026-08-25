@@ -7,10 +7,14 @@
 \usepackage[top=18mm,bottom=20mm,left=17mm,right=17mm]{geometry}
 \usepackage{amsmath,amssymb,bm}
 \usepackage{multicol}
+\usepackage{tikz}
+\usepackage{caption}
 \usepackage{enumitem}
 \usepackage{titlesec}
 \usepackage{xcolor}
 \usepackage[hidelinks]{hyperref}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\captionsetup{font=small,labelfont=bf,hypcap=false}
 
 \pagestyle{plain}
 \setlength{\parindent}{1em}
@@ -222,6 +226,16 @@ $\E|g|\le2$。B-completenessより$g=0$ a.s.，従って$q=\pi_S$。
 \E\left\{R_Sh/\pi_S\mid Y_S,Z_S,U_S\right\}=h
 \]
 を周辺化すれば(6)を得る。\hfill$\square$
+
+\begin{center}
+\input{notes/figures/block_identification_dag.tex}
+\captionof{figure}{観測データ法則から潜在測定構造への二段階識別。
+四角は顕在変数または観測法則から識別される関数，円は潜在変数を表す。
+Allman, Matias and Rhodes (2009, Sections 2--4) の条件付き独立な3群と
+3-way tensor分解を，命題2.1のblockwise MNAR回復へ接続している。
+縦方向の太い矢印は因果効果ではなく識別写像である。}
+\label{fig:block-identification-dag}
+\end{center}
 
 \section{有限潜在クラスの統合識別}
 Allman, Matias and Rhodes (2009, Sections 2--5) の有限潜在クラスに

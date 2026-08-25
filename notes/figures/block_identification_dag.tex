@@ -1,0 +1,71 @@
+\begin{tikzpicture}[
+  x=1cm,
+  y=1cm,
+  font=\sffamily,
+  obs/.style={draw, rounded corners=1pt, fill=gray!10, minimum height=6.5mm,
+    align=center, inner xsep=2.5mm, inner ysep=1.4mm, font=\scriptsize},
+  tensor/.style={draw, rounded corners=1pt, fill=gray!18, minimum width=61mm,
+    minimum height=9mm, align=center, inner sep=1.6mm, font=\scriptsize},
+  latent/.style={draw, circle, fill=white, minimum size=8.5mm, align=center,
+    inner sep=1pt, font=\small},
+  panel/.style={draw=gray!55, rounded corners=2pt, fill=none, inner sep=2.5mm},
+  arrow/.style={-{Latex[length=2mm,width=1.3mm]}, line width=.55pt},
+  ident/.style={-{Latex[length=2.4mm,width=1.6mm]}, line width=.8pt},
+  lab/.style={fill=white, inner sep=1pt, align=center, font=\scriptsize},
+  titlelabel/.style={fill=white, inner xsep=1.2mm, inner ysep=.4mm,
+    font=\scriptsize\bfseries, anchor=west},
+  tinylabel/.style={fill=white, inner sep=.6pt, font=\tiny}
+]
+  % Stage 1: only the full observed-data law is available.
+  \node[obs, minimum width=61mm, minimum height=11mm] (pobs) at (3.6,12.15)
+    {$P_{\mathrm{obs}}(O)$\\[-.2mm]
+     $O=(X,W,Z,D,Y_D)$};
+  \node[titlelabel] at (.35,12.98)
+    {識別前：観測データ法則のみ};
+  \node[panel, fit=(pobs), minimum width=70mm, minimum height=18mm] (pre) {};
+  \node[font=\scriptsize, anchor=south east] at (pre.south east)
+    {四角：観測法則};
+
+  % First identification step: recover each supported block law.
+  \draw[ident] (pobs.south) -- node[lab]
+    {blockwise B-completeness\\命題2.1} (3.6,10.35);
+
+  \node[tensor] (blocklaw) at (3.6,9.75)
+    {supported block laws\\[-.2mm]
+     $\{\pi_S,\ P(Y_S,Z_S,U_S)\}_{S\in\mathcal S}$};
+
+  \draw[ident] (blocklaw.south) -- node[lab]
+    {周辺化・条件付け} (3.6,8.25);
+
+  % The recovered tensors are identified functions of the observed law.
+  \node[tensor, minimum height=14mm] (tensor) at (3.6,7.45)
+    {回復済みblock tensor\\[-.2mm]
+     $T_{abc}(w,x),\quad\{T_{jab}(w,x)\}_{j}$\\[-.2mm]
+     $T_{abc}=\sum_f\lambda_f\,M_a\otimes M_b\otimes M_c$};
+
+  % Second identification step: decompose the tensors.
+  \draw[ident] (tensor.south) -- node[lab]
+    {Kruskal rank $+$ 逐次線形反転\\anchor orderingでlabel固定\quad 定理3.1}
+    (3.6,5.72);
+
+  % Stage 2: identified latent measurement structure.
+  \node[obs, minimum width=10mm] (w) at (.75,3.75) {$W$};
+  \node[obs, minimum width=10mm] (x) at (.75,2.35) {$X$};
+  \node[latent] (f) at (3.20,3.75) {$F$};
+  \node[obs, minimum width=24mm, minimum height=9mm] (ys) at (6.00,3.75)
+    {$Y_a,Y_b,Y_c,Y_j$};
+
+  \draw[arrow] (w) -- node[lab, above] {$Q_F$} (f);
+  \draw[arrow] (x) -- (f);
+  \draw[arrow] (f) -- node[lab, above] {$Q_j$} (ys);
+  \draw[arrow] (x.east) -- ++(.25,0) -| (ys.south);
+  \node[font=\scriptsize, align=center] at (5.15,2.80)
+    {$Y_a,\ldots,Y_j\ \text{indep.}\mid(F,X)$};
+
+  \node[titlelabel] at (.35,5.42)
+    {識別後：tensorと潜在測定構造};
+  \node[panel, fit=(blocklaw)(tensor)(w)(x)(f)(ys),
+    minimum width=70mm, inner ysep=3.5mm] (post) {};
+  \node[font=\scriptsize, anchor=south east] at (post.south east)
+    {円：潜在\quad 四角：顕在・識別済み};
+\end{tikzpicture}
