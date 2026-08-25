@@ -194,6 +194,71 @@ $\E|g|\le2$。B-completenessより$g=0$ a.s.，従って$q=\pi_S$。
 \]
 を周辺化すれば(6)を得る。\hfill$\square$
 
+\section{有限潜在クラスの統合識別}
+Allman, Matias and Rhodes (2009, Sections 2--5) は，既知の$r$個の
+潜在クラスと，$F$を条件とする顕在変数の独立性から生じる有限混合
+product modelを考える。識別とは観測分布からパラメータが一意に戻る
+こと（潜在ラベルの同時置換は許す）である。有限次元パラメータ空間
+$\Theta\subset\mathbb R^d$が$d$次元open ballを含むとき，proper
+algebraic subvarietyを除いて識別されることをgeneric identification
+という。例外集合はLebesgue measure zeroだが，strict identification
+ではない。
+
+同論文のgeneral approachは，多数の顕在変数を互いに素な3群へまとめ，
+$F$の下で独立な3つの合成変数として扱うことである。各群の条件付き
+確率行列を$A_1,A_2,A_3$，そのKruskal rankを$k_1,k_2,k_3$とすると，
+観測確率tensor
+\[
+T=\sum_{f=1}^r\lambda_f A_1(:,f)\otimes A_2(:,f)\otimes A_3(:,f)
+\]
+に対し，$k_1+k_2+k_3\ge2r+2$なら，Kruskalの定理により各因子は
+共通列置換を除いて一意に定まる。Allman et al.の役割は，この条件が
+proper subvarietyの外で成立することを示し，generic identificationへ
+接続した点にある。本稿のanchor tripleは各群を一項目とする同論文の
+Corollary 2に対応し，多項目をclumpするTheorem 4とは区別する。
+
+以下では$X=x$を固定し，$F\in\{1,\ldots,r\}$，各$Y_j$は有限集合
+$\mathcal Y_j$を取るとする。測定行列を
+\begin{align*}
+M_j(x)&=\big[P(Y_j=y\mid F=f,X=x)\big]_
+ {y\in\mathcal Y_j,\,f=1,\ldots,r},\\
+\lambda_f(w,x)&=P(F=f\mid W=w,X=x)
+\end{align*}
+と置く。
+
+\noindent\textbf{仮定3.1（有限潜在クラス測定構造）.}
+$r$は既知で，仮定2--4が成立する。$W$は有限support
+$\mathcal W_x$を持ち，各$w\in\mathcal W_x$は正の条件付き確率を持つ。
+anchor items $a,b,c$が存在し，$\{a,b,c\}$と各$\{j,a,b\}$は各$w$で
+supportedかつ仮定6--7を満たす。$M_a,M_b,M_c$のcolumn Kruskal rankを
+$k_a,k_b,k_c$として$k_a+k_b+k_c\ge2r+2$である。ある$w_0$で全ての
+$\lambda_f(w_0,x)>0$であり，既知scoreによる$M_a$の列順序を固定する。
+
+\noindent\textbf{定理3.1（欠測IVから潜在測定モデルへの逐次識別）.}
+仮定3.1の下で，観測データ法則から全ての$M_j(x)$と
+$\lambda_f(w,x)$が識別される。従って任意の項目集合$A$について
+\begin{equation}
+P(Y_A=y_A\mid W=w,X=x)
+=\sum_{f=1}^r\lambda_f(w,x)\prod_{j\in A}M_j(y_j,f;x)
+\end{equation}
+が識別される。これは$|A|>K$で$Y_A$が同時観測されない場合も含む。
+
+\noindent\textbf{証明の骨格.}
+命題2.1から$T_{abc}(w,x)$と各$T_{jab}(w,x)$が識別される。
+$w_0$での$T_{abc}$のKruskal分解により$M_a,M_b,M_c,\lambda(w_0,x)$を
+回復する。
+また$k_c\le r$なので$k_a+k_b\ge r+2$であり，標準的な
+Khatri--Rao rank inequalityから$M_b\odot M_a$はfull column rankである。
+従って$w_0$におけるmode-$j$展開
+\[
+T_{j\mid ab}=M_j\,\mathrm{diag}\{\lambda(w_0,x)\}
+(M_b\odot M_a)^\top
+\]
+を右反転して各$M_j$を逐次回復できる。確率列和がscalingを，score順序が
+label swappingを固定する。最後に各$w\in\mathcal W_x$で
+$\operatorname{vec}T_{ab}(w,x)=(M_b\odot M_a)\lambda(w,x)$を左反転し，
+全ての混合比率を回復する。\hfill$\square$
+
 \vspace{0.2mm}
 \noindent\textbf{\scriptsize 参考文献}
 \begin{enumerate}[label={[\arabic*]},leftmargin=4mm,itemsep=0pt,topsep=0pt,
@@ -219,6 +284,10 @@ modelling with non-ignorable item non-response: Multigroup response propensity
 models for cross-national analysis. \textit{Journal of the Royal Statistical
 Society: Series A (Statistics in Society)}, 181(4), 1169--1192.
 \href{https://doi.org/10.1111/rssa.12350}{doi:10.1111/rssa.12350}.
+\item Allman, E. S., Matias, C., and Rhodes, J. A. (2009). Identifiability of
+parameters in latent structure models with many observed variables.
+\textit{The Annals of Statistics}, 37(6A), 3099--3132.
+\href{https://doi.org/10.1214/09-AOS689}{doi:10.1214/09-AOS689}.
 \end{enumerate}
 
 \end{multicols}
