@@ -100,9 +100,11 @@ $S$の$(Y_S,U_S,Z_S,R_S)$へ適用する。第二に，d'Haultfoeuille
 (2010, Assumptions 1--5, Theorem 2.3) のpositivityとB-completenessを
 用い，有限次元GLM係数ではなく，各supported blockの選択確率
 $\pi_S$とfull law $P(Y_S,Z_S,U_S)$をノンパラメトリックに回復する。
-第三に，回復されたblock lawにAllman, Matias and Rhodes
-(2009, Sections 2--5) のtensor一意性を適用し，潜在クラス分布と測定核を
-識別する。
+第三に，Allman, Matias and Rhodes (2009, Sections 2--5) における，
+条件付き独立な3群が生成するtensor分解をKruskal rankによって一意化する
+論理を引き継ぐ。本稿では，回復されたoverlapping block tensorsをその
+3-view表現として用い，共有anchor itemsでclass permutationをblock間に
+整合させることにより，潜在クラス分布と測定核を識別する。
 
 したがって本稿の相違は，スカラー$Y$を単一のcomplete-case標本から
 識別することではなく，多次元$Y=(Y_1,\ldots,Y_m)$のうち同時観測可能な
@@ -143,11 +145,20 @@ D\indep W\mid(Y,F,X)
 \int P(D=d\mid y,f,x)\,dP(f\mid y,w,x).
 \end{align}
 である。$W$ が $F$ を予測すれば $P(f\mid y,w,x)$ は一般に $w$ に
-依存するため，$D\indep W\mid(Y,X)$ は従わない。そこで$W$をlatent
-shifter，$Z_S$を通常の共変量$U_S=(X,W)$で調整した後のmissingness
-IV（shadow）として分離する。
+依存するため，$D\indep W\mid(Y,X)$ は従わない。すなわち，$F$を条件に
+含む除外制約は，$F$を積分した観測データ上の除外制約を一般には導かない。
+そこで第2節では，$W$をlatent shifterとして通常の共変量
+$U_S=(X,W)$へ含め，missingness IV $Z_S$とは分離する。その上で，
+観測可能な条件付け集合$(Y_S,U_S)$に対してblockwise exclusionを課す。
 
 \section{モデルと仮定}
+本節は識別を二段階に分け，その第一段階を定式化する。まず潜在因子$F$，
+測定値$Y$，常時観測共変量$(X,W,Z)$，観測指標$D$からなる完全データ法則を
+定める。次に，同時観測確率が正であるsupported blockごとに
+Zhao--Shao型exclusionとd'Haultfoeuille型B-completenessを課し，
+観測データ法則から選択確率$\pi_S$とblock full lawを回復する。この段階では
+block lawを潜在クラスへ分解せず，欠測機構の除去だけを識別目標とする。
+
 \noindent\textbf{仮定1（観測過程）.}
 $D=(D_1,\ldots,D_m)\in\{0,1\}^m$，$Y_j$は$D_j=1$のときだけ観測される。
 $X,W,Z,D$は常時観測され，
@@ -303,21 +314,30 @@ $\E|g|\le2$。B-completenessより$g=0$ a.s.，従って$q=\pi_S$。
 \input{notes/figures/identification_flow.tex}
 \captionof{figure}{観測データ法則から潜在関数までの識別フロー。
 命題2.1が各supported blockの選択確率とfull lawを回復し，その周辺化から
-block tensorを構成する。Allman, Matias and Rhodes (2009, Sections 2--4)
-の3-way tensor一意性と逐次線形反転により，anchor orderingの下で
+block tensorを構成する。条件付き独立な3-view tensorのKruskal一意性と
+逐次線形反転により，anchor orderingの下で
 $Q_F(x)$と$Q_Y(x)$を識別する。矢印は因果効果ではなく識別写像である。}
 \label{fig:identification-flow}
 \end{minipage}
 \end{center}
 
+命題2.1により，観測データ法則から各supported blockのfull lawへ至る
+第一段階の識別は完結する。ただし，回復されたblock tensorsをどの潜在
+分布と測定核が生成したかは，この命題だけでは一意にならない。残る問題は，
+overlapping blocksの分解を同時に一意化し，blockごとのclass labelを
+整合させることである。第3節では，この第二段階を有限潜在クラスについて
+解く。
+
 \section{有限潜在クラスの統合識別}
-Allman, Matias and Rhodes (2009, Sections 2--5) の有限潜在クラスに
-対する証明構造を応用する。同論文は，顕在変数を$F$の下で独立な3群へ
-まとめ，Kruskalのtensor一意性から潜在構造を識別する。本稿はこれを
-第2節の多変量MNAR識別と組み合わせる。第一段階ではZhao and Shao
-(2015)型の共変量調整済み除外制約とd'Haultfoeuille (2010)型の
-B-completenessにより必要なblock tensorを回復し，第二段階ではその
-分解から潜在分布と測定核を識別する。
+本節は，Allman, Matias and Rhodes (2009, Sections 2--5) における有限
+潜在クラスの識別論理を引き継ぎ，supported blocks上のMNAR識別問題へ
+適用する。同論文の核心は，顕在変数を$F$の下で条件付き独立な3群へ分け，
+その3-way probability tensorの分解をKruskal rank条件の下で共通の
+class permutationとscalingを除いて一意化する点にある。本稿では，
+命題2.1で回復されたanchor tensor $T_{abc}$にこの一意性を適用し，続いて
+extension tensors $T_{jab}$をmode-$j$方向に反転する。これにより，共有
+anchor itemsがclass labelを固定したまま，各測定核$M_j$と各$w$における
+混合比率$\lambda(w,x)$を逐次的に識別する。
 
 $X=x$を固定し，$F\in\{1,\ldots,r\}$，$d_j=|\mathcal Y_j|$，
 $L_x=|\mathcal W_x|$とする。識別対象は
@@ -395,6 +415,15 @@ $F$について狭義単調増加として符号を固定する。これは位�
 affine不定性を除くが，未知の測定核を許す場合の$F\mapsto h(F)$という
 非線形再パラメータ化までは除かない。その場合は測定族，calibration，
 または作用素の追加制約が必要である。
+
+以上より，有限潜在クラスでは，supported-block lawの回復，anchor tensor
+の一意分解，extension tensorの逐次反転という三段階で，観測データ法則から
+未同時観測の項目集合を含む完全データ分布まで到達する。これに対し，連続
+因子に対する仮定3.2は位置・尺度・符号を正規化するだけであり，未知の測定核
+を伴う連続潜在構造の識別定理ではない。連続因子を扱うには，非線形
+再パラメータ化を除く測定族または作用素レベルの単射条件を別途与える必要が
+ある。
+
 \section*{参考文献}
 \begin{enumerate}[label={[\arabic*]},leftmargin=7mm,itemsep=0.35em,topsep=0.2em,
   parsep=0pt,partopsep=0pt]
