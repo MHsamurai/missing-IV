@@ -137,8 +137,9 @@ $P(F,Z\mid W,X)$を制限しない。
 \input{notes/figures/latent_mnar_dag.tex}
 \captionof{figure}{単一supported blockにおける潜在測定・欠測機構。
 円は潜在変数，四角は顕在変数，diamondはblock観測指標を表す。
-無向破線は$Z_S$と$F$の条件付き関連性を表す。$X$は潜在分布と測定核，
-$W$は潜在分布だけをshiftし，$Z_S$から測定核・$R_S$への直接辺はない。}
+$U_S=(X,W)$は共変量として$F,Z_S,Y_S$へ入り，$Z_S$は$F$を通じて
+$Y_S$と関連する。$R_S\indep Z_S\mid(Y_S,U_S)$より，$Z_S$から$R_S$への
+直接辺は置かない。}
 \label{fig:latent-mnar-dag}
 \end{minipage}
 \end{center}
@@ -214,8 +215,9 @@ Jacobian行列のfull-rank条件を用いる。本稿では$P(Y_S\mid U_S)$を
 outcome，block indicatorの構造。各外枠は一つのsupported blockを表し，
 内部の小さな四角は$\bm Z_S$と$Y_S$の各成分，diamondは
 $R_S=\prod_{k\in S}D_k$を表す。anchor items $Y_a,Y_b$をblock間で
-共有することで，回復したtensorのclass labelを接続する。無向破線は
-$\bm Z_S$と$F$の条件付き関連性，灰色はblock間で同一のanchor itemを表す。}
+共有することで，回復したtensorのclass labelを接続する。各blockで
+$U_S$は$F,\bm Z_S,Y_S$へ入り，$\bm Z_S$から$R_S$への直接辺は置かない。
+灰色はblock間で同一のanchor itemを表す。}
 \label{fig:supported-blocks-dag}
 \end{minipage}
 \end{center}

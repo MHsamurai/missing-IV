@@ -1,37 +1,28 @@
 \begin{tikzpicture}[
   x=1cm,y=1cm,font=\sffamily,
-  obs/.style={draw, rounded corners=1pt, fill=gray!10, minimum width=12mm,
-    minimum height=7mm, align=center, inner sep=1.5mm, font=\scriptsize},
+  obs/.style={draw, rounded corners=1pt, fill=gray!10, minimum width=14mm,
+    minimum height=8mm, align=center, inner sep=1.5mm, font=\scriptsize},
+  covar/.style={obs,minimum width=18mm,minimum height=12mm},
   latent/.style={draw, circle, fill=white, minimum size=9mm, font=\small},
   select/.style={draw, diamond, aspect=1.8, fill=gray!10, minimum width=16mm,
     minimum height=9mm, align=center, inner sep=.8mm, font=\scriptsize},
   arrow/.style={-{Latex[length=2mm,width=1.3mm]}, line width=.55pt},
-  relevance/.style={dashed,line width=.55pt},
   lab/.style={fill=white,inner sep=.8pt,font=\tiny,align=center},
   note/.style={font=\scriptsize,align=center}
 ]
-  \node[obs,minimum width=9mm] (x) at (.55,4.25) {$X$};
-  \node[obs,minimum width=9mm] (w) at (.55,3.05) {$W$};
-  \node[obs] (z) at (.55,1.55) {$Z_S$};
-  \node[latent] (f) at (3.05,3.75) {$F$};
-  \node[obs,minimum width=18mm] (y) at (5.35,3.75) {$Y_S$};
-  \node[select] (r) at (6.25,1.75) {$R_S$};
-  \node[obs,minimum width=22mm] (yobs) at (3.80,.40)
-    {$Y_S^{\mathrm{obs}}$};
+  \node[covar] (u) at (.75,3.25) {$U_S$\\[-.4mm]$(X,W)$};
+  \node[obs] (z) at (3.10,1.45) {$Z_S$};
+  \node[latent] (f) at (3.10,3.25) {$F$};
+  \node[obs,minimum width=18mm] (y) at (5.45,3.25) {$Y_S$};
+  \node[select] (r) at (5.45,1.45) {$R_S$};
 
-  \draw[arrow] (x) -- (f);
-  \draw[arrow] (w) -- node[lab,below] {$Q_F$ shift} (f);
-  \draw[relevance] (z) -- node[lab,below left]
-    {$Z_S\not\!\perp F\mid X,W$} (f);
-  \draw[arrow] (f) -- node[lab,above] {$Q_j$} (y);
-  \draw[arrow] (x.north east) to[out=35,in=145]
-    node[lab,above] {$X$ in $Q_j$} (y.north west);
-  \draw[arrow] (x.south east) to[out=-20,in=155] (r.north west);
-  \draw[arrow] (w.south east) to[out=-35,in=175] (r.west);
-  \draw[arrow] (y) -- node[lab,right] {$\pi_S(Y_S,U_S)$} (r);
-  \draw[arrow] (y.south) -- (yobs.north east);
-  \draw[arrow] (r.south west) -- (yobs.north west);
+  \draw[arrow] (u.east) -- (f.west);
+  \draw[arrow] (u.south east) -- (z.north west);
+  \draw[arrow] (u.north east) to[out=30,in=150] (y.north west);
+  \draw[arrow] (z.north) -- (f.south);
+  \draw[arrow] (f.east) -- node[lab,above] {$Q_j$} (y.west);
+  \draw[arrow] (y.south) -- node[lab,right] {$\pi_S(Y_S)$} (r.north);
 
-  \node[note] at (3.55,-.40)
+  \node[note] at (3.10,.25)
     {$R_S\mathrel{\perp\!\!\!\perp}Z_S\mid(Y_S,U_S)$：$Z_S\nrightarrow R_S$};
 \end{tikzpicture}

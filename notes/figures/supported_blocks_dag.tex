@@ -2,8 +2,8 @@
   x=1cm,y=1cm,font=\sffamily,
   smallobs/.style={draw, rounded corners=.8pt, fill=gray!10, minimum width=7mm,
     minimum height=6mm, inner sep=.8mm, font=\tiny},
-  uobs/.style={draw, rounded corners=1pt, fill=white, minimum width=7mm,
-    minimum height=6mm, inner sep=1mm, font=\tiny},
+  covar/.style={draw, rounded corners=1pt, fill=white, minimum width=13mm,
+    minimum height=9mm, align=center, inner sep=.8mm, font=\tiny},
   latent/.style={draw, circle, fill=white, minimum size=6.5mm, inner sep=.5mm,
     font=\tiny},
   select/.style={draw, diamond, aspect=1.65, fill=gray!10, minimum width=15mm,
@@ -11,66 +11,56 @@
   group/.style={draw=gray!55, rounded corners=1.5pt, inner sep=1.3mm},
   block/.style={draw=gray!65, rounded corners=2pt, inner sep=2.2mm},
   arrow/.style={-{Latex[length=1.8mm,width=1.2mm]}, line width=.5pt},
-  relevance/.style={dashed,line width=.5pt},
-  lab/.style={fill=white,inner sep=.7pt,font=\tiny,align=center},
   title/.style={fill=white,inner xsep=1mm,font=\scriptsize\bfseries,anchor=west}
 ]
   % Anchor block S_0={a,b,c}.
-  \node[smallobs] (z01) at (.35,5.15) {$Z_{0,1}$};
-  \node[font=\tiny] (zd0) at (1.05,5.15) {$\cdots$};
-  \node[smallobs] (z0q) at (1.65,5.15) {$Z_{0,q_0}$};
+  \node[covar] (u0) at (.65,6.10) {$U_{S_0}$\\$(X,W)$};
+  \node[smallobs] (z01) at (.55,5.05) {$Z_{0,1}$};
+  \node[font=\tiny] (zd0) at (1.25,5.05) {$\cdots$};
+  \node[smallobs] (z0q) at (1.85,5.05) {$Z_{0,q_0}$};
   \node[group,fit=(z01)(zd0)(z0q)] (zg0) {};
-  \node[latent] (f0) at (2.45,5.15) {$F$};
-  \node[smallobs,fill=gray!22] (ya0) at (3.55,5.15) {$Y_a$};
-  \node[smallobs,fill=gray!22] (yb0) at (4.35,5.15) {$Y_b$};
-  \node[smallobs] (yc0) at (5.15,5.15) {$Y_c$};
+  \node[latent] (f0) at (2.75,5.05) {$F$};
+  \node[smallobs,fill=gray!22] (ya0) at (3.75,5.05) {$Y_a$};
+  \node[smallobs,fill=gray!22] (yb0) at (4.55,5.05) {$Y_b$};
+  \node[smallobs] (yc0) at (5.35,5.05) {$Y_c$};
   \node[group,fit=(ya0)(yb0)(yc0)] (yg0) {};
   \node[font=\tiny,anchor=north] (zl0) at ($(zg0.south)+(0,-.05)$) {$\bm Z_{S_0}$};
   \node[font=\tiny,anchor=north] (yl0) at ($(yg0.south)+(0,-.05)$) {$Y_{S_0}$};
-  \node[select] (r0) at (6.75,5.15) {$R_{S_0}$\\$=\prod_{k\in S_0}D_k$};
-  \node[uobs] (x0) at (3.25,6.15) {$X$};
-  \node[uobs] (w0) at (4.05,6.15) {$W$};
-  \draw[relevance] (zg0.east) --
-    node[lab,pos=.25,below=1mm] {relevance} (f0.west);
+  \node[select] (r0) at (7.30,5.05) {$R_{S_0}$\\$=\prod_{k\in S_0}D_k$};
+  \draw[arrow] (u0.south) -- (zg0.north west);
+  \draw[arrow] (u0.east) -- (f0.north west);
+  \draw[arrow] (u0.north east) to[out=25,in=150] (yg0.north west);
+  \draw[arrow] (zg0.east) -- (f0.west);
   \draw[arrow] (f0.east) -- (yg0.west);
   \draw[arrow] (yg0.east) -- (r0.west);
-  \draw[arrow] (x0.south west) -- (f0.north);
-  \draw[arrow] (w0.south west) -- (f0.north east);
-  \draw[arrow] (x0.south) -- (yg0.north west);
-  \draw[arrow] (x0.east) to[out=0,in=115] (r0.north);
-  \draw[arrow] (w0.east) to[out=0,in=90] (r0.north);
-  \node[block,fit=(zg0)(f0)(yg0)(r0)(x0)(w0)(zl0)(yl0),minimum width=72mm] (b0) {};
+  \node[block,fit=(u0)(zg0)(f0)(yg0)(r0)(zl0)(yl0),minimum width=78mm] (b0) {};
   \node[title] at (b0.north west) {$S_0=\{a,b,c\}$};
 
   % Extension block S_j={j,a,b}.
-  \node[smallobs] (zj1) at (.35,2.15) {$Z_{j,1}$};
-  \node[font=\tiny] (zdj) at (1.05,2.15) {$\cdots$};
-  \node[smallobs] (zjq) at (1.65,2.15) {$Z_{j,q_j}$};
+  \node[covar] (uj) at (.65,3.10) {$U_{S_j}$\\$(X,W)$};
+  \node[smallobs] (zj1) at (.55,2.05) {$Z_{j,1}$};
+  \node[font=\tiny] (zdj) at (1.25,2.05) {$\cdots$};
+  \node[smallobs] (zjq) at (1.85,2.05) {$Z_{j,q_j}$};
   \node[group,fit=(zj1)(zdj)(zjq)] (zgj) {};
-  \node[latent] (fj) at (2.45,2.15) {$F$};
-  \node[smallobs] (yj) at (3.55,2.15) {$Y_j$};
-  \node[smallobs,fill=gray!22] (yaj) at (4.35,2.15) {$Y_a$};
-  \node[smallobs,fill=gray!22] (ybj) at (5.15,2.15) {$Y_b$};
+  \node[latent] (fj) at (2.75,2.05) {$F$};
+  \node[smallobs] (yj) at (3.75,2.05) {$Y_j$};
+  \node[smallobs,fill=gray!22] (yaj) at (4.55,2.05) {$Y_a$};
+  \node[smallobs,fill=gray!22] (ybj) at (5.35,2.05) {$Y_b$};
   \node[group,fit=(yj)(yaj)(ybj)] (ygj) {};
   \node[font=\tiny,anchor=north] (zlj) at ($(zgj.south)+(0,-.05)$) {$\bm Z_{S_j}$};
   \node[font=\tiny,anchor=north] (ylj) at ($(ygj.south)+(0,-.05)$) {$Y_{S_j}$};
-  \node[select] (rj) at (6.75,2.15) {$R_{S_j}$\\$=\prod_{k\in S_j}D_k$};
-  \node[uobs] (xj) at (3.25,3.15) {$X$};
-  \node[uobs] (wj) at (4.05,3.15) {$W$};
-  \draw[relevance] (zgj.east) --
-    node[lab,pos=.25,below=1mm] {relevance} (fj.west);
+  \node[select] (rj) at (7.30,2.05) {$R_{S_j}$\\$=\prod_{k\in S_j}D_k$};
+  \draw[arrow] (uj.south) -- (zgj.north west);
+  \draw[arrow] (uj.east) -- (fj.north west);
+  \draw[arrow] (uj.north east) to[out=25,in=150] (ygj.north west);
+  \draw[arrow] (zgj.east) -- (fj.west);
   \draw[arrow] (fj.east) -- (ygj.west);
   \draw[arrow] (ygj.east) -- (rj.west);
-  \draw[arrow] (xj.south west) -- (fj.north);
-  \draw[arrow] (wj.south west) -- (fj.north east);
-  \draw[arrow] (xj.south) -- (ygj.north west);
-  \draw[arrow] (xj.east) to[out=0,in=115] (rj.north);
-  \draw[arrow] (wj.east) to[out=0,in=90] (rj.north);
-  \node[block,fit=(zgj)(fj)(ygj)(rj)(xj)(wj)(zlj)(ylj),minimum width=72mm] (bj) {};
+  \node[block,fit=(uj)(zgj)(fj)(ygj)(rj)(zlj)(ylj),minimum width=78mm] (bj) {};
   \node[title] at (bj.north west) {$S_j=\{j,a,b\}$};
 
-  \node[font=\scriptsize,align=center] at (3.55,.45)
-    {$\bm Z_S=(Z_{S,1},\ldots,Z_{S,q_S})$,\quad
-     $R_S\mathrel{\perp\!\!\!\perp}\bm Z_S\mid(Y_S,X,W)$\\
+  \node[font=\scriptsize,align=center] at (3.65,.35)
+    {$R_S\mathrel{\perp\!\!\!\perp}\bm Z_S\mid(Y_S,U_S)$,\quad
+     $\bm Z_S=(Z_{S,1},\ldots,Z_{S,q_S})$\\
      gray $Y_a,Y_b$: same anchor items across blocks};
 \end{tikzpicture}
