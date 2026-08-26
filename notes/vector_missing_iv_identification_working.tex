@@ -86,8 +86,12 @@ nonresponseを無視した場合の影響と，joint modellingによるbiasの�
 Kuha et al. (2018)はresponse propensityをlatent classとして表し，測定対象の
 latent traitとの関連によって非無視性を表す。さらに，同論文はlatent traitの
 structural and measurement modelとlatent response class modelがそれぞれ識別される
-条件を課し，joint modelの識別を論じる。これらは，欠測機構，潜在測定モデル，
-潜在分布を一つのjoint modelとして制限するmodel-based approachである。
+条件を課し，joint modelの識別を論じる。Harel and Schafer (2009)はlatent
+ignorabilityを定義してitem nonresponseを伴うlatent-class analysisへ適用し，
+Jung, Schafer and Seo (2011)はmissingness indicatorsで測られるlatent variableを
+用いたmultivariate MNARのlatent-class selection modelを提案する。これらは，
+欠測機構，潜在測定モデル，潜在分布を一つのjoint modelとして制限する
+model-based approachである。
 
 より近い先行研究として，Kano and Takai (2011)は，欠測指標と測定値がlatent
 factorを条件として独立であるshared-parameter structureの下で，欠測機構の
@@ -95,10 +99,14 @@ factorを条件として独立であるshared-parameter structureの下で，欠
 analysisとして推定する。従って，parametric selection modelを直接推定しない
 latent-MNAR analysis自体は既知である。ただし，同論文は識別済みの線形covariance
 structure，pattern間のfactorial invariance，およびpattern-specific latent momentsに
-対するrank条件を用いる。本稿はこれに対し，supported blocksごとのshadow
-IVでblock lawを回復し，finite latent classの構成比と一般のカテゴリ測定核を
-tensor分解によって識別する。この識別対象は，因子分析，SEM，IRTに共通する
-潜在測定モデルの中心である。
+対するrank条件を用いる。Ma and Zhang (2021, Assumptions A2--A3, Proposition 1)は，
+正しく指定されたlatent generative modelとmissingness modelの下で，subset
+identifiabilityを満たすobservable patternsが全変数をcoverすれば，global complete
+caseなしにgenerative parametersを識別できることを示す。従って，部分観測patternから
+latent modelを識別すること自体も既知である。本稿はこれらに対し，supported blocks
+ごとのshadow IVとB-completenessでblock lawを先に回復し，finite latent classの
+構成比と一般のカテゴリ測定核をtensor分解によって識別する。この識別対象は，
+因子分析，SEM，IRTに共通する潜在測定モデルの中心である。
 
 本研究では，未観測潜在変数$F$，常時観測変数$W,X$，複数の潜在的測定値
 $Y=(Y_1,\ldots,Y_m)$について，
@@ -132,8 +140,11 @@ lawを識別する。外部IVを用いない別系統として，Sadinle and Rei
 conditionally independent nonresponseの下でmultivariate full-data lawを構成する。
 Li et al. (2023)はself-censoring modelとcompletenessを，Ni and Shao (2023)は
 nonresponse instrumentとparametric propensityを用いてmultivariate item nonresponseを
-扱う。これらの対象は顕在変数のfull law，regression parameters，またはpopulation
-functionalsであり，latent class比率と測定核への分解は識別対象ではない。
+扱う。Xie, Xue and Wang (2026, Theorem 2 and Corollary 3)はlatent variableを条件とする
+no-self-censoringとall-observed positivityから，missingness mechanismとfull-data
+distributionを識別する。これらの対象は顕在変数のfull law，regression parameters，
+またはpopulation functionalsであり，working modelのlatent coordinates，latent class
+比率，測定核の個別識別とは区別される。
 
 本稿の潜在測定モデルの下では，このfull lawは
 \begin{equation}
@@ -155,7 +166,11 @@ tensorである。従来のmissingness IVによって式
 出発点とし，条件付き独立な三つのviewからなるtensorにKruskal rank条件を
 課すことで，潜在クラス比率とclass-specificな測定核をlabel swappingを
 除いて一意に識別する。同論文のSection 5, Theorem 4は，多数の顕在変数を
-三群にまとめた場合のgeneric identificationを別に与える。すなわち，
+三群にまとめた場合のgeneric identificationを別に与える。Kanamori, Hirose and
+Yamamoto (2026, Theorems 1--2)も，複数のunlabeled mixturesに共通するcomponentsを
+marginal independenceから回復する別の識別routeを与える。ただし，このrouteは
+MNAR selectionを扱わず，mixing matrix全体の回復には追加のcompletion条件を要する。
+すなわち，
 missingness-IV研究はMNAR selectionから
 周辺full lawまでを扱い，潜在クラス研究は完全データ法則から
 $(Q_F,Q_Y)$の分解までを扱う。両者は識別の異なる段階を解いている。
@@ -183,9 +198,11 @@ $F$を積分した観測データ上の除外制約を一般には導かない�
 自動的には識別されない。これが，既存のmissing-IV識別と潜在測定モデルの
 識別を統合するときの固有の障害である。潜在変数を含むMNARモデルとその識別条件は
 因子分析・SEM・IRTで既に提案されているが，多くは欠測機構と潜在測定モデルを
-joint modelとして規定する。部分的にしか同時観測されない多次元測定について，
-parametric selection modelを直接規定せず，missing IVによるsupported-block lawの
-回復と潜在構造の一意分解を接続することが，本稿の識別問題である。
+joint modelとして規定する。また，observable patternsのcoverからlatent modelを
+識別するrouteや，複数mixturesからcomponentsを回復するrouteも既にある。従って本稿の
+識別問題は，部分的にしか同時観測されない多次元測定について，parametric selection
+modelを直接規定せず，missing IVとB-completenessによるsupported-block lawの回復を，
+anchor itemsとlatent shifterを用いる潜在構造の一意分解へ接続することである。
 
 本稿の問題設定は次の通りである。まず，同時観測確率が正である
 supported blockごとに，観測可能な条件付け集合$(Y_S,U_S)$に対する
@@ -196,8 +213,9 @@ block lawsを共有anchor itemsで接続し，潜在クラスのlabelをblock間
 整合させる。この二段階を通じて，global complete caseが存在しない場合にも，
 潜在クラス分布$Q_F$と測定核$Q_Y$を識別する条件を与える。
 
-本稿はshadow variableとcompletenessによるfull-law識別，またはKruskal型tensor
-分解を個別に新しく提案するものではない。この構成は三つの識別原理を引き継ぐ。
+本稿はshadow variableとcompletenessによるfull-law識別，Kruskal型tensor分解，
+observable-pattern cover，または複数mixturesからのcomponent回復を個別に新しく
+提案するものではない。この構成は三つの識別原理を引き継ぐ。
 第一に，Zhao and Shao (2015) の
 共変量調整済み除外制約を，各supported block $S$の
 $(Y_S,U_S,Z_S,R_S)$へ適用する。第二に，d'Haultfoeuille
@@ -209,7 +227,9 @@ Matias and Rhodes (2009, Section 3; Section 4, Theorem 1 and Corollary 2) の
 回復されたtensorへ適用する。本稿の接続は，global complete caseを仮定せず，
 第一段階でsupported-blockごとにMNAR selectionを除去し，第二段階でoverlap，
 anchor items，latent shifterを用いて潜在分布と測定核を同一のlabelingの下で
-一意分解する点にある。
+一意分解する点にある。従って，global complete caseを不要とすることだけでなく，
+各supported-block lawのshadow-IV識別と，MNAR補正後のanchor-pair tensorおよび
+extension pairsの共通label下での分解を一体として本稿の貢献とする。
 
 したがって，$Z_S$には$Y_S$を予測するrelevanceと
 $R_S\indep Z_S\mid(Y_S,U_S)$というexclusionが必要である。一方，$W$は
@@ -917,6 +937,20 @@ structural equation models with nonignorable missing data.
 specifying missing-data mechanisms in a linear latent variate model.
 \textit{Journal of Multivariate Analysis}, 102(9), 1241--1255.
 \href{https://doi.org/10.1016/j.jmva.2011.04.007}{doi:10.1016/j.jmva.2011.04.007}.
+\item Harel, O. and Schafer, J. L. (2009). Partial and latent ignorability in
+missing-data problems. \textit{Biometrika}, 96(1), 37--50.
+\href{https://doi.org/10.1093/biomet/asn069}{doi:10.1093/biomet/asn069}.
+\item Jung, H., Schafer, J. L., and Seo, B. (2011). A latent class selection
+model for nonignorably missing data. \textit{Computational Statistics \& Data
+Analysis}, 55(1), 802--812.
+\href{https://doi.org/10.1016/j.csda.2010.07.002}{doi:10.1016/j.csda.2010.07.002}.
+\item Ma, C. and Zhang, C. (2021). Identifiable generative models for missing
+not at random data imputation. arXiv:2110.14708.
+\item Xie, H., Xue, F., and Wang, X. (2026). Identifiable deep latent variable
+models for MNAR data. arXiv:2603.24771v2.
+\item Kanamori, T., Hirose, Y., and Yamamoto, S. (2026). Identifiability and
+estimation for unlabeled finite mixtures under marginal independence.
+arXiv:2606.07914.
 \item Kuha, J., Katsikatsou, M., and Moustaki, I. (2018). Latent variable
 modelling with non-ignorable item non-response: Multigroup response propensity
 models for cross-national analysis. \textit{Journal of the Royal Statistical
