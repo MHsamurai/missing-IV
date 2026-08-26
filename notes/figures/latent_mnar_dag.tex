@@ -10,19 +10,19 @@
   lab/.style={fill=white,inner sep=.8pt,font=\tiny,align=center},
   note/.style={font=\scriptsize,align=center}
 ]
-  \node[covar] (u) at (.75,3.25) {$U_S$\\[-.4mm]$(X,W)$};
-  \node[obs] (z) at (3.10,1.45) {$Z_S$};
-  \node[latent] (f) at (3.10,3.25) {$F$};
-  \node[obs,minimum width=18mm] (y) at (5.45,3.25) {$Y_S$};
-  \node[select] (r) at (5.45,1.45) {$R_S$};
+  \node[obs] (z) at (.75,3.30) {$Z_S$};
+  \node[latent] (f) at (3.10,3.30) {$F$};
+  \node[obs,minimum width=18mm] (y) at (5.45,3.30) {$Y_S$};
+  \node[covar] (u) at (3.10,1.35) {$U_S$\\[-.4mm]$(X,W)$};
+  \node[select] (r) at (5.45,1.35) {$R_S$};
 
-  \draw[arrow] (u.east) -- (f.west);
-  \draw[arrow] (u.south east) -- (z.north west);
-  \draw[arrow] (u.north east) to[out=30,in=150] (y.north west);
-  \draw[arrow] (z.north) -- (f.south);
+  \draw[arrow] (z.east) -- (f.west);
   \draw[arrow] (f.east) -- node[lab,above] {$Q_j$} (y.west);
+  \draw[arrow] (u.north) -- node[lab,right] {$Q_F$} (f.south);
+  \draw[arrow] (u.north west) -- (z.south east);
+  \draw[arrow] (u.north east) -- (y.south west);
   \draw[arrow] (y.south) -- node[lab,right] {$\pi_S(Y_S)$} (r.north);
 
-  \node[note] at (3.10,.25)
+  \node[note] at (3.10,.20)
     {$R_S\mathrel{\perp\!\!\!\perp}Z_S\mid(Y_S,U_S)$：$Z_S\nrightarrow R_S$};
 \end{tikzpicture}
