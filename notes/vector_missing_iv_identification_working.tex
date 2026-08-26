@@ -515,22 +515,14 @@ supported blockの最大サイズを
 超える場合にも，潜在測定モデルの制約の下で
 $P(Y_A\mid W=w,X=x)$は一意に識別される。\hfill$\square$
 
-\noindent\textbf{仮定3.2（連続因子の場合の正規化；定理3.1の外）.}
-$F\in\mathbb R$なら，各$x$で$\E(F\mid X=x)=0$，
-$\operatorname{Var}(F\mid X=x)=1$とし，anchor responseの条件付き平均を
-$F$について狭義単調増加として符号を固定する。これは位置・尺度・符号の
-affine不定性を除くが，未知の測定核を許す場合の$F\mapsto h(F)$という
-非線形再パラメータ化までは除かない。その場合は測定族，calibration，
-または作用素の追加制約が必要である。
-
 以上より，有限潜在クラスでは，supported-pair lawsの回復，$W$を第三mode
 とするanchor-pair tensorの一意分解，extension pair tensorsの線形反転により，
-観測データ法則から未同時観測の項目集合を含む完全データ分布まで到達する。
-これに対し，連続
-因子に対する仮定3.2は位置・尺度・符号を正規化するだけであり，未知の測定核
-を伴う連続潜在構造の識別定理ではない。連続因子を扱うには，非線形
-再パラメータ化を除く測定族または作用素レベルの単射条件を別途与える必要が
-ある。
+観測データ法則から未同時観測の項目集合を含む完全データ分布まで到達する。%
+\footnote{定理3.1は有限潜在クラスを対象とする。連続因子$F$に対し，
+$\E(F\mid X=x)=0$，$\operatorname{Var}(F\mid X=x)=1$，およびanchor responseの
+条件付き平均の狭義単調性を課すと，位置・尺度・符号の不定性は除かれる。
+ただし，未知の測定核の下では$F\mapsto h(F)$という非線形再パラメータ化が残るため，
+連続潜在構造の識別には測定族，calibration，または作用素レベルの単射条件が追加で必要となる。}
 
 \section{推定：bridge-weighted composite criterion}
 識別結果を推定へ接続する。必要なsupported pairsの集合を
@@ -618,13 +610,11 @@ influence contributionを含む同scoreの分散である。したがって標�
 anchor orderingによるlabel alignmentまでを全て再実行する。
 
 定理5.1の一致性は，標本criterionの一様収束と命題4.1の一意最大化から，
-漸近正規性はstacked estimating equationsの線形展開から従う。ここで
-B-completenessはbridgeの識別を与えるが，無限次元bridgeの推定速度までは
-与えない。sieve bridgeは一般にill-posed inverse problemとなるため，
-正則化，source condition，近似誤差と確率誤差のrate条件が必要である。
-従って本稿の現段階では，sieve版には一致性を主結果とし，通常の
-$\sqrt n$正規性はregular functionalまたはorthogonal scoreを別途構成した
-場合の拡張として扱う。
+漸近正規性はstacked estimating equationsの線形展開から従う。%
+\footnote{B-completenessはbridgeの識別を与えるが，無限次元bridgeの推定速度までは
+与えない。sieve bridgeは一般にill-posed inverse problemとなるため，正則化，
+source condition，近似誤差と確率誤差のrate条件が必要である。その場合，通常の
+$\sqrt n$正規性にはregular functionalまたはorthogonal scoreの追加構成を要する。}
 
 \section{計算アルゴリズム（仮）}
 Zhao and Shao (2015)の二段階更新は，識別に用いた条件付き法則と推定対象を
@@ -671,10 +661,11 @@ M=\begin{pmatrix}
 0.20&0.85
 \end{pmatrix}
 \]
-とした。Allman et al.はmodel classと識別条件を与えるが，Monte Carloの
-数値parameter，推定量，biasまたはcoverage表は提示していない。従って上記は
-同論文から転記した数値ではなく，単体内部でclass separationを持つ本稿固有の
-calibrationである。
+とした。%
+\footnote{Allman et al.はmodel classと識別条件を与えるが，Monte Carloの
+数値parameter，推定量，biasまたはcoverage表は提示していない。したがって，
+これらは同論文から転記した数値ではなく，単体内部でclass separationを持つ本稿固有の
+calibrationである。}
 
 $Y_1$は常時観測とし，$Y_2,Y_3$の観測確率をそれぞれ
 \[
@@ -734,9 +725,9 @@ Proposed bridge&$-0.0027$&0.0466&$-0.0028$&0.0452\\
 0.0351であった。MNARをMARとして扱うと，それぞれ0.0724と0.0929へ悪化し，
 平均biasも$-0.0474$と$-0.0792$になった。提案法ではRMSEが0.0466と0.0452，
 平均biasが$-0.0027$と$-0.0028$となり，両識別対象についてoracleに近い。
-これは提案法が常に高効率であることの証明ではないが，MNAR selectionを
-補正しながら測定核と潜在class比率を同時に回復するという識別論の含意と
-整合する。
+MNAR selectionを補正しながら測定核と潜在class比率を同時に
+回復するという識別論の含意と整合する。%
+\footnote{この数値比較は，提案法が一般にoracleと同等の効率性を持つことを意味しない。}
 
 \section*{参考文献}
 \begin{enumerate}[label={[\arabic*]},leftmargin=7mm,itemsep=0.35em,topsep=0.2em,
