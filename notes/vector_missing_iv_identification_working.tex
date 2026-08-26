@@ -648,54 +648,91 @@ mixtureを含み一般に非凸なので，difference-of-concave更新をその�
 せず，tensor initialization，複数初期値，制約付き更新を組み合わせる。
 
 \section{Simulation studies}
-simulationの目的は，提案推定量の有限標本性能と，識別を支えるmissing IV，
-latent shifter，overlap，tensor rankの強さに対する感度を確認することである。
-基本設定は$n=500$，$m=3$，$r=2$とし，
-$Y=(Y_1,Y_2,Y_3)$，三次元の常時観測共変量$U=(X,W)$，三次元の
-missingness IV $Z=(Z_1,Z_2,Z_3)$を生成する。$W$はclass比率を動かし，
-$Z$は$F$を通じて$Y$を予測する一方，欠測指標へ直接入れない。
-必要なsupported pairsはanchor pair $S_0=\{1,2\}$とextension pair
-$S_3=\{3,1\}$であり，補助的に$\{2,3\}$も利用する。
+simulationは識別結果の数値的なsanity checkに限定し，定理3.1と同じ有限
+カテゴリlatent-class modelだけを扱う。Allman, Matias and Rhodes
+(2009, Sections 3--5)の$r$-class, $p$-feature model
+$M(r;\kappa_1,\ldots,\kappa_p)$に従い，
+\[
+P=\sum_{f=1}^r p_f\bigotimes_{j=1}^p p_{fj}
+\]
+とする。ここでは$n=500$，$r=2$，$p=4$とし，常時観測される$W$と
+$Y_1,Y_2,Y_3$を二値featureとする。class比率は
+$(p_1,p_2)=(0.55,0.45)$，$W$のclass-specific Bernoulli確率は
+$(0.20,0.80)$，測定核は
+\[
+M=\begin{pmatrix}
+0.15&0.80\\
+0.25&0.75\\
+0.20&0.85
+\end{pmatrix}
+\]
+とした。Allman et al.はmodel classと識別条件を与えるが，Monte Carloの
+数値parameter，推定量，biasまたはcoverage表は提示していない。従って上記は
+同論文から転記した数値ではなく，単体内部でclass separationを持つ本稿固有の
+calibrationである。
 
-欠測は$Y_j$自身と$U$に依存させてMNARとし，$Z$を条件付き選択確率から
-除外する。各$D_j$は$(Y_j,U)$だけに依存する非退化なBernoulli確率から，
-$(Y,U)$の下で条件付き独立に生成する。これにより各$R_S$のblockwise
-exclusionを満たしつつ，平均item観測率が約80\%になるようinterceptを
-調整する。さらに
-\begin{align*}
-P(R_{\{1,2\}}=1\mid U)&>0,\\
-P(R_{\{3,1\}}=1\mid U)&>0,\\
-P(D_1D_2D_3=1\mid U)&>0
-\end{align*}
-を対象領域で満たすようoverlapを確認する。なお周辺観測率80\%だけでは
-これらの同時観測確率の正値性は論理的に保証されないため，pair-levelと
-complete-case levelのpositivityを別々に診断する。
+$Y_1$は常時観測とし，$Y_2,Y_3$の観測確率をそれぞれ
+\[
+P(D_j=1\mid Y_1,Y_j)
+=\operatorname{expit}\{\alpha_j-(Y_1+Y_j)\},\quad j=2,3,
+\]
+とする。$\alpha_j$は平均item観測率が80\%となるよう調整する。このとき
+$S_0=\{1,2\}$と$S_3=\{1,3\}$の平均観測率はそれぞれ約70\%，complete-case
+率は50.9\%，最小pair propensityは0.475であった。各blockのshadow
+$Z_S$は4カテゴリとし，class 1と2における確率をそれぞれ
+$(0.55,0.25,0.15,0.05)$と$(0.05,0.15,0.25,0.55)$とした。欠測確率には
+$Z_S$を直接入れないため，$R_S\indep Z_S\mid(Y_S,W)$が成立する。
 
-outcome familyは正規，二値，Poissonの三種類とする。二値caseは定理3.1の
-有限カテゴリ設定に直接対応する。正規caseとPoisson caseでは，第一の実装は
-有限個の区間へ離散化してtensor初期化を行い，続いて元のparametric
-measurement kernelでcriterionを更新する。これら連続・count kernelの完全な
-識別主張には，有限カテゴリ定理とは別のparametric identification lemmaが
-必要であるため，二値caseを主検証，正規・Poisson caseを拡張検証と位置づける。
+比較するのは三手法だけである。complete-data oracleは欠測前の
+$(W,Y_1,Y_2,Y_3)$へ同じlatent-class modelを当てはめる。MARは観測された
+supported pairsへ欠測補正なしのcomposite likelihoodを当てはめる。提案法は
+各blockで
+\[
+\E\{R_S/\pi_S(Y_S)\mid Z_S,W\}=1
+\]
+の標本momentから二次元logit bridgeを推定し，得られたinverse-selection
+weightでpairwise latent-class modelを推定する。全手法で6初期値から最大の
+criterionを選び，$M_1$の大小でlabelを整合させた。
 
-比較法は，(i) 欠測前の全データを用いるoracle，(ii) 真の$\pi_S$を用いる
-oracle bridge，(iii) missing at random (MAR)を仮定する推定，
-(iv) 正しく指定した完全パラメトリックselection likelihood，
-(v) 有限次元bridgeを用いる提案法，(vi) 正則化sieve bridgeを用いる提案法，
-とする。主要因子としてmissing-IV strength，$W$によるclass shift，最小
-propensity，anchor/extension tensorのrank separationを段階的に弱める。
-欠測機構の誤指定caseでは，完全パラメトリック法とsieve bridgeの頑健性も
-比較する。
+\begin{center}
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[width=0.96\linewidth]{simulation/figures/allman_bias_rmse_comparison.pdf}
+\captionof{figure}{Allman型有限latent-class modelにおける100 Monte Carlo
+replicationsの比較（$n=500$）。左は測定核$M_j$，右はlatent class比率
+$p_f$の平均biasとroot mean squared error (RMSE)を示す。}
+\label{fig:allman-simulation}
+\end{minipage}
+\end{center}
 
-各caseについて1,000 Monte Carlo replicationsを行い，class比率，測定確率
-またはkernel parameter，代表的なfull-law functionalについてbias，empirical
-standard deviation，root mean squared error，平均推定standard error，95\%
-confidence intervalのcoverageを報告する。併せて収束率，label alignmentの
-失敗率，最小特異値，effective sample sizeを記録する。有限次元bridgeの
-interval estimationには全工程を再推定する個体単位bootstrapを用い，
-replication当たり300回を初期設定とする。実際の数値実験に先立ち，まず
-population tensorのrank条件と全supported-pair propensitiesの下限をDGPごとに
-検証する。
+\begin{center}
+\begin{minipage}{\linewidth}
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrr}
+\hline
+&\multicolumn{2}{c}{$M_j$}&\multicolumn{2}{c}{$p_f$}\\
+Method&Bias&RMSE&Bias&RMSE\\
+\hline
+Complete-data oracle&0.0036&0.0373&0.0029&0.0351\\
+MAR&$-0.0474$&0.0724&$-0.0792$&0.0929\\
+Proposed bridge&$-0.0027$&0.0466&$-0.0028$&0.0452\\
+\hline
+\end{tabular}}
+\captionof{table}{Allman型simulationの主要結果。$M_j$は全item・class成分を
+集約した平均biasとRMSE，$p_f$は第2 class比率のbiasとRMSEである。}
+\label{tab:allman-simulation}
+\end{minipage}
+\end{center}
+
+100回のpilotでは，complete-data oracleの$M_j$ RMSEは0.0373，$p_f$ RMSEは
+0.0351であった。MNARをMARとして扱うと，それぞれ0.0724と0.0929へ悪化し，
+平均biasも$-0.0474$と$-0.0792$になった。提案法ではRMSEが0.0466と0.0452，
+平均biasが$-0.0027$と$-0.0028$となり，両識別対象についてoracleに近い。
+これは提案法が常に高効率であることの証明ではないが，MNAR selectionを
+補正しながら測定核と潜在class比率を同時に回復するという識別論の含意と
+整合する。最終稿では1,000 replicationsへ拡張し，Monte Carlo errorを縮小
+した上で報告値を確定する。
 
 \section*{参考文献}
 \begin{enumerate}[label={[\arabic*]},leftmargin=7mm,itemsep=0.35em,topsep=0.2em,
