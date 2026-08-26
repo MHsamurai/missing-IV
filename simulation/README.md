@@ -33,9 +33,12 @@ the missing item values. The saturated bridge does not posit a parametric link
 for the selection probability. Its robustness comparison is therefore about
 parametric selection-model misspecification; it still requires the shadow-IV
 exclusion, positivity, B-completeness, and the finite latent-class model.
+The selection IRLS uses a `1e-6` ridge only as numerical stabilization.
 
 Primary outputs are bias and RMSE for the measurement kernels `M_j` and for the
-latent class proportion `p_f`.
+latent class proportion `p_f`. The replication-level output retains each
+`M_jf`, the selection coefficients, convergence status, and objective value;
+the summary also reports Monte Carlo standard errors for bias and RMSE.
 
 ## Run
 

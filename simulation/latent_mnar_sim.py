@@ -703,6 +703,12 @@ def run_simulation(
                     record[f"M_error_{suffix}"] = float(
                         measurement_error[item, latent]
                     )
+            if "selection_parameter" in fit:
+                for block, parameter in enumerate(fit["selection_parameter"]):
+                    for index, value in enumerate(parameter):
+                        record[f"selection_block{block}_beta{index}"] = float(
+                            value
+                        )
             records.append(record)
             for block, diagnostics in enumerate(fit["bridge_diagnostics"]):
                 bridge_records.append(
@@ -732,6 +738,34 @@ def run_simulation(
     )
     summary["M_RMSE"] = np.sqrt(summary.pop("M_mean_squared_error"))
     summary["p_f1_RMSE"] = np.sqrt(summary.pop("p_f1_mean_squared_error"))
+    monte_carlo_error = (
+        raw.groupby("method", as_index=False)
+        .apply(
+            lambda group: pd.Series(
+                {
+                    "M_bias_MCSE": group["M_bias"].std(ddof=1)
+                    / np.sqrt(len(group)),
+                    "M_RMSE_MCSE": group["M_squared_error"].std(ddof=1)
+                    / (
+                        2.0
+                        * np.sqrt(len(group))
+                        * np.sqrt(group["M_squared_error"].mean())
+                    ),
+                    "p_f1_bias_MCSE": group["p_f1_error"].std(ddof=1)
+                    / np.sqrt(len(group)),
+                    "p_f1_RMSE_MCSE": np.square(group["p_f1_error"]).std(ddof=1)
+                    / (
+                        2.0
+                        * np.sqrt(len(group))
+                        * np.sqrt(np.square(group["p_f1_error"]).mean())
+                    ),
+                }
+            ),
+            include_groups=False,
+        )
+        .reset_index(drop=True)
+    )
+    summary = summary.merge(monte_carlo_error, on="method", validate="one_to_one")
     return (
         summary,
         pd.DataFrame.from_records(overlap_records),
