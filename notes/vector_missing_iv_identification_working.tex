@@ -227,15 +227,17 @@ Matias and Rhodes (2009, Section 3; Section 4, Theorem 1 and Corollary 2) の
 回復されたtensorへ適用する。本稿の接続は，global complete caseを仮定せず，
 第一段階でsupported-blockごとにMNAR selectionを除去し，第二段階でoverlap，
 anchor items，latent shifterを用いて潜在分布と測定核を同一のlabelingの下で
-一意分解する点にある。従って，global complete caseを不要とすることだけでなく，
-各supported-block lawのshadow-IV識別と，MNAR補正後のanchor-pair tensorおよび
-extension pairsの共通label下での分解を一体として本稿の貢献とする。
+一意分解する点にある。
 
 したがって，$Z_S$には$Y_S$を予測するrelevanceと
 $R_S\indep Z_S\mid(Y_S,U_S)$というexclusionが必要である。一方，$W$は
 測定核へ直接入らず，潜在分布を動かすvariationを供給する。どの変数を
 blockwise IV，latent shifter，通常共変量に割り当て，どの項目をblock間の
 anchorにするかが，応用上の識別設計の核心となる。
+shadow IVとB-completenessにより，parametric selection modelを規定せずに
+各supported-block lawを識別し，回復されたoverlapping block lawsをanchor itemsと
+latent shifterで接続することで，有限潜在クラス比率と測定核を共通labelの下で識別し，
+bridge-weighted estimatorを構成する。
 
 \section{モデルと仮定}
 本節は識別を二段階に分け，その第一段階を定式化する。まず潜在因子$F$，
@@ -823,37 +825,63 @@ calibrationである。}
 
 $Y_1$は常時観測とし，$Y_2,Y_3$の観測確率をそれぞれ
 \begin{equation}
-P(D_j=1\mid Y_1,Y_j)
-=\operatorname{expit}\{\alpha_j-(Y_1+Y_j)\},\quad j=2,3,
+\begin{aligned}
+\operatorname{logit}P(D_j=1\mid Y_1,Y_j)
+&=\alpha_j-0.50Y_1-0.80Y_j\\
+&\quad-1.20Y_1Y_j,qquad j=2,3,
+\end{aligned}
 \label{eq:simulation-missingness}
 \end{equation}
-とする。式\eqref{eq:simulation-missingness}の$\alpha_j$は平均item観測率が80\%となるよう調整する。
-このとき
-$S_0=\{1,2\}$と$S_3=\{1,3\}$の平均観測率はそれぞれ約70\%，complete-case
-率は50.9\%，最小pair propensityは0.475であった。各blockのshadow
-$Z_S$は4カテゴリとし，class 1と2における確率をそれぞれ
-$(0.55,0.25,0.15,0.05)$と$(0.05,0.15,0.25,0.55)$とした。欠測確率には
-$Z_S$を直接入れないため，$R_S\indep Z_S\mid(Y_S,W)$が成立する。
+とする。$\alpha_j$は標本ごとではなく，式
+\eqref{eq:simulation-latent-class-model}の母集団分布に対して平均item観測率が
+80\%となるよう固定する。式\eqref{eq:simulation-missingness}は$Y_j$自身に
+依存するためMNARである。100反復での平均item観測率は0.8005，
+$S_0=\{1,2\}$と$S_3=\{1,3\}$の観測率はそれぞれ約0.70，
+complete-case率は0.5228，最小pair propensityは0.3715であった。
 
-比較するのは三手法だけである。complete-data oracleは欠測前の
-$(W,Y_1,Y_2,Y_3)$へ同じlatent-class modelを当てはめる。MARは観測された
-supported pairsへ欠測補正なしのcomposite likelihoodを当てはめる。提案法は
-各blockで
+各blockのshadow $Z_S$は4カテゴリとし，行を
+$(Y_1,Y_j)=(0,0),(0,1),(1,0),(1,1)$，列を$Z_S=0,1,2,3$とする
+条件付き確率行列を
 \begin{equation}
-\E\{R_S/\pi_S(Y_S)\mid Z_S,W\}=1
+P(Z_S\mid Y_1,Y_j)=
+\begin{pmatrix}
+0.70&0.15&0.10&0.05\\
+0.15&0.65&0.15&0.05\\
+0.05&0.15&0.65&0.15\\
+0.05&0.10&0.15&0.70
+\end{pmatrix}
+\label{eq:simulation-shadow-matrix}
+\end{equation}
+とする。式\eqref{eq:simulation-shadow-matrix}はfull rankであり，欠測確率に
+$Z_S$を入れないため$R_S\indep Z_S\mid(Y_S,W)$が成立する。
+
+比較するのは次の五手法である。complete-data oracleは欠測前の
+$(W,Y_1,Y_2,Y_3)$に対するfull product-mixture likelihoodを最大化する。MARは
+ignorabilityの下で観測itemすべてを用いたobserved-data full-information maximum
+likelihoodである。正しく指定されたparametric selection likelihoodは，式
+\eqref{eq:simulation-missingness}をlatent-class likelihoodと組み合わせ，
+$(W,Y_{\mathrm{obs}},R)$の周辺尤度を最大化する。この二つのselection likelihoodは
+$F$と欠測itemを積分するが，shadow $Z_S$は用いない。
+誤指定版はselection modelを
+$\operatorname{logit}P(D_j=1\mid Y_1,Y_j)=\gamma_{0j}+\gamma_{1j}Y_j$に制限し，
+$Y_1$のmain effectとinteractionを除く。最後にproposed saturated/sieve bridgeは各blockで
+\begin{equation}
+\E\{R_S r_S(Y_S)\mid Z_S,W\}=1
 \label{eq:simulation-bridge-moment}
 \end{equation}
-式\eqref{eq:simulation-bridge-moment}の標本momentから二次元logit bridgeを推定し，
-得られたinverse-selection
-weightでpairwise latent-class modelを推定する。全手法で6初期値から最大の
-criterionを選び，$M_1$の大小でlabelを整合させた。
+の標本momentから，4つの$Y_S$ cellごとに一つのparameterを持つinverse bridge
+$r_S=1/\pi_S$をridge-regularized least squaresで推定し，$1\le r_S\le25$に制約する。
+これは有限カテゴリでのsaturated sieveの実装である。そのweightを用いたpairwise latent-class criterionで
+測定核とclass比率を同時に更新する。全手法で6初期値からcriterionが最大の
+解を選び，$M_1$の大小でlabelを整合させた。反復上限は800とし，
+100回のMonte Carlo replicationsでは全五手法が設定した収束基準を満たした。
 
 \begin{center}
 \begin{minipage}{\linewidth}
 \centering
 \includegraphics[width=0.96\linewidth]{simulation/figures/allman_bias_rmse_comparison.pdf}
 \captionof{figure}{Allman型有限latent-class modelにおける100 Monte Carlo
-replicationsの比較（$n=500$）。左は測定核$M_j$，右はlatent class比率
+replicationsの比較（$n=500$）。上段は測定核$M_j$，下段はlatent class比率
 $p_f$の平均biasとroot mean squared error (RMSE)を示す。}
 \label{fig:allman-simulation}
 \end{minipage}
@@ -868,9 +896,11 @@ $p_f$の平均biasとroot mean squared error (RMSE)を示す。}
 &\multicolumn{2}{c}{$M_j$}&\multicolumn{2}{c}{$p_f$}\\
 Method&Bias&RMSE&Bias&RMSE\\
 \hline
-Complete-data oracle&0.0036&0.0373&0.0029&0.0351\\
-MAR&$-0.0474$&0.0724&$-0.0792$&0.0929\\
-Proposed bridge&$-0.0027$&0.0466&$-0.0028$&0.0452\\
+Complete-data oracle&0.0031&0.0351&$-0.0019$&0.0361\\
+MAR&$-0.0496$&0.0966&$-0.0193$&0.0572\\
+Selection likelihood (correct)&$-0.0008$&0.0544&0.0008&0.0427\\
+Selection likelihood (misspecified)&0.0409&0.0684&0.0092&0.0415\\
+Proposed saturated/sieve bridge&$-0.0064$&0.0555&$-0.0029$&0.0517\\
 \hline
 \end{tabular}}
 \captionof{table}{Allman型simulationの主要結果。$M_j$は全item・class成分を
@@ -880,18 +910,27 @@ Proposed bridge&$-0.0027$&0.0466&$-0.0028$&0.0452\\
 \end{center}
 
 100回のMonte Carlo replicationsでは，complete-data oracleのRMSEは，測定核
-$M_j$で0.0373，latent class比率$p_f$で0.0351であった。$M_j$は，連続因子
+$M_j$で0.0351，latent class比率$p_f$で0.0361であった。$M_j$は，連続因子
 モデルで因子負荷が担うのと同様に，潜在状態と各項目の反応を結ぶ測定側の
-パラメータである。MNARをMARとして扱うと，$M_j$の平均biasは$-0.0474$，
-RMSEは0.0724となり，class-specificな項目反応確率を系統的に過小評価した。
-同時に$p_f$のbiasは$-0.0792$，RMSEは0.0929となり，第2 latent classの
-母集団比率も過小評価した。すなわちMAR法は，selectionによる観測標本の
-構成変化を，測定関係とclass構成比の双方の変化として取り込んでいる。
-これに対し提案法のbiasはそれぞれ$-0.0027$と$-0.0028$，RMSEは0.0466と
-0.0452であり，測定核とclass比率を分離してoracleに近い水準まで回復した。
-これは，MNAR selectionを補正したblock lawsから両識別対象を同時に
-回復するという識別論の含意と整合する。%
-\footnote{この数値比較は，提案法が一般にoracleと同等の効率性を持つことを意味しない。}
+パラメータである。MNARをMARとして扱うと，$M_j$の平均biasは$-0.0496$，
+RMSEは0.0966となり，6つのclass-specific項目反応確率を集約した平均で
+負の偏りを示した。
+$p_f$のbiasは$-0.0193$，RMSEは0.0572であり，selectionによる観測標本の
+構成変化が測定関係とclass構成比の双方に混入した。
+
+正しく指定したselection likelihoodは，$M_j$のbiasを$-0.0008$，RMSEを0.0544まで
+回復し，$p_f$についてもbias 0.0008，RMSE 0.0427を得た。従って，
+真のselection linkを用いた場合には両識別対象の平均biasはほぼ0であった。一方，
+$Y_1$のmain effectとinteractionを落とすと，$M_j$のbiasは0.0409，RMSEは0.0684へ
+悪化した。すなわち，selection equationの誤指定の影響が測定核の集約biasに現れた。
+
+提案するridge-regularized saturated/sieve bridgeは，$M_j$のbiasが$-0.0064$，RMSEが0.0555，
+$p_f$のbiasが$-0.0029$，RMSEが0.0517であった。従って，特定のparametric
+selection linkを指定せずに，MNAR補正後のblock lawsから測定核とclass比率を
+分離して回復するという識別論の含意と整合する。%
+\footnote{提案法の頑健性はparametric selection linkの誤指定を避ける点にある。
+shadow-IV exclusion，positivity，B-completeness，有限latent-class測定モデルの誤指定まで
+許容するものではなく，正指定parametric likelihoodと同じ効率性も一般には保証しない。}
 
 \section*{参考文献}
 \begin{enumerate}[label={[\arabic*]},leftmargin=7mm,itemsep=0.35em,topsep=0.2em,
