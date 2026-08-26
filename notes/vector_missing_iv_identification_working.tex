@@ -622,8 +622,13 @@ B-completenessはbridgeの識別を与えるが，無限次元bridgeの推定速
 $\sqrt n$正規性はregular functionalまたはorthogonal scoreを別途構成した
 場合の拡張として扱う。
 
-\section{計算アルゴリズム}
-計算は識別証明と同じ順序で進める。
+\section{計算アルゴリズム（仮）}
+Zhao and Shao (2015)の二段階更新は，識別に用いた条件付き法則と推定対象を
+分ける点で本アルゴリズムの先例となる。ただし本稿のcriterionはlatent
+mixtureを含み一般に非凸なので，difference-of-concave更新をそのまま移植
+せず，tensor initialization，複数初期値，制約付き更新を組み合わせる。
+この方針に従い，first-stageのbridge推定，tensorに基づく初期化，制約付き
+composite criterionの更新，候補解の選択を，識別証明と同じ順序で進める。
 \begin{enumerate}[label=\textbf{Step \arabic*.},leftmargin=8mm,itemsep=0.25em]
 \item 各$S\in\mathcal S_*$で有限次元または正則化sieve bridgeを推定し，
   propensityの下限，moment residual，effective sample sizeを確認する。
@@ -642,10 +647,6 @@ $\sqrt n$正規性はregular functionalまたはorthogonal scoreを別途構成�
 \item 全候補解からcriterion最大の解を採用し，rank gap，anchor gap，
   propensity overlap，label stabilityを報告する。
 \end{enumerate}
-Zhao and Shao (2015)の二段階更新は，識別に用いた条件付き法則と推定対象を
-分ける点で本アルゴリズムの先例となる。ただし本稿のcriterionはlatent
-mixtureを含み一般に非凸なので，difference-of-concave更新をそのまま移植
-せず，tensor initialization，複数初期値，制約付き更新を組み合わせる。
 
 \section{Simulation studies}
 simulationは識別結果の数値的なsanity checkに限定し，定理3.1と同じ有限
