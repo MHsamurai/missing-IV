@@ -27,9 +27,9 @@
   \node[font=\tiny,anchor=north] (zl0) at ($(zg0.south)+(0,-.05)$) {$\bm Z_{S_0}$};
   \node[font=\tiny,anchor=north] (yl0) at ($(yg0.south)+(0,-.05)$) {$Y_{S_0}$};
   \node[select] (r0) at (6.45,6.00) {$R_{S_0}$\\$=\prod_{k\in S_0}D_k$};
-  \draw[arrow] (u0.south west) -- (zg0.north east);
+  \draw[arrow] (u0.west) -- (zg0.north);
   \draw[arrow] (u0.south) -- (f0.north);
-  \draw[arrow] (u0.south east) -- (yg0.north west);
+  \draw[arrow] (u0.east) -- (yg0.north);
   \draw[arrow] (zg0.east) -- (f0.west);
   \draw[arrow] (f0.east) -- (yg0.west);
   \draw[arrow] (yg0.east) -- (r0.west);
@@ -52,9 +52,9 @@
   \node[font=\tiny,anchor=north] (zlJ) at ($(zgJ.south)+(0,-.05)$) {$\bm Z_{S_J}$};
   \node[font=\tiny,anchor=north] (ylJ) at ($(ygJ.south)+(0,-.05)$) {$Y_{S_J}$};
   \node[select] (rJ) at (6.45,1.80) {$R_{S_J}$\\$=\prod_{k\in S_J}D_k$};
-  \draw[arrow] (uJ.south west) -- (zgJ.north east);
+  \draw[arrow] (uJ.west) -- (zgJ.north);
   \draw[arrow] (uJ.south) -- (fJ.north);
-  \draw[arrow] (uJ.south east) -- (ygJ.north west);
+  \draw[arrow] (uJ.east) -- (ygJ.north);
   \draw[arrow] (zgJ.east) -- (fJ.west);
   \draw[arrow] (fJ.east) -- (ygJ.west);
   \draw[arrow] (ygJ.east) -- (rJ.west);
