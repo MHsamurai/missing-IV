@@ -88,16 +88,40 @@ $Q_Y=\{Q_j:j=1,\ldots,m\}$である。しかし$Y_j$は観測指標$D_j=1$の
 回復可能な観測変数の法則を潜在分布と測定核へ一意に分解できるか，である。
 
 通常のinstrumental variable (IV)法は，内生変数を動かす外生変動を用いて
-構造パラメータを識別する。これに対しMNAR欠測では，未観測の結果とその
-観測指標が同時に問題となるため，通常のIV法や結果分布・欠測機構を規定する
-model-based approachだけからfull lawが識別されるとは限らない。近年は，
-欠測結果$Y$と関連するが，$(Y,U)$を条件とすれば観測指標$R$と独立な
-常時観測変数$Z$をmissingness IV，またはshadow variableとして用いる。
-この除外制約にpositivityとcompletenessを組み合わせ，選択確率とfull law，
-または回帰パラメータを識別する研究が進められている
-（d'Haultfoeuille, 2010; Zhao and Shao, 2015）。
+構造パラメータを識別する。これに対しMNAR欠測では，欠測結果$Y$と関連するが，
+$(Y,U)$を条件とすれば観測指標$R$と独立な常時観測変数$Z$を
+missingness IV，またはshadow variableとして用いる。このexclusionにpositivityと
+completenessを組み合わせることで，d'Haultfoeuille (2010, Theorem 2.3)は
+$(D,Y,Z)$のjoint distributionをノンパラメトリックに識別する。Zhao and Shao
+(2015, Theorem 1)は，共変量調整済みexclusionの下で，一般化線形モデル
+(generalized linear model; GLM)の$P(Y\mid U,Z)$を決める未知パラメータの
+識別条件を与える。したがって，これらのmissingness-IV研究が回復するのは，
+観測結果のfull lawまたはそれを規定する回帰パラメータである。
 
-しかし本稿の問題では，潜在変数を従来のshadow-IVモデルのように単に
+本稿の潜在測定モデルの下では，このfull lawは
+\begin{equation}
+\begin{aligned}
+&P(Y=y\mid W=w,X=x)\\
+&\qquad=\int\prod_{j=1}^m Q_j(y_j\mid f,x)\,
+ dQ_F(f\mid w,x)
+\end{aligned}
+\label{eq:marginal-mixture-law}
+\end{equation}
+と表される。$F\in\{1,\ldots,r\}$の場合，これは
+$\sum_{f=1}^r\lambda_f(w,x)\bigotimes_{j=1}^m M_j(:,f;x)$というmixture
+tensorである。従来のmissingness IVによって式
+\eqref{eq:marginal-mixture-law}の左辺が識別されても，それを生成する
+潜在分布$Q_F$と測定核$Q_Y$の分解は一般には一意でない。
+
+他方，Allman, Matias and Rhodes (2009, Section 3, Corollary 2;
+Section 5, Theorem 4)は，欠測や選択のない顕在変数のjoint distributionを
+出発点とし，条件付き独立な三つのviewからなるtensorにKruskal rank条件を
+課すことで，潜在クラス比率とclass-specificな測定核をlabel swappingを
+除いて識別する。すなわち，missingness-IV研究はMNAR selectionから
+周辺full lawまでを扱い，潜在クラス研究は完全データ法則から
+$(Q_F,Q_Y)$の分解までを扱う。両者は識別の異なる段階を解いている。
+
+この二段階を接続するには，潜在変数を従来のshadow-IVモデルのように単に
 積分消去し，既存のmissing-IVモデルへ帰着することはできない。仮に
 常時観測変数$W$について
 \[
@@ -112,20 +136,12 @@ D\indep W\mid(Y,F,X)
 である。$W$が$F$を予測すれば$P(f\mid y,w,x)$は一般に$w$に依存するため，
 $D\indep W\mid(Y,X)$は従わない。すなわち，$F$を条件に含む除外制約は，
 $F$を積分した観測データ上の除外制約を一般には導かない。反対に，$F$を
-最初から消去して観測変数のfull lawだけを回復しても，その法則を生成した
-$Q_F$と$Q_Y$の分解は自動的には識別されない。これが，既存のスカラー
-missing-IV識別を潜在測定モデルへ拡張するときの固有の障害である。
-
-関連する既存研究は，この障害の二つの側面を別々に扱ってきた。上記の
-missing-IV研究がMNAR selectionの除去を扱う一方，Allman, Matias and
-Rhodes (2009) は，欠測による選択を伴わない潜在構造
-モデルにおいて，多数の顕在変数から有限潜在クラスの分布と測定核を
-識別する。潜在変数を含むMNARモデルも因子分析・SEM・IRTで提案されて
-いるが，多くは欠測機構と潜在測定モデルを同時にパラメトリックに規定する。
-少なくともこれら二系列の既存結果は，部分的にしか同時観測されない多次元
-測定について，missing IVで欠測機構を除去し，さらに同じ観測データ法則から
-潜在分布と測定核までを識別する統合定理を与えていない。したがって，
-missing IVによるfull-law回復と潜在構造の一意分解を接続する必要がある。
+最初から消去して周辺full lawだけを回復しても，$Q_F$と$Q_Y$の分解は
+自動的には識別されない。これが，既存のmissing-IV識別と潜在測定モデルの
+識別を統合するときの固有の障害である。潜在変数を含むMNARモデルも因子分析・
+SEM・IRTで提案されているが，多くは欠測機構と潜在測定モデルを同時に
+パラメトリックに規定する。部分的にしか同時観測されない多次元測定について，
+missing IVによるfull-law回復と潜在構造の一意分解を接続することが，本稿の識別問題である。
 
 本稿の問題設定は次の通りである。まず，同時観測確率が正である
 supported blockごとに，観測可能な条件付け集合$(Y_S,U_S)$に対する
