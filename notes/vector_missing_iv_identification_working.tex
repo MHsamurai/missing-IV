@@ -269,10 +269,11 @@ Jacobian行列のfull-rank条件を用いる。本稿では$P(Y_S\mid U_S)$を
 outcome，block indicatorの構造。各外枠は一つのsupported blockを表し，
 内部の小さな四角は$\bm Z_S$と$Y_S$の各成分，diamondは
 $R_S=\prod_{k\in S}D_k$を表す。anchor items $Y_a,Y_b$をblock間で
-共有することで，回復したtensorのclass labelを接続する。縦の省略記号は
-$S_0,S_1,\ldots,S_J$のsupported blocksを表す。各blockで
+含む$S_0=\{a,b\}$がanchor pairを構成し，各extension pair
+$S_j=\{j,a\}$は$Y_a$を共有して測定核を伝播する。縦の省略記号は
+$S_0,S_1,\ldots,S_J$のsupported pairsを表す。各blockで
 $U_S$は$F,\bm Z_S,Y_S$へ入り，$\bm Z_S$から$R_S$への直接辺は置かない。
-灰色はblock間で同一のanchor itemを表す。}
+灰色はextension pairsに共通するanchor item $Y_a$を表す。}
 \label{fig:supported-blocks-dag}
 \end{minipage}
 \end{center}
@@ -318,7 +319,7 @@ $\E|g|\le2$。B-completenessより$g=0$ a.s.，従って$q=\pi_S$。
 \captionof{figure}{観測データ法則から潜在関数までの識別フロー。
 命題2.1が各supported blockの選択確率とfull lawを回復し，その周辺化から
 block tensorを構成する。条件付き独立な3-view tensorのKruskal一意性と
-逐次線形反転により，anchor orderingの下で
+$W$を第三modeとする線形反転により，anchor orderingの下で
 $Q_F(x)$と$Q_Y(x)$を識別する。矢印は因果効果ではなく識別写像である。}
 \label{fig:identification-flow}
 \end{minipage}
@@ -328,88 +329,187 @@ $Q_F(x)$と$Q_Y(x)$を識別する。矢印は因果効果ではなく識別写�
 第一段階の識別は完結する。ただし，回復されたblock tensorsをどの潜在
 分布と測定核が生成したかは，この命題だけでは一意にならない。残る問題は，
 overlapping blocksの分解を同時に一意化し，blockごとのclass labelを
-整合させることである。第3節では，この第二段階を有限潜在クラスについて
-解く。
+整合させることである。第3節では，anchor pairと常時観測される$W$を
+三つのviewとして用い，この第二段階を有限潜在クラスについて解く。
 
 \section{有限潜在クラスの統合識別}
 本節は，Allman, Matias and Rhodes (2009, Sections 2--5) における有限
 潜在クラスの識別論理を引き継ぎ，supported blocks上のMNAR識別問題へ
-適用する。同論文の核心は，顕在変数を$F$の下で条件付き独立な3群へ分け，
-その3-way probability tensorの分解をKruskal rank条件の下で共通の
-class permutationとscalingを除いて一意化する点にある。本稿では，
-命題2.1で回復されたanchor tensor $T_{abc}$にこの一意性を適用し，続いて
-extension tensors $T_{jab}$をmode-$j$方向に反転する。これにより，共有
-anchor itemsがclass labelを固定したまま，各測定核$M_j$と各$w$における
-混合比率$\lambda(w,x)$を逐次的に識別する。
+適用する。同論文は，$F$の下で条件付き独立な三つの顕在viewが生成する
+probability tensorを構成し，その分解をKruskal rank条件の下で一意化する。
+本稿では第三の測定項目を必要とせず，二つのanchor items $Y_a,Y_b$と
+latent shifter $W$を三つのviewとする。命題2.1で回復したpair lawsと
+常時観測される$W$から$P(Y_a,Y_b,W\mid X)$を構成し，Allman et al.と
+同じ三方向配列のrouteを適用する。
 
-$X=x$を固定し，$F\in\{1,\ldots,r\}$，$d_j=|\mathcal Y_j|$，
-$L_x=|\mathcal W_x|$とする。識別対象は
-$Q_F(x)=\{\lambda(w,x):w\in\mathcal W_x\}$と
-$Q_Y(x)=\{M_j(x):j=1,\ldots,m\}$であり，
+以下，$P_X(\mathcal X_0)=1$となる共通集合$\mathcal X_0$を取り，任意の
+$x\in\mathcal X_0$を固定する。
+$F\in\{1,\ldots,r\}$，$r\ge2$，$d_j=|\mathcal Y_j|$とし，$W$の有限
+supportを$\mathcal W_x=\{w_1,\ldots,w_L\}$とする。測定行列，class比率，
+$W$のclass-specific lawを
 \begin{align*}
-\lambda_f(w,x)&=P(F=f\mid W=w,X=x),\\
-M_j(y,f;x)&=P(Y_j=y\mid F=f,X=x)
+M_j(y,f;x)&=P(Y_j=y\mid F=f,X=x),\\
+p_f(x)&=P(F=f\mid X=x),\\
+G(w,f;x)&=P(W=w\mid F=f,X=x)
 \end{align*}
-と置く。パラメータ空間と回復済みtensorへの写像は
-\begin{align*}
-\Theta_x&=\prod_{w\in\mathcal W_x}\Delta_{r-1}
- \times\prod_{j=1}^m(\Delta_{d_j-1})^r
- \subset[0,1]^{\ell_x},\\
-\ell_x&=L_x(r-1)+r\sum_{j=1}^m(d_j-1)
-\end{align*}
-である。$T_S(w,x)=[P(Y_S=y_S\mid w,x)]_{y_S}$とし，
+と置く。$M_j$と$G$の各列は確率ベクトルである。また
 \[
 \begin{aligned}
-\Phi_x&:\Theta_x\to\mathcal T_x,\\
-\Phi_x(\theta)
-  &=\big(\{T_{abc}(w,x)\}_w,\\
-  &\hspace{8mm}\{T_{jab}(w,x)\}_{j,w}\big)
+\lambda_f(w,x)
+ &=P(F=f\mid W=w,X=x)\\
+ &=\frac{p_f(x)G(w,f;x)}{P(W=w\mid X=x)}.
 \end{aligned}
 \]
-と定義する。識別とは$\Phi_x$の単射性である。有限クラスでは共通のclass
-permutationが観測分布を変えないため，まず置換を除く単射性を示し，
-anchor orderingで代表元を固定する。Allman et al.のgeneric identification
-は，非識別点が$\Theta_x$内のproper algebraic subvarietyに含まれることを
-意味し，$(W,X)$の確率零集合を除くという意味ではない。
+識別対象は$Q_Y(x)=\{M_j(x):j=1,\ldots,m\}$と
+$Q_F(x)=\{\lambda(w,x):w\in\mathcal W_x\}$である。
 
-\noindent\textbf{仮定3.1（有限潜在クラス測定構造）.}
-$r$は既知で，仮定2--4が成立する。$W$は有限support
-$\mathcal W_x$を持ち，各$w\in\mathcal W_x$は正の条件付き確率を持つ。
-anchor items $a,b,c$が存在し，$\{a,b,c\}$と各$\{j,a,b\}$は各$w$で
-supportedかつ仮定6--7を満たす。$M_a,M_b,M_c$のcolumn Kruskal rankを
-$k_a,k_b,k_c$として$k_a+k_b+k_c\ge2r+2$である。ある$w_0$で全ての
-$\lambda_f(w_0,x)>0$である。既知score $s_a$に対する
+パラメータ空間を
+\[
+\Theta_x=\Delta_{r-1}\times(\Delta_{L-1})^r
+\times\prod_{j=1}^m(\Delta_{d_j-1})^r
+\]
+とする。$\mathcal T_{jkW}(x)$を要素
+$P(Y_j=u,Y_k=v,W=w_\ell\mid X=x)$からなる$d_j\times d_k\times L$
+配列とし，$P_{jk}(w,x)=[P(Y_j=u,Y_k=v\mid W=w,X=x)]_{u,v}$と書く。
+$\Phi_x$を$\Theta_x$から
+$\{\mathcal T_{abW},\mathcal T_{jaW}:j\notin\{a,b\}\}$への写像とする。
+識別とは，class permutationを除いて$\Phi_x$が単射であることをいう。
+以下では実現した行列にrank条件を直接課し，その下でstrict identificationを
+示す。
+
+\noindent\textbf{補題3.1（Khatri--Rao rank）.}
+$r$列を持つ行列$A,B$のcolumn Kruskal rankを$k_A,k_B$とすると，
+\[
+k_{B\odot A}\ge\min\{k_A+k_B-1,r\}.
+\]
+特に$k_A+k_B\ge r+1$なら$B\odot A$はfull column rankである。
+
+\noindent\textbf{証明.}
+$s\le\min\{k_A+k_B-1,r\}$本以下の列に非自明な線形関係があると仮定し，
+非零係数を持つ列の添字集合を$C$，$s=|C|$とする。このとき
+$A_C\operatorname{diag}(c_C)B_C^\top=0$である。一方，Sylvesterのrank
+不等式とKruskal rankの定義から，$s\ge1$に対し
+\[
+\begin{aligned}
+&\operatorname{rank}\{A_C\operatorname{diag}(c_C)B_C^\top\}\\
+&\qquad\ge\min(k_A,s)+\min(k_B,s)-s\ge1,
+\end{aligned}
+\]
+となり矛盾する。従って任意の$s$列は一次独立である。\hfill$\square$
+
+\noindent\textbf{証明方針.}
+Allman et al.のrouteに沿い，(1) supported pair lawsを回復し，
+(2) $Y_a,Y_b,W$の三方向配列を構成し，(3) そのcanonical polyadic
+(CP)分解を一意化する。
+次に，(4) 確率正規化とanchor orderingでscalingとlabelを固定し，
+(5) Khatri--Rao積のrankを確立し，(6) Bayes則で各$w$の潜在クラス分布を
+回復する。最後に，(7) extension pair tensorsを線形反転して全測定核を
+回復し，(8) 潜在測定モデルの制約の下で未同時観測の結合分布を構成する。
+
+\noindent\textbf{仮定3.1（covariate-assisted anchor-pair構造）.}
+$r$は既知で，以下の条件が全ての$x\in\mathcal X_0$で成立する。
+仮定2--4が成立し，各$f$で$p_f(x)>0$，各
+$w\in\mathcal W_x$で$P(W=w\mid X=x)>0$とする。anchor pair
+$\{a,b\}$と，各$j\notin\{a,b\}$に対するextension pair $\{j,a\}$は
+全ての$w\in\mathcal W_x$でsupportedであり，仮定6--7を満たす。
+$M_a,M_b,G$のcolumn Kruskal rankを
+$k_a,k_b,k_G$として
+\[
+k_a+k_b+k_G\ge2r+2
+\]
+が成立する。既知score $s_a$に対する
 $\mu_{af}(x)=\sum_y s_a(y)M_a(y,f;x)$について
-$\mu_{a1}(x)<\cdots<\mu_{ar}(x)$とし，class labelを固定する。
+$\mu_{a1}(x)<\cdots<\mu_{ar}(x)$という同じ厳密順序が
+$\mathcal X_0$上で成立するとし，class labelを固定する。
 
-\noindent\textbf{定理3.1（欠測IVから潜在測定モデルへの逐次識別）.}
-仮定3.1の下で$\Phi_x$はanchor orderingで正規化した$\Theta_x$上で
-単射であり，観測データ法則から$Q_F(x)$と$Q_Y(x)$が識別される。
-従って任意の項目集合$A$について
+\noindent\textbf{定理3.1（$W$を第三modeとするanchor-pair識別）.}
+仮定3.1の下で，$\Phi_x$はanchor orderingで正規化した$\Theta_x$上で
+単射である。従って観測データ法則から$p(x)$，$G(x)$，$Q_F(x)$，
+$Q_Y(x)$が識別される。さらに任意の$A\subseteq\{1,\ldots,m\}$と
+$w\in\mathcal W_x$について
 \begin{equation}
 \begin{aligned}
-P(Y_A=y_A\mid W=w,X=x)
- &=\sum_{f=1}^r\lambda_f(w,x)\\
- &\quad\times\prod_{j\in A}M_j(y_j,f;x)
+&P(Y_A=y_A\mid W=w,X=x)\\
+&\qquad=\sum_{f=1}^r\lambda_f(w,x)
+ \prod_{j\in A}M_j(y_j,f;x)
 \end{aligned}
+\label{eq:latent-fulljoint-pair}
 \end{equation}
-が識別される。これは$|A|>K$で$Y_A$が同時観測されない場合も含む。
+が識別される。これは$Y_A$が一度も同時観測されない場合も含む。
 
-\noindent\textbf{証明の骨格.}
-命題2.1から$T_{abc}(w,x)$と各$T_{jab}(w,x)$が識別される。
-$w_0$での$T_{abc}$のKruskal分解により$M_a,M_b,M_c,\lambda(w_0,x)$を
-回復する。
-また$k_c\le r$なので$k_a+k_b\ge r+2$であり，標準的な
-Khatri--Rao rank inequalityから$M_b\odot M_a$はfull column rankである。
-従って$w_0$におけるmode-$j$展開
+\noindent\textbf{証明.}
+\textbf{Step 1（supported pair lawsの回復）.}
+命題2.1を$\{a,b\}$と各$\{j,a\}$へ適用すると，
+$P(Y_a,Y_b,W,X)$と$P(Y_j,Y_a,W,X)$が識別される。従って正の
+$P(W=w_\ell\mid X=x)$上で条件付け・周辺化することにより，
+$\mathcal T_{abW}(x)$と各$\mathcal T_{jaW}(x)$が識別される。
+
+\textbf{Step 2（三方向配列のlatent-class表現）.}
+仮定4の局所独立性とmeasurement exclusionより，$X=x$を条件として
+$Y_a,Y_b,W$は$F$の下で相互に独立である。従って
+\begin{equation}
+\mathcal T_{abW}(x)
+=\sum_{f=1}^r p_f(x)M_a(:,f;x)\otimes M_b(:,f;x)\otimes G(:,f;x).
+\end{equation}
+これはAllman et al. (2009, Sections 3--4)の三顕在変数latent-class
+tensorと同じ形である。
+
+\textbf{Step 3（三方向分解の一意性）.}
+$\widetilde G(:,f;x)=p_f(x)G(:,f;x)$と置く。$p_f(x)>0$なので
+$\widetilde G$のKruskal rankは$k_G$に等しい。仮定3.1のrank条件と
+Allman et al. (2009, Theorem 1)をStep 2のtensorへ適用すると，
+$M_a,M_b,\widetilde G$は，各classに共通する置換と，積が1となる列ごとの
+三因子scalingを除いて一意である。
+
+\textbf{Step 4（scalingとclass labelの固定）.}
+$M_a,M_b$の各列は確率ベクトルなので，列和を1にする正規化が最初の
+二因子のscalingを一意に固定する。残る第三因子について
 \[
-T_{j\mid ab}=M_j\,\mathrm{diag}\{\lambda(w_0,x)\}
-(M_b\odot M_a)^\top
+p_f(x)=\one^\top\widetilde G(:,f;x),\qquad
+G(:,f;x)=\widetilde G(:,f;x)/p_f(x)
 \]
-を右反転して各$M_j$を逐次回復できる。確率列和がscalingを，score順序が
-label swappingを固定する。最後に各$w\in\mathcal W_x$で
-$\operatorname{vec}T_{ab}(w,x)=(M_b\odot M_a)\lambda(w,x)$を左反転し，
-全ての混合比率を回復する。\hfill$\square$
+とすれば，$p_f$と$G$も一意に回復される。最後に$\mu_{af}$の狭義順序が
+共通置換を固定する。従って$M_a,M_b,p,G$が識別される。
+
+\textbf{Step 5（線形反転に必要なrank）.}
+$k_b\le r$とrank条件から$k_a+k_G\ge r+2$であり，補題3.1より
+$G\odot M_a$はfull column rankである。同様に$k_G\le r$から
+$k_a+k_b\ge r+2$であり，$M_b\odot M_a$もfull column rankである。
+
+\textbf{Step 6（各$w$における潜在クラス分布）.}
+$s_w(x)=P(W=w\mid X=x)$は観測データ法則から識別され正である。
+Step 4で$p,G$が識別されたので，Bayes則
+\[
+\lambda_f(w,x)=p_f(x)G(w,f;x)/s_w(x)
+\]
+により全ての$w\in\mathcal W_x$で$\lambda(w,x)$が識別される。
+同値に，Step 5を用いて
+$\operatorname{vec}P_{ab}(w,x)=(M_b\odot M_a)\lambda(w,x)$を
+左反転しても同じ$\lambda(w,x)$を得る。
+
+\textbf{Step 7（非anchor測定核の逐次回復）.}
+$j\notin\{a,b\}$について$\mathcal T_{jaW}$のmode-$j$展開を取ると
+\[
+T_{j\mid aW}(x)
+=M_j(x)\operatorname{diag}\{p(x)\}
+\{G(x)\odot M_a(x)\}^\top.
+\]
+Step 5と$p_f(x)>0$より右辺第二因子はfull row rankで右逆を持つ。
+従って
+\[
+M_j(x)=T_{j\mid aW}(x)
+\left[\operatorname{diag}\{p(x)\}
+\{G(x)\odot M_a(x)\}^\top\right]^+
+\]
+として一意に回復される。ここで$^+$はMoore--Penrose逆行列である。
+これを各$j$へ適用すれば$Q_Y(x)$全体が得られる。
+
+\textbf{Step 8（未同時観測の結合分布）.}
+Step 6--7で識別した$\lambda(w,x)$と$M_j(x)$を仮定4の局所独立性へ
+代入すれば\eqref{eq:latent-fulljoint-pair}を得る。従って$|A|$が
+supported blockの最大サイズを
+超える場合にも，潜在測定モデルの制約の下で
+$P(Y_A\mid W=w,X=x)$は一意に識別される。\hfill$\square$
 
 \noindent\textbf{仮定3.2（連続因子の場合の正規化；定理3.1の外）.}
 $F\in\mathbb R$なら，各$x$で$\E(F\mid X=x)=0$，
@@ -419,9 +519,10 @@ affine不定性を除くが，未知の測定核を許す場合の$F\mapsto h(F)
 非線形再パラメータ化までは除かない。その場合は測定族，calibration，
 または作用素の追加制約が必要である。
 
-以上より，有限潜在クラスでは，supported-block lawの回復，anchor tensor
-の一意分解，extension tensorの逐次反転という三段階で，観測データ法則から
-未同時観測の項目集合を含む完全データ分布まで到達する。これに対し，連続
+以上より，有限潜在クラスでは，supported-pair lawsの回復，$W$を第三mode
+とするanchor-pair tensorの一意分解，extension pair tensorsの線形反転により，
+観測データ法則から未同時観測の項目集合を含む完全データ分布まで到達する。
+これに対し，連続
 因子に対する仮定3.2は位置・尺度・符号を正規化するだけであり，未知の測定核
 を伴う連続潜在構造の識別定理ではない。連続因子を扱うには，非線形
 再パラメータ化を除く測定族または作用素レベルの単射条件を別途与える必要が

@@ -14,8 +14,8 @@
      $\{\pi_S,\ P(Y_S,Z_S,U_S)\}_{S\in\mathcal S}$};
   \node[tensor] (tensor) at (3.55,4.15)
     {回復済みblock tensor\\[-.2mm]
-     $T_{abc}(w,x),\quad\{T_{jab}(w,x)\}_{j}$\\[-.2mm]
-     $T_{abc}=\sum_f\lambda_f M_a\otimes M_b\otimes M_c$};
+     $\mathcal T_{abW}(x),\quad\{\mathcal T_{jaW}(x)\}_{j}$\\[-.2mm]
+     $\mathcal T_{abW}=\sum_f p_f M_a\otimes M_b\otimes G_f$};
   \node[output] (latent) at (3.55,1.55)
     {識別された潜在関数\\[-.2mm]
      $Q_F(x)=\{\lambda_f(w,x)\}_{f,w},\quad
@@ -25,6 +25,7 @@
     {exclusion $+$ positivity $+$ B-completeness\\命題2.1} (laws);
   \draw[arrow] (laws) -- node[lab] {周辺化・条件付け} (tensor);
   \draw[arrow] (tensor) -- node[lab]
-    {Kruskal rank $+$ 逐次線形反転\\anchor orderingでlabel固定\quad 定理3.1}
+    {$W$を第三modeとするKruskal rank $+$ 線形反転\\
+     anchor orderingでlabel固定\quad 定理3.1}
     (latent);
 \end{tikzpicture}

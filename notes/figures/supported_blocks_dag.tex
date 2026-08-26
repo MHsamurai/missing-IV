@@ -13,17 +13,16 @@
   arrow/.style={-{Latex[length=1.8mm,width=1.2mm]}, line width=.5pt},
   title/.style={fill=white,inner xsep=1mm,font=\scriptsize\bfseries,anchor=west}
 ]
-  % Anchor block S_0={a,b,c}.
+  % Anchor pair block S_0={a,b}.
   \node[covar] (u0) at (2.65,7.20) {$U_{S_0}$\\$(X,W)$};
   \node[smallobs] (z01) at (1.05,6.45) {$Z_{0,1}$};
   \node[font=\tiny] (zd0) at (1.05,6.00) {$\vdots$};
   \node[smallobs] (z0q) at (1.05,5.55) {$Z_{0,q_0}$};
   \node[group,fit=(z01)(zd0)(z0q)] (zg0) {};
   \node[latent] (f0) at (2.65,6.00) {$F$};
-  \node[smallobs,fill=gray!22] (ya0) at (4.25,6.45) {$Y_a$};
-  \node[smallobs,fill=gray!22] (yb0) at (4.25,6.00) {$Y_b$};
-  \node[smallobs] (yc0) at (4.25,5.55) {$Y_c$};
-  \node[group,fit=(ya0)(yb0)(yc0)] (yg0) {};
+  \node[smallobs,fill=gray!22] (ya0) at (4.25,6.25) {$Y_a$};
+  \node[smallobs] (yb0) at (4.25,5.75) {$Y_b$};
+  \node[group,fit=(ya0)(yb0)] (yg0) {};
   \node[font=\tiny,anchor=north] (zl0) at ($(zg0.south)+(0,-.05)$) {$\bm Z_{S_0}$};
   \node[font=\tiny,anchor=north] (yl0) at ($(yg0.south)+(0,-.05)$) {$Y_{S_0}$};
   \node[select] (r0) at (6.45,6.00) {$R_{S_0}$\\$=\prod_{k\in S_0}D_k$};
@@ -34,21 +33,20 @@
   \draw[arrow] (f0.east) -- (yg0.west);
   \draw[arrow] (yg0.east) -- (r0.west);
   \node[block,fit=(u0)(zg0)(f0)(yg0)(r0)(zl0)(yl0),minimum width=72mm] (b0) {};
-  \node[title] at (b0.north west) {$S_0=\{a,b,c\}$};
+  \node[title] at (b0.north west) {$S_0=\{a,b\}$};
 
   \node[font=\Large] at (3.65,4.10) {$\vdots$};
 
-  % Representative extension block S_J={J,a,b}.
+  % Representative extension pair S_J={J,a}.
   \node[covar] (uJ) at (2.65,3.00) {$U_{S_J}$\\$(X,W)$};
   \node[smallobs] (zJ1) at (1.05,2.25) {$Z_{J,1}$};
   \node[font=\tiny] (zdJ) at (1.05,1.80) {$\vdots$};
   \node[smallobs] (zJq) at (1.05,1.35) {$Z_{J,q_J}$};
   \node[group,fit=(zJ1)(zdJ)(zJq)] (zgJ) {};
   \node[latent] (fJ) at (2.65,1.80) {$F$};
-  \node[smallobs] (yJ) at (4.25,2.25) {$Y_J$};
-  \node[smallobs,fill=gray!22] (yaJ) at (4.25,1.80) {$Y_a$};
-  \node[smallobs,fill=gray!22] (ybJ) at (4.25,1.35) {$Y_b$};
-  \node[group,fit=(yJ)(yaJ)(ybJ)] (ygJ) {};
+  \node[smallobs] (yJ) at (4.25,2.05) {$Y_J$};
+  \node[smallobs,fill=gray!22] (yaJ) at (4.25,1.55) {$Y_a$};
+  \node[group,fit=(yJ)(yaJ)] (ygJ) {};
   \node[font=\tiny,anchor=north] (zlJ) at ($(zgJ.south)+(0,-.05)$) {$\bm Z_{S_J}$};
   \node[font=\tiny,anchor=north] (ylJ) at ($(ygJ.south)+(0,-.05)$) {$Y_{S_J}$};
   \node[select] (rJ) at (6.45,1.80) {$R_{S_J}$\\$=\prod_{k\in S_J}D_k$};
@@ -59,10 +57,10 @@
   \draw[arrow] (fJ.east) -- (ygJ.west);
   \draw[arrow] (ygJ.east) -- (rJ.west);
   \node[block,fit=(uJ)(zgJ)(fJ)(ygJ)(rJ)(zlJ)(ylJ),minimum width=72mm] (bJ) {};
-  \node[title] at (bJ.north west) {$S_J=\{J,a,b\}$};
+  \node[title] at (bJ.north west) {$S_J=\{J,a\}$};
 
   \node[font=\scriptsize,align=center] at (3.65,-.35)
     {$S_0,S_1,\ldots,S_J\in\mathcal S$,\quad
      $R_S\mathrel{\perp\!\!\!\perp}\bm Z_S\mid(Y_S,U_S)$\\
-     gray $Y_a,Y_b$: same anchor items across blocks};
+     gray $Y_a$: shared anchor item across extension pairs};
 \end{tikzpicture}
