@@ -649,8 +649,8 @@ composite criterionの更新，候補解の選択を，識別証明と同じ順�
 \end{enumerate}
 
 \section{Simulation studies}
-simulationは識別結果の数値的なsanity checkに限定し，定理3.1と同じ有限
-カテゴリlatent-class modelだけを扱う。Allman, Matias and Rhodes
+本節では，定理3.1に対応する有限カテゴリlatent-class modelの下で，
+提案推定量の有限標本特性を検討する。Allman, Matias and Rhodes
 (2009, Sections 3--5)の$r$-class, $p$-feature model
 $M(r;\kappa_1,\ldots,\kappa_p)$に従い，
 \[
@@ -726,14 +726,13 @@ Proposed bridge&$-0.0027$&0.0466&$-0.0028$&0.0452\\
 \end{minipage}
 \end{center}
 
-100回のpilotでは，complete-data oracleの$M_j$ RMSEは0.0373，$p_f$ RMSEは
+100回のMonte Carlo replicationsでは，complete-data oracleの$M_j$ RMSEは
 0.0351であった。MNARをMARとして扱うと，それぞれ0.0724と0.0929へ悪化し，
 平均biasも$-0.0474$と$-0.0792$になった。提案法ではRMSEが0.0466と0.0452，
 平均biasが$-0.0027$と$-0.0028$となり，両識別対象についてoracleに近い。
 これは提案法が常に高効率であることの証明ではないが，MNAR selectionを
 補正しながら測定核と潜在class比率を同時に回復するという識別論の含意と
-整合する。最終稿では1,000 replicationsへ拡張し，Monte Carlo errorを縮小
-した上で報告値を確定する。
+整合する。
 
 \section*{参考文献}
 \begin{enumerate}[label={[\arabic*]},leftmargin=7mm,itemsep=0.35em,topsep=0.2em,
