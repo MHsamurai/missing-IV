@@ -67,11 +67,21 @@
 バイオマーカーの選択的取得，診療記録における重症度依存の検査オーダー，
 質問票におけるセンシティブ項目の非回答では，個々の項目平均だけでなく，
 潜在クラスの構成比と，各項目が潜在状態をどう測定するかを表す測定核を
-知りたい。この識別対象は，因子分析，構造方程式モデリング
+知りたい。とりわけ，欠測確率が項目の背後にある潜在状態と関連すると，
+観測された回答者の項目分布は，母集団における潜在状態の構成比と
+class-specificな項目反応の双方が混合された選択後の分布となる。したがって，
+欠測項目の周辺分布を回復するだけでは，潜在状態の構成比が異なるのか，
+測定核が異なるのかを区別できない。
+
+この問題は，非無視的欠測を伴う構造方程式モデリング
 (structural equation modeling; SEM)，項目反応理論
-(item response theory; IRT)に共通する潜在測定モデルの中心である
-（Muth\'en et al., 1987; Holman and Glas, 2005; Lee and Tang, 2006;
-Kuha et al., 2018）。
+(item response theory; IRT)，およびlatent response propensity modelで
+既に現れる。Muth\'en et al. (1987)とLee and Tang (2006)は潜在変数モデルと
+非無視的欠測機構を同時に規定し，Holman and Glas (2005)は非無視的な
+item nonresponseを無視することがIRTの推定にbiasを生じさせることを示す。
+Kuha et al. (2018)は，測定対象のlatent traitとresponse propensityの関連が
+item nonresponseを非無視的にするモデルを構成する。本稿が識別したい潜在分布と
+測定核は，これらの因子分析，SEM，IRTに共通する潜在測定モデルの中心である。
 
 本研究では，未観測潜在変数$F$，常時観測変数$W,X$，複数の潜在的測定値
 $Y=(Y_1,\ldots,Y_m)$について，
@@ -180,9 +190,10 @@ block lawを潜在クラスへ分解せず，欠測機構の除去だけを識�
 \noindent\textbf{仮定1（観測過程）.}
 $D=(D_1,\ldots,D_m)\in\{0,1\}^m$，$Y_j$は$D_j=1$のときだけ観測される。
 $X,W,Z,D$は常時観測され，
-\[
+\begin{equation}
 O=(X,W,Z,D,Y_D),\qquad Y_D=\{Y_j:D_j=1\}.
-\]
+\label{eq:observed-data}
+\end{equation}
 ここで$Z$は必要なblockごとのshadow $Z_S$を含む情報の集合である。
 
 \noindent\textbf{仮定2（潜在分布のshift）.}
@@ -192,10 +203,11 @@ $F\mid(W,X)\sim Q_F(\cdot\mid W,X)$。
 $Y_j\mid(F,X)\sim Q_j(\cdot\mid F,X;\theta_j)$，$j=1,\ldots,m$。
 
 \noindent\textbf{仮定4（局所独立性とexclusion）.}
-\[
+\begin{equation}
 P(Y\mid F,W,X,Z)=\prod_{j=1}^m Q_j(Y_j\mid F,X).
-\]
-すなわち$Y_1,\ldots,Y_m$は$(F,X)$の下で条件付き独立であり，$W$は
+\label{eq:local-independence}
+\end{equation}
+式\eqref{eq:local-independence}は，$Y_1,\ldots,Y_m$が$(F,X)$の下で条件付き独立であり，$W$が
 測定核へ直接入らない。$Z_S$も測定核へ直接入らないが，$(W,X)$の下で
 $F$と関連し，潜在分布を通じて$Y_S$を予測してよい。従って
 $F\mid(W,X)\sim Q_F$は$Z$を周辺化した分布であり，完全データ法則では
@@ -216,20 +228,23 @@ $Y_S$と関連する。$R_S\indep Z_S\mid(Y_S,U_S)$より，$Z_S$から$R_S$へ�
 
 \noindent\textbf{仮定5（supported block）.}
 $S\subseteq\{1,\ldots,m\}$について
-\[
+\begin{equation}
 R_S=\prod_{j\in S}D_j,\qquad Y_S=(Y_j:j\in S),\qquad U_S=(X,W).
-\]
+\label{eq:supported-block-definition}
+\end{equation}
 $R_S=1$なら$Y_S$全体が観測される。block観測データは
 $O_S=(U_S,Z_S,R_S,Y_S^{\mathrm{obs}})$であり，
-\[
+\begin{equation}
 Y_S^{\mathrm{obs}}=
 \begin{cases}Y_S,&R_S=1,\\ \dagger,&R_S=0\end{cases}
-\]
+\label{eq:block-observed-outcome}
+\end{equation}
 とする。
 $S$がsupportedであるとは，対象領域で
-\[
+\begin{equation}
 \pi_S(y,u):=P(R_S=1\mid Y_S=y,U_S=u)>0
-\]
+\label{eq:block-positivity}
+\end{equation}
 が成立することをいう。
 
 記号の対応は，Zhao and Shao (2015)の$(Y,U,Z,R)$をblockごとの
@@ -241,36 +256,42 @@ $(Y_S,U_S,Z_S,R_S)$に置き換えたものである。とくに$W$は$F$の分�
 d'Haultfoeuille (2010)の全ベクトルを直接扱うrouteは，
 $R_{[m]}=\prod_{j=1}^mD_j$の
 positivityと
-\[
+\begin{equation}
 \E\{g(Y,U)\mid Z,U\}=0\ \Longrightarrow\ g(Y,U)=0
-\]
-というglobal B-completenessを要する。exact top-$K<m$では
+\label{eq:global-b-completeness}
+\end{equation}
+という式\eqref{eq:global-b-completeness}のglobal B-completenessを要する。exact top-$K<m$では
 $R_{[m]}=0$ a.s.なので，以下のblockwise formulationを用いる。
 
 \noindent\textbf{仮定6（Zhao--Shao型blockwise covariate-adjusted missing IV）.}
 各supported $S$について，
-\[
-\begin{aligned}
+\begin{subequations}\label{eq:block-missing-iv}
+\begin{align}
 \relax[R_S\mid Y_S,U_S,Z_S]
-  &=[R_S\mid Y_S,U_S],\\
+  &=[R_S\mid Y_S,U_S]
+  \label{eq:block-missing-iv-law}\\
 R_S&\indep Z_S\mid(Y_S,U_S).
-\end{aligned}
-\]
-ここで第2式は第1式の独立性による表記である。
+  \label{eq:block-missing-iv-independence}
+\end{align}
+\end{subequations}
+ここで式\eqref{eq:block-missing-iv-independence}は
+式\eqref{eq:block-missing-iv-law}の独立性による表記である。
 従って任意の可測集合$A$について
-\[
+\begin{equation}
 P(Z_S\in A\mid Y_S,U_S,R_S=1)
 =P(Z_S\in A\mid Y_S,U_S),
-\]
-これはZhao and Shao (2015)のcomplete-case identity
+\label{eq:block-complete-case-identity}
+\end{equation}
+式\eqref{eq:block-complete-case-identity}はZhao and Shao (2015)のcomplete-case identity
 $[Z\mid Y,U,R=1]=[Z\mid Y,U]$のblockwise analogueである。
 
 \noindent\textbf{仮定7（blockwise conditional B-completeness）.}
 各supported $S$について，任意の下に有界かつ可積分な$g$に対し
-\[
+\begin{equation}
 \E\{g(Y_S,U_S)\mid Z_S,U_S\}=0
 \Longrightarrow g(Y_S,U_S)=0\quad\text{a.s.}
-\]
+\label{eq:block-b-completeness}
+\end{equation}
 が成立する。global and blockwise formulationsの間に一般的な包含関係はない。
 Zhao and Shao (2015)では一般化線形モデルの有限次元パラメータに対して
 Jacobian行列のfull-rank条件を用いる。本稿では$P(Y_S\mid U_S)$を
@@ -298,11 +319,13 @@ $U_S$は$F,\bm Z_S,Y_S$へ入り，$\bm Z_S$から$R_S$への直接辺は置か�
 仮定1，5，6，7の下で，$\pi_S$は
 \begin{equation}
 \E\left\{\frac{R_S}{q(Y_S,U_S)}\mid Z_S,U_S\right\}=1
+\label{eq:bridge-moment}
 \end{equation}
 を満たし条件付き期待値が有限な正値関数$q$の唯一解である。従って任意の可積分$h$に対し
 \begin{equation}
 \E h(Y_S,Z_S,U_S)
 =\E\left\{\frac{R_Sh(Y_S,Z_S,U_S)}{\pi_S(Y_S,U_S)}\right\},
+\label{eq:inverse-selection-identity}
 \end{equation}
 よって$P(Y_S,Z_S,U_S)$が識別される。仮定6の共変量調整済み除外制約は
 Zhao and Shao (2015)型であり，$q$の一意性とfull lawの回復は
@@ -311,22 +334,25 @@ blockへ条件付き適用した拡張になっている。
 
 \noindent\textbf{証明.}
 排除条件より
-\[
+\begin{equation}
 \E(R_S\mid Y_S,Z_S,U_S)=\pi_S(Y_S,U_S),
-\]
-従って真の$\pi_S$は(5)を満たす。別の正値解$q$に対し
+\label{eq:selection-expectation}
+\end{equation}
+従って真の$\pi_S$は\eqref{eq:bridge-moment}を満たす。別の正値解$q$に対し
 $g=\pi_S/q-1$と置くと，
-\[
+\begin{equation}
 0=\E\left[R_S\left\{q^{-1}-\pi_S^{-1}\right\}\mid Z_S,U_S\right]
 =\E(g\mid Z_S,U_S).
-\]
-(5)を周辺化すれば$\E(\pi_S/q)=1$なので$g\ge-1$かつ
+\label{eq:bridge-uniqueness-step}
+\end{equation}
+\eqref{eq:bridge-moment}を周辺化すれば$\E(\pi_S/q)=1$なので$g\ge-1$かつ
 $\E|g|\le2$。B-completenessより$g=0$ a.s.，従って$q=\pi_S$。
 最後に
-\[
+\begin{equation}
 \E\left\{R_Sh/\pi_S\mid Y_S,Z_S,U_S\right\}=h
-\]
-を周辺化すれば(6)を得る。\hfill$\square$
+\label{eq:ipw-conditional-identity}
+\end{equation}
+を周辺化すれば\eqref{eq:inverse-selection-identity}を得る。\hfill$\square$
 
 \begin{center}
 \begin{minipage}{\linewidth}
@@ -374,27 +400,34 @@ $x\in\mathcal X_0$を固定する。
 $F\in\{1,\ldots,r\}$，$r\ge2$，$d_j=|\mathcal Y_j|$とし，$W$の有限
 supportを$\mathcal W_x=\{w_1,\ldots,w_L\}$とする。測定行列，class比率，
 $W$のclass-specific lawを
-\begin{align*}
-M_j(y,f;x)&=P(Y_j=y\mid F=f,X=x),\\
-p_f(x)&=P(F=f\mid X=x),\\
-G(w,f;x)&=P(W=w\mid F=f,X=x)
-\end{align*}
+\begin{subequations}\label{eq:latent-class-components}
+\begin{align}
+M_j(y,f;x)&=P(Y_j=y\mid F=f,X=x)
+  \label{eq:measurement-kernel-definition}\\
+p_f(x)&=P(F=f\mid X=x)
+  \label{eq:class-proportion-definition}\\
+G(w,f;x)&=P(W=w\mid F=f,X=x).
+  \label{eq:shifter-law-definition}
+\end{align}
+\end{subequations}
 と置く。$M_j$と$G$の各列は確率ベクトルである。また
-\[
+\begin{equation}
 \begin{aligned}
 \lambda_f(w,x)
  &=P(F=f\mid W=w,X=x)\\
  &=\frac{p_f(x)G(w,f;x)}{P(W=w\mid X=x)}.
 \end{aligned}
-\]
+\label{eq:latent-class-posterior}
+\end{equation}
 識別対象は$Q_Y(x)=\{M_j(x):j=1,\ldots,m\}$と
 $Q_F(x)=\{\lambda(w,x):w\in\mathcal W_x\}$である。
 
 パラメータ空間を
-\[
+\begin{equation}
 \Theta_x=\Delta_{r-1}\times(\Delta_{L-1})^r
 \times\prod_{j=1}^m(\Delta_{d_j-1})^r
-\]
+\label{eq:latent-parameter-space}
+\end{equation}
 とする。$\mathcal T_{jkW}(x)$を要素
 $P(Y_j=u,Y_k=v,W=w_\ell\mid X=x)$からなる$d_j\times d_k\times L$
 配列とし，$P_{jk}(w,x)=[P(Y_j=u,Y_k=v\mid W=w,X=x)]_{u,v}$と書く。
@@ -408,9 +441,10 @@ $\{\mathcal T_{abW},\mathcal T_{jaW}:j\notin\{a,b\}\}$への写像とする。
 
 \noindent\textbf{補題3.1（Khatri--Rao rank）.}
 $r$列を持つ行列$A,B$のcolumn Kruskal rankを$k_A,k_B$とすると，
-\[
+\begin{equation}
 k_{B\odot A}\ge\min\{k_A+k_B-1,r\}.
-\]
+\label{eq:khatri-rao-rank-bound}
+\end{equation}
 特に$k_A+k_B\ge r+1$なら$B\odot A$はfull column rankである。
 
 \noindent\textbf{証明.}
@@ -418,12 +452,13 @@ $s\le\min\{k_A+k_B-1,r\}$本以下の列に非自明な線形関係があると�
 非零係数を持つ列の添字集合を$C$，$s=|C|$とする。このとき
 $A_C\operatorname{diag}(c_C)B_C^\top=0$である。一方，Sylvesterのrank
 不等式とKruskal rankの定義から，$s\ge1$に対し
-\[
+\begin{equation}
 \begin{aligned}
 &\operatorname{rank}\{A_C\operatorname{diag}(c_C)B_C^\top\}\\
 &\qquad\ge\min(k_A,s)+\min(k_B,s)-s\ge1,
 \end{aligned}
-\]
+\label{eq:sylvester-rank-bound}
+\end{equation}
 となり矛盾する。従って任意の$s$列は一次独立である。\hfill$\square$
 
 \noindent\textbf{仮定3.1（covariate-assisted anchor-pair構造）.}
@@ -434,9 +469,10 @@ $\{a,b\}$と，各$j\notin\{a,b\}$に対するextension pair $\{j,a\}$は
 全ての$w\in\mathcal W_x$でsupportedであり，仮定6--7を満たす。
 $M_a,M_b,G$のcolumn Kruskal rankを
 $k_a,k_b,k_G$として
-\[
+\begin{equation}
 k_a+k_b+k_G\ge2r+2
-\]
+\label{eq:anchor-kruskal-condition}
+\end{equation}
 が成立する。既知score $s_a$に対する
 $\mu_{af}(x)=\sum_y s_a(y)M_a(y,f;x)$について
 $\mu_{a1}(x)<\cdots<\mu_{ar}(x)$という同じ厳密順序が
@@ -458,73 +494,80 @@ $w\in\mathcal W_x$について
 が識別される。これは$Y_A$が一度も同時観測されない場合も含む。
 
 \noindent\textbf{証明.}
-\textbf{Step 1（supported pair lawsの回復）.}
+\noindent\textbf{Step 1（supported pair lawsの回復）.}
 命題2.1を$\{a,b\}$と各$\{j,a\}$へ適用すると，
 $P(Y_a,Y_b,W,X)$と$P(Y_j,Y_a,W,X)$が識別される。従って正の
 $P(W=w_\ell\mid X=x)$上で条件付け・周辺化することにより，
 $\mathcal T_{abW}(x)$と各$\mathcal T_{jaW}(x)$が識別される。
 
-\textbf{Step 2（三方向配列のlatent-class表現）.}
+\noindent\textbf{Step 2（三方向配列のlatent-class表現）.}
 仮定4の局所独立性とmeasurement exclusionより，$X=x$を条件として
 $Y_a,Y_b,W$は$F$の下で相互に独立である。従って
 \begin{equation}
 \mathcal T_{abW}(x)
 =\sum_{f=1}^r p_f(x)M_a(:,f;x)\otimes M_b(:,f;x)\otimes G(:,f;x).
+\label{eq:anchor-tensor-decomposition}
 \end{equation}
 これはAllman et al. (2009, Sections 3--4)の三顕在変数latent-class
 tensorと同じ形である。
 
-\textbf{Step 3（三方向分解の一意性）.}
+\noindent\textbf{Step 3（三方向分解の一意性）.}
 $\widetilde G(:,f;x)=p_f(x)G(:,f;x)$と置く。$p_f(x)>0$なので
-$\widetilde G$のKruskal rankは$k_G$に等しい。仮定3.1のrank条件と
-Allman et al. (2009, Theorem 1)をStep 2のtensorへ適用すると，
+$\widetilde G$のKruskal rankは$k_G$に等しい。式\eqref{eq:anchor-kruskal-condition}と
+Allman et al. (2009, Theorem 1)を\eqref{eq:anchor-tensor-decomposition}へ適用すると，
 $M_a,M_b,\widetilde G$は，各classに共通する置換と，積が1となる列ごとの
 三因子scalingを除いて一意である。
 
-\textbf{Step 4（scalingとclass labelの固定）.}
+\noindent\textbf{Step 4（scalingとclass labelの固定）.}
 $M_a,M_b$の各列は確率ベクトルなので，列和を1にする正規化が最初の
 二因子のscalingを一意に固定する。残る第三因子について
-\[
+\begin{equation}
 p_f(x)=\one^\top\widetilde G(:,f;x),\qquad
 G(:,f;x)=\widetilde G(:,f;x)/p_f(x)
-\]
+\label{eq:component-normalization}
+\end{equation}
 とすれば，$p_f$と$G$も一意に回復される。最後に$\mu_{af}$の狭義順序が
 共通置換を固定する。従って$M_a,M_b,p,G$が識別される。
 
-\textbf{Step 5（線形反転に必要なrank）.}
-$k_b\le r$とrank条件から$k_a+k_G\ge r+2$であり，補題3.1より
+\noindent\textbf{Step 5（線形反転に必要なrank）.}
+$k_b\le r$と式\eqref{eq:anchor-kruskal-condition}から$k_a+k_G\ge r+2$であり，
+式\eqref{eq:khatri-rao-rank-bound}より
 $G\odot M_a$はfull column rankである。同様に$k_G\le r$から
 $k_a+k_b\ge r+2$であり，$M_b\odot M_a$もfull column rankである。
 
-\textbf{Step 6（各$w$における潜在クラス分布）.}
+\noindent\textbf{Step 6（各$w$における潜在クラス分布）.}
 $s_w(x)=P(W=w\mid X=x)$は観測データ法則から識別され正である。
-Step 4で$p,G$が識別されたので，Bayes則
-\[
+\eqref{eq:component-normalization}で$p,G$が識別されたので，Bayes則
+\begin{equation}
 \lambda_f(w,x)=p_f(x)G(w,f;x)/s_w(x)
-\]
-により全ての$w\in\mathcal W_x$で$\lambda(w,x)$が識別される。
+\label{eq:posterior-bayes-recovery}
+\end{equation}
+式\eqref{eq:posterior-bayes-recovery}により全ての$w\in\mathcal W_x$で$\lambda(w,x)$が識別される。
 同値に，Step 5を用いて
 $\operatorname{vec}P_{ab}(w,x)=(M_b\odot M_a)\lambda(w,x)$を
 左反転しても同じ$\lambda(w,x)$を得る。
 
-\textbf{Step 7（非anchor測定核の逐次回復）.}
+\noindent\textbf{Step 7（非anchor測定核の逐次回復）.}
 $j\notin\{a,b\}$について$\mathcal T_{jaW}$のmode-$j$展開を取ると
-\[
+\begin{equation}
 T_{j\mid aW}(x)
 =M_j(x)\operatorname{diag}\{p(x)\}
 \{G(x)\odot M_a(x)\}^\top.
-\]
-Step 5と$p_f(x)>0$より右辺第二因子はfull row rankで右逆を持つ。
+\label{eq:extension-tensor-unfolding}
+\end{equation}
+式\eqref{eq:khatri-rao-rank-bound}と$p_f(x)>0$より，
+式\eqref{eq:extension-tensor-unfolding}の右辺第二因子はfull row rankで右逆を持つ。
 従って
-\[
+\begin{equation}
 M_j(x)=T_{j\mid aW}(x)
 \left[\operatorname{diag}\{p(x)\}
 \{G(x)\odot M_a(x)\}^\top\right]^+
-\]
+\label{eq:extension-kernel-inversion}
+\end{equation}
 として一意に回復される。ここで$^+$はMoore--Penrose逆行列である。
-これを各$j$へ適用すれば$Q_Y(x)$全体が得られる。
+式\eqref{eq:extension-kernel-inversion}を各$j$へ適用すれば$Q_Y(x)$全体が得られる。
 
-\textbf{Step 8（未同時観測の結合分布）.}
+\noindent\textbf{Step 8（未同時観測の結合分布）.}
 Step 6--7で識別した$\lambda(w,x)$と$M_j(x)$を仮定4の局所独立性へ
 代入すれば\eqref{eq:latent-fulljoint-pair}を得る。従って$|A|$が
 supported blockの最大サイズを
@@ -557,30 +600,35 @@ nuisanceとして扱う。
 global complete caseを必要とせず，blockごとのIPW contributionを統合するため，
 目的関数はfull likelihoodではなくbridge-weighted composite criterionとなる。
 必要なsupported pairsの集合を
-\[
+\begin{equation}
 \mathcal S_*=\{\{a,b\}\}\cup
 \{\{j,a\}:j\notin\{a,b\}\}
-\]
-とする。第一段階では，各$S\in\mathcal S_*$について命題2.1の条件付き
+\label{eq:required-supported-pairs}
+\end{equation}
+とする。第一段階では，式\eqref{eq:required-supported-pairs}の各$S\in\mathcal S_*$について
+命題2.1の条件付き
 moment equationを標本版へ置き換え，選択確率
 $\pi_S(y,u)$を推定する。まず有限次元benchmarkとして
 $\pi_S(y,u;\eta_S)$を仮定し，真値を$\eta_{S0}$と書く。柔軟な推定では，
-$q_S^{-1}$をsieveで近似し，正値制約と正則化を課して同じmoment equationを
+$q_S^{-1}$をsieveで近似し，正値制約と正則化を課して\eqref{eq:bridge-moment}の標本版を
 解く。いずれの場合も，推定したbridgeを別標本へ評価するcross-fittingを
 用いることができる。
 
 有限潜在クラスのパラメータを
-\[
+\begin{equation}
 \theta=\{p,G,M_1,\ldots,M_m\}
-\]
-とし，確率単体制約とanchor orderingを課したパラメータ空間を$\Theta$と
+\label{eq:latent-model-parameter}
+\end{equation}
+とし，式\eqref{eq:latent-model-parameter}に確率単体制約とanchor orderingを課した
+パラメータ空間を$\Theta$と
 する。$S$に対応する潜在測定モデルのpair densityを
-\[
+\begin{equation}
 p_\theta(y_S\mid w,x)
 =\sum_{f=1}^r\lambda_f(w,x;\theta)
  \prod_{j\in S}M_j(y_j,f;x;\theta)
-\]
-と書く。提案推定量は
+\label{eq:latent-pair-density}
+\end{equation}
+と書く。式\eqref{eq:latent-pair-density}を用い，提案推定量を
 \begin{equation}
 \begin{aligned}
 \widehat\theta=\arg\max_{\theta\in\Theta}\;&\frac1n\sum_{i=1}^n
@@ -623,20 +671,23 @@ supported-pair propensity，anchor tensorの最小特異値，Kruskal rankを
 
 \noindent\textbf{定理5.1（有限次元bridgeの一致性と漸近正規性）.}
 仮定5.1，命題4.1，およびfirst-stage moment estimatorの局所一意性の下で，
-\[
-\widehat\theta\xrightarrow{p}\theta_0,
-\qquad
+\begin{subequations}\label{eq:estimator-asymptotics}
+\begin{align}
+\widehat\theta&\xrightarrow{p}\theta_0,
+\label{eq:estimator-consistency}\\
 \sqrt n(\widehat\theta-\theta_0)
-\rightsquigarrow N(0,A^{-1}BA^{-\top}).
-\]
+&\rightsquigarrow N(0,A^{-1}BA^{-\top}).
+\label{eq:estimator-asymptotic-normality}
+\end{align}
+\end{subequations}
 ここで$A$はprofiled composite scoreの平均Jacobian，$B$はbridge推定の
 influence contributionを含む同scoreの分散である。したがって標準誤差は
 全段階のestimating equationsをstackしたsandwich estimatorで求める。
 個体単位bootstrapを用いる場合も，各反復でbridge推定，latent model fitting，
 anchor orderingによるlabel alignmentまでを全て再実行する。
 
-定理5.1の一致性は，標本criterionの一様収束と命題4.1の一意最大化から，
-漸近正規性はstacked estimating equationsの線形展開から従う。%
+式\eqref{eq:estimator-consistency}は標本criterionの一様収束と命題4.1の一意最大化から，
+式\eqref{eq:estimator-asymptotic-normality}はstacked estimating equationsの線形展開から従う。%
 \footnote{B-completenessはbridgeの識別を与えるが，無限次元bridgeの推定速度までは
 与えない。sieve bridgeは一般にill-posed inverse problemとなるため，正則化，
 source condition，近似誤差と確率誤差のrate条件が必要である。その場合，通常の
@@ -649,56 +700,73 @@ mixtureを含み一般に非凸なので，difference-of-concave更新をその�
 せず，tensor initialization，複数初期値，制約付き更新を組み合わせる。
 この方針に従い，first-stageのbridge推定，tensorに基づく初期化，制約付き
 composite criterionの更新，候補解の選択を，識別証明と同じ順序で進める。
-\begin{enumerate}[label=\textbf{Step \arabic*.},leftmargin=8mm,itemsep=0.25em]
-\item 各$S\in\mathcal S_*$で有限次元または正則化sieve bridgeを推定し，
-  propensityの下限，moment residual，effective sample sizeを確認する。
-\item bridge weightからanchor tensor $\widehat{\mathcal T}_{abW}$と
-  extension tensors $\widehat{\mathcal T}_{jaW}$を構成する。
-\item anchor tensorのnonnegative CP分解をspectral initializationと複数の
-  初期値から計算し，各列を確率ベクトルへ正規化する。
-\item anchor scoreの順序でclass labelを固定し，$\widehat p,\widehat G,
-  \widehat M_a,\widehat M_b$を得る。
-\item $\widehat G\odot\widehat M_a$を用いて各extension tensorを反転し，
-  $\widehat M_j$を初期化する。小さい特異値にはtruncated inverseまたは
-  ridge regularizationを用いる。
-\item 上記を初期値として\eqref{eq:composite-criterion}を確率単体制約の下で
-  block-coordinate updateし，criterionとparameter changeの両方で収束を
-  判定する。
-\item 全候補解からcriterion最大の解を採用し，rank gap，anchor gap，
-  propensity overlap，label stabilityを報告する。
-\end{enumerate}
+
+\noindent\textbf{Step 1（bridge推定）.}
+各$S\in\mathcal S_*$で有限次元または正則化sieve bridgeを推定し，
+propensityの下限，moment residual，effective sample sizeを確認する。
+
+\noindent\textbf{Step 2（tensor構成）.}
+bridge weightからanchor tensor $\widehat{\mathcal T}_{abW}$と
+extension tensors $\widehat{\mathcal T}_{jaW}$を構成する。
+
+\noindent\textbf{Step 3（anchor tensor初期化）.}
+anchor tensorのnonnegative CP分解をspectral initializationと複数の
+初期値から計算し，各列を確率ベクトルへ正規化する。
+
+\noindent\textbf{Step 4（class label固定）.}
+anchor scoreの順序でclass labelを固定し，$\widehat p,\widehat G,
+\widehat M_a,\widehat M_b$を得る。
+
+\noindent\textbf{Step 5（extension kernel初期化）.}
+$\widehat G\odot\widehat M_a$を用いて各extension tensorを反転し，
+$\widehat M_j$を初期化する。小さい特異値にはtruncated inverseまたは
+ridge regularizationを用いる。
+
+\noindent\textbf{Step 6（constrained update）.}
+上記を初期値として\eqref{eq:composite-criterion}を確率単体制約の下で
+block-coordinate updateし，criterionとparameter changeの両方で収束を
+判定する。
+
+\noindent\textbf{Step 7（候補解の選択）.}
+全候補解からcriterion最大の解を採用し，rank gap，anchor gap，
+propensity overlap，label stabilityを報告する。
 
 \section{Simulation studies}
 本節では，定理3.1に対応する有限カテゴリlatent-class modelの下で，
 提案推定量の有限標本特性を検討する。Allman, Matias and Rhodes
 (2009, Sections 3--5)の$r$-class, $p$-feature model
 $M(r;\kappa_1,\ldots,\kappa_p)$に従い，
-\[
+\begin{equation}
 P=\sum_{f=1}^r p_f\bigotimes_{j=1}^p p_{fj}
-\]
-とする。ここでは$n=500$，$r=2$，$p=4$とし，常時観測される$W$と
+\label{eq:simulation-latent-class-model}
+\end{equation}
+とする。式\eqref{eq:simulation-latent-class-model}において$n=500$，$r=2$，$p=4$とし，
+常時観測される$W$と
 $Y_1,Y_2,Y_3$を二値featureとする。class比率は
 $(p_1,p_2)=(0.55,0.45)$，$W$のclass-specific Bernoulli確率は
 $(0.20,0.80)$，測定核は
-\[
+\begin{equation}
 M=\begin{pmatrix}
 0.15&0.80\\
 0.25&0.75\\
 0.20&0.85
 \end{pmatrix}
-\]
-とした。%
+\label{eq:simulation-measurement-kernel}
+\end{equation}
+式\eqref{eq:simulation-measurement-kernel}のように設定した。%
 \footnote{Allman et al.はmodel classと識別条件を与えるが，Monte Carloの
 数値parameter，推定量，biasまたはcoverage表は提示していない。したがって，
 これらは同論文から転記した数値ではなく，単体内部でclass separationを持つ本稿固有の
 calibrationである。}
 
 $Y_1$は常時観測とし，$Y_2,Y_3$の観測確率をそれぞれ
-\[
+\begin{equation}
 P(D_j=1\mid Y_1,Y_j)
 =\operatorname{expit}\{\alpha_j-(Y_1+Y_j)\},\quad j=2,3,
-\]
-とする。$\alpha_j$は平均item観測率が80\%となるよう調整する。このとき
+\label{eq:simulation-missingness}
+\end{equation}
+とする。式\eqref{eq:simulation-missingness}の$\alpha_j$は平均item観測率が80\%となるよう調整する。
+このとき
 $S_0=\{1,2\}$と$S_3=\{1,3\}$の平均観測率はそれぞれ約70\%，complete-case
 率は50.9\%，最小pair propensityは0.475であった。各blockのshadow
 $Z_S$は4カテゴリとし，class 1と2における確率をそれぞれ
@@ -709,10 +777,12 @@ $Z_S$を直接入れないため，$R_S\indep Z_S\mid(Y_S,W)$が成立する。
 $(W,Y_1,Y_2,Y_3)$へ同じlatent-class modelを当てはめる。MARは観測された
 supported pairsへ欠測補正なしのcomposite likelihoodを当てはめる。提案法は
 各blockで
-\[
+\begin{equation}
 \E\{R_S/\pi_S(Y_S)\mid Z_S,W\}=1
-\]
-の標本momentから二次元logit bridgeを推定し，得られたinverse-selection
+\label{eq:simulation-bridge-moment}
+\end{equation}
+式\eqref{eq:simulation-bridge-moment}の標本momentから二次元logit bridgeを推定し，
+得られたinverse-selection
 weightでpairwise latent-class modelを推定する。全手法で6初期値から最大の
 criterionを選び，$M_1$の大小でlabelを整合させた。
 
