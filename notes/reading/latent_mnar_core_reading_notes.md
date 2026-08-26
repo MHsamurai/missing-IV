@@ -92,12 +92,18 @@
 ### Jung, Schafer and Seo (2011)
 
 - **対象**: arbitrary missing patternsを持つmultivariate dataのlatent-class selection model。
-- **モデル**: response valuesとcovariatesに加え、missingness indicatorsが測るlatent variableを
-  通じてnonignorabilityを表す、publisher abstract and Sections 1--3。
-- **推定**: multiple imputation、model checking、simulationと実データ分析が中心。
+- **モデル**: missingness indicatorsでlatent classを定義し、incomplete itemsとcovariatesから
+  class membershipを予測する。missingness modelは式(3.1)、population modelと合わせた
+  complete-data likelihoodは式(3.2)、observed-data likelihoodは式(3.3), pp.804--805。
+- **識別上の限定**: finite-mixture部分はclass labelsを除いて識別される一方、MNARの
+  nonignorable aspectsは観測データだけでは識別できず、追加の検証不能な仮定が必要と明記する、
+  Section 8, p.811。本文中にもnearly unidentified parametersへのpriorの役割がある。
+- **推定**: joint posteriorのMCMCとmultiple imputation、model checking、simulation、
+  実データ分析が中心。著者ら自身が主用途をsensitivity analysisと位置づける、p.811。
 - **本稿との差**: multivariate MNARとlatent classの結合自体は既存である。同論文は
-  untestable missingness assumptionsに対するsensitivity analysisを主眼とし、shadow-IVで
-  block lawを識別した後にmeasurement kernelsを分解するrouteではない。
+  parametric population/selection modelとuntestable missingness assumptionsに依存する。
+  shadow-IV/B-completenessでblock lawを識別した後にmeasurement kernelsを分解する
+  routeではない。
 
 ### Ma and Zhang (2021)
 

@@ -2,7 +2,7 @@
 
 監査対象は `notes/vector_missing_iv_identification_working.tex` と、
 `resources/latent_multivariate`、`resources/shadow variable`、`resources/missing`
-に保存された24 PDF（23論文）、ならびに出版社・著者公開本文で確認した2論文である。
+に保存された25 PDF（24論文）、ならびに出版社・著者公開本文で確認した1論文である。
 Kano and Takai (2011) は二つの配布版があるが、抽出本文とDOIが一致するため
 一論文として扱う。
 
@@ -103,7 +103,7 @@ Kano and Takai (2011) は二つの配布版があるが、抽出本文とDOIが�
 | 文献 | 原文根拠 | 本稿との重なり | 判定・本文上の扱い |
 |---|---|---|---|
 | Harel and Schafer (2009) | Definition 3, Proposition 3, Section 4; latent-class application in Section 5 | latent ignorabilityを定義し、item nonresponseを伴うlatent-class analysisへ適用する。 | **限定が必要**: latent classとnonignorable missingnessの組合せ自体は既存。ただし本稿のshadow-IV/B-completeness routeではない。 |
-| Jung, Schafer and Seo (2011) | publisher abstract and Sections 1--3 | missingness indicatorsで測られるlatent variableを介してmultivariate MNARを表すlatent-class selection model。 | **限定が必要**: multivariate MNAR latent-class model自体は既存。主眼はsensitivity analysisとmultiple imputationであり、本稿と同じnonparametric block-law識別ではない。 |
+| Jung, Schafer and Seo (2011) | eqs. (3.1)--(3.3), pp.804--805; Section 8, p.811 | missingness indicatorsで定義されるlatent response classを介してmultivariate MNARを表すlatent-class selection model。population modelとmissingness modelをjoint likelihoodとして規定する。 | **限定が必要**: multivariate MNAR latent-class model自体は既存。ただし非無視部分には検証不能な仮定が必要で、主眼はsensitivity analysisとmultiple imputationである。本稿と同じshadow-IV/B-completenessによるblock-law識別ではない。 |
 | Ma and Zhang (2021) | Data setting D1, Assumptions A1--A3, Proposition 1, pp.4--5 | subset-identifiable distributionsを含むobservable-pattern coverから、global complete caseなしにlatent generative parametersを識別する。 | **重要な近接研究**: 「complete case不要」「subset/blockからlatent parameter識別」は単独では新規でない。ただしcorrectly specified generative/missingness modelとfully observed auxiliary inputを使い、shadow-IV bridgeでblock lawsを回復しない。 |
 | Yang et al. (2021) | abstract; low-rank propensity model and finite-sample bounds, pp.1--7 | MNAR下でlow-multilinear-rank tensorの欠測entryをIPW/HOSVDで補完する。 | **区別可能**: 対象はarray entryのcompletionであり、probability tensorのlatent-class decompositionやclass labelingの接続ではない。 |
 | Xie, Xue and Wang (2026) | Assumptions 2--4, Theorem 2 and Corollary 3, pp.4--6 | latent variableを条件とするno-self-censoringからmissingness mechanismとfull-data distributionを識別する。 | **重要な近接研究**: latent-variable MNARに識別定理があることを認める。ただし識別対象はground-truth full-data distributionであり、working modelのlatent coordinatesや測定核の個別識別ではない。 |

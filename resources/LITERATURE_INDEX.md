@@ -8,6 +8,7 @@ PDFはGit管理外であるため、この索引でローカルファイル名�
 |---|---|---|
 | `Allman_Matias_Rhodes_2009_Latent_Structure_Identifiability.pdf` | Allman, Matias and Rhodes (2009), *Annals of Statistics* | Theorem 1/Corollary 2の実現Kruskal rankによる一意性とTheorem 4のgeneric identification |
 | `Holman_Glas_2005_Nonignorable_Missing_IRT.pdf` | Holman and Glas (2005), *British Journal of Mathematical and Statistical Psychology* | latent response propensityを伴うIRTのjoint modelとitem-parameter bias |
+| `Jung_Schafer_Seo_2011_Latent_Class_Selection_Multivariate_MNAR.pdf` | Jung, Schafer and Seo (2011), *Computational Statistics & Data Analysis* | multivariate MNARのlatent-class selection modelとsensitivity analysis |
 | `Kano_Takai_2011_NMAR_Linear_Latent_Variate_Model.pdf` | Kano and Takai (2011), *Journal of Multivariate Analysis* | 線形latent variate modelとpattern間制約に基づく、欠測機構を明示推定しないmulti-sample SEM |
 | `Kuha_Katsikatsou_Moustaki_2018_Latent_Response_Propensity.pdf` | Kuha, Katsikatsou and Moustaki (2018), *JRSS A* | latent traitとlatent response classのjoint modelおよびその識別条件 |
 | `Lee_Tang_2006_Bayesian_Nonlinear_SEM_Nonignorable_Missing.pdf` | Lee and Tang (2006), *Psychometrika* | logistic missingness modelを伴う非線形SEMのfully parametric Bayesian推定 |
@@ -46,7 +47,6 @@ PDFはGit管理外であるため、この索引でローカルファイル名�
 | Reference | Verified source | Main role |
 |---|---|---|
 | Harel and Schafer (2009), *Biometrika* | DOI 10.1093/biomet/asn069, abstract and author-uploaded text | partial/latent ignorabilityとitem nonresponseを伴うlatent-class analysis |
-| Jung, Schafer and Seo (2011), *Computational Statistics & Data Analysis* | DOI 10.1016/j.csda.2010.07.002, publisher abstract and introduction | missingness indicatorsで測るlatent variableを用いたmultivariate MNAR latent-class selection model |
 
 ## Version note
 
