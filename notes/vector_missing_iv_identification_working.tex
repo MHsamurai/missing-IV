@@ -528,6 +528,175 @@ affine不定性を除くが，未知の測定核を許す場合の$F\mapsto h(F)
 再パラメータ化を除く測定族または作用素レベルの単射条件を別途与える必要が
 ある。
 
+\section{推定：bridge-weighted composite criterion}
+識別結果を推定へ接続する。必要なsupported pairsの集合を
+\[
+\mathcal S_*=\{\{a,b\}\}\cup
+\{\{j,a\}:j\notin\{a,b\}\}
+\]
+とする。第一段階では，各$S\in\mathcal S_*$について命題2.1の条件付き
+moment equationを標本版へ置き換え，選択確率
+$\pi_S(y,u)$を推定する。まず有限次元benchmarkとして
+$\pi_S(y,u;\eta_S)$を仮定し，真値を$\eta_{S0}$と書く。柔軟な推定では，
+$q_S^{-1}$をsieveで近似し，正値制約と正則化を課して同じmoment equationを
+解く。いずれの場合も，推定したbridgeを別標本へ評価するcross-fittingを
+用いることができる。
+
+有限潜在クラスのパラメータを
+\[
+\theta=\{p,G,M_1,\ldots,M_m\}
+\]
+とし，確率単体制約とanchor orderingを課したパラメータ空間を$\Theta$と
+する。$S$に対応する潜在測定モデルのpair densityを
+\[
+p_\theta(y_S\mid w,x)
+=\sum_{f=1}^r\lambda_f(w,x;\theta)
+ \prod_{j\in S}M_j(y_j,f;x;\theta)
+\]
+と書く。提案推定量は
+\begin{equation}
+\begin{aligned}
+\widehat\theta=\arg\max_{\theta\in\Theta}\;&\frac1n\sum_{i=1}^n
+ \sum_{S\in\mathcal S_*}c_S\\[-1mm]
+&\frac{R_{iS}}{\widehat\pi_S(Y_{iS},U_i)}
+ \log p_\theta(Y_{iS}\mid W_i,X_i).
+\end{aligned}
+\label{eq:composite-criterion}
+\end{equation}
+で定義する。$c_S>0$はblock間の尺度を調整する固定weightである。
+これはfull likelihoodではなく，bridgeで回復したoverlapping pair lawsを
+同時に当てはめるcomposite M-estimatorである。従って推論にはFisher
+informationではなく，first-stageのbridge推定も含むsandwich分散を用いる。
+
+\noindent\textbf{命題4.1（母集団criterionの一意性）.}
+仮定1--7と3.1が成立し，$\theta_0\in\Theta$が正しくモデルを生成するとする。
+さらに全ての$S\in\mathcal S_*$で$p_\theta(Y_S\mid W,X)$が共通support上で
+正とする。このとき，\eqref{eq:composite-criterion}の母集団版は
+$\theta_0$で一意に最大化される。
+
+\noindent\textbf{証明.}
+命題2.1のinverse-selection identityより，各weighted summandの期待値は
+full pair lawの下での期待対数密度に等しい。従って真値との差は，各
+$S\in\mathcal S_*$の条件付きKullback--Leibler divergenceの正の加重和で
+ある。最大値が等しければ全てのanchor/extension pair lawsが一致し，
+定理3.1の単射性より$\theta=\theta_0$である。\hfill$\square$
+
+Zhao and Shao (2015)も識別可能なcomplete-case identityを疑似尤度へ
+接続するが，本稿ではbridgeで回復した複数のpair lawsを一つの潜在測定
+モデルへ制約付きで当てはめる点が異なる。この差が，単一回帰パラメータの
+推定から，潜在クラス比率と全測定核の同時推定への拡張を担う。
+
+\section{漸近理論}
+まず有限次元bridgeを用いるregular benchmarkを完成させる。以下では
+$(O_i)_{i=1}^n$は独立同分布であり，$\beta=(\theta,\eta)$，
+$\eta=(\eta_S:S\in\mathcal S_*)$とする。
+
+\noindent\textbf{仮定5.1（regularity and separation）.}
+$\Theta$と各bridge parameter spaceはcompactで真値は内点にある。
+criterionとfirst-stage momentsは真値近傍で二回連続微分可能で，必要な
+envelopeは二乗可積分である。bridgeのJacobian，composite scoreのJacobian，
+および対応するGodambe行列は非特異である。さらにclass probability，
+supported-pair propensity，anchor tensorの最小特異値，Kruskal rankを
+支えるminor，およびanchor orderingの隣接gapは，全て0から一様に離れる。
+
+\noindent\textbf{定理5.1（有限次元bridgeの一致性と漸近正規性）.}
+仮定5.1，命題4.1，およびfirst-stage moment estimatorの局所一意性の下で，
+\[
+\widehat\theta\xrightarrow{p}\theta_0,
+\qquad
+\sqrt n(\widehat\theta-\theta_0)
+\rightsquigarrow N(0,A^{-1}BA^{-\top}).
+\]
+ここで$A$はprofiled composite scoreの平均Jacobian，$B$はbridge推定の
+influence contributionを含む同scoreの分散である。したがって標準誤差は
+全段階のestimating equationsをstackしたsandwich estimatorで求める。
+個体単位bootstrapを用いる場合も，各反復でbridge推定，latent model fitting，
+anchor orderingによるlabel alignmentまでを全て再実行する。
+
+定理5.1の一致性は，標本criterionの一様収束と命題4.1の一意最大化から，
+漸近正規性はstacked estimating equationsの線形展開から従う。ここで
+B-completenessはbridgeの識別を与えるが，無限次元bridgeの推定速度までは
+与えない。sieve bridgeは一般にill-posed inverse problemとなるため，
+正則化，source condition，近似誤差と確率誤差のrate条件が必要である。
+従って本稿の現段階では，sieve版には一致性を主結果とし，通常の
+$\sqrt n$正規性はregular functionalまたはorthogonal scoreを別途構成した
+場合の拡張として扱う。
+
+\section{計算アルゴリズム}
+計算は識別証明と同じ順序で進める。
+\begin{enumerate}[label=\textbf{Step \arabic*.},leftmargin=8mm,itemsep=0.25em]
+\item 各$S\in\mathcal S_*$で有限次元または正則化sieve bridgeを推定し，
+  propensityの下限，moment residual，effective sample sizeを確認する。
+\item bridge weightからanchor tensor $\widehat{\mathcal T}_{abW}$と
+  extension tensors $\widehat{\mathcal T}_{jaW}$を構成する。
+\item anchor tensorのnonnegative CP分解をspectral initializationと複数の
+  初期値から計算し，各列を確率ベクトルへ正規化する。
+\item anchor scoreの順序でclass labelを固定し，$\widehat p,\widehat G,
+  \widehat M_a,\widehat M_b$を得る。
+\item $\widehat G\odot\widehat M_a$を用いて各extension tensorを反転し，
+  $\widehat M_j$を初期化する。小さい特異値にはtruncated inverseまたは
+  ridge regularizationを用いる。
+\item 上記を初期値として\eqref{eq:composite-criterion}を確率単体制約の下で
+  block-coordinate updateし，criterionとparameter changeの両方で収束を
+  判定する。
+\item 全候補解からcriterion最大の解を採用し，rank gap，anchor gap，
+  propensity overlap，label stabilityを報告する。
+\end{enumerate}
+Zhao and Shao (2015)の二段階更新は，識別に用いた条件付き法則と推定対象を
+分ける点で本アルゴリズムの先例となる。ただし本稿のcriterionはlatent
+mixtureを含み一般に非凸なので，difference-of-concave更新をそのまま移植
+せず，tensor initialization，複数初期値，制約付き更新を組み合わせる。
+
+\section{Simulation studies}
+simulationの目的は，提案推定量の有限標本性能と，識別を支えるmissing IV，
+latent shifter，overlap，tensor rankの強さに対する感度を確認することである。
+基本設定は$n=500$，$m=3$，$r=2$とし，
+$Y=(Y_1,Y_2,Y_3)$，三次元の常時観測共変量$U=(X,W)$，三次元の
+missingness IV $Z=(Z_1,Z_2,Z_3)$を生成する。$W$はclass比率を動かし，
+$Z$は$F$を通じて$Y$を予測する一方，欠測指標へ直接入れない。
+必要なsupported pairsはanchor pair $S_0=\{1,2\}$とextension pair
+$S_3=\{3,1\}$であり，補助的に$\{2,3\}$も利用する。
+
+欠測は$Y_j$自身と$U$に依存させてMNARとし，$Z$を条件付き選択確率から
+除外する。各$D_j$は$(Y_j,U)$だけに依存する非退化なBernoulli確率から，
+$(Y,U)$の下で条件付き独立に生成する。これにより各$R_S$のblockwise
+exclusionを満たしつつ，平均item観測率が約80\%になるようinterceptを
+調整する。さらに
+\begin{align*}
+P(R_{\{1,2\}}=1\mid U)&>0,\\
+P(R_{\{3,1\}}=1\mid U)&>0,\\
+P(D_1D_2D_3=1\mid U)&>0
+\end{align*}
+を対象領域で満たすようoverlapを確認する。なお周辺観測率80\%だけでは
+これらの同時観測確率の正値性は論理的に保証されないため，pair-levelと
+complete-case levelのpositivityを別々に診断する。
+
+outcome familyは正規，二値，Poissonの三種類とする。二値caseは定理3.1の
+有限カテゴリ設定に直接対応する。正規caseとPoisson caseでは，第一の実装は
+有限個の区間へ離散化してtensor初期化を行い，続いて元のparametric
+measurement kernelでcriterionを更新する。これら連続・count kernelの完全な
+識別主張には，有限カテゴリ定理とは別のparametric identification lemmaが
+必要であるため，二値caseを主検証，正規・Poisson caseを拡張検証と位置づける。
+
+比較法は，(i) 欠測前の全データを用いるoracle，(ii) 真の$\pi_S$を用いる
+oracle bridge，(iii) missing at random (MAR)を仮定する推定，
+(iv) 正しく指定した完全パラメトリックselection likelihood，
+(v) 有限次元bridgeを用いる提案法，(vi) 正則化sieve bridgeを用いる提案法，
+とする。主要因子としてmissing-IV strength，$W$によるclass shift，最小
+propensity，anchor/extension tensorのrank separationを段階的に弱める。
+欠測機構の誤指定caseでは，完全パラメトリック法とsieve bridgeの頑健性も
+比較する。
+
+各caseについて1,000 Monte Carlo replicationsを行い，class比率，測定確率
+またはkernel parameter，代表的なfull-law functionalについてbias，empirical
+standard deviation，root mean squared error，平均推定standard error，95\%
+confidence intervalのcoverageを報告する。併せて収束率，label alignmentの
+失敗率，最小特異値，effective sample sizeを記録する。有限次元bridgeの
+interval estimationには全工程を再推定する個体単位bootstrapを用い，
+replication当たり300回を初期設定とする。実際の数値実験に先立ち，まず
+population tensorのrank条件と全supported-pair propensitiesの下限をDGPごとに
+検証する。
+
 \section*{参考文献}
 \begin{enumerate}[label={[\arabic*]},leftmargin=7mm,itemsep=0.35em,topsep=0.2em,
   parsep=0pt,partopsep=0pt]
