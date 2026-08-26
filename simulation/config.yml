@@ -1,8 +1,7 @@
 {
   "seed": 260826,
   "sample_size": 500,
-  "pilot_replications": 100,
-  "final_replications": 1000,
+  "replications": 100,
   "model": {
     "source": "Allman, Matias and Rhodes (2009, Sections 3-5)",
     "name": "M(r; kappa_1, ..., kappa_p)",
@@ -22,20 +21,38 @@
   "missingness": {
     "always_observed_anchor": "Y1",
     "target_average_item_observation_rate": 0.80,
-    "selection_slope_on_pair_sum": -1.00
+    "selection_coefficients": {
+      "Y1": -0.50,
+      "Yj": -0.80,
+      "Y1_by_Yj": -1.20
+    },
+    "true_selection_formula": "logit P(D_j=1 | Y1,Yj) = alpha_j - 0.50 Y1 - 0.80 Yj - 1.20 Y1*Yj",
+    "misspecified_selection_formula": "logit P(D_j=1 | Y1,Yj) = alpha_j + beta Yj"
   },
   "shadow": {
     "categories": 4,
-    "probability_given_f0": [0.55, 0.25, 0.15, 0.05],
-    "probability_given_f1": [0.05, 0.15, 0.25, 0.55]
+    "probability_given_pair_cell": [
+      [0.70, 0.15, 0.10, 0.05],
+      [0.15, 0.65, 0.15, 0.05],
+      [0.05, 0.15, 0.65, 0.15],
+      [0.05, 0.10, 0.15, 0.70]
+    ],
+    "calibration_note": "Rows index the four binary Y-pair cells. The diagonally dominant matrix supplies full-rank shadow relevance while selection excludes Z conditional on the pair outcomes."
   },
   "estimation": {
-    "methods": ["full_data_oracle", "mar", "proposed_bridge"],
+    "methods": [
+      "full_data_oracle",
+      "mar",
+      "selection_likelihood_correct",
+      "selection_likelihood_misspecified",
+      "proposed_saturated_bridge"
+    ],
     "em_starts": 6,
-    "em_max_iter": 400,
+    "em_max_iter": 800,
     "em_tolerance": 1e-8,
-    "bridge_max_iter": 100,
-    "bridge_tolerance": 1e-9,
+    "bridge_ridge": 1e-4,
+    "selection_ridge": 1e-6,
+    "selection_irls_max_iter": 50,
     "maximum_inverse_weight": 25.0
   }
 }
