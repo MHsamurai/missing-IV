@@ -1,61 +1,41 @@
 {
   "seed": 260826,
   "sample_size": 500,
-  "pilot_replications": 50,
+  "pilot_replications": 100,
   "final_replications": 1000,
-  "latent_classes": 2,
-  "items": 3,
-  "target_item_observation_rate": 0.80,
+  "model": {
+    "source": "Allman, Matias and Rhodes (2009, Sections 3-5)",
+    "name": "M(r; kappa_1, ..., kappa_p)",
+    "latent_classes": 2,
+    "class_probability": [0.55, 0.45],
+    "observed_features": ["W", "Y1", "Y2", "Y3"],
+    "state_cardinality": [2, 2, 2, 2],
+    "bernoulli_probability": {
+      "W": [0.20, 0.80],
+      "Y1": [0.15, 0.80],
+      "Y2": [0.25, 0.75],
+      "Y3": [0.20, 0.85]
+    },
+    "calibration_note": "Allman et al. specify the model class and identification conditions, not numerical Monte Carlo parameters. These interior values are study-specific."
+  },
   "supported_pairs": [[0, 1], [0, 2]],
-  "auxiliary_pair": [1, 2],
-  "em": {
-    "starts": 4,
-    "max_iter": 300,
-    "tolerance": 1e-7,
-    "max_weight": 25.0
-  },
-  "latent_shift": {
-    "p_f1_given_w0": 0.25,
-    "p_f1_given_w1": 0.70
-  },
-  "shadow_proxy": {
-    "p_z1_given_f0": 0.20,
-    "p_z1_given_f1": 0.80
-  },
   "missingness": {
-    "outcome_slope": -0.80,
-    "x_slope": 0.25,
-    "w_slope": 0.20
+    "always_observed_anchor": "Y1",
+    "target_average_item_observation_rate": 0.80,
+    "selection_slope_on_pair_sum": -1.00
   },
-  "profiles": {
-    "allman_binary": {
-      "label": "Allman-inspired categorical tensor",
-      "family": "binary",
-      "measurement_parameter": [[0.15, 0.80], [0.25, 0.75], [0.20, 0.85]]
-    },
-    "zhao_hybrid_normal": {
-      "label": "Zhao-style MNAR + latent normal measurement",
-      "family": "normal",
-      "measurement_parameter": [[-1.00, 1.50], [-0.50, 2.00], [0.00, 1.25]],
-      "normal_sd": 1.0
-    },
-    "zhao_hybrid_binary": {
-      "label": "Zhao-style MNAR + latent binary measurement",
-      "family": "binary",
-      "measurement_parameter": [[0.20, 0.75], [0.30, 0.80], [0.25, 0.70]]
-    },
-    "zhao_hybrid_poisson": {
-      "label": "Zhao-style MNAR + latent Poisson measurement",
-      "family": "poisson",
-      "measurement_parameter": [[0.70, 2.20], [1.00, 3.00], [0.80, 2.50]]
-    }
+  "shadow": {
+    "categories": 4,
+    "probability_given_f0": [0.55, 0.25, 0.15, 0.05],
+    "probability_given_f1": [0.05, 0.15, 0.25, 0.55]
   },
-  "methods": {
-    "full_data_oracle": {"pilot_enabled": true, "status": "implemented"},
-    "mar_naive": {"pilot_enabled": true, "status": "implemented"},
-    "oracle_bridge": {"pilot_enabled": true, "status": "implemented"},
-    "parametric_selection": {"pilot_enabled": false, "status": "planned"},
-    "proposed_parametric_bridge": {"pilot_enabled": false, "status": "planned"},
-    "proposed_sieve_bridge": {"pilot_enabled": false, "status": "planned"}
+  "estimation": {
+    "methods": ["full_data_oracle", "mar", "proposed_bridge"],
+    "em_starts": 6,
+    "em_max_iter": 400,
+    "em_tolerance": 1e-8,
+    "bridge_max_iter": 100,
+    "bridge_tolerance": 1e-9,
+    "maximum_inverse_weight": 25.0
   }
 }

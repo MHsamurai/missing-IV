@@ -1,29 +1,27 @@
-# Latent MNAR simulation
+# Allman latent-class MNAR simulation
 
-This folder contains the pilot simulation used to choose the main data-generating
-process before implementing the full 3 outcome families x 6 estimators design.
+The simulation uses only the finite latent-class model of Allman, Matias and
+Rhodes (2009, Sections 3-5). For latent class `F` and observed finite-state
+features `(W, Y1, Y2, Y3)`, the complete-data distribution is
 
-## Files
+```text
+P = sum_f pi_f (p_fW tensor p_f1 tensor p_f2 tensor p_f3).
+```
 
-- `config.yml`: all pilot and final-run settings. It is valid YAML and JSON.
-- `latent_mnar_sim.py`: DGPs, pairwise latent-class EM, and metrics.
-- `latent_mnar_dgp_pilot.ipynb`: executed comparison of the candidate DGPs.
-- `requirements.txt`: optional local Jupyter environment.
+Allman et al. provide the model class and identification conditions, but no
+Monte Carlo DGP, numerical parameter values, estimator, bias table, or coverage
+table. The probabilities in `config.yml` are therefore explicitly study-specific
+interior calibration values, not values copied from that paper.
 
-## Current scope
+The comparison is deliberately limited to three estimators:
 
-The pilot compares three diagnostic estimators:
+1. `full_data_oracle`: the Allman model fitted before missingness.
+2. `mar`: the same latent model fitted to observed supported pairs without MNAR correction.
+3. `proposed_bridge`: block propensities estimated from the conditional bridge
+   moments, followed by bridge-weighted latent-model fitting.
 
-1. `full_data_oracle`
-2. `mar_naive`
-3. `oracle_bridge`, using the true supported-pair propensities
-
-The remaining three methods are listed in `config.yml` but intentionally marked
-as planned. The oracle bridge tests whether the DGP and latent-class fitting are
-stable before estimated bridge error is introduced.
-
-The primary outputs are bias and RMSE for the class-specific measurement
-parameters representing each `M_j`, and bias and RMSE for `p_f=P(F=1)`.
+Primary outputs are bias and RMSE for the measurement kernels `M_j` and for the
+latent class proportion `p_f`.
 
 ## Run
 
@@ -31,5 +29,5 @@ parameters representing each `M_j`, and bias and RMSE for `p_f=P(F=1)`.
 uv venv simulation/.venv
 uv pip install --python simulation/.venv/bin/python -r simulation/requirements.txt
 simulation/.venv/bin/python -m jupyter nbconvert --execute --to notebook \
-  --inplace simulation/latent_mnar_dgp_pilot.ipynb
+  --inplace simulation/allman_latent_mnar_simulation.ipynb
 ```
