@@ -89,7 +89,7 @@ IV $Z$に分け，
 R\indep Z\mid(Y,U)
 \]
 のみを課す。これにより，$U$の効果を推定・検定の対象として残しつつ，
-$Z$を識別のために用いる。同論文はcomplete-case関係
+$Z$を識別のために用いる。同論文はcomplete-case identity
 $[Z\mid Y,U,R=1]=[Z\mid Y,U]$からGLMの有限次元パラメータを識別し，
 必要なrank条件が応答分布，分散パラメータ，$Z$のsupportに依存することを
 明示した。
@@ -106,7 +106,7 @@ $\pi_S$とfull law $P(Y_S,Z_S,U_S)$をノンパラメトリックに回復する
 3-view表現として用い，共有anchor itemsでclass permutationをblock間に
 整合させることにより，潜在クラス分布と測定核を識別する。
 
-したがって本稿の相違は，スカラー$Y$を単一のcomplete-case標本から
+したがって本稿の相違は，スカラー$Y$を単一のcomplete-case sampleから
 識別することではなく，多次元$Y=(Y_1,\ldots,Y_m)$のうち同時観測可能な
 supported blocksを順次回復し，共有anchor itemsを通じてblock間の
 latent class labelを接続する点にある。個々のblockでは欠測機構を
@@ -227,7 +227,7 @@ positivityと
 \E\{g(Y,U)\mid Z,U\}=0\ \Longrightarrow\ g(Y,U)=0
 \]
 というglobal B-completenessを要する。exact top-$K<m$では
-$R_{[m]}=0$ a.s.なので，以下のblock版を用いる。
+$R_{[m]}=0$ a.s.なので，以下のblockwise formulationを用いる。
 
 \noindent\textbf{仮定6（Zhao--Shao型blockwise covariate-adjusted missing IV）.}
 各supported $S$について，
@@ -244,8 +244,8 @@ R_S&\indep Z_S\mid(Y_S,U_S).
 P(Z_S\in A\mid Y_S,U_S,R_S=1)
 =P(Z_S\in A\mid Y_S,U_S),
 \]
-これはZhao and Shao (2015)のcomplete-case関係
-$[Z\mid Y,U,R=1]=[Z\mid Y,U]$のblock版である。
+これはZhao and Shao (2015)のcomplete-case identity
+$[Z\mid Y,U,R=1]=[Z\mid Y,U]$のblockwise analogueである。
 
 \noindent\textbf{仮定7（blockwise conditional B-completeness）.}
 各supported $S$について，任意の下に有界かつ可積分な$g$に対し
@@ -253,7 +253,7 @@ $[Z\mid Y,U,R=1]=[Z\mid Y,U]$のblock版である。
 \E\{g(Y_S,U_S)\mid Z_S,U_S\}=0
 \Longrightarrow g(Y_S,U_S)=0\quad\text{a.s.}
 \]
-が成立する。global版とblockwise版の間に一般的な包含関係はない。
+が成立する。global and blockwise formulationsの間に一般的な包含関係はない。
 Zhao and Shao (2015)では一般化線形モデルの有限次元パラメータに対して
 Jacobian行列のfull-rank条件を用いる。本稿では$P(Y_S\mid U_S)$を
 パラメトリックに限定せずblock law全体を回復するため，対応する
