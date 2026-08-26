@@ -62,10 +62,10 @@
 \section{問題設定}
 医学・疫学・心理学の実証研究では，複数の検査項目が欠測するだけでなく，
 それらが測定する認知機能，疾患重症度，抑うつ，生理学的状態などの
-構成概念そのものが潜在的であることが多い。例えば，認知症研究における
+構成概念そのものが潜在的であることが多い。本稿が想定する応用は，認知症研究における
 選択的な認知検査不能，Parkinson病研究における運動・認知・
 バイオマーカーの選択的取得，診療記録における重症度依存の検査オーダー，
-質問票におけるセンシティブ項目の非回答では，個々の項目平均だけでなく，
+質問票におけるセンシティブ項目の非回答である。これらでは，個々の項目平均だけでなく，
 潜在クラスの構成比と，各項目が潜在状態をどう測定するかを表す測定核を
 知りたい。とりわけ，欠測確率が項目の背後にある潜在状態と関連すると，
 観測された回答者の項目分布は，母集団における潜在状態の構成比と
@@ -84,15 +84,18 @@ Bayes推定するfully parametric routeを与える。Holman and Glas (2005)は
 IRTにcontinuous latent response propensityを導入し，非無視的なitem
 nonresponseを無視した場合の影響と，joint modellingによるbiasの軽減を検討する。
 Kuha et al. (2018)はresponse propensityをlatent classとして表し，測定対象の
-latent traitとの関連によって非無視性を表す。これらは，欠測機構，潜在測定モデル，
+latent traitとの関連によって非無視性を表す。さらに，同論文はlatent traitの
+structural and measurement modelとlatent response class modelがそれぞれ識別される
+条件を課し，joint modelの識別を論じる。これらは，欠測機構，潜在測定モデル，
 潜在分布を一つのjoint modelとして制限するmodel-based approachである。
 
 より近い先行研究として，Kano and Takai (2011)は，欠測指標と測定値がlatent
 factorを条件として独立であるshared-parameter structureの下で，欠測機構の
-具体的な関数形を推定せずに，線形潜在変量モデルを欠測pattern間のmulti-sample
-analysisとして推定する。従って，欠測機構をunspecifiedにしたlatent-MNAR
-analysis自体は既知である。ただし，同論文の識別情報は線形測定構造とpattern間の
-factorial invarianceから生じる。本稿はこれに対し，supported blocksごとのshadow
+具体的な関数形を推定に用いず，線形潜在変量モデルを欠測pattern間のmulti-sample
+analysisとして推定する。従って，parametric selection modelを直接推定しない
+latent-MNAR analysis自体は既知である。ただし，同論文は識別済みの線形covariance
+structure，pattern間のfactorial invariance，およびpattern-specific latent momentsに
+対するrank条件を用いる。本稿はこれに対し，supported blocksごとのshadow
 IVでblock lawを回復し，finite latent classの構成比と一般のカテゴリ測定核を
 tensor分解によって識別する。この識別対象は，因子分析，SEM，IRTに共通する
 潜在測定モデルの中心である。
@@ -122,6 +125,16 @@ $(D,Y,Z)$のjoint distributionをノンパラメトリックに識別する。Zh
 識別条件を与える。したがって，これらのmissingness-IV研究が回復するのは，
 観測結果のfull lawまたはそれを規定する回帰パラメータである。
 
+この流れにはscalar outcomeだけでなくmultivariate MNARも含まれる。Tang, Little and
+Raghunathan (2003)はcomplete casesの条件付き法則を用いてmultivariate regression
+parametersを識別し，Miao et al. (2019)はshadow variableとcompletenessからfull-data
+lawを識別する。外部IVを用いない別系統として，Sadinle and Reiter (2017)はitemwise
+conditionally independent nonresponseの下でmultivariate full-data lawを構成する。
+Li et al. (2023)はself-censoring modelとcompletenessを，Ni and Shao (2023)は
+nonresponse instrumentとparametric propensityを用いてmultivariate item nonresponseを
+扱う。これらの対象は顕在変数のfull law，regression parameters，またはpopulation
+functionalsであり，latent class比率と測定核への分解は識別対象ではない。
+
 本稿の潜在測定モデルの下では，このfull lawは
 \begin{equation}
 \begin{aligned}
@@ -135,37 +148,44 @@ $(D,Y,Z)$のjoint distributionをノンパラメトリックに識別する。Zh
 $\sum_{f=1}^r\lambda_f(w,x)\bigotimes_{j=1}^m M_j(:,f;x)$というmixture
 tensorである。従来のmissingness IVによって式
 \eqref{eq:marginal-mixture-law}の左辺が識別されても，それを生成する
-潜在分布$Q_F$と測定核$Q_Y$の分解は一般には一意でない。
+追加の分解一意性条件なしには，潜在分布$Q_F$と測定核$Q_Y$の分解は一意でない。
 
-他方，Allman, Matias and Rhodes (2009, Section 3, Corollary 2;
-Section 5, Theorem 4)は，欠測や選択のない顕在変数のjoint distributionを
+他方，Allman, Matias and Rhodes (2009, Section 4, Theorem 1 and Corollary 2)は，
+欠測や選択のない顕在変数のjoint distributionを
 出発点とし，条件付き独立な三つのviewからなるtensorにKruskal rank条件を
 課すことで，潜在クラス比率とclass-specificな測定核をlabel swappingを
-除いて識別する。すなわち，missingness-IV研究はMNAR selectionから
+除いて一意に識別する。同論文のSection 5, Theorem 4は，多数の顕在変数を
+三群にまとめた場合のgeneric identificationを別に与える。すなわち，
+missingness-IV研究はMNAR selectionから
 周辺full lawまでを扱い，潜在クラス研究は完全データ法則から
 $(Q_F,Q_Y)$の分解までを扱う。両者は識別の異なる段階を解いている。
 
 この二段階を接続するには，潜在変数を従来のshadow-IVモデルのように単に
 積分消去し，既存のmissing-IVモデルへ帰着することはできない。仮に
 常時観測変数$W$について
-\[
+\begin{equation}
 D\indep W\mid(Y,F,X)
-\]
+\label{eq:latent-shifter-exclusion}
+\end{equation}
 が成立しても，
-\begin{align}
-&P(D=d\mid Y=y,W=w,X=x) \notag\\
+\begin{equation}
+\begin{aligned}
+&P(D=d\mid Y=y,W=w,X=x)\\
 &\qquad=
 \int P(D=d\mid y,f,x)\,dP(f\mid y,w,x).
-\end{align}
+\end{aligned}
+\label{eq:latent-shifter-marginal-selection}
+\end{equation}
 である。$W$が$F$を予測すれば$P(f\mid y,w,x)$は一般に$w$に依存するため，
 $D\indep W\mid(Y,X)$は従わない。すなわち，$F$を条件に含む除外制約は，
 $F$を積分した観測データ上の除外制約を一般には導かない。反対に，$F$を
 最初から消去して周辺full lawだけを回復しても，$Q_F$と$Q_Y$の分解は
 自動的には識別されない。これが，既存のmissing-IV識別と潜在測定モデルの
-識別を統合するときの固有の障害である。潜在変数を含むMNARモデルも因子分析・
-SEM・IRTで提案されているが，多くは欠測機構と潜在測定モデルを同時に
-パラメトリックに規定する。部分的にしか同時観測されない多次元測定について，
-missing IVによるfull-law回復と潜在構造の一意分解を接続することが，本稿の識別問題である。
+識別を統合するときの固有の障害である。潜在変数を含むMNARモデルとその識別条件は
+因子分析・SEM・IRTで既に提案されているが，多くは欠測機構と潜在測定モデルを
+joint modelとして規定する。部分的にしか同時観測されない多次元測定について，
+parametric selection modelを直接規定せず，missing IVによるsupported-block lawの
+回復と潜在構造の一意分解を接続することが，本稿の識別問題である。
 
 本稿の問題設定は次の通りである。まず，同時観測確率が正である
 supported blockごとに，観測可能な条件付け集合$(Y_S,U_S)$に対する
@@ -176,16 +196,20 @@ block lawsを共有anchor itemsで接続し，潜在クラスのlabelをblock間
 整合させる。この二段階を通じて，global complete caseが存在しない場合にも，
 潜在クラス分布$Q_F$と測定核$Q_Y$を識別する条件を与える。
 
-この構成は三つの識別原理を引き継ぐ。第一に，Zhao and Shao (2015) の
+本稿はshadow variableとcompletenessによるfull-law識別，またはKruskal型tensor
+分解を個別に新しく提案するものではない。この構成は三つの識別原理を引き継ぐ。
+第一に，Zhao and Shao (2015) の
 共変量調整済み除外制約を，各supported block $S$の
 $(Y_S,U_S,Z_S,R_S)$へ適用する。第二に，d'Haultfoeuille
 (2010, Assumptions 1--5, Theorem 2.3) のpositivityとB-completenessを
 用い，bridgeの一意性を通じて各blockの選択確率$\pi_S$とfull law
 $P(Y_S,Z_S,U_S)$をノンパラメトリックに回復する。第三に，Allman,
-Matias and Rhodes (2009, Sections 2--5) の有限潜在クラスに対する
-tensor分解の識別論理を引き継ぎ，supported blocks上で回復されたtensorへ
-適用する。本稿の新しい接続は，第一段階でMNAR selectionを除去し，
-第二段階でanchor条件の下に潜在分布と測定核を一意分解する点にある。
+Matias and Rhodes (2009, Section 3; Section 4, Theorem 1 and Corollary 2) の
+有限潜在クラスに対するtensor分解の識別論理を引き継ぎ，supported blocks上で
+回復されたtensorへ適用する。本稿の接続は，global complete caseを仮定せず，
+第一段階でsupported-blockごとにMNAR selectionを除去し，第二段階でoverlap，
+anchor items，latent shifterを用いて潜在分布と測定核を同一のlabelingの下で
+一意分解する点にある。
 
 したがって，$Z_S$には$Y_S$を予測するrelevanceと
 $R_S\indep Z_S\mid(Y_S,U_S)$というexclusionが必要である。一方，$W$は
@@ -389,10 +413,11 @@ overlapping blocksの分解を同時に一意化し，blockごとのclass label�
 三つのviewとして用い，この第二段階を有限潜在クラスについて解く。
 
 \section{有限潜在クラスの統合識別}
-本節は，Allman, Matias and Rhodes (2009, Sections 2--5) における有限
-潜在クラスの識別論理を引き継ぎ，supported blocks上のMNAR識別問題へ
-適用する。同論文は，$F$の下で条件付き独立な三つの顕在viewが生成する
-probability tensorを構成し，その分解をKruskal rank条件の下で一意化する。
+本節は，Allman, Matias and Rhodes (2009, Section 3; Section 4, Theorem 1 and
+Corollary 2) における有限潜在クラスの識別論理を引き継ぎ，supported blocks上の
+MNAR識別問題へ適用する。同論文は，$F$の下で条件付き独立な三つの顕在viewが
+生成するprobability tensorを構成し，実現したKruskal rank条件の下でその分解を
+一意化する。これはSection 5, Theorem 4のgeneric identificationとは区別される。
 本稿では第三の測定項目を必要とせず，二つのanchor items $Y_a,Y_b$と
 latent shifter $W$を三つのviewとする。命題2.1で回復したpair lawsと
 常時観測される$W$から$P(Y_a,Y_b,W\mid X)$を構成し，Allman et al.と
@@ -603,9 +628,10 @@ d'Haultfoeuille (2010, Section 3)の考え方に従い，shadow IVから得ら�
 条件付きmoment equationを用いて各supported pairの観測確率を推定する。
 その逆数でpairが観測された標本の寄与を重み付けるinverse probability weighting
 (IPW)により，欠測選択を除いたpair lawの期待値を再現する。
-Zhao and Shao (2015, Section 2.3)が識別に用いたcomplete-case lawを
-pseudo-likelihoodへ接続するのと同様に，ここでは推定済みの欠測機構を
-nuisanceとして扱う。
+Zhao and Shao (2015, Section 2.3)が全標本から推定した$[U,Z]$の法則を
+complete-case pseudo-likelihoodへplug-inする構成を先例として，ここでは
+第一段階で推定した欠測機構をnuisanceとして第二段階へ渡す。ただし，同論文が
+plug-inするnuisanceはmissingness mechanismそのものではない。
 
 第二段階では，因子分析や潜在クラス分析
 (latent class analysis; LCA)に共通する潜在測定モデルの当てはめを行う。
@@ -708,10 +734,12 @@ source condition，近似誤差と確率誤差のrate条件が必要である。
 $\sqrt n$正規性にはregular functionalまたはorthogonal scoreの追加構成を要する。}
 
 \section{計算アルゴリズム（仮）}
-Zhao and Shao (2015)の二段階更新は，識別に用いた条件付き法則と推定対象を
-分ける点で本アルゴリズムの先例となる。ただし本稿のcriterionはlatent
-mixtureを含み一般に非凸なので，difference-of-concave更新をそのまま移植
-せず，tensor initialization，複数初期値，制約付き更新を組み合わせる。
+Zhao and Shao (2015, Section 2.3)のplug-in構成はnuisance lawと推定対象を
+段階的に扱う先例である。一方，同論文のSection 4におけるtwo-step iterationは，
+pseudo-likelihoodの回帰パラメータとdispersion parameterを交互更新する計算法であり，
+本稿の第一段階と第二段階を分ける手順とは異なる。本稿のcriterionはlatent mixtureを
+含み一般に非凸なので，同論文のdifference-of-concave型更新をそのまま移植せず，
+tensor initialization，複数初期値，制約付き更新を組み合わせる。
 この方針に従い，first-stageのbridge推定，tensorに基づく初期化，制約付き
 composite criterionの更新，候補解の選択を，識別証明と同じ順序で進める。
 
@@ -848,27 +876,6 @@ RMSEは0.0724となり，class-specificな項目反応確率を系統的に過�
 \section*{参考文献}
 \begin{enumerate}[label={[\arabic*]},leftmargin=7mm,itemsep=0.35em,topsep=0.2em,
   parsep=0pt,partopsep=0pt]
-\item Little, R. J. and Rubin, D. B. (2002). \textit{Statistical Analysis with
-Missing Data}, 2nd ed. Hoboken, NJ: Wiley.
-\item Robins, J. M. and Ritov, Y. (1997). Toward a curse of dimensionality
-appropriate (CODA) asymptotic theory for semi-parametric models.
-\textit{Statistics in Medicine}, 16, 285--319.
-\item Greenlees, J. S., Reece, W. S., and Zieschang, K. D. (1982). Imputation
-of missing values when the probability of response depends on the variable
-being imputed. \textit{Journal of the American Statistical Association}, 77,
-251--261.
-\item Ibrahim, J. G., Chen, M.-H., and Lipsitz, S. R. (2001). Missing responses
-in generalised linear mixed models when the missing data mechanism is
-nonignorable. \textit{Biometrika}, 88, 551--564.
-\item Qin, J., Leung, D., and Shao, J. (2002). Estimation with survey data under
-nonignorable nonresponse or informative sampling. \textit{Journal of the
-American Statistical Association}, 97, 193--200.
-\item Kott, P. S. and Chang, T. (2010). Using calibration weighting to adjust
-for nonignorable unit nonresponse. \textit{Journal of the American Statistical
-Association}, 105, 1265--1275.
-\item Kim, J. K. and Yu, C. L. (2011). A semiparametric estimation of mean
-functionals with nonignorable missing data. \textit{Journal of the American
-Statistical Association}, 106, 157--165.
 \item Tang, G., Little, R. J., and Raghunathan, T. E. (2003). Analysis of
 multivariate missing data with nonignorable nonresponse. \textit{Biometrika},
 90, 747--764.
@@ -879,6 +886,21 @@ the American Statistical Association}, 110(512), 1577--1590.
 \item d'Haultfoeuille, X. (2010). A new instrumental method for dealing with
 endogenous selection. \textit{Journal of Econometrics}, 154(1), 1--15.
 \href{https://doi.org/10.1016/j.jeconom.2009.06.005}{doi:10.1016/j.jeconom.2009.06.005}.
+\item Miao, W., Liu, L., Tchetgen Tchetgen, E. J., and Geng, Z. (2019).
+Identification, doubly robust estimation, and semiparametric efficiency theory
+of nonignorable missing data with a shadow variable. arXiv:1509.02556v3.
+\item Sadinle, M. and Reiter, J. P. (2017). Itemwise conditionally independent
+nonresponse modelling for incomplete multivariate data. \textit{Biometrika},
+104(1), 207--220.
+\href{https://doi.org/10.1093/biomet/asw063}{doi:10.1093/biomet/asw063}.
+\item Li, Y., Miao, W., Shpitser, I., and Tchetgen Tchetgen, E. J. (2023).
+A self-censoring model for multivariate nonignorable nonmonotone missing data.
+\textit{Biometrics}, 79(4), 3203--3214.
+\href{https://doi.org/10.1111/biom.13916}{doi:10.1111/biom.13916}.
+\item Ni, L. and Shao, J. (2023). Estimation with multivariate outcomes having
+nonignorable item nonresponse. \textit{Annals of the Institute of Statistical
+Mathematics}, 75, 1--15.
+\href{https://doi.org/10.1007/s10463-022-00836-4}{doi:10.1007/s10463-022-00836-4}.
 \item Muth\'en, B. O., Kaplan, D., and Hollis, M. (1987). On structural
 equation modeling with data that are not missing completely at random.
 \textit{Psychometrika}, 52(3), 431--462.
