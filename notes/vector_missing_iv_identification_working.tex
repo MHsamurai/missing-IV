@@ -861,7 +861,8 @@ ignorabilityの下で観測itemすべてを用いたobserved-data full-informati
 likelihoodである。正しく指定されたparametric selection likelihoodは，式
 \eqref{eq:simulation-missingness}をlatent-class likelihoodと組み合わせ，
 $(W,Y_{\mathrm{obs}},R)$の周辺尤度を最大化する。この二つのselection likelihoodは
-$F$と欠測itemを積分するが，shadow $Z_S$は用いない。
+$F$と欠測itemを積分するが，shadow $Z_S$は用いない。selection indexの
+IRLSにおける$10^{-6}$のridgeは数値安定化のためのみに用いる。
 誤指定版はselection modelを
 $\operatorname{logit}P(D_j=1\mid Y_1,Y_j)=\gamma_{0j}+\gamma_{1j}Y_j$に制限し，
 $Y_1$のmain effectとinteractionを除く。最後にproposed saturated/sieve bridgeは各blockで
@@ -917,17 +918,22 @@ RMSEは0.0966となり，6つのclass-specific項目反応確率を集約した�
 負の偏りを示した。
 $p_f$のbiasは$-0.0193$，RMSEは0.0572であり，selectionによる観測標本の
 構成変化が測定関係とclass構成比の双方に混入した。
+parameter別には，MARのbiasは第2 classの$Y_2,Y_3$測定核でそれぞれ
+$-0.1495$と$-0.1209$に達し，集約biasはこれらの大きな過小評価を反映した。
 
 正しく指定したselection likelihoodは，$M_j$のbiasを$-0.0008$，RMSEを0.0544まで
 回復し，$p_f$についてもbias 0.0008，RMSE 0.0427を得た。従って，
 真のselection linkを用いた場合には両識別対象の平均biasはほぼ0であった。一方，
 $Y_1$のmain effectとinteractionを落とすと，$M_j$のbiasは0.0409，RMSEは0.0684へ
 悪化した。すなわち，selection equationの誤指定の影響が測定核の集約biasに現れた。
+特に第1 classの$Y_2,Y_3$のbiasは0.0943と0.0898であった。
 
 提案するridge-regularized saturated/sieve bridgeは，$M_j$のbiasが$-0.0064$，RMSEが0.0555，
 $p_f$のbiasが$-0.0029$，RMSEが0.0517であった。従って，特定のparametric
 selection linkを指定せずに，MNAR補正後のblock lawsから測定核とclass比率を
-分離して回復するという識別論の含意と整合する。%
+分離して回復するという識別論の含意と整合する。各6つの測定核成分の
+biasも絶対値0.0125以下であった。五手法を通じたMonte Carlo standard errorの最大値は，
+$M_j$のbiasで0.0028，RMSEで0.0025，$p_f$のbiasで0.0054，RMSEで0.0041である。%
 \footnote{提案法の頑健性はparametric selection linkの誤指定を避ける点にある。
 shadow-IV exclusion，positivity，B-completeness，有限latent-class測定モデルの誤指定まで
 許容するものではなく，正指定parametric likelihoodと同じ効率性も一般には保証しない。}
