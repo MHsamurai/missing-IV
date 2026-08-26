@@ -2,6 +2,8 @@
 .DS_Store
 ._*
 .Rhistory
+.venv/
+.ipynb_checkpoints/
 
 # Large or binary research materials kept locally
 *.pdf
