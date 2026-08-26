@@ -540,8 +540,23 @@ $\E(F\mid X=x)=0$，$\operatorname{Var}(F\mid X=x)=1$，およびanchor response
 ただし，未知の測定核の下では$F\mapsto h(F)$という非線形再パラメータ化が残るため，
 連続潜在構造の識別には測定族，calibration，または作用素レベルの単射条件が追加で必要となる。}
 
-\section{推定：bridge-weighted composite criterion}
-識別結果を推定へ接続する。必要なsupported pairsの集合を
+\section{推定：bridge推定とIPWによる潜在クラス分析}
+次に，識別論の二段階を標本上の推定手順へ移す。第一段階では，
+d'Haultfoeuille (2010, Section 3)の考え方に従い，shadow IVから得られる
+条件付きmoment equationを用いて各supported pairの観測確率を推定する。
+その逆数でpairが観測された標本の寄与を重み付けるinverse probability weighting
+(IPW)により，欠測選択を除いたpair lawの期待値を再現する。
+Zhao and Shao (2015, Section 2.3)が識別に用いたcomplete-case lawを
+pseudo-likelihoodへ接続するのと同様に，ここでは推定済みの欠測機構を
+nuisanceとして扱う。
+
+第二段階では，因子分析や潜在クラス分析
+(latent class analysis; LCA)に共通する潜在測定モデルの当てはめを行う。
+すなわち，IPWで回復した複数のoverlapping pair lawsに対し，一つの
+潜在クラス分布と一組の測定核が同時に適合するよう制約付きで推定する。
+global complete caseを必要とせず，blockごとのIPW contributionを統合するため，
+目的関数はfull likelihoodではなくbridge-weighted composite criterionとなる。
+必要なsupported pairsの集合を
 \[
 \mathcal S_*=\{\{a,b\}\}\cup
 \{\{j,a\}:j\notin\{a,b\}\}
@@ -592,11 +607,6 @@ full pair lawの下での期待対数密度に等しい。従って真値との�
 $S\in\mathcal S_*$の条件付きKullback--Leibler divergenceの正の加重和で
 ある。最大値が等しければ全てのanchor/extension pair lawsが一致し，
 定理3.1の単射性より$\theta=\theta_0$である。\hfill$\square$
-
-Zhao and Shao (2015)も識別可能なcomplete-case identityを疑似尤度へ
-接続するが，本稿ではbridgeで回復した複数のpair lawsを一つの潜在測定
-モデルへ制約付きで当てはめる点が異なる。この差が，単一回帰パラメータの
-推定から，潜在クラス比率と全測定核の同時推定への拡張を担う。
 
 \section{漸近理論}
 まず有限次元bridgeを用いるregular benchmarkを完成させる。以下では
