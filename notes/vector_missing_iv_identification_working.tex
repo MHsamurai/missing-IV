@@ -60,81 +60,32 @@
 \begin{multicols}{2}
 
 \section{問題設定}
-欠測値，選択，反実仮想の非観測は，標本調査，生物医学研究，行政・
-経済のマイクロデータで頻繁に生じる。欠測がmissing at randomでない
-とき，未観測値そのものが観測確率に影響しうるため，MARを前提とする
-方法は推定バイアスと誤った推論をもたらしうる（Little and Rubin, 2002）。
-より根本的には，非無視可能欠測では，観測データ法則だけから完全データ
-法則を分離できず，追加情報または追加制約なしには母集団パラメータが
-識別されない（Robins and Ritov, 1997; Zhao and Shao, 2015）。
+医学・疫学・心理学の実証研究では，複数の検査項目が欠測するだけでなく，
+それらが測定する認知機能，疾患重症度，抑うつ，生理学的状態などの
+構成概念そのものが潜在的であることが多い。例えば，認知症研究における
+選択的な認知検査不能，Parkinson病研究における運動・認知・
+バイオマーカーの選択的取得，診療記録における重症度依存の検査オーダー，
+質問票におけるセンシティブ項目の非回答では，個々の項目平均だけでなく，
+潜在クラスの構成比と，各項目が潜在状態をどう測定するかを表す測定核を
+知りたい。この識別対象は，因子分析，SEM，IRTに共通する潜在測定モデルの
+中心である（Muth\'en et al., 1987; Holman and Glas, 2005;
+Lee and Tang, 2006; Kuha et al., 2018）。
 
-既存研究は，結果変数の分布と欠測機構のどちらをモデル化するかという
-軸で整理できる。Greenlees, Reece and Zieschang (1982) や Ibrahim,
-Chen and Lipsitz (2001) は両者をパラメトリックに規定する尤度法を用いるが，
-その識別と推論はモデル指定に敏感である。これに対し，Qin, Leung and
-Shao (2002) と Kott and Chang (2010) は欠測機構をパラメトリックに置き，
-完全データ分布を経験尤度または較正重みで扱う。Kim and Yu (2011) は
-指数傾斜型の応答確率モデルを用い，Tang, Little and Raghunathan (2003)
-は完全データモデルを規定する一方で欠測機構をnuisanceとして未指定に
-残す疑似尤度法を提案した。完全ノンパラメトリック化は一般に識別不能で
-あり，完全パラメトリック化は誤指定に弱い。この間で，どの部分を識別に
-必要な構造として残すかが問題の核心になる。
-
-Zhao and Shao (2015, pp.~1577--1578) は Tang, Little and Raghunathan
-(2003) の疑似尤度の考え方を引き継ぐ一方，その除外制約を弱めた。
-Tangらは$Y$を条件づけると欠測指標$R$が全共変量と独立であると仮定した。
-Zhao and Shaoは常時観測される共変量を通常の共変量$U$とnonresponse
-IV $Z$に分け，
-\[
-R\indep Z\mid(Y,U)
-\]
-のみを課す。これにより，$U$の効果を推定・検定の対象として残しつつ，
-$Z$を識別のために用いる。同論文はcomplete-case identity
-$[Z\mid Y,U,R=1]=[Z\mid Y,U]$からGLMの有限次元パラメータを識別し，
-必要なrank条件が応答分布，分散パラメータ，$Z$のsupportに依存することを
-明示した。
-
-本稿はこの議論から三つの識別原理を引き継ぐ。第一に，Zhao and Shao
-(2015) の共変量調整済み除外制約を，各supported block
-$S$の$(Y_S,U_S,Z_S,R_S)$へ適用する。第二に，d'Haultfoeuille
-(2010, Assumptions 1--5, Theorem 2.3) のpositivityとB-completenessを
-用い，有限次元GLM係数ではなく，各supported blockの選択確率
-$\pi_S$とfull law $P(Y_S,Z_S,U_S)$をノンパラメトリックに回復する。
-第三に，Allman, Matias and Rhodes (2009, Sections 2--5) における，
-条件付き独立な3群が生成するtensor分解をKruskal rankによって一意化する
-論理を引き継ぐ。本稿では，回復されたoverlapping block tensorsをその
-3-view表現として用い，共有anchor itemsでclass permutationをblock間に
-整合させることにより，潜在クラス分布と測定核を識別する。
-
-したがって本稿の相違は，スカラー$Y$を単一のcomplete-case sampleから
-識別することではなく，多次元$Y=(Y_1,\ldots,Y_m)$のうち同時観測可能な
-supported blocksを順次回復し，共有anchor itemsを通じてblock間の
-latent class labelを接続する点にある。個々のblockでは欠測機構を
-パラメトリックに規定せず，global complete caseも要求しない。blockwise
-MNARの回復と潜在測定構造の識別を別段階に分け，前者の誤差を後者の
-parametric selection modelで覆い隠さないことが，本稿の識別戦略である。
-
-この構造は変数選択にも含意を持つ。$Z_S$には$Y_S$を予測するだけの
-relevanceと，$R_S\indep Z_S\mid(Y_S,U_S)$というexclusionが必要であり，
-$Z_S$自身の効果を主要な検定対象にすることには適さない。一方，通常の
-共変量として$U_S$に残した変数は，完全データ法則が識別されれば分析対象に
-できる。さらに本稿では，$W$を$U_S=(X,W)$のうち潜在分布を動かす
-latent shifterとして区別する。従って設計上の核心は，どの変数をblockwise
-IVに割り当て，どの変数を通常共変量として残し，どの項目をblock間の
-anchorにするかである。
-
-本研究では，未観測潜在変数 $F$，常時観測変数 $W,X$，
-複数の潜在的測定値 $Y=(Y_1,\ldots,Y_m)$ について，
+本研究では，未観測潜在変数$F$，常時観測変数$W,X$，複数の潜在的測定値
+$Y=(Y_1,\ldots,Y_m)$について，
 \begin{align}
 F\mid(W,X)&\sim Q_F(\cdot\mid W,X),\\
 Y_j\mid(F,X)&\sim Q_j(\cdot\mid F,X;\theta_j),\\
 Y_1,\ldots,Y_m&\indep\mid(F,X)
 \end{align}
-という潜在測定モデルを考える。この共有潜在構造は，因子分析・SEM・
-IRTのMNARモデルで広く用いられる（Muth\'en et al., 1987;
-Holman and Glas, 2005; Lee and Tang, 2006; Kuha et al., 2018）。
+という潜在測定モデルを考える。識別したいのは潜在分布$Q_F$と測定核
+$Q_Y=\{Q_j:j=1,\ldots,m\}$である。しかし$Y_j$は観測指標$D_j=1$の
+ときだけ観測され，$D=(D_1,\ldots,D_m)$は未観測の$Y$や$F$に依存して
+よい。したがって問題は，MNARの下でfull lawを回復することにとどまらず，
+回復可能な観測変数の法則を潜在分布と測定核へ一意に分解できるか，である。
 
-ここで，仮に
+この問題では，潜在変数を単に積分消去して既存のmissing-IVモデルへ
+帰着することはできない。仮に常時観測変数$W$について
 \[
 D\indep W\mid(Y,F,X)
 \]
@@ -144,12 +95,51 @@ D\indep W\mid(Y,F,X)
 &\qquad=
 \int P(D=d\mid y,f,x)\,dP(f\mid y,w,x).
 \end{align}
-である。$W$ が $F$ を予測すれば $P(f\mid y,w,x)$ は一般に $w$ に
-依存するため，$D\indep W\mid(Y,X)$ は従わない。すなわち，$F$を条件に
-含む除外制約は，$F$を積分した観測データ上の除外制約を一般には導かない。
-そこで第2節では，$W$をlatent shifterとして通常の共変量
-$U_S=(X,W)$へ含め，missingness IV $Z_S$とは分離する。その上で，
-観測可能な条件付け集合$(Y_S,U_S)$に対してblockwise exclusionを課す。
+である。$W$が$F$を予測すれば$P(f\mid y,w,x)$は一般に$w$に依存するため，
+$D\indep W\mid(Y,X)$は従わない。すなわち，$F$を条件に含む除外制約は，
+$F$を積分した観測データ上の除外制約を一般には導かない。反対に，$F$を
+最初から消去して観測変数のfull lawだけを回復しても，その法則を生成した
+$Q_F$と$Q_Y$の分解は自動的には識別されない。これが，既存のスカラー
+missing-IV識別を潜在測定モデルへ拡張するときの固有の障害である。
+
+関連する既存研究は，この障害の二つの側面を別々に扱ってきた。
+d'Haultfoeuille (2010) はshadow IVとB-completenessにより，
+Zhao and Shao (2015) は通常共変量を調整したnonresponse IVにより，
+MNAR下の観測変数のfull lawまたは回帰パラメータを識別する。他方，
+Allman, Matias and Rhodes (2009) は，欠測による選択を伴わない潜在構造
+モデルにおいて，多数の顕在変数から有限潜在クラスの分布と測定核を
+識別する。潜在変数を含むMNARモデルも因子分析・SEM・IRTで提案されて
+いるが，多くは欠測機構と潜在測定モデルを同時にパラメトリックに規定する。
+少なくともこれら二系列の既存結果は，部分的にしか同時観測されない多次元
+測定について，missing IVで欠測機構を除去し，さらに同じ観測データ法則から
+潜在分布と測定核までを識別する統合定理を与えていない。したがって，
+missing IVによるfull-law回復と潜在構造の一意分解を接続する必要がある。
+
+本稿の問題設定は次の通りである。まず，同時観測確率が正である
+supported blockごとに，観測可能な条件付け集合$(Y_S,U_S)$に対する
+missingness IV $Z_S$を用いてinverse-selection bridgeを構成し，block lawを
+回復する。ここで$U_S=(X,W)$とし，潜在分布$Q_F(\cdot\mid W,X)$を動かす
+latent shifter $W$をmissingness IVから分離する。次に，回復したoverlapping
+block lawsを共有anchor itemsで接続し，潜在クラスのlabelをblock間で
+整合させる。この二段階を通じて，global complete caseが存在しない場合にも，
+潜在クラス分布$Q_F$と測定核$Q_Y$を識別する条件を与える。
+
+この構成は三つの識別原理を引き継ぐ。第一に，Zhao and Shao (2015) の
+共変量調整済み除外制約を，各supported block $S$の
+$(Y_S,U_S,Z_S,R_S)$へ適用する。第二に，d'Haultfoeuille
+(2010, Assumptions 1--5, Theorem 2.3) のpositivityとB-completenessを
+用い，bridgeの一意性を通じて各blockの選択確率$\pi_S$とfull law
+$P(Y_S,Z_S,U_S)$をノンパラメトリックに回復する。第三に，Allman,
+Matias and Rhodes (2009, Sections 2--5) の有限潜在クラスに対する
+tensor分解の識別論理を引き継ぎ，supported blocks上で回復されたtensorへ
+適用する。本稿の新しい接続は，第一段階でMNAR selectionを除去し，
+第二段階でanchor条件の下に潜在分布と測定核を一意分解する点にある。
+
+したがって，$Z_S$には$Y_S$を予測するrelevanceと
+$R_S\indep Z_S\mid(Y_S,U_S)$というexclusionが必要である。一方，$W$は
+測定核へ直接入らず，潜在分布を動かすvariationを供給する。どの変数を
+blockwise IV，latent shifter，通常共変量に割り当て，どの項目をblock間の
+anchorにするかが，応用上の識別設計の核心となる。
 
 \section{モデルと仮定}
 本節は識別を二段階に分け，その第一段階を定式化する。まず潜在因子$F$，
