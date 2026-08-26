@@ -340,7 +340,18 @@ probability tensorを構成し，その分解をKruskal rank条件の下で一�
 本稿では第三の測定項目を必要とせず，二つのanchor items $Y_a,Y_b$と
 latent shifter $W$を三つのviewとする。命題2.1で回復したpair lawsと
 常時観測される$W$から$P(Y_a,Y_b,W\mid X)$を構成し，Allman et al.と
-同じ三方向配列のrouteを適用する。
+同じ三方向配列のrouteを適用する。識別は次の順に進む。まず，命題2.1から
+anchor pairとextension pairsのfull lawsを回復し，
+$\mathcal T_{abW}$と$\mathcal T_{jaW}$を構成する。次に，$\mathcal T_{abW}$の
+canonical polyadic (CP)分解を一意化し，anchor orderingによって
+class labelを固定することで，$p_f(x)$，$G(x)$，$M_a(x)$，$M_b(x)$を
+識別する。ここからBayes則によって各$w$での潜在クラス分布
+$Q_F(x)$を得る。さらに，extension pair tensorsを線形反転して
+残る全ての測定核$M_j(x)$，従って$Q_Y(x)$を回復する。最後に，
+識別した$Q_F(x)$と$Q_Y(x)$を局所独立性に代入し，一度も同時観測されない
+項目集合を含む$P(Y_A\mid W,X)$を構成する。
+
+\subsection{識別対象とanchor-pair構成}
 
 以下，$P_X(\mathcal X_0)=1$となる共通集合$\mathcal X_0$を取り，任意の
 $x\in\mathcal X_0$を固定する。
@@ -377,6 +388,8 @@ $\{\mathcal T_{abW},\mathcal T_{jaW}:j\notin\{a,b\}\}$への写像とする。
 以下では実現した行列にrank条件を直接課し，その下でstrict identificationを
 示す。
 
+\subsection{統合識別定理}
+
 \noindent\textbf{補題3.1（Khatri--Rao rank）.}
 $r$列を持つ行列$A,B$のcolumn Kruskal rankを$k_A,k_B$とすると，
 \[
@@ -396,15 +409,6 @@ $A_C\operatorname{diag}(c_C)B_C^\top=0$である。一方，Sylvesterのrank
 \end{aligned}
 \]
 となり矛盾する。従って任意の$s$列は一次独立である。\hfill$\square$
-
-\noindent\textbf{証明方針.}
-Allman et al.のrouteに沿い，(1) supported pair lawsを回復し，
-(2) $Y_a,Y_b,W$の三方向配列を構成し，(3) そのcanonical polyadic
-(CP)分解を一意化する。
-次に，(4) 確率正規化とanchor orderingでscalingとlabelを固定し，
-(5) Khatri--Rao積のrankを確立し，(6) Bayes則で各$w$の潜在クラス分布を
-回復する。最後に，(7) extension pair tensorsを線形反転して全測定核を
-回復し，(8) 潜在測定モデルの制約の下で未同時観測の結合分布を構成する。
 
 \noindent\textbf{仮定3.1（covariate-assisted anchor-pair構造）.}
 $r$は既知で，以下の条件が全ての$x\in\mathcal X_0$で成立する。
