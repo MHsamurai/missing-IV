@@ -76,12 +76,26 @@ class-specificな項目反応の双方が混合された選択後の分布とな
 この問題は，非無視的欠測を伴う構造方程式モデリング
 (structural equation modeling; SEM)，項目反応理論
 (item response theory; IRT)，およびlatent response propensity modelで
-既に現れる。Muth\'en et al. (1987)とLee and Tang (2006)は潜在変数モデルと
-非無視的欠測機構を同時に規定し，Holman and Glas (2005)は非無視的な
-item nonresponseを無視することがIRTの推定にbiasを生じさせることを示す。
-Kuha et al. (2018)は，測定対象のlatent traitとresponse propensityの関連が
-item nonresponseを非無視的にするモデルを構成する。本稿が識別したい潜在分布と
-測定核は，これらの因子分析，SEM，IRTに共通する潜在測定モデルの中心である。
+既に現れる。Muth\'en et al. (1987)は，欠測がlatent factorに依存すると
+missing at random (MAR)が一般に成立せず，欠測機構を無視した
+quasi-likelihoodが一部の構造パラメータにbiasを持ち得ることを示した。
+Lee and Tang (2006)は非線形SEMとlogistic selection modelを同時に規定して
+Bayes推定するfully parametric routeを与える。Holman and Glas (2005)は
+IRTにcontinuous latent response propensityを導入し，非無視的なitem
+nonresponseを無視した場合の影響と，joint modellingによるbiasの軽減を検討する。
+Kuha et al. (2018)はresponse propensityをlatent classとして表し，測定対象の
+latent traitとの関連によって非無視性を表す。これらは，欠測機構，潜在測定モデル，
+潜在分布を一つのjoint modelとして制限するmodel-based approachである。
+
+より近い先行研究として，Kano and Takai (2011)は，欠測指標と測定値がlatent
+factorを条件として独立であるshared-parameter structureの下で，欠測機構の
+具体的な関数形を推定せずに，線形潜在変量モデルを欠測pattern間のmulti-sample
+analysisとして推定する。従って，欠測機構をunspecifiedにしたlatent-MNAR
+analysis自体は既知である。ただし，同論文の識別情報は線形測定構造とpattern間の
+factorial invarianceから生じる。本稿はこれに対し，supported blocksごとのshadow
+IVでblock lawを回復し，finite latent classの構成比と一般のカテゴリ測定核を
+tensor分解によって識別する。この識別対象は，因子分析，SEM，IRTに共通する
+潜在測定モデルの中心である。
 
 本研究では，未観測潜在変数$F$，常時観測変数$W,X$，複数の潜在的測定値
 $Y=(Y_1,\ldots,Y_m)$について，
@@ -871,6 +885,10 @@ Journal of Mathematical and Statistical Psychology}, 58(1), 1--17.
 structural equation models with nonignorable missing data.
 \textit{Psychometrika}, 71(3), 541--564.
 \href{https://doi.org/10.1007/s11336-006-1177-1}{doi:10.1007/s11336-006-1177-1}.
+\item Kano, Y. and Takai, K. (2011). Analysis of NMAR missing data without
+specifying missing-data mechanisms in a linear latent variate model.
+\textit{Journal of Multivariate Analysis}, 102(9), 1241--1255.
+\href{https://doi.org/10.1016/j.jmva.2011.04.007}{doi:10.1016/j.jmva.2011.04.007}.
 \item Kuha, J., Katsikatsou, M., and Moustaki, I. (2018). Latent variable
 modelling with non-ignorable item non-response: Multigroup response propensity
 models for cross-national analysis. \textit{Journal of the Royal Statistical
