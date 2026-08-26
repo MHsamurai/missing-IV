@@ -831,11 +831,17 @@ Proposed bridge&$-0.0027$&0.0466&$-0.0028$&0.0452\\
 \end{minipage}
 \end{center}
 
-100回のMonte Carlo replicationsでは，complete-data oracleの$M_j$ RMSEは
-0.0351であった。MNARをMARとして扱うと，それぞれ0.0724と0.0929へ悪化し，
-平均biasも$-0.0474$と$-0.0792$になった。提案法ではRMSEが0.0466と0.0452，
-平均biasが$-0.0027$と$-0.0028$となり，両識別対象についてoracleに近い。
-MNAR selectionを補正しながら測定核と潜在class比率を同時に
+100回のMonte Carlo replicationsでは，complete-data oracleのRMSEは，測定核
+$M_j$で0.0373，latent class比率$p_f$で0.0351であった。$M_j$は，連続因子
+モデルで因子負荷が担うのと同様に，潜在状態と各項目の反応を結ぶ測定側の
+パラメータである。MNARをMARとして扱うと，$M_j$の平均biasは$-0.0474$，
+RMSEは0.0724となり，class-specificな項目反応確率を系統的に過小評価した。
+同時に$p_f$のbiasは$-0.0792$，RMSEは0.0929となり，第2 latent classの
+母集団比率も過小評価した。すなわちMAR法は，selectionによる観測標本の
+構成変化を，測定関係とclass構成比の双方の変化として取り込んでいる。
+これに対し提案法のbiasはそれぞれ$-0.0027$と$-0.0028$，RMSEは0.0466と
+0.0452であり，測定核とclass比率を分離してoracleに近い水準まで回復した。
+これは，MNAR selectionを補正したblock lawsから両識別対象を同時に
 回復するという識別論の含意と整合する。%
 \footnote{この数値比較は，提案法が一般にoracleと同等の効率性を持つことを意味しない。}
 
