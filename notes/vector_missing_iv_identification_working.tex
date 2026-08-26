@@ -60,25 +60,66 @@
 \begin{multicols}{2}
 
 \section{問題設定}
-欠測値，選択，反実仮想の非観測はマイクロデータで頻繁に生じる。
-とくに非無作為欠測（MNAR）では，未観測値そのものが観測確率に
-影響するため，観測集団のみに基づく推論は一般に偏る。また，
-選択には影響するがアウトカムには直接影響しない通常の操作変数
-（IV）だけでは，アウトカム分布全体の点識別は困難である。
+欠測値，選択，反実仮想の非観測は，標本調査，生物医学研究，行政・
+経済のマイクロデータで頻繁に生じる。欠測がmissing at randomでない
+とき，未観測値そのものが観測確率に影響しうるため，MARを前提とする
+方法は推定バイアスと誤った推論をもたらしうる（Little and Rubin, 2002）。
+より根本的には，非無視可能欠測では，観測データ法則だけから完全データ
+法則を分離できず，追加情報または追加制約なしには母集団パラメータが
+識別されない（Robins and Ritov, 1997; Zhao and Shao, 2015）。
 
-d'Haultfoeuille (2010, Assumptions 1--5, Theorem 2.3) は，
-アウトカムを条件づけた後でIVと選択指標が独立になるshadow条件，
-positivity，B-completenessから，欠測アウトカムの分布を
-ノンパラメトリックに識別した。
+既存研究は，結果変数の分布と欠測機構のどちらをモデル化するかという
+軸で整理できる。Greenlees, Reece and Zieschang (1982) や Ibrahim,
+Chen and Lipsitz (2001) は両者をパラメトリックに規定する尤度法を用いるが，
+その識別と推論はモデル指定に敏感である。これに対し，Qin, Leung and
+Shao (2002) と Kott and Chang (2010) は欠測機構をパラメトリックに置き，
+完全データ分布を経験尤度または較正重みで扱う。Kim and Yu (2011) は
+指数傾斜型の応答確率モデルを用い，Tang, Little and Raghunathan (2003)
+は完全データモデルを規定する一方で欠測機構をnuisanceとして未指定に
+残す疑似尤度法を提案した。完全ノンパラメトリック化は一般に識別不能で
+あり，完全パラメトリック化は誤指定に弱い。この間で，どの部分を識別に
+必要な構造として残すかが問題の核心になる。
 
-Zhao and Shao (2015, Section 2.2, Lemma 1, Theorem 1) は，常時観測される
-共変量を通常の共変量$U$とnonresponse IV $Z$に分け，
-$R\indep Z\mid(Y,U)$という共変量調整済みの除外制約を用いる。
-同論文はcomplete-case分布$[Z\mid Y,U,R=1]=[Z\mid Y,U]$から
-一般化線形モデルの有限次元パラメータを識別する。これに対し本稿は，
-この共変量調整済みの除外制約をblockごとに採用しつつ，block law全体の
-ノンパラメトリックな回復にはd'Haultfoeuille (2010)型の
-B-completenessを用いる。
+Zhao and Shao (2015, pp.~1577--1578) は Tang, Little and Raghunathan
+(2003) の疑似尤度の考え方を引き継ぐ一方，その除外制約を弱めた。
+Tangらは$Y$を条件づけると欠測指標$R$が全共変量と独立であると仮定した。
+Zhao and Shaoは常時観測される共変量を通常の共変量$U$とnonresponse
+IV $Z$に分け，
+\[
+R\indep Z\mid(Y,U)
+\]
+のみを課す。これにより，$U$の効果を推定・検定の対象として残しつつ，
+$Z$を識別のために用いる。同論文はcomplete-case関係
+$[Z\mid Y,U,R=1]=[Z\mid Y,U]$からGLMの有限次元パラメータを識別し，
+必要なrank条件が応答分布，分散パラメータ，$Z$のsupportに依存することを
+明示した。
+
+本稿はこの議論から三つの識別原理を引き継ぐ。第一に，Zhao and Shao
+(2015) の共変量調整済み除外制約を，各supported block
+$S$の$(Y_S,U_S,Z_S,R_S)$へ適用する。第二に，d'Haultfoeuille
+(2010, Assumptions 1--5, Theorem 2.3) のpositivityとB-completenessを
+用い，有限次元GLM係数ではなく，各supported blockの選択確率
+$\pi_S$とfull law $P(Y_S,Z_S,U_S)$をノンパラメトリックに回復する。
+第三に，回復されたblock lawにAllman, Matias and Rhodes
+(2009, Sections 2--5) のtensor一意性を適用し，潜在クラス分布と測定核を
+識別する。
+
+したがって本稿の相違は，スカラー$Y$を単一のcomplete-case標本から
+識別することではなく，多次元$Y=(Y_1,\ldots,Y_m)$のうち同時観測可能な
+supported blocksを順次回復し，共有anchor itemsを通じてblock間の
+latent class labelを接続する点にある。個々のblockでは欠測機構を
+パラメトリックに規定せず，global complete caseも要求しない。blockwise
+MNARの回復と潜在測定構造の識別を別段階に分け，前者の誤差を後者の
+parametric selection modelで覆い隠さないことが，本稿の識別戦略である。
+
+この構造は変数選択にも含意を持つ。$Z_S$には$Y_S$を予測するだけの
+relevanceと，$R_S\indep Z_S\mid(Y_S,U_S)$というexclusionが必要であり，
+$Z_S$自身の効果を主要な検定対象にすることには適さない。一方，通常の
+共変量として$U_S$に残した変数は，完全データ法則が識別されれば分析対象に
+できる。さらに本稿では，$W$を$U_S=(X,W)$のうち潜在分布を動かす
+latent shifterとして区別する。従って設計上の核心は，どの変数をblockwise
+IVに割り当て，どの変数を通常共変量として残し，どの項目をblock間の
+anchorにするかである。
 
 本研究では，未観測潜在変数 $F$，常時観測変数 $W,X$，
 複数の潜在的測定値 $Y=(Y_1,\ldots,Y_m)$ について，
@@ -357,13 +398,37 @@ affine不定性を除くが，未知の測定核を許す場合の$F\mapsto h(F)
 \section*{参考文献}
 \begin{enumerate}[label={[\arabic*]},leftmargin=7mm,itemsep=0.35em,topsep=0.2em,
   parsep=0pt,partopsep=0pt]
-\item d'Haultfoeuille, X. (2010). A new instrumental method for dealing with
-endogenous selection. \textit{Journal of Econometrics}, 154(1), 1--15.
-\href{https://doi.org/10.1016/j.jeconom.2009.06.005}{doi:10.1016/j.jeconom.2009.06.005}.
+\item Little, R. J. and Rubin, D. B. (2002). \textit{Statistical Analysis with
+Missing Data}, 2nd ed. Hoboken, NJ: Wiley.
+\item Robins, J. M. and Ritov, Y. (1997). Toward a curse of dimensionality
+appropriate (CODA) asymptotic theory for semi-parametric models.
+\textit{Statistics in Medicine}, 16, 285--319.
+\item Greenlees, J. S., Reece, W. S., and Zieschang, K. D. (1982). Imputation
+of missing values when the probability of response depends on the variable
+being imputed. \textit{Journal of the American Statistical Association}, 77,
+251--261.
+\item Ibrahim, J. G., Chen, M.-H., and Lipsitz, S. R. (2001). Missing responses
+in generalised linear mixed models when the missing data mechanism is
+nonignorable. \textit{Biometrika}, 88, 551--564.
+\item Qin, J., Leung, D., and Shao, J. (2002). Estimation with survey data under
+nonignorable nonresponse or informative sampling. \textit{Journal of the
+American Statistical Association}, 97, 193--200.
+\item Kott, P. S. and Chang, T. (2010). Using calibration weighting to adjust
+for nonignorable unit nonresponse. \textit{Journal of the American Statistical
+Association}, 105, 1265--1275.
+\item Kim, J. K. and Yu, C. L. (2011). A semiparametric estimation of mean
+functionals with nonignorable missing data. \textit{Journal of the American
+Statistical Association}, 106, 157--165.
+\item Tang, G., Little, R. J., and Raghunathan, T. E. (2003). Analysis of
+multivariate missing data with nonignorable nonresponse. \textit{Biometrika},
+90, 747--764.
 \item Zhao, J. and Shao, J. (2015). Semiparametric pseudo-likelihoods in
 generalized linear models with nonignorable missing data. \textit{Journal of
 the American Statistical Association}, 110(512), 1577--1590.
 \href{https://doi.org/10.1080/01621459.2014.983234}{doi:10.1080/01621459.2014.983234}.
+\item d'Haultfoeuille, X. (2010). A new instrumental method for dealing with
+endogenous selection. \textit{Journal of Econometrics}, 154(1), 1--15.
+\href{https://doi.org/10.1016/j.jeconom.2009.06.005}{doi:10.1016/j.jeconom.2009.06.005}.
 \item Muth\'en, B. O., Kaplan, D., and Hollis, M. (1987). On structural
 equation modeling with data that are not missing completely at random.
 \textit{Psychometrika}, 52(3), 431--462.
