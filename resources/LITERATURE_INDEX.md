@@ -15,7 +15,7 @@ PDFはGit管理外であるため、この索引でローカルファイル名�
 | `Muthen_Kaplan_Hollis_1987_SEM_Nonrandom_Missingness.pdf` | Muthen, Kaplan and Hollis (1987), *Psychometrika* | latent factor依存欠測とSEMにおけるignorabilityの基礎 |
 | `Tang_Little_Raghunathan_2003_Multivariate_MNAR.pdf` | Tang, Little and Raghunathan (2003), *Biometrika* | 多変量MNARに対するpseudo-likelihood |
 | `Xie_Xue_Wang_2026_Identifiable_Deep_Latent_MNAR.pdf` | Xie, Xue and Wang (2026), arXiv:2603.24771v2 | conditional no-self-censoring given latent variablesによるfull-data distributionの識別 |
-| `Kanamori_Hirose_Yamamoto_2026_Unlabeled_Finite_Mixtures.pdf` | Kanamori, Hirose and Yamamoto (2026), arXiv:2606.07914 | 複数のunlabeled mixturesからmarginal independenceを用いるcomponentとmixing matrixの識別 |
+| `Kanamori_Hirose_Yamamoto_2026_Unlabeled_Finite_Mixtures.pdf` | Kanamori, Hirose and Yamamoto (2026), arXiv:2606.07914 | 複数のunlabeled mixturesからmarginal independenceを用いるcomponent識別と追加条件下のmixing matrix回復 |
 | `Zhao_Ma_2018_Optimal_Pseudolikelihood_Multivariate_MNAR.pdf` | Zhao and Ma (2018), *Biometrika* | 多変量MNARのoptimal pseudolikelihood推定 |
 
 ## shadow variable

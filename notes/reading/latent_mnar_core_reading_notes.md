@@ -78,6 +78,57 @@
 - **推定**: Metropolis--Hastings-within-Gibbs、Section 3, pp.546--549。
 - **本稿との差**: 識別定理ではなく、指定したfully parametric model内のBayesian estimation。
 
+### Harel and Schafer (2009)
+
+- **対象**: missingnessの一部だけを無視可能とするpartial ignorabilityとlatent
+  ignorability、およびitem nonresponseを伴うlatent-class analysis。
+- **定義**: latent ignorabilityはmissing valuesのcoarsened summary `h(Y_mis)`を条件に
+  missingnessが残りのmissing valuesへ依存しないこと、Definition 3, Section 4。
+- **結論**: `h(Y_mis)`が既知ならmissingness indicatorの情報をlikelihood/Bayes inferenceで
+  無視できる、Proposition 3。Section 5でsurvey itemのlatent-class analysisへ適用する。
+- **本稿との差**: ignorabilityの分解とmodel-based analysisが中心で、external shadow IV、
+  B-completeness、supported-block lawsの回復は扱わない。
+
+### Jung, Schafer and Seo (2011)
+
+- **対象**: arbitrary missing patternsを持つmultivariate dataのlatent-class selection model。
+- **モデル**: response valuesとcovariatesに加え、missingness indicatorsが測るlatent variableを
+  通じてnonignorabilityを表す、publisher abstract and Sections 1--3。
+- **推定**: multiple imputation、model checking、simulationと実データ分析が中心。
+- **本稿との差**: multivariate MNARとlatent classの結合自体は既存である。同論文は
+  untestable missingness assumptionsに対するsensitivity analysisを主眼とし、shadow-IVで
+  block lawを識別した後にmeasurement kernelsを分解するrouteではない。
+
+### Ma and Zhang (2021)
+
+- **対象**: MNAR下のlatent generative model parametersとmissing-value imputation。
+- **モデル**: shared latent confounderから各variableを生成し、missingness modelも同時に
+  parameterizeするData setting D1とAssumption A1、pp.4--5。
+- **識別**: Assumption A2はvariable indexを、各subsetのmodel parametersを識別できる集合へ
+  partitionするsubset identifiability。Assumption A3は、それらを含むobservable patternsが
+  全indexをcoverし、各patternの確率が正であることを要求する。Proposition 1はpartial
+  likelihoodの解がground-truth generative parameterを一意に回復すると示す、pp.4--5。
+- **推定**: identifiable VAEとfully observed auxiliary inputsを用いるGINA、Section 4。
+- **本稿との差**: global complete caseを不要とし、部分観測patternからlatent model
+  parametersを識別する点は直接重なる。従ってそれ自体は本稿の新規性でない。一方、同論文は
+  correctly specified parametric generative/missingness modelとauxiliary-variable VAEに依存し、
+  shadow-IV/B-completenessで各block lawを先に回復する二段階routeではない。
+
+### Xie, Xue and Wang (2026)
+
+- **対象**: multivariate MNARにおけるmissingness mechanismとground-truth full-data
+  distribution `p_gt(x,r)`。
+- **仮定**: missingness用latent variableが`X`と独立、Assumption 2, pp.4--5。
+  `R_j independent (X_j,R_-j) | (X_-j,Z_tilde)`というconditional no-self-censoring、
+  Assumption 3, p.5、およびall-observed patternのpositivityを課す。
+- **識別**: Theorem 2がmissingness mechanism、Corollary 3がfull-data distributionを
+  nonparametrically identifyする、pp.6--7。
+- **推定**: conditional independenceを持つdeep latent working modelとimportance-weighted
+  autoencoderを用いる。
+- **本稿との差**: latent-variable MNARのfull-law identificationとして重要だが、識別対象は
+  observable full-data distributionであり、latent coordinates、class proportions、
+  measurement kernelsを個別に識別する定理ではない。またall-observed positivityを置く。
+
 ### Allman, Matias and Rhodes (2009)
 
 - **対象**: finite latent-class modelのclass proportionsとclass-specific measurement kernels。
@@ -89,6 +140,19 @@
   三群へまとめるtripartition条件、p.3110。
 - **本稿との差**: missingnessを扱わない。本稿はMNAR補正済みpair tensorsにTheorem 1の
   strict uniquenessを適用し、Wを第三modeとする。
+
+### Kanamori, Hirose and Yamamoto (2026)
+
+- **対象**: 共通latent componentsと未知mixing weightsを持つ複数のunlabeled mixtures。
+- **識別**: product componentsのsubset-rank条件からaffine span内のindependent distributionを
+  componentへ限定するTheorem 1, pp.6--7。Theorem 2とCorollary 1はfull-rank、
+  no-cancellation、coordinate-pair marginal independenceの下でcomponentsを回復する、
+  pp.8--10。mixing matrix全体の回復にはsquare/invertible caseまたはAppendix Eの
+  irreducibility等の追加completion条件が必要である。
+- **推定**: affine combinationsに対するProduct-Marginal MMD criterion。
+- **本稿との差**: 複数mixturesからcomponentsとmixing matrixを識別する点は本稿の`W` routeに
+  近いが、識別信号はmarginal independenceである。MNAR selection、shadow IV、supported
+  blocks、anchor overlapは扱わないため、本稿の第一段階とは競合しない。
 
 ## 2. Missingness IV and pseudolikelihood
 
@@ -187,6 +251,16 @@
 - **本稿との差**: multivariate outcomesとnonresponse instrumentを直接扱う近接研究だが、
   full-vector complete casesとparametric propensityを使い、latent decompositionは行わない。
 
+### Yang, Ding, Wu and Udell (2021)
+
+- **対象**: MNAR observationsを持つpartially observed tensorのentry completion。
+- **仮定・方法**: original tensorとobservation propensity tensorがlow multilinear rankを持つ。
+  propensityをconvex relaxationで推定し、inverse-propensity weightingとhigher-order SVDで
+  missing entriesを予測する、pp.1--4。
+- **結果**: completed tensorに対するfinite-sample error bounds、pp.4--7。
+- **本稿との差**: array-valued signalのcompletionであり、joint probability tensorを
+  class proportionsとmeasurement kernelsへ一意分解するlatent-model identificationではない。
+
 ## 4. Other estimation references
 
 ### Kim and Yu (2011)
@@ -219,6 +293,8 @@
 > lawsをanchor itemsとlatent shifterを通じて接続し、finite latent-class proportionsと
 > measurement kernelsを同一のlabelingの下で識別する十分条件を与える点にある。
 
-「初めて」または「従来扱われていない」という網羅的な新規性主張は、この19論文の監査だけ
-では支持できない。tensor completion、latent class models with missing data、multi-view mixture
-identificationまで追加検索した場合にのみ再検討する。
+追加検索したtensor completion、latent class models with missing data、multi-view mixture
+identificationを含めても、「初めて」または「従来扱われていない」という網羅的な断定は
+支持しない。特にMa and Zhang (2021)はglobal complete caseなしのsubset-pattern routeを持つ。
+安全な位置づけは、shadow-IV/B-completenessによるsupported-block law回復と、anchor items、
+latent shifter、Kruskal分解によるfinite-class componentsの統合に限定される。
