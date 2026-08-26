@@ -6,9 +6,11 @@ PDFはGit管理外であるため、この索引でローカルファイル名�
 
 | File | Reference | Main role |
 |---|---|---|
-| `Allman_Matias_Rhodes_2009_Latent_Structure_Identifiability.pdf` | Allman, Matias and Rhodes (2009), *Annals of Statistics* | Kruskal rankを用いた有限latent structureのgeneric identification |
-| `Kano_Takai_2011_NMAR_Linear_Latent_Variate_Model.pdf` | Kano and Takai (2011), *Journal of Multivariate Analysis* | 欠測機構の関数形を指定しない線形latent-MNARとmulti-sample SEM |
-| `Kuha_Katsikatsou_Moustaki_2018_Latent_Response_Propensity.pdf` | Kuha, Katsikatsou and Moustaki (2018), *JRSS A* | latent response classによる非無視的item nonresponse |
+| `Allman_Matias_Rhodes_2009_Latent_Structure_Identifiability.pdf` | Allman, Matias and Rhodes (2009), *Annals of Statistics* | Theorem 1/Corollary 2の実現Kruskal rankによる一意性とTheorem 4のgeneric identification |
+| `Holman_Glas_2005_Nonignorable_Missing_IRT.pdf` | Holman and Glas (2005), *British Journal of Mathematical and Statistical Psychology* | latent response propensityを伴うIRTのjoint modelとitem-parameter bias |
+| `Kano_Takai_2011_NMAR_Linear_Latent_Variate_Model.pdf` | Kano and Takai (2011), *Journal of Multivariate Analysis* | 線形latent variate modelとpattern間制約に基づく、欠測機構を明示推定しないmulti-sample SEM |
+| `Kuha_Katsikatsou_Moustaki_2018_Latent_Response_Propensity.pdf` | Kuha, Katsikatsou and Moustaki (2018), *JRSS A* | latent traitとlatent response classのjoint modelおよびその識別条件 |
+| `Lee_Tang_2006_Bayesian_Nonlinear_SEM_Nonignorable_Missing.pdf` | Lee and Tang (2006), *Psychometrika* | logistic missingness modelを伴う非線形SEMのfully parametric Bayesian推定 |
 | `Muthen_Kaplan_Hollis_1987_SEM_Nonrandom_Missingness.pdf` | Muthen, Kaplan and Hollis (1987), *Psychometrika* | latent factor依存欠測とSEMにおけるignorabilityの基礎 |
 | `Tang_Little_Raghunathan_2003_Multivariate_MNAR.pdf` | Tang, Little and Raghunathan (2003), *Biometrika* | 多変量MNARに対するpseudo-likelihood |
 | `Zhao_Ma_2018_Optimal_Pseudolikelihood_Multivariate_MNAR.pdf` | Zhao and Ma (2018), *Biometrika* | 多変量MNARのoptimal pseudolikelihood推定 |
@@ -29,7 +31,7 @@ PDFはGit管理外であるため、この索引でローカルファイル名�
 | File | Reference | Main role |
 |---|---|---|
 | `Honda_2025_Multiple_Overimputation_Data_Integration.pdf` | Honda (2025), *Marketing Science* | 欠測と測定誤差を補正するMultiple Overimputationによるデータ統合 |
-| `Kano_Takai_2011_NMAR_Linear_Latent_Variate_Model.pdf` | Kano and Takai (2011), *Journal of Multivariate Analysis* | `latent_multivariate`内と同一論文の別配布コピー |
+| `Kano_Takai_2011_NMAR_Linear_Latent_Variate_Model.pdf` | Kano and Takai (2011), *Journal of Multivariate Analysis* | `latent_multivariate`内と同一論文の別配布コピー（canonical copyは`latent_multivariate`側） |
 | `Kim_Yu_2011_Semiparametric_Mean_Functionals_MNAR.pdf` | Kim and Yu (2011), *JASA* | nonignorable missingness下のmean functionalのsemiparametric推定 |
 | `Kott_Chang_2010_Calibration_Weighting_Nonresponse.pdf` | Kott and Chang (2010), *JASA* | nonignorable unit nonresponseに対するcalibration weighting |
 | `Zhao_Shao_2015_Semiparametric_Pseudolikelihoods_MNAR.pdf` | Zhao and Shao (2015), *JASA* | 共変量調整した欠測IVとsemiparametric pseudo-likelihood |
