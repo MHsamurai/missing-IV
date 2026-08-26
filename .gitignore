@@ -4,6 +4,7 @@
 .Rhistory
 .venv/
 .ipynb_checkpoints/
+__pycache__/
 
 # Large or binary research materials kept locally
 *.pdf
