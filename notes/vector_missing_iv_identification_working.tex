@@ -305,14 +305,14 @@ $(Y_S,U_S,Z_S,R_S)$に置き換えたものである。}
 R_S\indep Z_S\mid(Y_S,U_S).
 \label{eq:block-missing-iv-independence}
 \end{equation}
-従って任意の可測集合$A$について
+従って任意の可測集合$A$について%
+\footnote{式\eqref{eq:block-complete-case-identity}はZhao and Shao (2015)の
+complete-case identity $[Z\mid Y,U,R=1]=[Z\mid Y,U]$のblockwise analogueである。}
 \begin{equation}
 P(Z_S\in A\mid Y_S,U_S,R_S=1)
 =P(Z_S\in A\mid Y_S,U_S),
 \label{eq:block-complete-case-identity}
 \end{equation}
-式\eqref{eq:block-complete-case-identity}はZhao and Shao (2015)のcomplete-case identity
-$[Z\mid Y,U,R=1]=[Z\mid Y,U]$のblockwise analogueである。
 
 \noindent\textbf{仮定7（blockwise complete-case completeness）.}
 各supported $S$について，任意の
@@ -325,10 +325,11 @@ $h\in L^2\{P(Y_S,U_S\mid R_S=1)\}$に対し
 \end{aligned}
 \label{eq:block-complete-case-completeness}
 \end{equation}
-が成立する。Miao et al. (2019, Condition 1)と同様に，この条件は
-complete casesから識別される条件付き法則だけに課される。Zhao and Shao (2015)では
-一般化線形モデルの有限次元パラメータに対してJacobian行列のfull-rank条件を用いるが，
-本稿ではblock law全体を回復するため，対応する無限次元の単射条件を課す。
+が成立する。この条件はcomplete casesから識別される条件付き法則だけに課され，
+block law全体を回復するための無限次元の単射条件となる。%
+\footnote{Miao et al. (2019, Condition 1)もcompletenessをcomplete-case law上に課す。
+Zhao and Shao (2015)は一般化線形モデルの有限次元パラメータに対して
+Jacobian行列のfull-rank条件を用いる。}
 
 \begin{center}
 \begin{minipage}{\linewidth}
@@ -416,7 +417,9 @@ overlapping blocksの分解を同時に一意化し，blockごとのclass label�
 Corollary 2) における有限潜在クラスの識別論理を引き継ぎ，supported blocks上の
 MNAR識別問題へ適用する。同論文は，$F$の下で条件付き独立な三つの顕在viewが
 生成するprobability tensorを構成し，実現したKruskal rank条件の下でその分解を
-一意化する。これはSection 5, Theorem 4のgeneric identificationとは区別される。
+一意化する。%
+\footnote{このstrict identificationはAllman et al. (2009, Section 5, Theorem 4)の
+generic identificationとは区別される。}
 本稿では第三の測定項目を必要とせず，二つのanchor items $Y_a,Y_b$と
 latent shifter $W$を三つのviewとする。命題2.1で回復したpair lawsと
 常時観測される$W$から$P(Y_a,Y_b,W\mid X)$を構成し，Allman et al.と
@@ -700,10 +703,11 @@ source condition，近似誤差と確率誤差のrate条件が必要である。
 $\sqrt n$正規性にはregular functionalまたはorthogonal scoreの追加構成を要する。}
 
 \section{計算アルゴリズム}
-Zhao and Shao (2015, Section 2.3)のplug-in構成はnuisance lawと推定対象を
-段階的に扱う先例である。ただし，本稿のcriterionはlatent mixtureを含み一般に
+本稿のcriterionはlatent mixtureを含み一般に
 非凸であるため，tensor initialization，複数初期値，制約付き更新を組み合わせ，
-識別証明と同じ順序で計算する。
+識別証明と同じ順序で計算する。%
+\footnote{Zhao and Shao (2015, Section 2.3)のplug-in構成は，nuisance lawと
+推定対象を段階的に扱う先例である。}
 
 \noindent\textbf{Step 1（bridge推定）.}
 各$S\in\mathcal S_*$で有限次元または正則化sieve bridgeを推定し，
