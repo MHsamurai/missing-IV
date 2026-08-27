@@ -12,7 +12,6 @@ PDFはGit管理外であるため、この索引でローカルファイル名�
 | `Kano_Takai_2011_NMAR_Linear_Latent_Variate_Model.pdf` | Kano and Takai (2011), *Journal of Multivariate Analysis* | 線形latent variate modelとpattern間制約に基づく、欠測機構を明示推定しないmulti-sample SEM |
 | `Kuha_Katsikatsou_Moustaki_2018_Latent_Response_Propensity.pdf` | Kuha, Katsikatsou and Moustaki (2018), *JRSS A* | latent traitとlatent response classのjoint modelおよびその識別条件 |
 | `Lee_Tang_2006_Bayesian_Nonlinear_SEM_Nonignorable_Missing.pdf` | Lee and Tang (2006), *Psychometrika* | logistic missingness modelを伴う非線形SEMのfully parametric Bayesian推定 |
-| `Ma_Zhang_2021_Identifiable_Generative_MNAR_GINA.pdf` | Ma and Zhang (2021), arXiv:2110.14708 | observable patternのcoverとsubset identifiabilityによるMNAR下のlatent generative model識別 |
 | `Muthen_Kaplan_Hollis_1987_SEM_Nonrandom_Missingness.pdf` | Muthen, Kaplan and Hollis (1987), *Psychometrika* | latent factor依存欠測とSEMにおけるignorabilityの基礎 |
 | `Tang_Little_Raghunathan_2003_Multivariate_MNAR.pdf` | Tang, Little and Raghunathan (2003), *Biometrika* | 多変量MNARに対するpseudo-likelihood |
 | `Xie_Xue_Wang_2026_Identifiable_Deep_Latent_MNAR.pdf` | Xie, Xue and Wang (2026), arXiv:2603.24771v2 | conditional no-self-censoring given latent variablesによるfull-data distributionの識別 |

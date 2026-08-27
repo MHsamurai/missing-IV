@@ -36,12 +36,13 @@
 - **仮定**: A1は `Y independent R | z`, p.1242。A2--A3によりmissing patternで条件付けても
   共通loadingsとerror varianceを持つモデルが再生される、式(7)--(8), p.1244。
   A4はpattern-specific latent meansのrank型識別条件、p.1246。
-- **識別上の限定**: 元のcovariance structureが識別済みであることを前提にする。無制約な
-  nonparametric latent-MNAR identificationではない。
+- **識別との関係**: covariance structure parameter `theta`は識別済みであると明示的に
+  仮定される、p.1243。A4と式(13)--(14)はMSA内のlatent meansの不定性を除く通常の
+  正規化・rank条件であり、MNAR観測法則から測定構造を新たに識別する結果ではない。
 - **推定**: partial equality constraintsを持つmulti-sample SEM、式(10)--(12),
   pp.1245--1246。漸近分散は式(21), p.1248。
-- **本稿との差**: external IVではなく、線形測定構造とmissing-pattern invarianceが識別情報を
-  供給する。
+- **本稿との差**: 識別済みの線形測定構造とmissing-pattern invarianceの下で一致推定を
+  構成する研究である。external IVからblock lawと潜在測定構造を識別する研究ではない。
 
 ### Holman and Glas (2005)
 
@@ -104,21 +105,6 @@
   parametric population/selection modelとuntestable missingness assumptionsに依存する。
   shadow-IV/B-completenessでblock lawを識別した後にmeasurement kernelsを分解する
   routeではない。
-
-### Ma and Zhang (2021)
-
-- **対象**: MNAR下のlatent generative model parametersとmissing-value imputation。
-- **モデル**: shared latent confounderから各variableを生成し、missingness modelも同時に
-  parameterizeするData setting D1とAssumption A1、pp.4--5。
-- **識別**: Assumption A2はvariable indexを、各subsetのmodel parametersを識別できる集合へ
-  partitionするsubset identifiability。Assumption A3は、それらを含むobservable patternsが
-  全indexをcoverし、各patternの確率が正であることを要求する。Proposition 1はpartial
-  likelihoodの解がground-truth generative parameterを一意に回復すると示す、pp.4--5。
-- **推定**: identifiable VAEとfully observed auxiliary inputsを用いるGINA、Section 4。
-- **本稿との差**: global complete caseを不要とし、部分観測patternからlatent model
-  parametersを識別する点は直接重なる。従ってそれ自体は本稿の新規性でない。一方、同論文は
-  correctly specified parametric generative/missingness modelとauxiliary-variable VAEに依存し、
-  shadow-IV/B-completenessで各block lawを先に回復する二段階routeではない。
 
 ### Xie, Xue and Wang (2026)
 
@@ -301,6 +287,5 @@
 
 追加検索したtensor completion、latent class models with missing data、multi-view mixture
 identificationを含めても、「初めて」または「従来扱われていない」という網羅的な断定は
-支持しない。特にMa and Zhang (2021)はglobal complete caseなしのsubset-pattern routeを持つ。
-安全な位置づけは、shadow-IV/B-completenessによるsupported-block law回復と、anchor items、
+支持しない。安全な位置づけは、shadow-IV/B-completenessによるsupported-block law回復と、anchor items、
 latent shifter、Kruskal分解によるfinite-class componentsの統合に限定される。
