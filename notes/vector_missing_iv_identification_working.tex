@@ -97,11 +97,7 @@ model-based approachである。
 factorを条件として独立であり，測定負荷と誤差分散が欠測pattern間で不変である
 線形潜在変量モデルの下で，欠測機構の具体的な関数形を規定せずに，測定負荷，
 誤差分散，およびpattern-specificな潜在平均・共分散をmulti-sample SEMとして
-推定できることを示す。また，Ma and Zhang (2021, Assumptions A2--A3,
-Proposition 1)は，正しく指定されたlatent generative modelとmissingness modelの下で，
-subset identifiabilityを満たすobservable patternsが全変数をcoverし，各patternが
-正の確率を持てば，global complete caseがなくてもgenerative parametersを一意に
-回復できることを示す。しかし，いずれも，shadow IVとB-completenessによって各
+推定できることを示す。しかし，同論文は，shadow IVとB-completenessによって各
 supported-block lawを先に回復し，回復されたoverlapping block lawsをanchor itemsと
 latent shifterで接続して，有限潜在クラス比率と測定核を共通labelの下で識別する
 問題は扱っていない。そこで，本稿では，この二段階を統合し，因子分析，SEM，IRTに
@@ -197,9 +193,8 @@ $F$を積分した観測データ上の除外制約を一般には導かない�
 modelを直接規定せず，missing IVとB-completenessによるsupported-block lawの回復を，
 anchor itemsとlatent shifterを用いる潜在構造の一意分解へ接続することである。
 
-本稿はshadow variableとcompletenessによるfull-law識別，Kruskal型tensor分解，
-またはobservable-pattern coverを個別に新しく
-提案するものではない。この構成は三つの識別原理を引き継ぐ。
+本稿はshadow variableとcompletenessによるfull-law識別やKruskal型tensor分解を
+個別に新しく提案するものではない。この構成は三つの識別原理を引き継ぐ。
 第一に，Zhao and Shao (2015) の
 共変量調整済み除外制約を，各supported block $S$の
 $(Y_S,U_S,Z_S,R_S)$へ適用する。第二に，d'Haultfoeuille
@@ -910,8 +905,6 @@ missing-data problems. \textit{Biometrika}, 96(1), 37--50.
 model for nonignorably missing data. \textit{Computational Statistics \& Data
 Analysis}, 55(1), 802--812.
 \href{https://doi.org/10.1016/j.csda.2010.07.002}{doi:10.1016/j.csda.2010.07.002}.
-\item Ma, C. and Zhang, C. (2021). Identifiable generative models for missing
-not at random data imputation. arXiv:2110.14708.
 \item Xie, H., Xue, F., and Wang, X. (2026). Identifiable deep latent variable
 models for MNAR data. arXiv:2603.24771v2.
 \item Kuha, J., Katsikatsou, M., and Moustaki, I. (2018). Latent variable
