@@ -849,18 +849,28 @@ Proposed saturated/sieve bridge&$-0.0064$&0.0555&$-0.0029$&0.0517\\
 \end{center}
 
 図\ref{fig:allman-simulation}と表\ref{tab:allman-simulation}に示すように，
-MNARをMARとして扱うと測定核とclass比率の双方に偏りが生じた。
-parameter別には，第2 classの$Y_2,Y_3$測定核のbiasがそれぞれ
-$-0.1495$と$-0.1209$に達し，集約biasはこれらの大きな過小評価を反映した。
+提案法の測定核$M_j$の平均biasは$-0.0064$であり，MARの$-0.0496$および
+誤指定selection likelihoodの0.0409より絶対値が小さく，正指定selection likelihoodの
+$-0.0008$に近かった。parameter別にも，提案法では6つの測定核成分のbiasが全て
+絶対値0.0125以下であった。これに対し，MARでは第2 classの$Y_2,Y_3$を
+$-0.1495$，$-0.1209$だけ過小評価し，誤指定selection likelihoodでは第1 classの
+同成分を0.0943，0.0898だけ過大評価した。提案法のbiasが相対的に小さいのは，
+$Y_1$のmain effectとinteractionを含む特定のselection equationに依存せず，
+shadow IVから回復したblock lawsを用いたためと考えられる。
 
-正しく指定したselection likelihoodでは両識別対象の平均biasはほぼ0であった。
-一方，$Y_1$のmain effectとinteractionを落とした誤指定版では，第1 classの
-$Y_2,Y_3$測定核のbiasが0.0943と0.0898となり，selection equationの誤指定が
-測定関係の推定に現れた。
+$M_j$のRMSEも提案法では0.0555であり，MARの0.0966および誤指定selection
+likelihoodの0.0684より低く，正指定selection likelihoodの0.0544と同程度であった。
+一方，complete-data oracleの0.0351よりは高い。この差には，bridgeの第一段階推定と
+ridge正則化の変動に加え，full-data likelihoodではなくoverlapping pair lawsを統合する
+composite criterionを用いることが影響したと考えられる。
 
-提案するridge-regularized saturated/sieve bridgeでは，6つの測定核成分のbiasが
-全て絶対値0.0125以下であった。これは，特定のparametric selection linkを指定せず，
-回復したblock lawsから測定核とclass比率を分離する識別論の含意と整合する。
+latent class比率$p_f$について，提案法のbiasの絶対値0.0029はMARの0.0193および
+誤指定selection likelihoodの0.0092より小さく，oracleの0.0019に近かった。ただし，
+RMSEは0.0517で，MARの0.0572より低いものの，正指定selection likelihoodの0.0427と
+誤指定selection likelihoodの0.0415より高かった。したがって提案法はclass比率の
+selection-model misspecificationに伴うbiasを抑える一方，class比率をblockwise pair情報と
+推定bridgeから間接的に回復することによる効率性の低下が残る。
+
 五手法を通じたMonte Carlo standard errorの最大値は，
 $M_j$のbiasで0.0028，RMSEで0.0025，$p_f$のbiasで0.0054，RMSEで0.0041である。%
 \footnote{提案法の頑健性はparametric selection linkの誤指定を避ける点にある。
