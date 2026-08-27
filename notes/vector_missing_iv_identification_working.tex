@@ -880,6 +880,24 @@ $M_j$のbiasで0.0028，RMSEで0.0025，$p_f$のbiasで0.0054，RMSEで0.0041で
 shadow-IV exclusion，positivity，complete-case completeness，有限latent-class測定モデルの誤指定まで
 許容するものではなく，正指定parametric likelihoodと同じ効率性も一般には保証しない。}
 
+\noindent\textbf{補題7.1（候補識別設計の経験的診断）.}
+blockwise IV，latent shifter，通常共変量，およびanchor itemsの候補となる割当てを
+一つ固定する。各supported blockのcomplete casesから，$Z_S$のrelevanceと，有限カテゴリ
+の場合にはcomplete-case conditional operatorのrankを評価できる。さらに命題2.1により
+block lawsが回復されれば，supported-block positivity，$W$のthird-mode rank，anchor gap，
+および冗長なblocksから回復される測定核の一致は識別された法則の関数となる。
+したがって，これらの条件の不成立は候補となる割当てまたは潜在測定構造を反証する。
+ただし，条件の成立だけからshadow exclusion，$W$のmeasurement exclusion，または
+局所独立性が検証されるわけではない。
+
+\noindent\textbf{証明概略.}
+$Z_S$のrelevanceとcomplete-case operatorは
+$P(Y_S,Z_S,U_S\mid R_S=1)$の関数であり，観測データから評価できる。
+命題2.1の後は$P(Y_S,Z_S,U_S)$が識別され，定理3.1で用いるtensorのrankと
+anchor orderingのgapも識別される。複数のsupported blocksが同じ測定核を回復する場合，
+その一致はoveridentifying restrictionとなる。一方，exclusionと局所独立性は未観測変数を
+含むため，上記の適合だけでは十分に検証されない。\hfill$\square$
+
 \appendix
 \section{補題3.1の証明}
 $s\le\min\{k_A+k_B-1,r\}$本以下の列に非自明な線形関係があると仮定し，
