@@ -232,8 +232,7 @@ estimatorを構成し，第5節でその漸近理論を与える。第6節で計
 本節は識別を二段階に分け，その第一段階を定式化する。まず潜在因子$F$，
 測定値$Y$，常時観測共変量$(X,W,Z)$，観測指標$D$からなる完全データ法則を
 定める。次に，同時観測確率が正であるsupported blockごとに
-Zhao--Shao型exclusionと，Miao et al. (2019)に則る観測complete-case law上の
-completenessを課し，
+Zhao--Shao型exclusionと観測complete-case law上のcompletenessを課し，
 観測データ法則から選択確率$\pi_S$とblock full lawを回復する。この段階では
 block lawを潜在クラスへ分解せず，欠測機構の除去だけを識別目標とする。
 
@@ -597,10 +596,6 @@ $P(Y_A\mid W=w,X=x)$は一意に識別される。\hfill$\square$
 各supported pairの観測確率を推定する。
 その逆数でpairが観測された標本の寄与を重み付けるinverse probability weighting
 (IPW)により，欠測選択を除いたpair lawの期待値を再現する。
-別のrouteとして，Miao et al. (2019)はodds-ratio functionをselection biasの尺度として
-識別し，pattern-mixture factorizationからfull-data lawを再構成する。本稿で必要なのは
-複数のoverlapping blocksのmomentsとprobability tensorsであるため，それらを
-inverse-selection identityから直接構成できるbridge/IPW routeを採用する。
 
 第二段階では，因子分析や潜在クラス分析
 (latent class analysis; LCA)に共通する潜在測定モデルの当てはめを行う。
@@ -666,9 +661,8 @@ $S\in\mathcal S_*$の条件付きKullback--Leibler divergenceの正の加重和�
 定理3.1の単射性より$\theta=\theta_0$である。\hfill$\square$
 
 \section{漸近理論}
-Miao et al. (2019, Sections 4 and 6)はshadow-variable identificationに続いて
-semiparametric estimatorと効率理論を導き，Zhao and Shao (2015, Sections 2.2--2.3)は
-識別したoutcome modelをplug-in推定へ接続する。本節もこの順序に従い，第4節の
+Zhao and Shao (2015, Sections 2.2--2.3)は，識別したoutcome modelを
+plug-in推定へ接続する。本節もこの順序に従い，第4節の
 bridge-weighted estimatorについて，まず有限次元bridgeの下で一致性と漸近正規性を示す。
 以下では
 $(O_i)_{i=1}^n$は独立同分布であり，$\beta=(\theta,\eta)$，
