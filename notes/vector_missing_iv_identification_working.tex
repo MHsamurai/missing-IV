@@ -127,13 +127,17 @@ completenessを組み合わせることで，d'Haultfoeuille (2010, Theorem 2.3)
 $(D,Y,Z)$のjoint distributionをノンパラメトリックに識別する。Zhao and Shao
 (2015, Theorem 1)は，共変量調整済みexclusionの下で，一般化線形モデル
 (generalized linear model; GLM)の$P(Y\mid U,Z)$を決める未知パラメータの
-識別条件を与える。したがって，これらのmissingness-IV研究が回復するのは，
-観測結果のfull lawまたはそれを規定する回帰パラメータである。
+識別条件を与える。Miao et al. (2019, Assumption 1, Condition 1, Theorem 1)は，
+shadow-variable exclusionとrelevanceに，complete casesから観測される
+$f(Y\mid R=1,X,Z)$のcompletenessを組み合わせ，odds-ratio integral equationの
+解の一意性を通じて$f(X,Y,Z,R)$をノンパラメトリックに識別する。これは本稿の
+supported-block law回復に最も近い第一段階の先行研究である。ただし，同論文の
+基本設定は一つの欠測outcomeと一つの観測指標であり，回復されたfull-data lawを
+潜在クラス比率と測定核へ分解する問題は扱わない。
 
 この流れにはscalar outcomeだけでなくmultivariate MNARも含まれる。Tang, Little and
 Raghunathan (2003)はcomplete casesの条件付き法則を用いてmultivariate regression
-parametersを識別し，Miao et al. (2019)はshadow variableとcompletenessからfull-data
-lawを識別する。外部IVを用いない別系統として，Sadinle and Reiter (2017)はitemwise
+parametersを識別する。外部IVを用いない別系統として，Sadinle and Reiter (2017)はitemwise
 conditionally independent nonresponseの下でmultivariate full-data lawを構成する。
 Li et al. (2023)はself-censoring modelとcompletenessを，Ni and Shao (2023)は
 nonresponse instrumentとparametric propensityを用いてmultivariate item nonresponseを

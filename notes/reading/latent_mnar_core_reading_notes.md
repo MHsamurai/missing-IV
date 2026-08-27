@@ -189,8 +189,12 @@
 - **識別**: odds-ratio integral equationとTheorem 1、PDF pp.8--9。
 - **推定**: regression、IPW、doubly robust estimation、式(8)--(14), Theorem 2,
   PDF pp.10--12。
-- **本稿との差**: shadow variableとcompleteness自体は既存。本稿の候補はblockwise回復と
-  latent decompositionの接続にある。
+- **近接性**: parametric selection modelを規定せず、shadow variableと観測complete-case
+  lawのcompletenessからfull-data joint lawを回復するため、本稿のsupported-block law回復に
+  最も近い第一段階の先行研究である。
+- **本稿との差**: 基本設定は一つの欠測outcome `Y` と一つの観測指標 `R` であり、複数の
+  supported blocksを回復・接続せず、full-data lawをlatent class比率とmeasurement kernelsへ
+  分解しない。本稿の候補はこのblockwise extensionとlatent decompositionの接続にある。
 
 ### Zhao and Ma (2018)
 
