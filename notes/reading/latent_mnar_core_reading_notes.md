@@ -117,7 +117,7 @@
   nonparametrically identifyする、pp.6--7。
 - **推定**: conditional independenceを持つdeep latent working modelとimportance-weighted
   autoencoderを用いる。
-- **本稿との差**: latent-variable MNARのfull-law identificationとして重要だが、識別対象は
+- **本稿との差**: latent-variable MNARに対する近年の機械学習的なfull-law identificationであり、識別対象は
   observable full-data distributionであり、latent coordinates、class proportions、
   measurement kernelsを個別に識別する定理ではない。またall-observed positivityを置く。
 
