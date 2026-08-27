@@ -285,13 +285,8 @@ R_S=\prod_{j\in S}D_j,\qquad Y_S=(Y_j:j\in S),\qquad U_S=(X,W).
 \label{eq:supported-block-definition}
 \end{equation}
 $R_S=1$なら$Y_S$全体が観測される。block観測データは
-$O_S=(U_S,Z_S,R_S,Y_S^{\mathrm{obs}})$であり，
-\begin{equation}
-Y_S^{\mathrm{obs}}=
-\begin{cases}Y_S,&R_S=1,\\ \dagger,&R_S=0\end{cases}
-\label{eq:block-observed-outcome}
-\end{equation}
-とする。
+$U_S,Z_S,R_S$を常に含み，$R_S=1$のときに限り$Y_S$を含む。すなわち，
+$R_S=0$のとき$Y_S$は欠測である。
 $S$がsupportedであるとは，対象領域で
 \begin{equation}
 \pi_S(y,u):=P(R_S=1\mid Y_S=y,U_S=u)>0
@@ -299,10 +294,10 @@ $S$がsupportedであるとは，対象領域で
 \end{equation}
 が成立することをいう。
 
-記号の対応は，Zhao and Shao (2015)の$(Y,U,Z,R)$をblockごとの
-$(Y_S,U_S,Z_S,R_S)$に置き換えたものである。とくに$W$は$F$の分布を
-動かすlatent shifterなので，nonresponse IV $Z_S$とは区別して$U_S$へ
-含め，その値を条件づけた上で除外制約を課す。
+とくに$W$は$F$の分布を動かすlatent shifterなので，nonresponse IV $Z_S$とは
+区別して$U_S$へ含め，その値を条件づけた上で除外制約を課す。%
+\footnote{記号の対応は，Zhao and Shao (2015)の$(Y,U,Z,R)$をblockごとの
+$(Y_S,U_S,Z_S,R_S)$に置き換えたものである。}
 
 \noindent\textbf{仮定6（Zhao--Shao型blockwise covariate-adjusted missing IV）.}
 各supported $S$について，
