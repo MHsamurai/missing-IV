@@ -94,17 +94,18 @@ Jung, Schafer and Seo (2011)はmissingness indicatorsで測られるlatent varia
 model-based approachである。
 
 より近い先行研究として，Kano and Takai (2011)は，欠測指標と測定値がlatent
-factorを条件として独立であるshared-parameter structureの下で，欠測機構の
-具体的な関数形を推定に用いず，線形潜在変量モデルを欠測pattern間のmulti-sample
-analysisとして推定する。ただし，同論文は識別済みの線形covariance
-structure，pattern間のfactorial invariance，およびpattern-specific latent momentsに
-対するrank条件を用いる。Ma and Zhang (2021, Assumptions A2--A3, Proposition 1)は，
-正しく指定されたlatent generative modelとmissingness modelの下で，subset
-identifiabilityを満たすobservable patternsが全変数をcoverすれば，global complete
-caseなしにgenerative parametersを識別できることを示す。本稿はこれらに対し，supported blocks
-ごとのshadow IVとB-completenessでblock lawを先に回復し，finite latent classの
-構成比と一般のカテゴリ測定核をtensor分解によって識別する。この識別対象は，
-因子分析，SEM，IRTに共通する潜在測定モデルの中心である。
+factorを条件として独立であり，測定負荷と誤差分散が欠測pattern間で不変である
+線形潜在変量モデルの下で，欠測機構の具体的な関数形を規定せずに，測定負荷，
+誤差分散，およびpattern-specificな潜在平均・共分散をmulti-sample SEMとして
+推定できることを示す。また，Ma and Zhang (2021, Assumptions A2--A3,
+Proposition 1)は，正しく指定されたlatent generative modelとmissingness modelの下で，
+subset identifiabilityを満たすobservable patternsが全変数をcoverし，各patternが
+正の確率を持てば，global complete caseがなくてもgenerative parametersを一意に
+回復できることを示す。しかし，いずれも，shadow IVとB-completenessによって各
+supported-block lawを先に回復し，回復されたoverlapping block lawsをanchor itemsと
+latent shifterで接続して，有限潜在クラス比率と測定核を共通labelの下で識別する
+問題は扱っていない。そこで，本稿では，この二段階を統合し，因子分析，SEM，IRTに
+共通する潜在測定モデルを識別する。
 
 本研究では，未観測潜在変数$F$，常時観測変数$W,X$，複数の潜在的測定値
 $Y=(Y_1,\ldots,Y_m)$について，
