@@ -593,11 +593,14 @@ $P(Y_A\mid W=w,X=x)$は一意に識別される。\hfill$\square$
 
 \section{推定：bridge推定とIPWによる潜在クラス分析}
 次に，識別論の二段階を標本上の推定手順へ移す。第一段階では，
-Miao et al. (2019)がodds-ratio functionをselection biasの尺度として識別したのに対し，
 本稿ではd'Haultfoeuille (2010, Section 3)の条件付きmoment equationをblockwiseに用い，
 各supported pairの観測確率を推定する。
 その逆数でpairが観測された標本の寄与を重み付けるinverse probability weighting
 (IPW)により，欠測選択を除いたpair lawの期待値を再現する。
+別のrouteとして，Miao et al. (2019)はodds-ratio functionをselection biasの尺度として
+識別し，pattern-mixture factorizationからfull-data lawを再構成する。本稿で必要なのは
+複数のoverlapping blocksのmomentsとprobability tensorsであるため，それらを
+inverse-selection identityから直接構成できるbridge/IPW routeを採用する。
 
 第二段階では，因子分析や潜在クラス分析
 (latent class analysis; LCA)に共通する潜在測定モデルの当てはめを行う。
