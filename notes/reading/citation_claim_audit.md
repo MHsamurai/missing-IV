@@ -26,7 +26,7 @@ Kano and Takai (2011) は二つの配布版があるが、抽出本文とDOIが�
    だけでなく、その識別条件も述べる。latent structureとMNARの統合自体を新規性と
    してはならない。
 4. 本稿の安全な貢献候補は、parametric selection modelを正しく指定する代わりに、
-   shadow IVとB-completenessでoverlapping supported-block lawsを回復し、anchor itemsと
+   shadow IVとblockwise complete-case completenessでoverlapping supported-block lawsを回復し、anchor itemsと
    latent shifterを通じて同一のclass labelingの下で潜在class比率と測定核を識別する
    二段階の十分条件である。
 
@@ -42,7 +42,7 @@ Kano and Takai (2011) は二つの配布版があるが、抽出本文とDOIが�
 | 96--104 | 識別済みの線形latent structureの下でmissingness mechanismを指定しないMSA推定 | Kano and Takai (2011), covariance parameterの識別済み仮定, p.1243; A2--A4, eqs. (7)--(15), pp.1244--1246; conclusion, p.1251. | 確認済み | 潜在測定構造の識別結果として引用せず、通常のSEM識別制約を置いた後の一致推定として記す。 |
 | 118--119 | B-completenessとpositivityによる `(D,Y,Z)` joint lawの識別 | d'Haultfoeuille (2010), Assumptions 1--5, eqs. (2.2)--(2.3), Theorem 2.3, p.3. | 確認済み | Assumption 2としてZの分布が識別済みである点を落とさない。 |
 | 119--123 | 共変量調整済みexclusionによるGLMパラメータの識別 | Zhao and Shao (2015), eqs. (2)--(3), Theorem 1, p.1579. | 確認済み | full nonparametric lawではなく有限次元GLMパラメータの識別とする。 |
-| 123--130 | shadow variableと観測complete-case lawのcompletenessによるfull-data joint lawの識別 | Miao et al. (2019), Assumption 1, p.4; Condition 1 and Theorem 1, pp.8--9. | 確認済み | 本稿の第一段階に最も近い。基本設定は一つの欠測outcomeと一つの観測指標であり、supported blocksの接続とlatent decompositionは扱わない。 |
+| 123--130 | shadow variableと観測complete-case lawのcompletenessによるfull-data joint lawの識別 | Miao et al. (2019), Assumption 1, p.4; Condition 1 and Theorem 1, pp.8--9. | 確認済み | 本稿の第一段階に最も近い。基本設定は一つの欠測outcomeと一つの観測指標であり、supported blocksの接続とlatent decompositionは扱わない。仮定7と命題2.1ではcomplete-case conditional operatorの単射性としてblockwiseに継承する。 |
 | 136--138 | marginal mixture lawが識別されてもlatent分解は一意でない | Allman et al. (2009), Sections 3--4, pp.3106--3109. | 限定が必要 | 「追加の分解一意性条件なしには一意でない」とする。 |
 | 140--146 | Allmanの3-view tensorによるlatent-class識別 | Allman et al. (2009), Section 4, Theorem 1 and Corollary 2, p.3109. | 引用箇所誤り | `Section 3, Corollary 2`を`Section 4, Theorem 1 and Corollary 2`へ修正し、Theorem 4を外す。 |
 | 76--104 | 既存latent-MNAR modelと本稿の差 | Kuha et al. (2018), Holman and Glas (2005), Lee and Tang (2006); Kano and Takai (2011). | 限定が必要 | joint model内の識別と、Kano--Takaiの識別済み線形構造の下での推定を分ける。本稿の差はsupported-block recoveryとlatent decompositionの接続に限定する。 |
@@ -76,7 +76,7 @@ Kano and Takai (2011) は二つの配布版があるが、抽出本文とDOIが�
 - 「parametric modelを置かない」は広すぎる。本稿もknown class数、local independence、
   Kruskal rank、anchor orderingを課すため、「parametric selection modelを直接規定しない」
   と限定する必要がある。
-- shadow IVとB-completeness自体はd'HaultfoeuilleやMiao et al.に既にあり、
+- shadow IV、B-completeness、complete-case completeness自体はd'HaultfoeuilleやMiao et al.に既にあり、
   tensor分解自体もAllman et al.にある。新規性は両段階の接続に置く。
 - Li et al. (2023)にはcompletenessを用いるmultivariate self-censoringとblockwise extensionが
   あるため、「初のblockwise MNAR識別」とは書かない。
@@ -106,7 +106,7 @@ Kano and Takai (2011) は二つの配布版があるが、抽出本文とDOIが�
 | Kanamori, Hirose and Yamamoto (2026) | Theorems 1--2 and Corollary 1, pp.6--10; completion results in Appendix E | 共通componentを持つ複数unlabeled mixturesから、marginal independenceによりcomponent distributionsを回復する。mixing matrix全体にはsquare/invertible caseまたはirreducibility等の追加条件が要る。 | **近接する第二段階**: 複数mixturesからcomponentを回復する別routeであり、MNAR、shadow IV、supported blocksは扱わない。Wをthird modeとする本稿のKruskal routeとは識別信号が異なる。 |
 
 追加検索後も「初めて」という断定は避ける。本文では、第一段階の
-shadow-IV/B-completenessによるblock-law回復と、第二段階のanchor/latent-shifterを用いる
+shadow-IV/complete-case-completenessによるblock-law回復と、第二段階のanchor/latent-shifterを用いる
 finite-class decompositionを一体として比較する。
 
 ## 参考文献の必要十分性

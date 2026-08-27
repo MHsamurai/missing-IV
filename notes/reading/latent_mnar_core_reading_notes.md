@@ -192,6 +192,8 @@
 - **近接性**: parametric selection modelを規定せず、shadow variableと観測complete-case
   lawのcompletenessからfull-data joint lawを回復するため、本稿のsupported-block law回復に
   最も近い第一段階の先行研究である。
+- **本稿への反映**: 仮定7をblockwise complete-case completenessとして定式化し、bridge
+  方程式の二解の差を`R_S=1`の条件付き期待値へ変換して命題2.1の一意性を示す。
 - **本稿との差**: 基本設定は一つの欠測outcome `Y` と一つの観測指標 `R` であり、複数の
   supported blocksを回復・接続せず、full-data lawをlatent class比率とmeasurement kernelsへ
   分解しない。本稿の候補はこのblockwise extensionとlatent decompositionの接続にある。
@@ -291,5 +293,5 @@
 
 追加検索したtensor completion、latent class models with missing data、multi-view mixture
 identificationを含めても、「初めて」または「従来扱われていない」という網羅的な断定は
-支持しない。安全な位置づけは、shadow-IV/B-completenessによるsupported-block law回復と、anchor items、
+支持しない。安全な位置づけは、shadow-IV/complete-case-completenessによるsupported-block law回復と、anchor items、
 latent shifter、Kruskal分解によるfinite-class componentsの統合に限定される。

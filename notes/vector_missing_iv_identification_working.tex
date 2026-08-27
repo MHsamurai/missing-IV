@@ -100,7 +100,7 @@ model-based approachである。
 具体的な関数形を規定せずに，測定負荷，誤差分散，およびpattern-specificな
 潜在平均・共分散をmulti-sample SEMとして一致推定できることを示す。同論文の
 主眼は識別済みの線形潜在構造の下での推定であり，MNAR観測法則から潜在分布と
-測定核を識別するものではない。そこで，本稿では，shadow IVとB-completenessによって各
+測定核を識別するものではない。そこで，本稿では，shadow IVとcomplete-case completenessによって各
 supported-block lawを先に回復し，回復されたoverlapping block lawsをanchor itemsと
 latent shifterで接続して，有限潜在クラス比率と測定核を共通labelの下で識別する
 二段階を構成する。
@@ -196,17 +196,19 @@ $F$を積分した観測データ上の除外制約を一般には導かない�
 自動的には識別されない。これが，既存のmissing-IV識別と潜在測定モデルの
 識別を統合するときの固有の障害である。従って本稿の
 識別問題は，部分的にしか同時観測されない多次元測定について，parametric selection
-modelを直接規定せず，missing IVとB-completenessによるsupported-block lawの回復を，
+modelを直接規定せず，missing IVとcomplete-case completenessによるsupported-block lawの回復を，
 anchor itemsとlatent shifterを用いる潜在構造の一意分解へ接続することである。
 
 本稿はshadow variableとcompletenessによるfull-law識別やKruskal型tensor分解を
-個別に新しく提案するものではない。この構成は三つの識別原理を引き継ぐ。
+個別に新しく提案するものではない。この構成は四つの識別原理を引き継ぐ。
 第一に，Zhao and Shao (2015) の
 共変量調整済み除外制約を，各supported block $S$の
 $(Y_S,U_S,Z_S,R_S)$へ適用する。第二に，d'Haultfoeuille
-(2010, Assumptions 1--5, Theorem 2.3) のpositivityとB-completenessを
-用い，bridgeの一意性を通じて各blockの選択確率$\pi_S$とfull law
-$P(Y_S,Z_S,U_S)$をノンパラメトリックに回復する。第三に，Allman,
+(2010, Assumptions 1--5, Theorem 2.3) のpositivityと積分方程式による
+nonparametric missing-IV identificationの順序を引き継ぎ，bridgeの一意性から
+各blockの選択確率$\pi_S$とfull law $P(Y_S,Z_S,U_S)$を回復する。第三に，Miao et al.
+(2019, Condition 1, Theorem 1)に則り，completenessを観測complete-case law上に
+課し，観測データ法則だけに依存する条件として定式化する。第四に，Allman,
 Matias and Rhodes (2009, Section 3; Section 4, Theorem 1 and Corollary 2) の
 有限潜在クラスに対するtensor分解の識別論理を引き継ぎ，supported blocks上で
 回復されたtensorへ適用する。
@@ -216,16 +218,22 @@ $R_S\indep Z_S\mid(Y_S,U_S)$というexclusionが必要である。一方，$W$�
 測定核へ直接入らず，潜在分布を動かすvariationを供給する。どの変数を
 blockwise IV，latent shifter，通常共変量に割り当て，どの項目をblock間の
 anchorにするかが，応用上の識別設計の核心となる。
-shadow IVとB-completenessにより，parametric selection modelを規定せずに
+shadow IVとblockwise complete-case completenessにより，parametric selection modelを規定せずに
 各supported-block lawを識別し，回復されたoverlapping block lawsをanchor itemsと
 latent shifterで接続することで，有限潜在クラス比率と測定核を共通labelの下で識別し，
 bridge-weighted estimatorを構成する。
+
+以下，第2節では各supported blockのfull lawを識別し，第3節では回復された
+overlapping block lawsを有限潜在クラスへ分解する。第4節でbridge-weighted
+estimatorを構成し，第5節でその漸近理論を与える。第6節で計算手順を示し，
+第7節で有限標本性能を検討する。
 
 \section{モデルと仮定}
 本節は識別を二段階に分け，その第一段階を定式化する。まず潜在因子$F$，
 測定値$Y$，常時観測共変量$(X,W,Z)$，観測指標$D$からなる完全データ法則を
 定める。次に，同時観測確率が正であるsupported blockごとに
-Zhao--Shao型exclusionとd'Haultfoeuille型B-completenessを課し，
+Zhao--Shao型exclusionと，Miao et al. (2019)に則る観測complete-case law上の
+completenessを課し，
 観測データ法則から選択確率$\pi_S$とblock full lawを回復する。この段階では
 block lawを潜在クラスへ分解せず，欠測機構の除去だけを識別目標とする。
 
@@ -309,17 +317,21 @@ P(Z_S\in A\mid Y_S,U_S,R_S=1)
 式\eqref{eq:block-complete-case-identity}はZhao and Shao (2015)のcomplete-case identity
 $[Z\mid Y,U,R=1]=[Z\mid Y,U]$のblockwise analogueである。
 
-\noindent\textbf{仮定7（blockwise conditional B-completeness）.}
-各supported $S$について，任意の下に有界かつ可積分な$g$に対し
+\noindent\textbf{仮定7（blockwise complete-case completeness）.}
+各supported $S$について，任意の
+$h\in L^2\{P(Y_S,U_S\mid R_S=1)\}$に対し
 \begin{equation}
-\E\{g(Y_S,U_S)\mid Z_S,U_S\}=0
-\Longrightarrow g(Y_S,U_S)=0\quad\text{a.s.}
-\label{eq:block-b-completeness}
+\begin{aligned}
+&\E\{h(Y_S,U_S)\mid R_S=1,Z_S,U_S\}=0,\\
+&\qquad\Longrightarrow h(Y_S,U_S)=0
+\quad\text{a.s. on }\{R_S=1\}.
+\end{aligned}
+\label{eq:block-complete-case-completeness}
 \end{equation}
-が成立する。Zhao and Shao (2015)では一般化線形モデルの有限次元パラメータに対して
-Jacobian行列のfull-rank条件を用いる。本稿では$P(Y_S\mid U_S)$を
-パラメトリックに限定せずblock law全体を回復するため，対応する
-無限次元の単射条件としてB-completenessを仮定する。
+が成立する。Miao et al. (2019, Condition 1)と同様に，この条件は
+complete casesから識別される条件付き法則だけに課される。Zhao and Shao (2015)では
+一般化線形モデルの有限次元パラメータに対してJacobian行列のfull-rank条件を用いるが，
+本稿ではblock law全体を回復するため，対応する無限次元の単射条件を課す。
 
 \begin{center}
 \begin{minipage}{\linewidth}
@@ -339,12 +351,15 @@ $U_S$は$F,\bm Z_S,Y_S$へ入り，$\bm Z_S$から$R_S$への直接辺は置か�
 \end{center}
 
 \noindent\textbf{命題2.1（supported-block lawの識別）.}
-仮定1，5，6，7の下で，$\pi_S$は
+仮定1，5，6，7の下で，さらに
+$\pi_S^{-1}\in L^2\{P(Y_S,U_S\mid R_S=1)\}$とする。このとき$\pi_S$は
 \begin{equation}
 \E\left\{\frac{R_S}{q(Y_S,U_S)}\mid Z_S,U_S\right\}=1
 \label{eq:bridge-moment}
 \end{equation}
-を満たし条件付き期待値が有限な正値関数$q$の唯一解である。従って任意の可積分$h$に対し
+を満たす正値関数のうち，$q^{-1}$が
+$L^2\{P(Y_S,U_S\mid R_S=1)\}$に属するものの唯一解である。
+従って任意の可積分$h$に対し
 \begin{equation}
 \E h(Y_S,Z_S,U_S)
 =\E\left\{\frac{R_Sh(Y_S,Z_S,U_S)}{\pi_S(Y_S,U_S)}\right\},
@@ -358,15 +373,20 @@ $U_S$は$F,\bm Z_S,Y_S$へ入り，$\bm Z_S$から$R_S$への直接辺は置か�
 \E(R_S\mid Y_S,Z_S,U_S)=\pi_S(Y_S,U_S),
 \label{eq:selection-expectation}
 \end{equation}
-従って真の$\pi_S$は\eqref{eq:bridge-moment}を満たす。別の正値解$q$に対し
-$g=\pi_S/q-1$と置くと，
+従って真の$\pi_S$は\eqref{eq:bridge-moment}を満たす。別の正値解$q$に対し，
 \begin{equation}
-0=\E\left[R_S\left\{q^{-1}-\pi_S^{-1}\right\}\mid Z_S,U_S\right]
-=\E(g\mid Z_S,U_S).
+0=\E\left[R_S\left\{q^{-1}-\pi_S^{-1}\right\}\mid Z_S,U_S\right].
 \label{eq:bridge-uniqueness-step}
 \end{equation}
-\eqref{eq:bridge-moment}を周辺化すれば$\E(\pi_S/q)=1$なので$g\ge-1$かつ
-$\E|g|\le2$。B-completenessより$g=0$ a.s.，従って$q=\pi_S$。
+$P(R_S=1\mid Z_S,U_S)>0$なので，式\eqref{eq:bridge-uniqueness-step}を
+同確率で除すと
+\begin{equation}
+\E\left\{q^{-1}-\pi_S^{-1}\mid R_S=1,Z_S,U_S\right\}=0.
+\label{eq:complete-case-bridge-uniqueness}
+\end{equation}
+仮定7より$q^{-1}=\pi_S^{-1}$が$R_S=1$の下で成立する。式
+\eqref{eq:block-positivity}によりcomplete-case lawとfull lawは
+$(Y_S,U_S)$について同じ零集合を持つので，$q=\pi_S$ a.s.である。
 最後に
 \begin{equation}
 \E\left\{R_Sh/\pi_S\mid Y_S,Z_S,U_S\right\}=h
@@ -573,8 +593,9 @@ $P(Y_A\mid W=w,X=x)$は一意に識別される。\hfill$\square$
 
 \section{推定：bridge推定とIPWによる潜在クラス分析}
 次に，識別論の二段階を標本上の推定手順へ移す。第一段階では，
-d'Haultfoeuille (2010, Section 3)の考え方に従い，shadow IVから得られる
-条件付きmoment equationを用いて各supported pairの観測確率を推定する。
+Miao et al. (2019)がodds-ratio functionをselection biasの尺度として識別したのに対し，
+本稿ではd'Haultfoeuille (2010, Section 3)の条件付きmoment equationをblockwiseに用い，
+各supported pairの観測確率を推定する。
 その逆数でpairが観測された標本の寄与を重み付けるinverse probability weighting
 (IPW)により，欠測選択を除いたpair lawの期待値を再現する。
 
@@ -642,7 +663,11 @@ $S\in\mathcal S_*$の条件付きKullback--Leibler divergenceの正の加重和�
 定理3.1の単射性より$\theta=\theta_0$である。\hfill$\square$
 
 \section{漸近理論}
-まず有限次元bridgeを用いるregular benchmarkを完成させる。以下では
+Miao et al. (2019, Sections 4 and 6)はshadow-variable identificationに続いて
+semiparametric estimatorと効率理論を導き，Zhao and Shao (2015, Sections 2.2--2.3)は
+識別したoutcome modelをplug-in推定へ接続する。本節もこの順序に従い，第4節の
+bridge-weighted estimatorについて，まず有限次元bridgeの下で一致性と漸近正規性を示す。
+以下では
 $(O_i)_{i=1}^n$は独立同分布であり，$\beta=(\theta,\eta)$，
 $\eta=(\eta_S:S\in\mathcal S_*)$とする。
 
@@ -674,7 +699,7 @@ anchor orderingによるlabel alignmentまでを全て再実行する。
 \noindent\textbf{証明概略.}
 式\eqref{eq:estimator-consistency}は標本criterionの一様収束と命題4.1の一意最大化から，
 式\eqref{eq:estimator-asymptotic-normality}はstacked estimating equationsの線形展開から従う。%
-\footnote{B-completenessはbridgeの識別を与えるが，無限次元bridgeの推定速度までは
+\footnote{complete-case completenessはbridgeの識別を与えるが，無限次元bridgeの推定速度までは
 与えない。sieve bridgeは一般にill-posed inverse problemとなるため，正則化，
 source condition，近似誤差と確率誤差のrate条件が必要である。その場合，通常の
 $\sqrt n$正規性にはregular functionalまたはorthogonal scoreの追加構成を要する。}
@@ -842,7 +867,7 @@ $Y_2,Y_3$測定核のbiasが0.0943と0.0898となり，selection equationの誤�
 五手法を通じたMonte Carlo standard errorの最大値は，
 $M_j$のbiasで0.0028，RMSEで0.0025，$p_f$のbiasで0.0054，RMSEで0.0041である。%
 \footnote{提案法の頑健性はparametric selection linkの誤指定を避ける点にある。
-shadow-IV exclusion，positivity，B-completeness，有限latent-class測定モデルの誤指定まで
+shadow-IV exclusion，positivity，complete-case completeness，有限latent-class測定モデルの誤指定まで
 許容するものではなく，正指定parametric likelihoodと同じ効率性も一般には保証しない。}
 
 \appendix
