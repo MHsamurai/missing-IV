@@ -93,17 +93,20 @@ Jung, Schafer and Seo (2011)はmissingness indicatorsで測られるlatent varia
 欠測機構，潜在測定モデル，潜在分布を一つのjoint modelとして制限する
 model-based approachである。
 
-より近い先行研究として，Kano and Takai (2011)は，通常の因子分析・SEMの
-識別制約の下で，線形潜在変量モデルのcovariance structure parameterが識別済みで
-あることを前提とする。その上で，欠測指標と測定値がlatent factorを条件として
-独立であり，測定負荷と誤差分散が欠測pattern間で不変であるとき，欠測機構の
-具体的な関数形を規定せずに，測定負荷，誤差分散，およびpattern-specificな
-潜在平均・共分散をmulti-sample SEMとして一致推定できることを示す。同論文の
-主眼は識別済みの線形潜在構造の下での推定であり，MNAR観測法則から潜在分布と
-測定核を識別するものではない。そこで，本稿では，shadow IVとcomplete-case completenessによって各
-supported-block lawを先に回復し，回復されたoverlapping block lawsをanchor itemsと
-latent shifterで接続して，有限潜在クラス比率と測定核を共通labelの下で識別する
-二段階を構成する。
+Kano and Takai (2011)は，通常の因子分析・SEMの識別制約の下で，線形潜在変量
+モデルの因子負荷と誤差分散からなるcovariance structure parameter，ならびに
+pattern-specificな潜在平均・共分散をmulti-sample SEMとして一致推定できることを
+示しており，欠測を伴う潜在測定モデルを扱う点で本稿に近い。ただし，同論文は，
+欠測指標と測定値がlatent factorを条件として独立であり，因子負荷と誤差分散が
+欠測pattern間で不変であることを仮定する。さらに，通常の因子分析・SEMの識別制約に
+より線形潜在構造のcovariance structure parameterが識別済みであることを前提とする。
+したがって，同論文は，MNAR観測データ法則から潜在分布と測定核を
+ノンパラメトリックに識別するものではない。
+
+これに対し，本稿では，shadow IVとcomplete-case completenessによって各
+supported-block lawを先に回復する。次に，回復されたoverlapping block lawsを
+anchor itemsとlatent shifterで接続し，有限潜在クラス比率と測定核を共通labelの下で
+識別する二段階を構成する。
 
 本研究では，未観測潜在変数$F$，常時観測変数$W,X$，複数の潜在的測定値
 $Y=(Y_1,\ldots,Y_m)$について，
