@@ -57,6 +57,21 @@
 \end{center}
 \vspace{3mm}
 
+\begin{abstract}
+多次元の測定項目がmissing not at random (MNAR)で欠測するとき，観測変数の
+full-data lawを回復するだけでは，その背後にある潜在クラス比率と測定核は一般に
+分離されない。本稿は，第一段階でshadow instrumental variableとblockwise
+complete-case completenessを用いて各supported-block lawを回復し，第二段階で
+overlapping block lawsをanchor itemsとlatent shifterにより接続する。有限潜在クラス
+モデルについて，Kruskal型rank条件の下で潜在クラス比率と全測定核を共通labelの
+下で識別し，global complete caseを必要としないbridge-weighted composite estimatorを
+構成する。有限次元bridgeに対する一致性と漸近正規性を示し，simulationでは，提案法が
+parametric selection modelの誤指定に伴うbiasを抑えながら潜在測定核を回復することを確認する。
+
+\noindent\textbf{Keywords:} MNAR; shadow variable; completeness; latent class;
+tensor decomposition; instrumental variable
+\end{abstract}
+
 \begin{multicols}{2}
 
 \section{問題設定}
@@ -221,7 +236,7 @@ $R_S\indep Z_S\mid(Y_S,U_S)$というexclusionが必要である。一方，$W$�
 測定核へ直接入らず，潜在分布を動かすvariationを供給する。どの変数を
 blockwise IV，latent shifter，通常共変量に割り当て，どの項目をblock間の
 anchorにするかが，応用上の識別設計の核心となる。
-shadow IVとblockwise complete-case completenessにより，parametric selection modelを規定せずに
+本稿は，shadow IVとblockwise complete-case completenessにより，parametric selection modelを規定せずに
 各supported-block lawを識別し，回復されたoverlapping block lawsをanchor itemsと
 latent shifterで接続することで，有限潜在クラス比率と測定核を共通labelの下で識別し，
 bridge-weighted estimatorを構成する。
@@ -313,6 +328,7 @@ P(Z_S\in A\mid Y_S,U_S,R_S=1)
 =P(Z_S\in A\mid Y_S,U_S),
 \label{eq:block-complete-case-identity}
 \end{equation}
+が成立する。
 
 \noindent\textbf{仮定7（blockwise complete-case completeness）.}
 各supported $S$について，任意の
@@ -626,11 +642,13 @@ $q_S^{-1}$をsieveで近似し，正値制約と正則化を課して\eqref{eq:b
 \end{equation}
 とし，式\eqref{eq:latent-model-parameter}に確率単体制約とanchor orderingを課した
 パラメータ空間を$\Theta$と
-する。$S$に対応する潜在測定モデルのpair densityを
+する。$S$に対応する潜在測定モデルのjoint pair densityを
 \begin{equation}
-p_\theta(y_S\mid w,x)
-=\sum_{f=1}^r\lambda_f(w,x;\theta)
- \prod_{j\in S}M_j(y_j,f;x;\theta)
+\begin{aligned}
+p_\theta(y_S,w\mid x)
+&=\sum_{f=1}^r p_f(x;\theta)G(w,f;x;\theta)\\[-1mm]
+&\qquad\times\prod_{j\in S}M_j(y_j,f;x;\theta)
+\end{aligned}
 \label{eq:latent-pair-density}
 \end{equation}
 と書く。式\eqref{eq:latent-pair-density}を用い，提案推定量を
@@ -639,7 +657,7 @@ p_\theta(y_S\mid w,x)
 \widehat\theta=\arg\max_{\theta\in\Theta}\;&\frac1n\sum_{i=1}^n
  \sum_{S\in\mathcal S_*}c_S\\[-1mm]
 &\frac{R_{iS}}{\widehat\pi_S(Y_{iS},U_i)}
- \log p_\theta(Y_{iS}\mid W_i,X_i).
+ \log p_\theta(Y_{iS},W_i\mid X_i).
 \end{aligned}
 \label{eq:composite-criterion}
 \end{equation}
@@ -650,35 +668,38 @@ informationではなく，first-stageのbridge推定も含むsandwich分散を�
 
 \noindent\textbf{命題4.1（母集団criterionの一意性）.}
 仮定1--7と3.1が成立し，$\theta_0\in\Theta$が正しくモデルを生成するとする。
-さらに全ての$S\in\mathcal S_*$で$p_\theta(Y_S\mid W,X)$が共通support上で
+さらに全ての$S\in\mathcal S_*$で$p_\theta(Y_S,W\mid X)$が共通support上で
 正とする。このとき，\eqref{eq:composite-criterion}の母集団版は
 $\theta_0$で一意に最大化される。
 
 \noindent\textbf{証明.}
 命題2.1のinverse-selection identityより，各weighted summandの期待値は
 full pair lawの下での期待対数密度に等しい。従って真値との差は，各
-$S\in\mathcal S_*$の条件付きKullback--Leibler divergenceの正の加重和で
+$S\in\mathcal S_*$の$X$を条件とするjoint Kullback--Leibler divergenceの正の加重和で
 ある。最大値が等しければ全てのanchor/extension pair lawsが一致し，
 定理3.1の単射性より$\theta=\theta_0$である。\hfill$\square$
 
 \section{漸近理論}
 本節では，Zhao and Shao (2015, Sections 2.2--2.3)が識別したoutcome modelを
-plug-in推定へ接続する順序と同様に，第4節の
-bridge-weighted estimatorについて，まず有限次元bridgeの下で一致性と漸近正規性を示す。
+plug-in推定へ接続する順序と同様に，第4節のbridge-weighted estimatorについて，
+有限次元の潜在モデルとbridgeの下で一致性と漸近正規性を示す。
 以下では
 $(O_i)_{i=1}^n$は独立同分布であり，$\beta=(\theta,\eta)$，
 $\eta=(\eta_S:S\in\mathcal S_*)$とする。
 
 \noindent\textbf{仮定5.1（regularity and separation）.}
-$\Theta$と各bridge parameter spaceはcompactで真値は内点にある。
+$\theta$と$\eta$は有限次元で正しく指定され，$\Theta$と各bridge parameter spaceは
+compactで真値は内点にある。first-stageのpopulation momentは$\eta_0$だけを零とする。
 criterionとfirst-stage momentsは真値近傍で二回連続微分可能で，必要な
 envelopeは二乗可積分である。bridgeのJacobian，composite scoreのJacobian，
-および対応するGodambe行列は非特異である。さらにclass probability，
+および対応するGodambe行列は非特異である。first-stage estimatorは平均0で
+有限分散のinfluence function $\varphi_\eta(O)$を持つregular asymptotically linear
+estimatorである。さらにclass probability，
 supported-pair propensity，anchor tensorの最小特異値，Kruskal rankを
 支えるminor，およびanchor orderingの隣接gapは，全て0から一様に離れる。
 
 \noindent\textbf{定理5.1（有限次元bridgeの一致性と漸近正規性）.}
-仮定5.1，命題4.1，およびfirst-stage moment estimatorの局所一意性の下で，
+仮定5.1と命題4.1の下で，
 \begin{subequations}\label{eq:estimator-asymptotics}
 \begin{align}
 \widehat\theta&\xrightarrow{p}\theta_0,
@@ -688,15 +709,35 @@ supported-pair propensity，anchor tensorの最小特異値，Kruskal rankを
 \label{eq:estimator-asymptotic-normality}
 \end{align}
 \end{subequations}
-ここで$A$はprofiled composite scoreの平均Jacobian，$B$はbridge推定の
-influence contributionを含む同scoreの分散である。したがって標準誤差は
+ここで$\psi(O;\theta,\eta)$をcomposite scoreとし，
+\begin{equation}
+\begin{aligned}
+A&=\E\{\partial_\theta\psi(O;\theta_0,\eta_0)\},\\
+C&=\E\{\partial_\eta\psi(O;\theta_0,\eta_0)\},\\
+B&=\operatorname{Var}\{\psi(O;\theta_0,\eta_0)
+      +C\varphi_\eta(O)\}.
+\end{aligned}
+\label{eq:stacked-sandwich-components}
+\end{equation}
+したがって標準誤差は
 全段階のestimating equationsをstackしたsandwich estimatorで求める。
 個体単位bootstrapを用いる場合も，各反復でbridge推定，latent model fitting，
 anchor orderingによるlabel alignmentまでを全て再実行する。
 
 \noindent\textbf{証明概略.}
-式\eqref{eq:estimator-consistency}は標本criterionの一様収束と命題4.1の一意最大化から，
-式\eqref{eq:estimator-asymptotic-normality}はstacked estimating equationsの線形展開から従う。%
+一様大数の法則，first-stage momentの一意な零点，および命題4.1から
+$(\widehat\eta,\widehat\theta)\xrightarrow{p}(\eta_0,\theta_0)$を得る。
+first-stageのasymptotic linearityより
+$\sqrt n(\widehat\eta-\eta_0)=n^{-1/2}\sum_i\varphi_\eta(O_i)+o_p(1)$である。
+これを$\theta$のscore expansionへ代入すれば，
+\begin{equation}
+\sqrt n(\widehat\theta-\theta_0)
+=-A^{-1}\frac1{\sqrt n}\sum_{i=1}^n
+\{\psi_i+C\varphi_{\eta i}\}+o_p(1).
+\label{eq:stacked-score-expansion}
+\end{equation}
+中心極限定理とSlutskyの定理を適用すると
+式\eqref{eq:estimator-asymptotic-normality}が従う。%
 \footnote{complete-case completenessはbridgeの識別を与えるが，無限次元bridgeの推定速度までは
 与えない。sieve bridgeは一般にill-posed inverse problemとなるため，正則化，
 source condition，近似誤差と確率誤差のrate条件が必要である。その場合，通常の
@@ -800,12 +841,11 @@ $(W,Y_1,Y_2,Y_3)$に対するfull product-mixture likelihoodを最大化する�
 ignorabilityの下で観測itemすべてを用いたobserved-data full-information maximum
 likelihoodである。正しく指定されたparametric selection likelihoodは，式
 \eqref{eq:simulation-missingness}をlatent-class likelihoodと組み合わせ，
-$(W,Y_{\mathrm{obs}},R)$の周辺尤度を最大化する。この二つのselection likelihoodは
-$F$と欠測itemを積分するが，shadow $Z_S$は用いない。selection indexの
-IRLSにおける$10^{-6}$のridgeは数値安定化のためのみに用いる。
-誤指定版はselection modelを
+$(W,Y_{\mathrm{obs}},R)$の周辺尤度を最大化する。誤指定版はselection modelを
 $\operatorname{logit}P(D_j=1\mid Y_1,Y_j)=\gamma_{0j}+\gamma_{1j}Y_j$に制限し，
-$Y_1$のmain effectとinteractionを除く。最後にproposed saturated/sieve bridgeは各blockで
+$Y_1$のmain effectとinteractionを除く。両selection likelihoodは$F$と欠測itemを
+積分するが，shadow $Z_S$は用いない。selection indexのIRLSにおける$10^{-6}$の
+ridgeは数値安定化のためのみに用いる。最後にproposed saturated/sieve bridgeは各blockで
 \begin{equation}
 \E\{R_S r_S(Y_S)\mid Z_S,W\}=1
 \label{eq:simulation-bridge-moment}
@@ -884,7 +924,7 @@ parameter別empirical standard deviationを6成分で平均すると，提案法
 正指定selection likelihoodの0.0532とほぼ同じであった。MARの0.0484と誤指定selection
 likelihoodの0.0370は分散だけをみれば小さいが，前者には大きな負のbias，後者には
 正のbiasが残るため，その小さな分散は測定核の正確な回復を意味しない。提案法は，
-正指定selection likelihoodに対して測定核のbiasと分散をほぼ維持しながら，selection
+正指定selection likelihoodに対して測定核のbiasと変動をほぼ維持しながら，selection
 equationを誤指定した場合に生じるbiasを抑えている点に優位性がある。
 
 一方，$p_f$のempirical standard deviationは，提案法の0.0519に対して，正指定selection
@@ -913,6 +953,23 @@ anchor orderingのgapも識別される。複数のsupported blocksが同じ測�
 その一致はoveridentifying restrictionとなる。一方，exclusionと局所独立性は未観測変数を
 含むため，上記の適合だけでは十分に検証されない。\hfill$\square$
 
+\section{結論}
+本稿は，多次元MNARの下で潜在測定モデルを識別する問題を，supported-block lawsの
+回復と潜在構造の分解という二段階に分けた。第一段階では，shadow IV exclusion，
+positivity，およびblockwise complete-case completenessから，parametric selection
+modelを直接規定せずに各blockのfull lawを回復した。第二段階では，anchor pairと
+latent shifter $W$を三つのviewとして用い，overlapping block tensorsを共通labelの下で
+接続することで，有限潜在クラス比率と全測定核を識別した。この構成により，global
+complete caseが存在しない場合でも，必要なsupported pairsから未同時観測項目の
+joint distributionを回復できる。
+
+提案法の利点は，selection equationのparametric specificationに依存せず，識別された
+block lawsから潜在測定核とclass比率を推定できる点にある。一方，結論はknown class数，
+shadow-IV exclusion，complete-case completeness，局所独立性，anchor ordering，および
+Kruskal rank条件に依存する。さらに，通常の漸近正規性は有限次元bridgeに対する結果であり，
+sieve bridge，連続潜在因子，class数の選択，および弱いcompletenessやrankの下での推論は
+別途検討を要する。
+
 \appendix
 \section{補題3.1の証明}
 $s\le\min\{k_A+k_B-1,r\}$本以下の列に非自明な線形関係があると仮定し，
@@ -931,65 +988,65 @@ $A_C\operatorname{diag}(c_C)B_C^\top=0$である。一方，Sylvesterのrank
 \section*{参考文献}
 \begin{enumerate}[label={[\arabic*]},leftmargin=7mm,itemsep=0.35em,topsep=0.2em,
   parsep=0pt,partopsep=0pt]
-\item Tang, G., Little, R. J., and Raghunathan, T. E. (2003). Analysis of
-multivariate missing data with nonignorable nonresponse. \textit{Biometrika},
-90, 747--764.
-\item Zhao, J. and Shao, J. (2015). Semiparametric pseudo-likelihoods in
-generalized linear models with nonignorable missing data. \textit{Journal of
-the American Statistical Association}, 110(512), 1577--1590.
-\href{https://doi.org/10.1080/01621459.2014.983234}{doi:10.1080/01621459.2014.983234}.
+\item Allman, E. S., Matias, C., and Rhodes, J. A. (2009). Identifiability of
+parameters in latent structure models with many observed variables.
+\textit{The Annals of Statistics}, 37(6A), 3099--3132.
+\href{https://doi.org/10.1214/09-AOS689}{doi:10.1214/09-AOS689}.
 \item d'Haultfoeuille, X. (2010). A new instrumental method for dealing with
 endogenous selection. \textit{Journal of Econometrics}, 154(1), 1--15.
 \href{https://doi.org/10.1016/j.jeconom.2009.06.005}{doi:10.1016/j.jeconom.2009.06.005}.
-\item Miao, W., Liu, L., Tchetgen Tchetgen, E. J., and Geng, Z. (2019).
-Identification, doubly robust estimation, and semiparametric efficiency theory
-of nonignorable missing data with a shadow variable. arXiv:1509.02556v3.
-\item Sadinle, M. and Reiter, J. P. (2017). Itemwise conditionally independent
-nonresponse modelling for incomplete multivariate data. \textit{Biometrika},
-104(1), 207--220.
-\href{https://doi.org/10.1093/biomet/asw063}{doi:10.1093/biomet/asw063}.
-\item Li, Y., Miao, W., Shpitser, I., and Tchetgen Tchetgen, E. J. (2023).
-A self-censoring model for multivariate nonignorable nonmonotone missing data.
-\textit{Biometrics}, 79(4), 3203--3214.
-\href{https://doi.org/10.1111/biom.13916}{doi:10.1111/biom.13916}.
-\item Ni, L. and Shao, J. (2023). Estimation with multivariate outcomes having
-nonignorable item nonresponse. \textit{Annals of the Institute of Statistical
-Mathematics}, 75, 1--15.
-\href{https://doi.org/10.1007/s10463-022-00836-4}{doi:10.1007/s10463-022-00836-4}.
-\item Muth\'en, B. O., Kaplan, D., and Hollis, M. (1987). On structural
-equation modeling with data that are not missing completely at random.
-\textit{Psychometrika}, 52(3), 431--462.
-\href{https://doi.org/10.1007/BF02294365}{doi:10.1007/BF02294365}.
+\item Harel, O. and Schafer, J. L. (2009). Partial and latent ignorability in
+missing-data problems. \textit{Biometrika}, 96(1), 37--50.
+\href{https://doi.org/10.1093/biomet/asn069}{doi:10.1093/biomet/asn069}.
 \item Holman, R. and Glas, C. A. W. (2005). Modelling non-ignorable
 missing-data mechanisms with item response theory models. \textit{British
 Journal of Mathematical and Statistical Psychology}, 58(1), 1--17.
 \href{https://doi.org/10.1111/j.2044-8317.2005.tb00312.x}{doi:10.1111/j.2044-8317.2005.tb00312.x}.
-\item Lee, S.-Y. and Tang, N.-S. (2006). Bayesian analysis of nonlinear
-structural equation models with nonignorable missing data.
-\textit{Psychometrika}, 71(3), 541--564.
-\href{https://doi.org/10.1007/s11336-006-1177-1}{doi:10.1007/s11336-006-1177-1}.
-\item Kano, Y. and Takai, K. (2011). Analysis of NMAR missing data without
-specifying missing-data mechanisms in a linear latent variate model.
-\textit{Journal of Multivariate Analysis}, 102(9), 1241--1255.
-\href{https://doi.org/10.1016/j.jmva.2011.04.007}{doi:10.1016/j.jmva.2011.04.007}.
-\item Harel, O. and Schafer, J. L. (2009). Partial and latent ignorability in
-missing-data problems. \textit{Biometrika}, 96(1), 37--50.
-\href{https://doi.org/10.1093/biomet/asn069}{doi:10.1093/biomet/asn069}.
 \item Jung, H., Schafer, J. L., and Seo, B. (2011). A latent class selection
 model for nonignorably missing data. \textit{Computational Statistics \& Data
 Analysis}, 55(1), 802--812.
 \href{https://doi.org/10.1016/j.csda.2010.07.002}{doi:10.1016/j.csda.2010.07.002}.
-\item Xie, H., Xue, F., and Wang, X. (2026). Identifiable deep latent variable
-models for MNAR data. arXiv:2603.24771v2.
+\item Kano, Y. and Takai, K. (2011). Analysis of NMAR missing data without
+specifying missing-data mechanisms in a linear latent variate model.
+\textit{Journal of Multivariate Analysis}, 102(9), 1241--1255.
+\href{https://doi.org/10.1016/j.jmva.2011.04.007}{doi:10.1016/j.jmva.2011.04.007}.
 \item Kuha, J., Katsikatsou, M., and Moustaki, I. (2018). Latent variable
 modelling with non-ignorable item non-response: Multigroup response propensity
 models for cross-national analysis. \textit{Journal of the Royal Statistical
 Society: Series A (Statistics in Society)}, 181(4), 1169--1192.
 \href{https://doi.org/10.1111/rssa.12350}{doi:10.1111/rssa.12350}.
-\item Allman, E. S., Matias, C., and Rhodes, J. A. (2009). Identifiability of
-parameters in latent structure models with many observed variables.
-\textit{The Annals of Statistics}, 37(6A), 3099--3132.
-\href{https://doi.org/10.1214/09-AOS689}{doi:10.1214/09-AOS689}.
+\item Lee, S.-Y. and Tang, N.-S. (2006). Bayesian analysis of nonlinear
+structural equation models with nonignorable missing data.
+\textit{Psychometrika}, 71(3), 541--564.
+\href{https://doi.org/10.1007/s11336-006-1177-1}{doi:10.1007/s11336-006-1177-1}.
+\item Li, Y., Miao, W., Shpitser, I., and Tchetgen Tchetgen, E. J. (2023).
+A self-censoring model for multivariate nonignorable nonmonotone missing data.
+\textit{Biometrics}, 79(4), 3203--3214.
+\href{https://doi.org/10.1111/biom.13916}{doi:10.1111/biom.13916}.
+\item Miao, W., Liu, L., Tchetgen Tchetgen, E. J., and Geng, Z. (2019).
+Identification, doubly robust estimation, and semiparametric efficiency theory
+of nonignorable missing data with a shadow variable. arXiv:1509.02556v3.
+\item Muth\'en, B. O., Kaplan, D., and Hollis, M. (1987). On structural
+equation modeling with data that are not missing completely at random.
+\textit{Psychometrika}, 52(3), 431--462.
+\href{https://doi.org/10.1007/BF02294365}{doi:10.1007/BF02294365}.
+\item Ni, L. and Shao, J. (2023). Estimation with multivariate outcomes having
+nonignorable item nonresponse. \textit{Annals of the Institute of Statistical
+Mathematics}, 75, 1--15.
+\href{https://doi.org/10.1007/s10463-022-00836-4}{doi:10.1007/s10463-022-00836-4}.
+\item Sadinle, M. and Reiter, J. P. (2017). Itemwise conditionally independent
+nonresponse modelling for incomplete multivariate data. \textit{Biometrika},
+104(1), 207--220.
+\href{https://doi.org/10.1093/biomet/asw063}{doi:10.1093/biomet/asw063}.
+\item Tang, G., Little, R. J., and Raghunathan, T. E. (2003). Analysis of
+multivariate missing data with nonignorable nonresponse. \textit{Biometrika},
+90, 747--764.
+\item Xie, H., Xue, F., and Wang, X. (2026). Identifiable deep latent variable
+models for MNAR data. arXiv:2603.24771v2.
+\item Zhao, J. and Shao, J. (2015). Semiparametric pseudo-likelihoods in
+generalized linear models with nonignorable missing data. \textit{Journal of
+the American Statistical Association}, 110(512), 1577--1590.
+\href{https://doi.org/10.1080/01621459.2014.983234}{doi:10.1080/01621459.2014.983234}.
 \end{enumerate}
 
 \end{multicols}
