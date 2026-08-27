@@ -879,6 +879,22 @@ $M_j$のbiasで0.0028，RMSEで0.0025，$p_f$のbiasで0.0054，RMSEで0.0041で
 shadow-IV exclusion，positivity，complete-case completeness，有限latent-class測定モデルの誤指定まで
 許容するものではなく，正指定parametric likelihoodと同じ効率性も一般には保証しない。}
 
+以上より，本設定では，提案法はMNAR下でも潜在測定核を推定できている。測定核の
+parameter別empirical standard deviationを6成分で平均すると，提案法は0.0545であり，
+正指定selection likelihoodの0.0532とほぼ同じであった。MARの0.0484と誤指定selection
+likelihoodの0.0370は分散だけをみれば小さいが，前者には大きな負のbias，後者には
+正のbiasが残るため，その小さな分散は測定核の正確な回復を意味しない。提案法は，
+正指定selection likelihoodに対して測定核のbiasと分散をほぼ維持しながら，selection
+equationを誤指定した場合に生じるbiasを抑えている点に優位性がある。
+
+一方，$p_f$のempirical standard deviationは，提案法の0.0519に対して，正指定selection
+likelihoodでは0.0429，誤指定版では0.0407であった。したがって，本手法の利点は
+parametric selection modelを正しく指定できる場合の効率性を上回ることではなく，その
+指定に依存せず，shadow IVとcomplete-case completenessから回復したblock lawsを通じて
+潜在測定核とclass比率を同時に推定できることにある。その代償として，bridgeの推定と
+overlapping block lawsの統合に由来する分散が残り，とくにclass比率の推定効率には改善の
+余地がある。
+
 \noindent\textbf{補題7.1（候補識別設計の経験的診断）.}
 blockwise IV，latent shifter，通常共変量，およびanchor itemsの候補となる割当てを
 一つ固定する。各supported blockのcomplete casesから，$Z_S$のrelevanceと，有限カテゴリ
