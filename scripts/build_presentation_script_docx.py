@@ -33,19 +33,19 @@ SLIDES = [
     ]),
     ("Slide 5  Latent measurement model", [
         "Fを未観測の潜在変数、Y 1からY mをその測定項目、Xを通常共変量、Wを潜在分布を動かすlatent shifterとします。この構造はstructural equation modeling、SEMやitem response theory、IRTの基礎となる測定モデルです。",
-        "Q FはFの潜在分布、Q jは項目jの測定核です。局所独立性の下で、観測変数の分布はQ FとQ jの積をFについて周辺化したmixtureになります。したがって左辺のfull-data lawが回復されても、Q FとQ Yを一意に分離できるとは限りません。",
+        "Q FはFの潜在分布、Q jは項目jの測定核です。局所独立性の下で、観測変数の分布はQ FとQ jの積をFについて周辺化したmixtureになります。完全データで三つのviewが十分なrankを持つ場合、Allman、Matias and Rhodesの結果により、有限class比率と測定核はlabelを除いて識別されます。",
         "今回の識別定理が直接扱うのは有限潜在クラスです。連続因子のSEMやIRTへ拡張するには、測定族やcalibrationなどの追加条件が必要です。",
     ]),
     ("Slide 6  Related identification results", [
-        "関連研究には二つの流れがあります。MNAR側では、d’Haultfoeuilleが条件付きmoment equationとcompleteness、Zhao and Shaoがcovariate-adjusted exclusionとsemiparametric pseudo-likelihoodを扱っています。Miaoらはcompletenessを観測可能なcomplete-case law上の条件として整理しています。",
-        "latent structure側では、Allman、Matias and Rhodesが、many observed variablesから構成されるprobability tensorの分解一意性により、latent class比率とmeasurement kernelsを識別しています。latent-MNARのjoint model自体も既に存在します。",
+        "関連研究を三つに整理します。scalar Missing IVではd’Haultfoeuille、Zhao and Shao、Miaoらがcompletenessとconditional moment identificationを扱います。multivariate MNARではTangら、Sadinle and Reiter、Liら、Ni and Shaoがpattern restrictionやitemwise nonresponse modelを扱います。",
+        "latent structure側ではAllman、Matias and Rhodesのtensor uniquenessに加え、Muthénら、Holman and Glas、Lee and Tang、Harel and Schafer、Jungら、Kano and Takai、Kuhaらがlatent variableとnonignorable missingnessを同時に扱い、Xieらはdeep latent MNARを検討しています。latent-MNARのjoint model自体は既知です。",
         "本稿の新規性はlatent-MNAR自体ではありません。parametric selection modelを置かないsupported-block lawの回復と、共通label下でのlatent decompositionを接続し、一つの識別定理として示す点です。",
     ]),
     ("Slide 7  A latent shifter is not a Missing IV", [
         "latent shifter WとMissing IV Z Sは区別します。仮にFまで条件づければDとWが独立であっても、Fを積分するとDの条件付き分布にはP of F given Y, W, Xが残ります。WがFの分布を動かすなら、この分布は一般にWへ依存します。",
-        "したがって、Wは周辺化後のMissing IVにはなりません。Z Sはblock lawをMNAR selectionから回復し、Wは回復後のtensorにthird-mode variationを与えます。",
+        "したがって、Wは周辺化後のMissing IVにはなりません。Z Sはblock lawをMNAR selectionから回復し、Wは回復後のtensorにthird-mode variationを与えます。block lawを回復しただけではQ FとQ Yは分離されないため、この二つの役割を接続する必要があります。",
     ]),
-    ("Slide 8  Stage 1", [
+    ("Slide 8  Model and assumptions", [
         "第一段階では、Missing IV、positivity、complete-case completenessを用いて、観測データから各supported-block lawを回復します。この段階ではlatent mixtureの分解は行いません。",
     ]),
     ("Slide 9  Observed data and supported blocks", [
@@ -72,7 +72,7 @@ SLIDES = [
         "証明では仮定の役割を分けます。観測過程、supported blockの定義、Missing IV exclusionから、真のpi Sがbridge momentを満たすことを示します。別の解との差を取ると、complete cases上の条件付き期待値がゼロになります。",
         "complete-case completenessがその差をゼロにし、positivityが等式を対象support全体へ拡張します。最後にinverse weighting identityからblock lawの識別が従います。",
     ]),
-    ("Slide 15  Stage 2", [
+    ("Slide 15  Finite latent-class identification", [
         "第二段階では、第一段階で回復したblock lawsを有限潜在クラスへ分解します。anchor itemsとlatent shifterを用いてKruskal型の一意性を得ることが目的です。",
     ]),
     ("Slide 16  The remaining decomposition problem", [
@@ -143,6 +143,79 @@ SLIDES = [
         "候補となるMissing IV、latent shifter、covariates、anchor itemsの割当てについて、relevance、finite complete-case operatorのrank、supported-block positivity、third-mode rank、anchor separationを診断できます。冗長なblocksから得られるmeasurement kernelsの一致はoveridentifying restrictionになります。",
         "ただし、診断に適合するだけでMissing IV exclusion、measurement exclusion、局所独立性が検証されたとはいえません。不適合は候補設計を反証できますが、適合は全仮定の正しさを保証しません。",
     ]),
+]
+
+
+def _slide_by_title(title):
+    for heading, paragraphs in SLIDES:
+        if heading.split("  ", 1)[1] == title:
+            return title, paragraphs
+    raise KeyError(title)
+
+
+_original_slides = SLIDES
+SLIDES = [
+    _slide_by_title("Title"),
+    _slide_by_title("Missing-data mechanisms and standard approaches"),
+    _slide_by_title("Usual IV and Missing IV"),
+    _slide_by_title("Latent measurement model"),
+    _slide_by_title("Related identification results"),
+    (
+        "Proposed two-stage identification",
+        [
+            "本稿の方法を先に概観します。第一に、Zhao and Shaoの除外制約とd’Haultfoeuilleのconditional moment equationを各supported blockへ適用し、parametric selection modelを置かずにblock lawを回復します。",
+            "第二に、回復したoverlapping block lawsをanchor itemsとlatent shifterで接続し、Allman、Matias and Rhodesのtensor uniquenessとextension inversionを用いて共通label下の潜在分布と測定核へ分解します。本稿の新規性は、この二段階を一つの識別定理として接続する点です。",
+        ],
+    ),
+    _slide_by_title("A latent shifter is not a Missing IV"),
+    _slide_by_title("Model and assumptions"),
+    _slide_by_title("A simple multivariate extension"),
+    _slide_by_title("Observed data and supported blocks"),
+    _slide_by_title("Single-block data-generating structure"),
+    _slide_by_title("Overlapping supported blocks replace global complete cases"),
+    _slide_by_title("Stage-1 assumptions"),
+    _slide_by_title("New Proposition 1"),
+    _slide_by_title("Proof sketch the observable bridge is unique"),
+    _slide_by_title("Finite latent-class identification"),
+    _slide_by_title("The remaining decomposition problem"),
+    _slide_by_title("Identification strategy"),
+    _slide_by_title("Assumption 3.1"),
+    _slide_by_title("Lemma 3.1"),
+    _slide_by_title("New Theorem 1"),
+    _slide_by_title("Proof map for Theorem 1"),
+    _slide_by_title("Bridge-weighted composite estimation"),
+    _slide_by_title("Computation"),
+    _slide_by_title("Simulation design"),
+    (
+        "Evaluation target: observed-variable law",
+        [
+            "第一段階の識別対象は観測変数のfull-data lawです。二値項目についてmu jをP of Y j equals 1、v jをmu j times 1 minus mu jと定義し、周辺確率と分散を評価します。supported pairについてはY 1とY jの4-cell確率を直接比較します。",
+            "population truth、full-data empirical law、respondent-only law、normalized IPWによるStage-1 bridge補正を比較します。さらに各latent-model fitが含意するmu hat j equals sum f p hat f M hat j fを計算し、Stage 2の後にも補正が維持されるか確認します。報告指標はbias、Monte Carlo variance、RMSEです。",
+        ],
+    ),
+    ("Evaluation targets: latent structure", _slide_by_title("Evaluation targets")[1]),
+    (
+        "Observed-law recovery",
+        [
+            "respondent-only analysisではP of Y 2 equals 1とP of Y 3 equals 1のbiasがそれぞれマイナス0.117とマイナス0.121です。高いY jほど観測されにくいため、特にY 1 equals 1、Y j equals 1のcellが過小に表現されています。",
+            "直接bridge補正後のbiasは両項目とも約マイナス0.010となり、absolute biasを約92パーセント縮小しました。RMSEも約0.12から0.04未満へ低下しています。一方、inverse weightingによりMonte Carlo varianceは増加します。latent fit後の周辺分布もStage-1 bridgeとほぼ同じであり、tensor分解が分布補正を損なっていません。",
+        ],
+    ),
+    ("Latent-parameter recovery", _slide_by_title("Simulation results")[1]),
+    _slide_by_title("Conclusion and limits"),
+    _slide_by_title("Selected references"),
+    _slide_by_title("Steps 1 and 2"),
+    _slide_by_title("Steps 3 and 4"),
+    _slide_by_title("Steps 5 and 6"),
+    _slide_by_title("Steps 7 and 8"),
+    _slide_by_title("Empirical diagnostics and falsification checks"),
+]
+SLIDES = [
+    (
+        f"{'Appendix ' if index >= 32 else ''}Slide {index}  {title}",
+        paragraphs,
+    )
+    for index, (title, paragraphs) in enumerate(SLIDES, start=1)
 ]
 
 
@@ -241,7 +314,7 @@ def build():
         set_run_font(run, LATIN_FONT, JAPANESE_FONT, 12, True)
 
     doc.add_paragraph(
-        "本原稿は、英語Beamer全33枚に対応する日本語の口頭説明用原稿である。"
+        "本原稿は、英語Beamer全36枚に対応する日本語の口頭説明用原稿である。"
         "本文の識別対象、仮定、定理、推定法、simulation設定と整合させ、"
         "証明は本編では論理の流れ、Appendixでは8ステップを説明する。"
     )
@@ -261,11 +334,11 @@ def build():
             set_run_font(run, LATIN_FONT, JAPANESE_FONT, 10, True)
     set_repeat_table_header(table.rows[0])
     rows = [
-        ("Slides 1–7", "基礎概念、問題設定、既存研究、latent shifterの役割"),
-        ("Slides 8–14", "Stage 1  supported-block lawの回復"),
-        ("Slides 15–21", "Stage 2  有限潜在クラスのtensor分解"),
-        ("Slides 22–28", "推定、計算、simulation、結論、参考文献"),
-        ("Appendix 29–33", "定理1の8ステップとempirical diagnostics"),
+        ("Slides 1–7", "基礎概念、既存研究、二段階の識別戦略"),
+        ("Slides 8–15", "モデルとsupported-block lawの回復"),
+        ("Slides 16–22", "有限潜在クラスのtensor分解"),
+        ("Slides 23–31", "推定、計算、simulation、結論、参考文献"),
+        ("Appendix 32–36", "定理1の8ステップとempirical diagnostics"),
     ]
     for left, right in rows:
         cells = table.add_row().cells
