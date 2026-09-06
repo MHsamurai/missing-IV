@@ -339,7 +339,7 @@ For $h\in L^2\{\Prb(Y_S,U_S\mid R_S=1)\}$,
 Positivity transfers null sets between the complete-case and full laws; completeness makes the observed conditional operator injective.
 \end{frame}
 
-\begin{frame}{\textcolor{Red}{New!} Proposition 1: identification of a supported-block law}
+\begin{frame}{\textcolor{Red}{New!} Proposition 1}
 \begin{theorembox}{Supported-block identification}
 Under blockwise exclusion, positivity, and complete-case completeness, $\pi_S$ is the unique positive solution of
 \[
@@ -396,7 +396,11 @@ The targets are $Q_F=\{\lambda_f(w,x)\}$ and $Q_Y=\{M_j\}$.
 \end{column}
 \end{columns}
 \begin{takeaway}
-Recovered block laws do not by themselves determine a unique latent decomposition.
+\scriptsize
+Let $\theta=(p,G,M_1,\ldots,M_m)$ and $\Phi_x:\theta\mapsto T(\theta)$.\quad
+$P_{\mathrm{obs},\theta}=P_{\mathrm{obs},\widetilde\theta}$
+$\Rightarrow T(\theta)=T(\widetilde\theta)$ by Proposition 1.
+Injectivity of $\Phi_x$ identifies $[\theta]\in\Theta_x/\mathfrak S_r$; anchor ordering identifies $\theta$ itself (Lewbel, 2019).
 \end{takeaway}
 \end{frame}
 
@@ -431,11 +435,12 @@ For every $x$ in a common full-probability set:
   \]
   \item a known anchor score satisfies $\mu_{a1}(x)<\cdots<\mu_{ar}(x)$ and fixes the common labels.
 \end{itemize}
+\bluekey{The three-view Kruskal condition is the same as Allman et al. (2009, Theorem 1).}
 \end{assumptionbox}
-The rank condition identifies the anchor decomposition; overlapping pairs propagate it to every $M_j$.
+Supported overlapping pairs and anchor ordering adapt that condition to the present MNAR problem.
 \end{frame}
 
-\begin{frame}{Theorem 1: integrated identification}
+\begin{frame}{Theorem 1}
 \begin{theorembox}{Anchor-pair identification with $W$ as the third mode}
 Under the stage-1 assumptions and the anchor-pair conditions, the observed-data law identifies, under the fixed anchor ordering,
 \[
@@ -548,25 +553,53 @@ $\sqrt n(\widehat\theta-\theta_0)\rightsquigarrow N(0,A^{-1}BA^{-\top})$.
 \end{frame}
 
 \begin{frame}{Computation}
-\begin{enumerate}
-  \item Estimate the bridge for every supported pair and check overlap.
-  \item Construct weighted anchor and extension tensors.
-  \item Initialize a nonnegative CP decomposition of the anchor tensor.
-  \item Normalize columns, fix labels, and invert extension tensors.
-  \item Run constrained block-coordinate updates from multiple starts.
-  \item Select the largest criterion and report rank, anchor, and propensity gaps.
-\end{enumerate}
-\begin{takeaway}
-The algorithm follows the same order as the identification argument.
-\end{takeaway}
+\centering
+\begin{tikzpicture}[
+  node distance=.50cm,
+  phase/.style={draw=Navy,thick,rounded corners=2pt,fill=PaleBlue,
+    minimum width=3.55cm,minimum height=3.25cm,align=left,text width=3.05cm,
+    inner sep=.28cm,font=\small,execute at begin node=\raggedright},
+  flow/.style={-{Latex[length=2.4mm]},line width=1.2pt,Blue},
+  tag/.style={circle,fill=Blue,text=white,font=\bfseries,minimum size=.62cm}
+]
+\node[phase] (bridge) {\hspace{.62cm}\bluekey{Bridge}\par\medskip
+\textbf{1.} Estimate $\pi_S$ and check overlap.\par\smallskip
+\textbf{2.} Build weighted pair tensors.};
+\node[tag] at ([xshift=.35cm,yshift=-.35cm]bridge.north west) {1};
+\node[phase,right=of bridge] (tensor) {\hspace{.62cm}\bluekey{Decomposition}\par\medskip
+\textbf{3.} Initialize nonnegative CP factors.\par\smallskip
+\textbf{4.} Normalize columns, fix labels, and invert extension tensors.};
+\node[tag] at ([xshift=.35cm,yshift=-.35cm]tensor.north west) {2};
+\node[phase,right=of tensor] (refine) {\hspace{.62cm}\bluekey{Refinement}\par\medskip
+\textbf{5.} Apply constrained updates from several starts.\par\smallskip
+\textbf{6.} Select the largest criterion and report diagnostic gaps.};
+\node[tag] at ([xshift=.35cm,yshift=-.35cm]refine.north west) {3};
+\draw[flow] (bridge.east) -- (tensor.west);
+\draw[flow] (tensor.east) -- (refine.west);
+\end{tikzpicture}
+\vspace{.55em}
+
+\bluekey{The computation follows the identification order: recover, decompose, refine.}
 \end{frame}
 
 \begin{frame}{Simulation design}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.48\textwidth}
 \begin{block}{Data-generating process}
+\scriptsize
+\[
+\Prb(W,Y_1,Y_2,Y_3)
+=\sum_{f=1}^{2}p_f\,G_f(W)\prod_{j=1}^{3}M_{jf}(Y_j),
+\]
+\[
+\begin{aligned}
+\eta_j(Y_1,Y_j)&=\alpha_j-.50Y_1-.80Y_j-1.20Y_1Y_j,\\
+\Prb(D_j=1\mid Y_1,Y_j)&=\operatorname{logit}^{-1}\{\eta_j(Y_1,Y_j)\},
+\quad j=2,3.
+\end{aligned}
+\]
+\small
 \begin{itemize}
-  \item Allman-type two-class product mixture.
   \item $n=500$; binary $W,Y_1,Y_2,Y_3$.
   \item $Y_1$ always observed; $Y_2,Y_3$ MNAR.
   \item Mean item response rate: $80\%$.
@@ -609,55 +642,49 @@ Selection: misspec. & .0409 & .0684\\
 \textbf{Finite-cell bridge} & \textbf{-.0064} & \textbf{.0555}\\
 \bottomrule
 \end{tabular}
-\vspace{.7em}
-
-The proposed estimator has lower absolute bias and RMSE than MAR and the misspecified selection likelihood. Its RMSE is close to the correctly specified likelihood, but above the oracle.
+\vspace{.45em}
+\begin{itemize}
+  \item \textbf{vs. MAR:} $|\mathrm{Bias}|$ .0064 $<$ .0496, and RMSE .0555 $<$ .0966.
+  \item \textbf{vs. misspecified selection:} $|\mathrm{Bias}|$ .0064 $<$ .0409, and RMSE .0555 $<$ .0684.
+  \item \textbf{Efficiency:} RMSE $\approx$ correct selection (.0544), but $>$ oracle (.0351).
+\end{itemize}
 \end{column}
 \end{columns}
 \end{frame}
 
-\begin{frame}{Interpretation and limits}
+\begin{frame}{Conclusion and limits}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{.48\textwidth}
-\begin{block}{Advantage}
-The bridge avoids bias from specifying the wrong parametric selection equation while recovering both measurement kernels and class proportions.
-\end{block}
-\end{column}
-\begin{column}{.49\textwidth}
-\begin{block}{Cost and limits}
+\begin{column}{.54\textwidth}
+\begin{block}{Identification and estimation}
 \begin{itemize}
-  \item Class-proportion RMSE remains above correctly specified selection likelihood.
-  \item Robustness does not cover violations of exclusion, completeness, local independence, or the latent-class model.
-  \item Sieve inference requires additional inverse-problem theory.
+  \item \textbf{Stage 1:} Missing IVs and complete-case completeness identify each supported-block law without a parametric selection model.
+  \item \textbf{Stage 2:} Anchor items and $W$ identify latent-class proportions and all measurement kernels under a common label.
+  \item \textbf{Estimator:} The bridge-weighted criterion follows the same two-stage order.
+  \item \textbf{Simulation:} Bias and RMSE improve relative to MAR and misspecified selection likelihood.
 \end{itemize}
 \end{block}
 \end{column}
+\begin{column}{.43\textwidth}
+\begin{block}{Limits}
+\begin{itemize}
+  \item Class-proportion RMSE can exceed correctly specified selection likelihood.
+  \item Robustness requires exclusion, completeness, local independence, and the latent-class model.
+  \item Sieve inference requires additional inverse-problem theory.
+\end{itemize}
+\end{block}
+\vspace{.3em}
+\redkey{Robust to selection-link misspecification, not universally robust or efficiency-dominant.}
+\end{column}
 \end{columns}
-\vspace{.35em}
-\begin{takeaway}
-The gain is robustness to the \redkey{selection-link specification}, not universal robustness or efficiency dominance.
-\end{takeaway}
 \end{frame}
 
-\begin{frame}{Conclusion}
-\begin{enumerate}
-  \item Missing IVs and complete-case completeness identify each supported-block law without a parametric selection model.
-  \item Anchor items connect overlapping blocks, while $W$ supplies the third mode needed for tensor uniqueness.
-  \item The observed-data law then identifies finite latent-class proportions and all measurement kernels under a common label.
-  \item A bridge-weighted composite estimator follows the same order and performs well under selection-model misspecification.
-\end{enumerate}
-\vspace{.55em}
-\begin{takeaway}
-\bluekey{Recover block laws first; decompose the latent structure second.}
-\end{takeaway}
-\end{frame}
-
-\begin{frame}[allowframebreaks]{Selected references}
-\footnotesize
+\begin{frame}{Selected references}
+\scriptsize
 \begin{thebibliography}{99}
 \bibitem{} Allman, E. S., Matias, C., and Rhodes, J. A. (2009). Identifiability of parameters in latent structure models with many observed variables. \emph{Annals of Statistics}, 37, 3099--3132.
 \bibitem{} d'Haultfoeuille, X. (2010). A new instrumental method for dealing with endogenous selection. \emph{Journal of Econometrics}, 154, 1--15.
 \bibitem{} Heckman, J. J. (1979). Sample selection bias as a specification error. \emph{Econometrica}, 47, 153--161.
+\bibitem{} Lewbel, A. (2019). The identification zoo: Meanings of identification in econometrics. \emph{Journal of Economic Literature}, 57, 835--903.
 \bibitem{} Little, R. J. A. and Rubin, D. B. (2002). \emph{Statistical Analysis with Missing Data}. Wiley.
 \bibitem{} Miao, W., Liu, L., Tchetgen Tchetgen, E. J., and Geng, Z. (2019). Identification, doubly robust estimation, and semiparametric efficiency theory of nonignorable missing data with a shadow variable. arXiv:1509.02556v3.
 \bibitem{} Zhao, J. and Shao, J. (2015). Semiparametric pseudo-likelihoods in generalized linear models with nonignorable missing data. \emph{Journal of the American Statistical Association}, 110, 1577--1590.

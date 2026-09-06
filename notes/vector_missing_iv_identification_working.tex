@@ -434,7 +434,7 @@ Corollary 2) における有限潜在クラスの識別論理を引き継ぎ，s
 MNAR識別問題へ適用する。同論文は，$F$の下で条件付き独立な三つの顕在viewが
 生成するprobability tensorを構成し，実現したKruskal rank条件の下でその分解を
 一意化する。%
-\footnote{このstrict identificationはAllman et al. (2009, Section 5, Theorem 4)の
+\footnote{ここで示すglobal point identificationはAllman et al. (2009, Section 5, Theorem 4)の
 generic identificationとは区別される。}
 本稿では第三の測定項目を必要とせず，二つのanchor items $Y_a,Y_b$と
 latent shifter $W$を三つのviewとする。命題2.1で回復したpair lawsと
@@ -481,9 +481,15 @@ $P(Y_j=u,Y_k=v,W=w_\ell\mid X=x)$からなる$d_j\times d_k\times L$
 配列とし，$P_{jk}(w,x)=[P(Y_j=u,Y_k=v\mid W=w,X=x)]_{u,v}$と書く。
 $\Phi_x$を$\Theta_x$から
 $\{\mathcal T_{abW},\mathcal T_{jaW}:j\notin\{a,b\}\}$への写像とする。
-識別とは，class permutationを除いて$\Phi_x$が単射であることをいう。
-以下では実現した行列にrank条件を直接課し，その下でstrict identificationを
-示す。
+Lewbel (2019)の用語に従い，観測データ法則$P_{\mathrm{obs}}(O)$が同一となる
+二つのパラメータ値をobservationally equivalentと呼ぶ。命題2.1により，
+上記の各block tensorは$P_{\mathrm{obs}}(O)$の一意な関数である。従って，
+anchor orderingで正規化された$\Theta_x$上で$\Phi_x$が単射であれば，
+各observational equivalence classはsingletonとなり，パラメータはpoint
+identifiedである。Anchor orderingを課さない場合には，class permutation群
+$\mathfrak S_r$による商空間$\Theta_x/\mathfrak S_r$上の同値類がpoint
+identifiedである。以下では実現した行列にrank条件を直接課し，正規化された
+$\Theta_x$上でglobal point identificationを示す。
 
 \subsection{統合識別定理}
 
@@ -1019,6 +1025,9 @@ Society: Series A (Statistics in Society)}, 181(4), 1169--1192.
 structural equation models with nonignorable missing data.
 \textit{Psychometrika}, 71(3), 541--564.
 \href{https://doi.org/10.1007/s11336-006-1177-1}{doi:10.1007/s11336-006-1177-1}.
+\item Lewbel, A. (2019). The identification zoo: Meanings of identification
+in econometrics. \textit{Journal of Economic Literature}, 57(4), 835--903.
+\href{https://doi.org/10.1257/jel.20181361}{doi:10.1257/jel.20181361}.
 \item Li, Y., Miao, W., Shpitser, I., and Tchetgen Tchetgen, E. J. (2023).
 A self-censoring model for multivariate nonignorable nonmonotone missing data.
 \textit{Biometrics}, 79(4), 3203--3214.
