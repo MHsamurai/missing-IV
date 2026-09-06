@@ -1,0 +1,1058 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage{xeCJK}
+\setCJKmainfont{Hiragino Mincho ProN}
+\setCJKsansfont{Hiragino Sans}
+\setCJKmonofont{Hiragino Sans}
+
+\usepackage[top=18mm,bottom=20mm,left=17mm,right=17mm]{geometry}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{caption}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usetikzlibrary{arrows.meta,positioning,fit,calc,shapes.geometric}
+\captionsetup{font=small,labelfont=bf,hypcap=false}
+
+\pagestyle{plain}
+\setlength{\parindent}{1em}
+\setlength{\parskip}{0.25em}
+\setlength{\columnsep}{7mm}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\baselinestretch}{1.05}
+
+\titleformat{\section}
+  {\normalfont\bfseries\large}
+  {\thesection.}{0.45em}{}
+\titlespacing*{\section}{0pt}{1.4\baselineskip}{0.45\baselineskip}
+
+\newcommand{\E}{\mathbb E}
+\newcommand{\Prb}{\mathbb P}
+\newcommand{\indep}{\mathrel{\perp\!\!\!\perp}}
+\newcommand{\Y}{\bm Y}
+\newcommand{\Z}{\bm Z}
+\newcommand{\one}{\bm 1}
+
+\newcommand{\papertitle}{欠測IVと潜在変数モデリングによる非無作為欠測の識別}
+\newcommand{\authorblock}{%
+  \begin{tabular}{c}
+    本多 将大\(^{1,2}\)、星野 崇宏\(^{1,2}\)、大津 泰介\(^{1,3}\)\\[-0.1mm]
+    {\scriptsize 1. 慶應義塾大学、2. 理化学研究所、3. London School of Economics and Political Science}
+  \end{tabular}
+}
+
+\newcommand{\draftprompt}[1]{%
+  \noindent{\color{gray}\footnotesize #1}\par\vspace{1.5mm}
+}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries \papertitle\par}
+  \vspace{2mm}
+  {\normalsize \authorblock}
+\end{center}
+\vspace{3mm}
+
+\begin{abstract}
+多次元の測定項目がmissing not at random (MNAR)で欠測するとき，観測変数の
+full-data lawを回復するだけでは，その背後にある潜在クラス比率と測定核は一般に
+分離されない。本稿は，第一段階でshadow instrumental variableとblockwise
+complete-case completenessを用いて各supported-block lawを回復し，第二段階で
+overlapping block lawsをanchor itemsとlatent shifterにより接続する。有限潜在クラス
+モデルについて，Kruskal型rank条件の下で潜在クラス比率と全測定核を共通labelの
+下で識別し，global complete caseを必要としないbridge-weighted composite estimatorを
+構成する。有限次元bridgeに対する一致性と漸近正規性を示し，simulationでは，提案法が
+parametric selection modelの誤指定に伴うbiasを抑えながら潜在測定核を回復することを確認する。
+
+\noindent\textbf{Keywords:} MNAR; shadow variable; completeness; latent class;
+tensor decomposition; instrumental variable
+\end{abstract}
+
+\begin{multicols}{2}
+
+\section{問題設定}
+本研究では，未観測潜在変数$F$，常時観測変数$W,X$，複数の潜在的測定値
+$Y=(Y_1,\ldots,Y_m)$について，
+\begin{align}
+F\mid(W,X)&\sim Q_F(\cdot\mid W,X),\\
+Y_j\mid(F,X)&\sim Q_j(\cdot\mid F,X;\theta_j),\\
+Y_1,\ldots,Y_m&\indep\mid(F,X)
+\end{align}
+という潜在測定モデルを考える。識別したいのは潜在分布$Q_F$と測定核
+$Q_Y=\{Q_j:j=1,\ldots,m\}$である。しかし$Y_j$は観測指標$D_j=1$の
+ときだけ観測され，$D=(D_1,\ldots,D_m)$は，後に置くblockwise exclusionを
+満たす範囲で，未観測の$Y$や$F$に依存してよい。したがって問題は，
+missing not at random (MNAR)の下でfull lawを
+回復することにとどまらず，回復可能な観測変数の法則を潜在分布と測定核へ
+一意に分解できるか，である。
+
+本稿の潜在測定モデルの下では，このfull lawは
+\begin{equation}
+\begin{aligned}
+&P(Y=y\mid W=w,X=x)\\
+&\qquad=\int\prod_{j=1}^m Q_j(y_j\mid f,x)\,
+ dQ_F(f\mid w,x)
+\end{aligned}
+\label{eq:marginal-mixture-law}
+\end{equation}
+と表される。$F\in\{1,\ldots,r\}$の場合，これは
+$\sum_{f=1}^r\lambda_f(w,x)\bigotimes_{j=1}^m M_j(:,f;x)$というmixture
+tensorである。従来のmissingness IVによって式
+\eqref{eq:marginal-mixture-law}の左辺が識別されても，追加の分解一意性条件なしには，
+それを生成する潜在分布$Q_F$と測定核$Q_Y$の分解は一意でない。
+
+この問題は，非無視的欠測を伴う構造方程式モデリング
+(structural equation modeling; SEM)，項目反応理論
+(item response theory; IRT)，およびlatent response propensity modelで
+既に現れる。Muth\'en et al. (1987)は，欠測がlatent factorに依存すると
+missing at random (MAR)が一般に成立せず，欠測機構を無視した
+quasi-likelihoodが一部の構造パラメータにbiasを持ち得ることを示した。
+Lee and Tang (2006)は非線形SEMとlogistic selection modelを同時に規定することで，
+Bayes推定を行うfully parametric routeを提示する。Holman and Glas (2005)は
+IRTにcontinuous latent response propensityを導入し，非無視的なitem
+nonresponseを無視した場合の影響と，joint modellingによるbiasの軽減を検討する。
+Kuha et al. (2018)はresponse propensityをlatent classとして表し，測定対象の
+latent traitとの関連によって非無視性を表す。さらに，同論文はlatent traitの
+structural and measurement modelとlatent response class modelがそれぞれ識別される
+条件を課し，joint modelの識別を論じる。Harel and Schafer (2009)はlatent
+ignorabilityを定義してitem nonresponseを伴うlatent-class analysisへ適用する。
+Jung, Schafer and Seo (2011)はmissingness indicatorsで測られるlatent variableを
+用いたmultivariate MNARのlatent-class selection modelを提案し，MNAR仮定に関する
+sensitivity analysisとmultiple imputationを扱う。これらは，joint modelまたは
+ignorability restrictionによって欠測機構と潜在構造の関係を規定する
+model-based approachである。
+
+具体的には，Holman and Glas (2005, Section 5)は，日常生活動作の遂行能力という
+latent traitを測るAmsterdam Linear Disability Scoreのitem bankを扱い，
+``not applicable'' responseを欠測として，response propensityを含むIRT modelを
+適用する。Kuha et al. (2018, Section 5)は，European Social Surveyの29か国における
+welfare attitudesを複数のsurvey itemsで測定し，latent attitudeとlatent response
+classの関連によってitem nonresponseの非無視性を表す。Jung, Schafer and Seo
+(2011, Section 7)は，Foreign Language Attitude Scaleを含む多変量データに
+latent-class selection modelを適用する。これらの例では，欠測項目の平均だけでなく，
+潜在特性または潜在クラスの分布と，各項目が潜在状態をどう測定するかを表す
+測定パラメータが実質的な推定対象となる。欠測確率がその潜在状態と関連すれば，
+観測回答の分布にはlatent distributionとclass-specific item responseの双方が反映される。
+
+Kano and Takai (2011)は，通常の因子分析・SEMの識別制約の下で，線形潜在変量
+モデルの因子負荷と誤差分散からなるcovariance structure parameter，ならびに
+pattern-specificな潜在平均・共分散をmulti-sample SEMとして一致推定できることを
+示しており，欠測を伴う潜在測定モデルを扱う点で本稿に近い。ただし，同論文は，
+欠測指標と測定値がlatent factorを条件として独立であり，因子負荷と誤差分散が
+欠測pattern間で不変であることを仮定する。さらに，通常の因子分析・SEMの識別制約に
+より線形潜在構造のcovariance structure parameterが識別済みであることを前提とする。
+したがって，同論文は，MNAR観測データ法則から潜在分布と測定核を
+ノンパラメトリックに識別するものではない。
+
+通常のinstrumental variable (IV)法は，内生変数を動かす外生変動を用いて
+構造パラメータを識別する。一方，missingness IVまたはshadow variable法は，
+欠測結果$Y$と関連するが，$(Y,U)$を条件とすれば観測指標$R$と独立な
+常時観測変数$Z$を用いる。このexclusionにpositivityと
+completenessを組み合わせることで，d'Haultfoeuille
+(2010, Assumptions 1--5, Theorem 2.3)は
+$(D,Y,Z)$のjoint distributionをノンパラメトリックに識別する。Zhao and Shao
+(2015, Theorem 1)は，共変量調整済みexclusionの下で，一般化線形モデル
+(generalized linear model; GLM)の$P(Y\mid U,Z)$を決める未知パラメータの
+識別条件を与える。Miao et al. (2019, Assumption 1, Condition 1, Theorem 1)は，
+shadow-variable exclusionとrelevanceに，complete casesから観測される
+$f(Y\mid R=1,X,Z)$のcompletenessを組み合わせ，odds-ratio integral equationの
+解の一意性を通じて$f(X,Y,Z,R)$をノンパラメトリックに識別する。これは本稿の
+supported-block law回復に最も近い第一段階の先行研究である。ただし，同論文の
+基本設定は一つの欠測outcomeと一つの観測指標であり，回復されたfull-data lawを
+潜在クラス比率と測定核へ分解する問題は扱わない。
+
+multivariate MNARについても，識別対象に応じた研究がある。Tang, Little and
+Raghunathan (2003)はcomplete casesの条件付き法則を用いてmultivariate regression
+parametersを識別する。外部IVを用いない別系統として，Sadinle and Reiter (2017)はitemwise
+conditionally independent nonresponseの下で，Li et al. (2023)はself-censoring modelと
+completenessの下で，それぞれmultivariate full-data lawを扱う。Ni and Shao (2023)は
+nonresponse instrumentとparametric propensityを用いてmultivariate item nonresponseを
+扱う。近年の機械学習的な別系統として，Xie, Xue and Wang (2026)はlatent variableを
+条件とするno-self-censoringの下でfull-data distributionを識別し，
+importance-weighted autoencoderによる推定へ接続する。これらが識別または推定するのは，
+顕在変数のfull law，regression parameters，またはpopulation functionalsであり，
+working modelのlatent coordinates，latent class比率，測定核の個別識別とは区別される。
+
+他方，Allman, Matias and Rhodes (2009, Section 4, Theorem 1 and Corollary 2)は，
+欠測や選択のない顕在変数のjoint distributionを
+出発点とし，条件付き独立な三つのviewからなるtensorにKruskal rank条件を
+課すことで，潜在クラス比率とclass-specificな測定核をlabel swappingを
+除いて一意に識別する。同論文のSection 5, Theorem 4は，多数の顕在変数を
+三群にまとめた場合のgeneric identificationを別に与える。
+すなわち，上記のnonparametric shadow-IV研究はMNAR selectionから
+周辺full lawまでを扱い，潜在クラス研究は完全データ法則から
+$(Q_F,Q_Y)$の分解までを扱う。両者は識別の異なる段階を解いている。
+
+この二段階を接続する際，latent shifter $W$をmissingness IV $Z_S$と同じ役割に
+置き換えることはできない。仮に
+常時観測変数$W$について
+\begin{equation}
+D\indep W\mid(Y,F,X)
+\label{eq:latent-shifter-exclusion}
+\end{equation}
+が成立しても，
+\begin{equation}
+\begin{aligned}
+&P(D=d\mid Y=y,W=w,X=x)\\
+&\qquad=
+\int P(D=d\mid y,f,x)\,dP(f\mid y,w,x).
+\end{aligned}
+\label{eq:latent-shifter-marginal-selection}
+\end{equation}
+である。$W$が$F$を予測すれば$P(f\mid y,w,x)$は一般に$w$に依存するため，
+$D\indep W\mid(Y,X)$は従わない。すなわち，$W$は周辺化後のshadow IVとして
+block lawを回復するためには使えない。本稿は別に置く$Z_S$によって各block lawを
+回復するが，その周辺full lawからも$Q_F$と$Q_Y$の分解は
+自動的には識別されない。これが，既存のmissing-IV識別と潜在測定モデルの
+識別を統合するときの固有の障害である。
+
+この障害に対する本稿の構成は，shadow variableとcompletenessによるfull-law識別や
+Kruskal型tensor分解を個別に新しく提案するものではなく，四つの識別原理を引き継ぐ。
+第一に，Zhao and Shao (2015) の
+共変量調整済み除外制約を，各supported block $S$の
+$(Y_S,U_S,Z_S,R_S)$へ適用する。第二に，d'Haultfoeuille
+(2010, Assumptions 1--5, Theorem 2.3) のpositivityと積分方程式による
+nonparametric missing-IV identificationの順序を引き継ぎ，bridgeの一意性から
+各blockの選択確率$\pi_S$とfull law $P(Y_S,Z_S,U_S)$を回復する。第三に，Miao et al.
+(2019, Condition 1, Theorem 1)に則り，completenessを観測complete-case law上に
+課し，観測データ法則だけに依存する条件として定式化する。第四に，Allman,
+Matias and Rhodes (2009, Section 3; Section 4, Theorem 1 and Corollary 2) の
+有限潜在クラスに対するtensor分解の識別論理を引き継ぎ，supported blocks上で
+回復されたtensorへ適用する。
+
+したがって，$Z_S$には$Y_S$を予測するrelevance，
+$R_S\indep Z_S\mid(Y_S,U_S)$というexclusion，およびcomplete-case conditional
+operatorのcompletenessが必要である。一方，$W$は測定核へ直接入らず，
+潜在分布を動かしてthird-mode rankを満たすvariationを供給する。どの変数を
+blockwise IV，latent shifter，通常共変量に割り当て，どの項目をblock間の
+anchorにするかが，応用上の識別設計の核心となる。
+本稿は，shadow IVとblockwise complete-case completenessにより，parametric selection modelを規定せずに
+各supported-block lawを識別し，回復されたoverlapping block lawsをanchor itemsと
+latent shifterで接続することで，有限潜在クラス比率と測定核を共通labelの下で識別し，
+bridge-weighted estimatorを構成する。
+
+以下，第2節では各supported blockのfull lawを識別し，第3節では回復された
+overlapping block lawsを有限潜在クラスへ分解する。第4節でbridge-weighted
+estimatorを構成し，第5節でその漸近理論を与える。第6節で計算手順を示し，
+第7節で有限標本性能を検討する。
+
+\section{モデルと仮定}
+本節は識別を二段階に分け，その第一段階を定式化する。まず潜在因子$F$，
+測定値$Y$，常時観測共変量$(X,W,Z)$，観測指標$D$からなる完全データ法則を
+定める。次に，同時観測確率が正であるsupported blockごとに
+Zhao--Shao型exclusionと観測complete-case law上のcompletenessを課し，
+観測データ法則から選択確率$\pi_S$とblock full lawを回復する。この段階では
+block lawを潜在クラスへ分解せず，欠測機構の除去だけを識別目標とする。
+
+\noindent\textbf{仮定1（観測過程）.}
+Let $D_j$ denote the response indicator for item $j$，すなわち$Y_j$は
+$D_j=1$のときだけ観測される。$D=(D_1,\ldots,D_m)\in\{0,1\}^m$とし，
+$X,W,Z,D$は常時観測される。各観測単位について，observed-data vectorを
+\begin{equation}
+O=(X,W,Z,D,Y_D),\qquad Y_D=\{Y_j:D_j=1\}.
+\label{eq:observed-data}
+\end{equation}
+と書く。ここで$Y_D$ denotes the observed components of $Y$ selected by $D$，
+$O$は分析者が観測する全変数の集合である。また，$Z$は必要なblockごとの
+shadow variable $Z_S$を含む常時観測情報の集合である。
+
+\noindent\textbf{仮定2（潜在分布のshift）.}
+$F\mid(W,X)\sim Q_F(\cdot\mid W,X)$。
+Here $Q_F(\cdot\mid W,X)$ denotes the conditional distribution of the latent
+variable $F$。$X$は通常共変量，$W$は$F$の分布を動かすlatent shifterであり，
+いずれも常時観測される。
+
+\noindent\textbf{仮定3（測定過程）.}
+$Y_j\mid(F,X)\sim Q_j(\cdot\mid F,X;\theta_j)$，$j=1,\ldots,m$。
+Here $Q_j$ denotes the measurement kernel for item $j$，$	heta_j$はその
+測定パラメータである。$Y_j$は欠測が生じる前に定義される潜在的測定値であり，
+その条件付き分布は$(F,X)$によって決まる。
+
+\noindent\textbf{仮定4（局所独立性とexclusion）.}
+\begin{equation}
+P(Y\mid F,W,X,Z)=\prod_{j=1}^m Q_j(Y_j\mid F,X).
+\label{eq:local-independence}
+\end{equation}
+Equation \eqref{eq:local-independence} states that $Y_1,\ldots,Y_m$ are
+conditionally independent given $(F,X)$。また，$W$と$Z$は測定核へ直接入らず，
+それらが$Y$に及ぼす関連は$(F,X)$を通じる。$Z_S$は$(W,X)$の下で
+$F$と関連し，潜在分布を通じて$Y_S$を予測してよい。従って
+$F\mid(W,X)\sim Q_F$は$Z$を周辺化した分布であり，完全データ法則では
+$P(F,Z\mid W,X)$を制限しない。
+
+\begin{center}
+\begin{minipage}{\linewidth}
+\centering
+\input{notes/figures/latent_mnar_dag.tex}
+\captionof{figure}{単一supported blockにおける潜在測定・欠測機構。
+円は潜在変数，四角は顕在変数，diamondはblock観測指標を表す。
+$U_S=(X,W)$は共変量として$F,Z_S,Y_S$へ入り，$Z_S$は$F$を通じて
+$Y_S$と関連する。$R_S\indep Z_S\mid(Y_S,U_S)$より，$Z_S$から$R_S$への
+直接辺は置かない。}
+\label{fig:latent-mnar-dag}
+\end{minipage}
+\end{center}
+
+\noindent\textbf{仮定5（supported block）.}
+$S\subseteq\{1,\ldots,m\}$について
+\begin{equation}
+R_S=\prod_{j\in S}D_j,\qquad Y_S=(Y_j:j\in S),\qquad U_S=(X,W).
+\label{eq:supported-block-definition}
+\end{equation}
+$R_S=1$なら$Y_S$全体が観測される。block観測データは
+$U_S,Z_S,R_S$を常に含み，$R_S=1$のときに限り$Y_S$を含む。すなわち，
+$R_S=0$のとき$Y_S$は欠測である。
+$S$がsupportedであるとは，対象領域で
+\begin{equation}
+\pi_S(y,u):=P(R_S=1\mid Y_S=y,U_S=u)>0
+\label{eq:block-positivity}
+\end{equation}
+が成立することをいう。
+
+とくに$W$は$F$の分布を動かすlatent shifterなので，nonresponse IV $Z_S$とは
+区別して$U_S$へ含め，その値を条件づけた上で除外制約を課す。%
+\footnote{記号の対応は，Zhao and Shao (2015)の$(Y,U,Z,R)$をblockごとの
+$(Y_S,U_S,Z_S,R_S)$に置き換えたものである。}
+
+\noindent\textbf{仮定6（Zhao--Shao型blockwise covariate-adjusted missing IV）.}
+各supported $S$について，
+\begin{equation}
+R_S\indep Z_S\mid(Y_S,U_S).
+\label{eq:block-missing-iv-independence}
+\end{equation}
+従って任意の可測集合$A$について%
+\footnote{式\eqref{eq:block-complete-case-identity}はZhao and Shao (2015)の
+complete-case identity $[Z\mid Y,U,R=1]=[Z\mid Y,U]$のblockwise analogueである。}
+\begin{equation}
+P(Z_S\in A\mid Y_S,U_S,R_S=1)
+=P(Z_S\in A\mid Y_S,U_S),
+\label{eq:block-complete-case-identity}
+\end{equation}
+が成立する。
+
+\noindent\textbf{仮定7（blockwise complete-case completeness）.}
+各supported $S$について，任意の
+$h\in L^2\{P(Y_S,U_S\mid R_S=1)\}$に対し
+\begin{equation}
+\begin{aligned}
+&\E\{h(Y_S,U_S)\mid R_S=1,Z_S,U_S\}=0,\\
+&\qquad\Longrightarrow h(Y_S,U_S)=0
+\quad\text{a.s. on }\{R_S=1\}.
+\end{aligned}
+\label{eq:block-complete-case-completeness}
+\end{equation}
+が成立する。この条件はcomplete casesから識別される条件付き法則だけに課され，
+block law全体を回復するための無限次元の単射条件となる。%
+\footnote{Miao et al. (2019, Condition 1)もcompletenessをcomplete-case law上に課す。
+Zhao and Shao (2015)は一般化線形モデルの有限次元パラメータに対して
+Jacobian行列のfull-rank条件を用いる。}
+
+\begin{center}
+\begin{minipage}{\linewidth}
+\centering
+\resizebox{\linewidth}{!}{\input{notes/figures/supported_blocks_dag.tex}}
+\captionof{figure}{複数のsupported blocksにおける多次元missing IV，
+outcome，block indicatorの構造。各外枠は一つのsupported blockを表し，
+内部の小さな四角は$\bm Z_S$と$Y_S$の各成分，diamondは
+$R_S=\prod_{k\in S}D_k$を表す。anchor items $Y_a,Y_b$をblock間で
+含む$S_0=\{a,b\}$がanchor pairを構成し，各extension pair
+$S_j=\{j,a\}$は$Y_a$を共有して測定核を伝播する。縦の省略記号は
+$S_0,S_1,\ldots,S_J$のsupported pairsを表す。各blockで
+$U_S$は$F,\bm Z_S,Y_S$へ入り，$\bm Z_S$から$R_S$への直接辺は置かない。
+灰色はextension pairsに共通するanchor item $Y_a$を表す。}
+\label{fig:supported-blocks-dag}
+\end{minipage}
+\end{center}
+
+\noindent\textbf{命題2.1（supported-block lawの識別）.}
+仮定1，5，6，7の下で，さらに
+$\pi_S^{-1}\in L^2\{P(Y_S,U_S\mid R_S=1)\}$とする。このとき$\pi_S$は
+\begin{equation}
+\E\left\{\frac{R_S}{q(Y_S,U_S)}\mid Z_S,U_S\right\}=1
+\label{eq:bridge-moment}
+\end{equation}
+を満たす正値関数のうち，$q^{-1}$が
+$L^2\{P(Y_S,U_S\mid R_S=1)\}$に属するものの唯一解である。
+従って任意の可積分$h$に対し
+\begin{equation}
+\E h(Y_S,Z_S,U_S)
+=\E\left\{\frac{R_Sh(Y_S,Z_S,U_S)}{\pi_S(Y_S,U_S)}\right\},
+\label{eq:inverse-selection-identity}
+\end{equation}
+よって$P(Y_S,Z_S,U_S)$が識別される。
+
+\noindent\textbf{証明.}
+排除条件より
+\begin{equation}
+\E(R_S\mid Y_S,Z_S,U_S)=\pi_S(Y_S,U_S),
+\label{eq:selection-expectation}
+\end{equation}
+従って真の$\pi_S$は\eqref{eq:bridge-moment}を満たす。別の正値解$q$に対し，
+\begin{equation}
+0=\E\left[R_S\left\{q^{-1}-\pi_S^{-1}\right\}\mid Z_S,U_S\right].
+\label{eq:bridge-uniqueness-step}
+\end{equation}
+$P(R_S=1\mid Z_S,U_S)>0$なので，式\eqref{eq:bridge-uniqueness-step}を
+同確率で除すと
+\begin{equation}
+\E\left\{q^{-1}-\pi_S^{-1}\mid R_S=1,Z_S,U_S\right\}=0.
+\label{eq:complete-case-bridge-uniqueness}
+\end{equation}
+仮定7より$q^{-1}=\pi_S^{-1}$が$R_S=1$の下で成立する。式
+\eqref{eq:block-positivity}によりcomplete-case lawとfull lawは
+$(Y_S,U_S)$について同じ零集合を持つので，$q=\pi_S$ a.s.である。
+最後に
+\begin{equation}
+\E\left\{R_Sh/\pi_S\mid Y_S,Z_S,U_S\right\}=h
+\label{eq:ipw-conditional-identity}
+\end{equation}
+を周辺化すれば\eqref{eq:inverse-selection-identity}を得る。\hfill$\square$
+
+\begin{center}
+\begin{minipage}{\linewidth}
+\centering
+\input{notes/figures/identification_flow.tex}
+\captionof{figure}{観測データ法則から潜在関数までの識別フロー。
+命題2.1が各supported blockの選択確率とfull lawを回復し，その周辺化から
+block tensorを構成する。条件付き独立な3-view tensorのKruskal一意性と
+$W$を第三modeとする線形反転により，anchor orderingの下で
+$Q_F(x)$と$Q_Y(x)$を識別する。}
+\label{fig:identification-flow}
+\end{minipage}
+\end{center}
+
+命題2.1により，観測データ法則から各supported blockのfull lawへ至る
+第一段階の識別は完結する。ただし，回復されたblock tensorsをどの潜在
+分布と測定核が生成したかは，この命題だけでは一意にならない。残る問題は，
+overlapping blocksの分解を同時に一意化し，blockごとのclass labelを
+整合させることである。第3節では，anchor pairと常時観測される$W$を
+三つのviewとして用い，この第二段階を有限潜在クラスについて解く。
+
+\section{有限潜在クラスの統合識別}
+本節は，Allman, Matias and Rhodes (2009, Section 3; Section 4, Theorem 1 and
+Corollary 2) における有限潜在クラスの識別論理を引き継ぎ，supported blocks上の
+MNAR識別問題へ適用する。同論文は，$F$の下で条件付き独立な三つの顕在viewが
+生成するprobability tensorを構成し，実現したKruskal rank条件の下でその分解を
+一意化する。%
+\footnote{このstrict identificationはAllman et al. (2009, Section 5, Theorem 4)の
+generic identificationとは区別される。}
+本稿では第三の測定項目を必要とせず，二つのanchor items $Y_a,Y_b$と
+latent shifter $W$を三つのviewとする。命題2.1で回復したpair lawsと
+常時観測される$W$から$P(Y_a,Y_b,W\mid X)$を構成し，Allman et al.と
+同じ三方向配列のrouteを適用する。
+
+\subsection{識別対象とanchor-pair構成}
+
+以下，$P_X(\mathcal X_0)=1$となる共通集合$\mathcal X_0$を取り，任意の
+$x\in\mathcal X_0$を固定する。
+$F\in\{1,\ldots,r\}$，$r\ge2$，$d_j=|\mathcal Y_j|$とし，$W$の有限
+supportを$\mathcal W_x=\{w_1,\ldots,w_L\}$とする。測定行列，class比率，
+$W$のclass-specific lawを
+\begin{subequations}\label{eq:latent-class-components}
+\begin{align}
+M_j(y,f;x)&=P(Y_j=y\mid F=f,X=x)
+  \label{eq:measurement-kernel-definition}\\
+p_f(x)&=P(F=f\mid X=x)
+  \label{eq:class-proportion-definition}\\
+G(w,f;x)&=P(W=w\mid F=f,X=x).
+  \label{eq:shifter-law-definition}
+\end{align}
+\end{subequations}
+と置く。$M_j$と$G$の各列は確率ベクトルである。また
+\begin{equation}
+\begin{aligned}
+\lambda_f(w,x)
+ &=P(F=f\mid W=w,X=x)\\
+ &=\frac{p_f(x)G(w,f;x)}{P(W=w\mid X=x)}.
+\end{aligned}
+\label{eq:latent-class-posterior}
+\end{equation}
+識別対象は$Q_Y(x)=\{M_j(x):j=1,\ldots,m\}$と
+$Q_F(x)=\{\lambda(w,x):w\in\mathcal W_x\}$である。
+
+パラメータ空間を
+\begin{equation}
+\Theta_x=\Delta_{r-1}\times(\Delta_{L-1})^r
+\times\prod_{j=1}^m(\Delta_{d_j-1})^r
+\label{eq:latent-parameter-space}
+\end{equation}
+とする。$\mathcal T_{jkW}(x)$を要素
+$P(Y_j=u,Y_k=v,W=w_\ell\mid X=x)$からなる$d_j\times d_k\times L$
+配列とし，$P_{jk}(w,x)=[P(Y_j=u,Y_k=v\mid W=w,X=x)]_{u,v}$と書く。
+$\Phi_x$を$\Theta_x$から
+$\{\mathcal T_{abW},\mathcal T_{jaW}:j\notin\{a,b\}\}$への写像とする。
+識別とは，class permutationを除いて$\Phi_x$が単射であることをいう。
+以下では実現した行列にrank条件を直接課し，その下でstrict identificationを
+示す。
+
+\subsection{統合識別定理}
+
+\noindent\textbf{補題3.1（Khatri--Rao rank）.}
+$r$列を持つ行列$A,B$のcolumn Kruskal rankを$k_A,k_B$とすると，
+\begin{equation}
+k_{B\odot A}\ge\min\{k_A+k_B-1,r\}.
+\label{eq:khatri-rao-rank-bound}
+\end{equation}
+特に$k_A+k_B\ge r+1$なら$B\odot A$はfull column rankである。
+
+\noindent\textbf{仮定3.1（covariate-assisted anchor-pair構造）.}
+$r$は既知で，以下の条件が全ての$x\in\mathcal X_0$で成立する。
+仮定2--4が成立し，各$f$で$p_f(x)>0$，各
+$w\in\mathcal W_x$で$P(W=w\mid X=x)>0$とする。anchor pair
+$\{a,b\}$と，各$j\notin\{a,b\}$に対するextension pair $\{j,a\}$は
+全ての$w\in\mathcal W_x$でsupportedであり，仮定6--7を満たす。
+$M_a,M_b,G$のcolumn Kruskal rankを
+$k_a,k_b,k_G$として
+\begin{equation}
+k_a+k_b+k_G\ge2r+2
+\label{eq:anchor-kruskal-condition}
+\end{equation}
+が成立する。既知score $s_a$に対する
+$\mu_{af}(x)=\sum_y s_a(y)M_a(y,f;x)$について
+$\mu_{a1}(x)<\cdots<\mu_{ar}(x)$という同じ厳密順序が
+$\mathcal X_0$上で成立するとし，class labelを固定する。
+
+\noindent\textbf{定理3.1（$W$を第三modeとするanchor-pair識別）.}
+仮定3.1の下で，$\Phi_x$はanchor orderingで正規化した$\Theta_x$上で
+単射である。従って観測データ法則から$p(x)$，$G(x)$，$Q_F(x)$，
+$Q_Y(x)$が識別される。さらに任意の$A\subseteq\{1,\ldots,m\}$と
+$w\in\mathcal W_x$について
+\begin{equation}
+\begin{aligned}
+&P(Y_A=y_A\mid W=w,X=x)\\
+&\qquad=\sum_{f=1}^r\lambda_f(w,x)
+ \prod_{j\in A}M_j(y_j,f;x)
+\end{aligned}
+\label{eq:latent-fulljoint-pair}
+\end{equation}
+が識別される。これは$Y_A$が一度も同時観測されない場合も含む。%
+\footnote{定理3.1は有限潜在クラスを対象とする。連続因子$F$に対し，
+$\E(F\mid X=x)=0$，$\operatorname{Var}(F\mid X=x)=1$，およびanchor responseの
+条件付き平均の狭義単調性を課すと，位置・尺度・符号の不定性は除かれる。
+ただし，未知の測定核の下では$F\mapsto h(F)$という非線形再パラメータ化が残るため，
+連続潜在構造の識別には測定族，calibration，または作用素レベルの単射条件が追加で必要となる。}
+
+\noindent\textbf{証明.}
+\noindent\textbf{Step 1（supported pair lawsの回復）.}
+命題2.1を$\{a,b\}$と各$\{j,a\}$へ適用すると，
+$P(Y_a,Y_b,W,X)$と$P(Y_j,Y_a,W,X)$が識別される。従って正の
+$P(W=w_\ell\mid X=x)$上で条件付け・周辺化することにより，
+$\mathcal T_{abW}(x)$と各$\mathcal T_{jaW}(x)$が識別される。
+
+\noindent\textbf{Step 2（三方向配列のlatent-class表現）.}
+仮定4の局所独立性とmeasurement exclusionより，$X=x$を条件として
+$Y_a,Y_b,W$は$F$の下で相互に独立である。従って
+\begin{equation}
+\mathcal T_{abW}(x)
+=\sum_{f=1}^r p_f(x)M_a(:,f;x)\otimes M_b(:,f;x)\otimes G(:,f;x).
+\label{eq:anchor-tensor-decomposition}
+\end{equation}
+
+\noindent\textbf{Step 3（三方向分解の一意性）.}
+$\widetilde G(:,f;x)=p_f(x)G(:,f;x)$と置く。$p_f(x)>0$なので
+$\widetilde G$のKruskal rankは$k_G$に等しい。式\eqref{eq:anchor-kruskal-condition}と
+Allman et al. (2009, Theorem 1)を\eqref{eq:anchor-tensor-decomposition}へ適用すると，
+$M_a,M_b,\widetilde G$は，各classに共通する置換と，積が1となる列ごとの
+三因子scalingを除いて一意である。
+
+\noindent\textbf{Step 4（scalingとclass labelの固定）.}
+$M_a,M_b$の各列は確率ベクトルなので，列和を1にする正規化が最初の
+二因子のscalingを一意に固定する。残る第三因子について
+\begin{equation}
+p_f(x)=\one^\top\widetilde G(:,f;x),\qquad
+G(:,f;x)=\widetilde G(:,f;x)/p_f(x)
+\label{eq:component-normalization}
+\end{equation}
+とすれば，$p_f$と$G$も一意に回復される。最後に$\mu_{af}$の狭義順序が
+共通置換を固定する。従って$M_a,M_b,p,G$が識別される。
+
+\noindent\textbf{Step 5（線形反転に必要なrank）.}
+$k_b\le r$と式\eqref{eq:anchor-kruskal-condition}から$k_a+k_G\ge r+2$であり，
+式\eqref{eq:khatri-rao-rank-bound}より
+$G\odot M_a$はfull column rankである。
+
+\noindent\textbf{Step 6（各$w$における潜在クラス分布）.}
+$s_w(x)=P(W=w\mid X=x)$は観測データ法則から識別され正である。
+\eqref{eq:component-normalization}で$p,G$が識別されたので，Bayes則
+\begin{equation}
+\lambda_f(w,x)=p_f(x)G(w,f;x)/s_w(x)
+\label{eq:posterior-bayes-recovery}
+\end{equation}
+式\eqref{eq:posterior-bayes-recovery}により全ての$w\in\mathcal W_x$で$\lambda(w,x)$が識別される。
+
+\noindent\textbf{Step 7（非anchor測定核の逐次回復）.}
+$j\notin\{a,b\}$について$\mathcal T_{jaW}$のmode-$j$展開を取ると
+\begin{equation}
+T_{j\mid aW}(x)
+=M_j(x)\operatorname{diag}\{p(x)\}
+\{G(x)\odot M_a(x)\}^\top.
+\label{eq:extension-tensor-unfolding}
+\end{equation}
+式\eqref{eq:khatri-rao-rank-bound}と$p_f(x)>0$より，
+式\eqref{eq:extension-tensor-unfolding}の右辺第二因子はfull row rankで右逆を持つ。
+従って
+\begin{equation}
+M_j(x)=T_{j\mid aW}(x)
+\left[\operatorname{diag}\{p(x)\}
+\{G(x)\odot M_a(x)\}^\top\right]^+
+\label{eq:extension-kernel-inversion}
+\end{equation}
+として一意に回復される。ここで$^+$はMoore--Penrose逆行列である。
+式\eqref{eq:extension-kernel-inversion}を各$j$へ適用すれば$Q_Y(x)$全体が得られる。
+
+\noindent\textbf{Step 8（未同時観測の結合分布）.}
+Step 6--7で識別した$\lambda(w,x)$と$M_j(x)$を仮定4の局所独立性へ
+代入すれば\eqref{eq:latent-fulljoint-pair}を得る。従って$|A|$が
+supported blockの最大サイズを
+超える場合にも，潜在測定モデルの制約の下で
+$P(Y_A\mid W=w,X=x)$は一意に識別される。\hfill$\square$
+
+\section{推定：bridge推定とIPWによる潜在クラス分析}
+次に，識別論の二段階を標本上の推定手順へ移す。第一段階では，
+本稿ではd'Haultfoeuille (2010, Section 3)の条件付きmoment equationをblockwiseに用い，
+各supported pairの観測確率を推定する。
+その逆数でpairが観測された標本の寄与を重み付けるinverse probability weighting
+(IPW)により，欠測選択を除いたpair lawの期待値を再現する。
+
+第二段階では，因子分析や潜在クラス分析
+(latent class analysis; LCA)に共通する潜在測定モデルの当てはめを行う。
+すなわち，IPWで回復した複数のoverlapping pair lawsに対し，一つの
+潜在クラス分布と一組の測定核が同時に適合するよう制約付きで推定する。
+global complete caseを必要とせず，blockごとのIPW contributionを統合するため，
+目的関数はfull likelihoodではなくbridge-weighted composite criterionとなる。
+必要なsupported pairsの集合を
+\begin{equation}
+\mathcal S_*=\{\{a,b\}\}\cup
+\{\{j,a\}:j\notin\{a,b\}\}
+\label{eq:required-supported-pairs}
+\end{equation}
+とする。第一段階では，式\eqref{eq:required-supported-pairs}の各$S\in\mathcal S_*$について
+命題2.1の条件付き
+moment equationを標本版へ置き換え，選択確率
+$\pi_S(y,u)$を推定する。まず有限次元benchmarkとして
+$\pi_S(y,u;\eta_S)$を仮定し，真値を$\eta_{S0}$と書く。柔軟な推定では，
+$q_S^{-1}$をsieveで近似し，正値制約と正則化を課して\eqref{eq:bridge-moment}の標本版を
+解く。いずれの場合も，推定したbridgeを別標本へ評価するcross-fittingを
+用いることができる。
+
+有限潜在クラスのパラメータを
+\begin{equation}
+\theta=\{p,G,M_1,\ldots,M_m\}
+\label{eq:latent-model-parameter}
+\end{equation}
+とし，式\eqref{eq:latent-model-parameter}に確率単体制約とanchor orderingを課した
+パラメータ空間を$\Theta$と
+する。$S$に対応する潜在測定モデルのjoint pair densityを
+\begin{equation}
+\begin{aligned}
+p_\theta(y_S,w\mid x)
+&=\sum_{f=1}^r p_f(x;\theta)G(w,f;x;\theta)\\[-1mm]
+&\qquad\times\prod_{j\in S}M_j(y_j,f;x;\theta)
+\end{aligned}
+\label{eq:latent-pair-density}
+\end{equation}
+と書く。式\eqref{eq:latent-pair-density}を用い，提案推定量を
+\begin{equation}
+\begin{aligned}
+\widehat\theta=\arg\max_{\theta\in\Theta}\;&\frac1n\sum_{i=1}^n
+ \sum_{S\in\mathcal S_*}c_S\\[-1mm]
+&\frac{R_{iS}}{\widehat\pi_S(Y_{iS},U_i)}
+ \log p_\theta(Y_{iS},W_i\mid X_i).
+\end{aligned}
+\label{eq:composite-criterion}
+\end{equation}
+で定義する。$c_S>0$はblock間の尺度を調整する固定weightである。
+これはfull likelihoodではなく，bridgeで回復したoverlapping pair lawsを
+同時に当てはめるcomposite M-estimatorである。従って推論にはFisher
+informationではなく，first-stageのbridge推定も含むsandwich分散を用いる。
+
+\noindent\textbf{命題4.1（母集団criterionの一意性）.}
+仮定1--7と3.1が成立し，$\theta_0\in\Theta$が正しくモデルを生成するとする。
+さらに全ての$S\in\mathcal S_*$で$p_\theta(Y_S,W\mid X)$が共通support上で
+正とする。このとき，\eqref{eq:composite-criterion}の母集団版は
+$\theta_0$で一意に最大化される。
+
+\noindent\textbf{証明.}
+命題2.1のinverse-selection identityより，各weighted summandの期待値は
+full pair lawの下での期待対数密度に等しい。従って真値との差は，各
+$S\in\mathcal S_*$の$X$を条件とするjoint Kullback--Leibler divergenceの正の加重和で
+ある。最大値が等しければ全てのanchor/extension pair lawsが一致し，
+定理3.1の単射性より$\theta=\theta_0$である。\hfill$\square$
+
+\section{漸近理論}
+本節では，Zhao and Shao (2015, Sections 2.2--2.3)が識別したoutcome modelを
+plug-in推定へ接続する順序と同様に，第4節のbridge-weighted estimatorについて，
+有限次元の潜在モデルとbridgeの下で一致性と漸近正規性を示す。
+以下では
+$(O_i)_{i=1}^n$は独立同分布であり，$\beta=(\theta,\eta)$，
+$\eta=(\eta_S:S\in\mathcal S_*)$とする。
+
+\noindent\textbf{仮定5.1（regularity and separation）.}
+$\theta$と$\eta$は有限次元で正しく指定され，$\Theta$と各bridge parameter spaceは
+compactで真値は内点にある。first-stageのpopulation momentは$\eta_0$だけを零とする。
+criterionとfirst-stage momentsは真値近傍で二回連続微分可能で，必要な
+envelopeは二乗可積分である。bridgeのJacobian，composite scoreのJacobian，
+および対応するGodambe行列は非特異である。first-stage estimatorは平均0で
+有限分散のinfluence function $\varphi_\eta(O)$を持つregular asymptotically linear
+estimatorである。さらにclass probability，
+supported-pair propensity，anchor tensorの最小特異値，Kruskal rankを
+支えるminor，およびanchor orderingの隣接gapは，全て0から一様に離れる。
+
+\noindent\textbf{定理5.1（有限次元bridgeの一致性と漸近正規性）.}
+仮定5.1と命題4.1の下で，
+\begin{subequations}\label{eq:estimator-asymptotics}
+\begin{align}
+\widehat\theta&\xrightarrow{p}\theta_0,
+\label{eq:estimator-consistency}\\
+\sqrt n(\widehat\theta-\theta_0)
+&\rightsquigarrow N(0,A^{-1}BA^{-\top}).
+\label{eq:estimator-asymptotic-normality}
+\end{align}
+\end{subequations}
+ここで$\psi(O;\theta,\eta)$をcomposite scoreとし，
+\begin{equation}
+\begin{aligned}
+A&=\E\{\partial_\theta\psi(O;\theta_0,\eta_0)\},\\
+C&=\E\{\partial_\eta\psi(O;\theta_0,\eta_0)\},\\
+B&=\operatorname{Var}\{\psi(O;\theta_0,\eta_0)
+      +C\varphi_\eta(O)\}.
+\end{aligned}
+\label{eq:stacked-sandwich-components}
+\end{equation}
+したがって標準誤差は
+全段階のestimating equationsをstackしたsandwich estimatorで求める。
+個体単位bootstrapを用いる場合も，各反復でbridge推定，latent model fitting，
+anchor orderingによるlabel alignmentまでを全て再実行する。
+
+\noindent\textbf{証明概略.}
+一様大数の法則，first-stage momentの一意な零点，および命題4.1から
+$(\widehat\eta,\widehat\theta)\xrightarrow{p}(\eta_0,\theta_0)$を得る。
+first-stageのasymptotic linearityより
+$\sqrt n(\widehat\eta-\eta_0)=n^{-1/2}\sum_i\varphi_\eta(O_i)+o_p(1)$である。
+これを$\theta$のscore expansionへ代入すれば，
+\begin{equation}
+\sqrt n(\widehat\theta-\theta_0)
+=-A^{-1}\frac1{\sqrt n}\sum_{i=1}^n
+\{\psi_i+C\varphi_{\eta i}\}+o_p(1).
+\label{eq:stacked-score-expansion}
+\end{equation}
+中心極限定理とSlutskyの定理を適用すると
+式\eqref{eq:estimator-asymptotic-normality}が従う。%
+\footnote{complete-case completenessはbridgeの識別を与えるが，無限次元bridgeの推定速度までは
+与えない。sieve bridgeは一般にill-posed inverse problemとなるため，正則化，
+source condition，近似誤差と確率誤差のrate条件が必要である。その場合，通常の
+$\sqrt n$正規性にはregular functionalまたはorthogonal scoreの追加構成を要する。}
+
+\section{計算アルゴリズム}
+本稿のcriterionはlatent mixtureを含み一般に
+非凸であるため，tensor initialization，複数初期値，制約付き更新を組み合わせ，
+識別証明と同じ順序で計算する。%
+\footnote{Zhao and Shao (2015, Section 2.3)のplug-in構成は，nuisance lawと
+推定対象を段階的に扱う先例である。}
+
+\noindent\textbf{Step 1（bridge推定）.}
+各$S\in\mathcal S_*$で有限次元または正則化sieve bridgeを推定し，
+propensityの下限，moment residual，effective sample sizeを確認する。
+
+\noindent\textbf{Step 2（tensor構成）.}
+bridge weightからanchor tensor $\widehat{\mathcal T}_{abW}$と
+extension tensors $\widehat{\mathcal T}_{jaW}$を構成する。
+
+\noindent\textbf{Step 3（anchor tensor初期化）.}
+anchor tensorのnonnegative CP分解をspectral initializationと複数の
+初期値から計算し，各列を確率ベクトルへ正規化する。
+
+\noindent\textbf{Step 4（class label固定）.}
+anchor scoreの順序でclass labelを固定し，$\widehat p,\widehat G,
+\widehat M_a,\widehat M_b$を得る。
+
+\noindent\textbf{Step 5（extension kernel初期化）.}
+$\widehat G\odot\widehat M_a$を用いて各extension tensorを反転し，
+$\widehat M_j$を初期化する。小さい特異値にはtruncated inverseまたは
+ridge regularizationを用いる。
+
+\noindent\textbf{Step 6（constrained update）.}
+上記を初期値として\eqref{eq:composite-criterion}を確率単体制約の下で
+block-coordinate updateし，criterionとparameter changeの両方で収束を
+判定する。
+
+\noindent\textbf{Step 7（候補解の選択）.}
+全候補解からcriterion最大の解を採用し，rank gap，anchor gap，
+propensity overlap，label stabilityを報告する。
+
+\section{Simulation studies}
+本節では，定理3.1に対応する有限カテゴリlatent-class modelの下で，
+提案推定量の有限標本特性を検討する。Allman, Matias and Rhodes
+(2009, Sections 3--5)の$r$-class, $p$-feature model
+$M(r;\kappa_1,\ldots,\kappa_p)$に従い，
+\begin{equation}
+P=\sum_{f=1}^r p_f\bigotimes_{j=1}^p p_{fj}
+\label{eq:simulation-latent-class-model}
+\end{equation}
+とする。式\eqref{eq:simulation-latent-class-model}において$n=500$，$r=2$，$p=4$とし，
+常時観測される$W$と
+$Y_1,Y_2,Y_3$を二値featureとする。class比率は
+$(p_1,p_2)=(0.55,0.45)$，$W$のclass-specific Bernoulli確率は
+$(0.20,0.80)$，測定核は
+\begin{equation}
+M=\begin{pmatrix}
+0.15&0.80\\
+0.25&0.75\\
+0.20&0.85
+\end{pmatrix}
+\label{eq:simulation-measurement-kernel}
+\end{equation}
+式\eqref{eq:simulation-measurement-kernel}のように設定した。
+
+$Y_1$は常時観測とし，$Y_2,Y_3$の観測確率をそれぞれ
+\begin{equation}
+\begin{aligned}
+\operatorname{logit}P(D_j=1\mid Y_1,Y_j)
+&=\alpha_j-0.50Y_1-0.80Y_j\\
+&\quad-1.20Y_1Y_j,\qquad j=2,3,
+\end{aligned}
+\label{eq:simulation-missingness}
+\end{equation}
+とする。$\alpha_j$は標本ごとではなく，式
+\eqref{eq:simulation-latent-class-model}の母集団分布に対して平均item観測率が
+80\%となるよう固定する。式\eqref{eq:simulation-missingness}は$Y_j$自身に
+依存するためMNARである。100反復での平均item観測率は0.8005，
+$S_0=\{1,2\}$と$S_3=\{1,3\}$の観測率はそれぞれ約0.70，
+complete-case率は0.5228，最小pair propensityは0.3715であった。
+
+各blockのshadow $Z_S$は4カテゴリとし，行を
+$(Y_1,Y_j)=(0,0),(0,1),(1,0),(1,1)$，列を$Z_S=0,1,2,3$とする
+条件付き確率行列を
+\begin{equation}
+P(Z_S\mid Y_1,Y_j)=
+\begin{pmatrix}
+0.70&0.15&0.10&0.05\\
+0.15&0.65&0.15&0.05\\
+0.05&0.15&0.65&0.15\\
+0.05&0.10&0.15&0.70
+\end{pmatrix}
+\label{eq:simulation-shadow-matrix}
+\end{equation}
+とする。式\eqref{eq:simulation-shadow-matrix}はfull rankであり，欠測確率に
+$Z_S$を入れないため$R_S\indep Z_S\mid(Y_S,W)$が成立する。
+
+比較するのは次の五手法である。complete-data oracleは欠測前の
+$(W,Y_1,Y_2,Y_3)$に対するfull product-mixture likelihoodを最大化する。MARは
+ignorabilityの下で観測itemすべてを用いたobserved-data full-information maximum
+likelihoodである。正しく指定されたparametric selection likelihoodは，式
+\eqref{eq:simulation-missingness}をlatent-class likelihoodと組み合わせ，
+$(W,Y_{\mathrm{obs}},R)$の周辺尤度を最大化する。誤指定版はselection modelを
+$\operatorname{logit}P(D_j=1\mid Y_1,Y_j)=\gamma_{0j}+\gamma_{1j}Y_j$に制限し，
+$Y_1$のmain effectとinteractionを除く。両selection likelihoodは$F$と欠測itemを
+積分するが，shadow $Z_S$は用いない。selection indexのIRLSにおける$10^{-6}$の
+ridgeは数値安定化のためのみに用いる。最後にproposed saturated/sieve bridgeは各blockで
+\begin{equation}
+\E\{R_S r_S(Y_S)\mid Z_S,W\}=1
+\label{eq:simulation-bridge-moment}
+\end{equation}
+の標本momentから，4つの$Y_S$ cellごとに一つのparameterを持つinverse bridge
+$r_S=1/\pi_S$をridge-regularized least squaresで推定し，$1\le r_S\le25$に制約する。
+これは有限カテゴリでのsaturated sieveの実装である。そのweightを用いたpairwise latent-class criterionで
+測定核とclass比率を同時に更新する。全手法で6初期値からcriterionが最大の
+解を選び，$M_1$の大小でlabelを整合させた。反復上限は800とし，
+100回のMonte Carlo replicationsでは全五手法が設定した収束基準を満たした。
+
+\begin{center}
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[width=0.96\linewidth]{simulation/figures/allman_bias_rmse_comparison.pdf}
+\captionof{figure}{Allman型有限latent-class modelにおける100 Monte Carlo
+replicationsの比較（$n=500$）。上段は測定核$M_j$，下段はlatent class比率
+$p_f$の平均biasとroot mean squared error (RMSE)を示す。}
+\label{fig:allman-simulation}
+\end{minipage}
+\end{center}
+
+\begin{center}
+\begin{minipage}{\linewidth}
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrr}
+\hline
+&\multicolumn{2}{c}{$M_j$}&\multicolumn{2}{c}{$p_f$}\\
+Method&Bias&RMSE&Bias&RMSE\\
+\hline
+Complete-data oracle&0.0031&0.0351&$-0.0019$&0.0361\\
+MAR&$-0.0496$&0.0966&$-0.0193$&0.0572\\
+Selection likelihood (correct)&$-0.0008$&0.0544&0.0008&0.0427\\
+Selection likelihood (misspecified)&0.0409&0.0684&0.0092&0.0415\\
+Proposed saturated/sieve bridge&$-0.0064$&0.0555&$-0.0029$&0.0517\\
+\hline
+\end{tabular}}
+\captionof{table}{Allman型simulationの主要結果。$M_j$は全item・class成分を
+集約した平均biasとRMSE，$p_f$は第2 class比率のbiasとRMSEである。}
+\label{tab:allman-simulation}
+\end{minipage}
+\end{center}
+
+図\ref{fig:allman-simulation}と表\ref{tab:allman-simulation}に示すように，
+提案法の測定核$M_j$の平均biasは$-0.0064$であり，MARの$-0.0496$および
+誤指定selection likelihoodの0.0409より絶対値が小さく，正指定selection likelihoodの
+$-0.0008$に近かった。parameter別にも，提案法では6つの測定核成分のbiasが全て
+絶対値0.0125以下であった。これに対し，MARでは第2 classの$Y_2,Y_3$を
+$-0.1495$，$-0.1209$だけ過小評価し，誤指定selection likelihoodでは第1 classの
+同成分を0.0943，0.0898だけ過大評価した。提案法のbiasが相対的に小さいのは，
+$Y_1$のmain effectとinteractionを含む特定のselection equationに依存せず，
+shadow IVから回復したblock lawsを用いたためと考えられる。
+
+$M_j$のRMSEも提案法では0.0555であり，MARの0.0966および誤指定selection
+likelihoodの0.0684より低く，正指定selection likelihoodの0.0544と同程度であった。
+一方，complete-data oracleの0.0351よりは高い。この差には，bridgeの第一段階推定と
+ridge正則化の変動に加え，full-data likelihoodではなくoverlapping pair lawsを統合する
+composite criterionを用いることが影響したと考えられる。
+
+latent class比率$p_f$について，提案法のbiasの絶対値0.0029はMARの0.0193および
+誤指定selection likelihoodの0.0092より小さく，oracleの0.0019に近かった。ただし，
+RMSEは0.0517で，MARの0.0572より低いものの，正指定selection likelihoodの0.0427と
+誤指定selection likelihoodの0.0415より高かった。したがって提案法はclass比率の
+selection-model misspecificationに伴うbiasを抑える一方，class比率をblockwise pair情報と
+推定bridgeから間接的に回復することによる効率性の低下が残る。
+
+五手法を通じたMonte Carlo standard errorの最大値は，
+$M_j$のbiasで0.0028，RMSEで0.0025，$p_f$のbiasで0.0054，RMSEで0.0041である。%
+\footnote{提案法の頑健性はparametric selection linkの誤指定を避ける点にある。
+shadow-IV exclusion，positivity，complete-case completeness，有限latent-class測定モデルの誤指定まで
+許容するものではなく，正指定parametric likelihoodと同じ効率性も一般には保証しない。}
+
+以上より，本設定では，提案法はMNAR下でも潜在測定核を推定できている。測定核の
+parameter別empirical standard deviationを6成分で平均すると，提案法は0.0545であり，
+正指定selection likelihoodの0.0532とほぼ同じであった。MARの0.0484と誤指定selection
+likelihoodの0.0370は分散だけをみれば小さいが，前者には大きな負のbias，後者には
+正のbiasが残るため，その小さな分散は測定核の正確な回復を意味しない。提案法は，
+正指定selection likelihoodに対して測定核のbiasと変動をほぼ維持しながら，selection
+equationを誤指定した場合に生じるbiasを抑えている点に優位性がある。
+
+一方，$p_f$のempirical standard deviationは，提案法の0.0519に対して，正指定selection
+likelihoodでは0.0429，誤指定版では0.0407であった。したがって，本手法の利点は
+parametric selection modelを正しく指定できる場合の効率性を上回ることではなく，その
+指定に依存せず，shadow IVとcomplete-case completenessから回復したblock lawsを通じて
+潜在測定核とclass比率を同時に推定できることにある。その代償として，bridgeの推定と
+overlapping block lawsの統合に由来する分散が残り，とくにclass比率の推定効率には改善の
+余地がある。
+
+\noindent\textbf{補題7.1（候補識別設計の経験的診断）.}
+blockwise IV，latent shifter，通常共変量，およびanchor itemsの候補となる割当てを
+一つ固定する。各supported blockのcomplete casesから，$Z_S$のrelevanceと，有限カテゴリ
+の場合にはcomplete-case conditional operatorのrankを評価できる。さらに命題2.1により
+block lawsが回復されれば，supported-block positivity，$W$のthird-mode rank，anchor gap，
+および冗長なblocksから回復される測定核の一致は識別された法則の関数となる。
+したがって，これらの条件の不成立は候補となる割当てまたは潜在測定構造を反証する。
+ただし，条件の成立だけからshadow exclusion，$W$のmeasurement exclusion，または
+局所独立性が検証されるわけではない。
+
+\noindent\textbf{証明概略.}
+$Z_S$のrelevanceとcomplete-case operatorは
+$P(Y_S,Z_S,U_S\mid R_S=1)$の関数であり，観測データから評価できる。
+命題2.1の後は$P(Y_S,Z_S,U_S)$が識別され，定理3.1で用いるtensorのrankと
+anchor orderingのgapも識別される。複数のsupported blocksが同じ測定核を回復する場合，
+その一致はoveridentifying restrictionとなる。一方，exclusionと局所独立性は未観測変数を
+含むため，上記の適合だけでは十分に検証されない。\hfill$\square$
+
+\section{結論}
+本稿は，多次元MNARの下で潜在測定モデルを識別する問題を，supported-block lawsの
+回復と潜在構造の分解という二段階に分けた。第一段階では，shadow IV exclusion，
+positivity，およびblockwise complete-case completenessから，parametric selection
+modelを直接規定せずに各blockのfull lawを回復した。第二段階では，anchor pairと
+latent shifter $W$を三つのviewとして用い，overlapping block tensorsを共通labelの下で
+接続することで，有限潜在クラス比率と全測定核を識別した。この構成により，global
+complete caseが存在しない場合でも，必要なsupported pairsから未同時観測項目の
+joint distributionを回復できる。
+
+提案法の利点は，selection equationのparametric specificationに依存せず，識別された
+block lawsから潜在測定核とclass比率を推定できる点にある。一方，結論はknown class数，
+shadow-IV exclusion，complete-case completeness，局所独立性，anchor ordering，および
+Kruskal rank条件に依存する。さらに，通常の漸近正規性は有限次元bridgeに対する結果であり，
+sieve bridge，連続潜在因子，class数の選択，および弱いcompletenessやrankの下での推論は
+別途検討を要する。
+
+\appendix
+\section{補題3.1の証明}
+$s\le\min\{k_A+k_B-1,r\}$本以下の列に非自明な線形関係があると仮定し，
+非零係数を持つ列の添字集合を$C$，$s=|C|$とする。このとき
+$A_C\operatorname{diag}(c_C)B_C^\top=0$である。一方，Sylvesterのrank
+不等式とKruskal rankの定義から，$s\ge1$に対し
+\begin{equation}
+\begin{aligned}
+&\operatorname{rank}\{A_C\operatorname{diag}(c_C)B_C^\top\}\\
+&\qquad\ge\min(k_A,s)+\min(k_B,s)-s\ge1,
+\end{aligned}
+\label{eq:sylvester-rank-bound}
+\end{equation}
+となり矛盾する。従って任意の$s$列は一次独立である。\hfill$\square$
+
+\section*{参考文献}
+\begin{enumerate}[label={[\arabic*]},leftmargin=7mm,itemsep=0.35em,topsep=0.2em,
+  parsep=0pt,partopsep=0pt]
+\item Allman, E. S., Matias, C., and Rhodes, J. A. (2009). Identifiability of
+parameters in latent structure models with many observed variables.
+\textit{The Annals of Statistics}, 37(6A), 3099--3132.
+\href{https://doi.org/10.1214/09-AOS689}{doi:10.1214/09-AOS689}.
+\item d'Haultfoeuille, X. (2010). A new instrumental method for dealing with
+endogenous selection. \textit{Journal of Econometrics}, 154(1), 1--15.
+\href{https://doi.org/10.1016/j.jeconom.2009.06.005}{doi:10.1016/j.jeconom.2009.06.005}.
+\item Harel, O. and Schafer, J. L. (2009). Partial and latent ignorability in
+missing-data problems. \textit{Biometrika}, 96(1), 37--50.
+\href{https://doi.org/10.1093/biomet/asn069}{doi:10.1093/biomet/asn069}.
+\item Holman, R. and Glas, C. A. W. (2005). Modelling non-ignorable
+missing-data mechanisms with item response theory models. \textit{British
+Journal of Mathematical and Statistical Psychology}, 58(1), 1--17.
+\href{https://doi.org/10.1111/j.2044-8317.2005.tb00312.x}{doi:10.1111/j.2044-8317.2005.tb00312.x}.
+\item Jung, H., Schafer, J. L., and Seo, B. (2011). A latent class selection
+model for nonignorably missing data. \textit{Computational Statistics \& Data
+Analysis}, 55(1), 802--812.
+\href{https://doi.org/10.1016/j.csda.2010.07.002}{doi:10.1016/j.csda.2010.07.002}.
+\item Kano, Y. and Takai, K. (2011). Analysis of NMAR missing data without
+specifying missing-data mechanisms in a linear latent variate model.
+\textit{Journal of Multivariate Analysis}, 102(9), 1241--1255.
+\href{https://doi.org/10.1016/j.jmva.2011.04.007}{doi:10.1016/j.jmva.2011.04.007}.
+\item Kuha, J., Katsikatsou, M., and Moustaki, I. (2018). Latent variable
+modelling with non-ignorable item non-response: Multigroup response propensity
+models for cross-national analysis. \textit{Journal of the Royal Statistical
+Society: Series A (Statistics in Society)}, 181(4), 1169--1192.
+\href{https://doi.org/10.1111/rssa.12350}{doi:10.1111/rssa.12350}.
+\item Lee, S.-Y. and Tang, N.-S. (2006). Bayesian analysis of nonlinear
+structural equation models with nonignorable missing data.
+\textit{Psychometrika}, 71(3), 541--564.
+\href{https://doi.org/10.1007/s11336-006-1177-1}{doi:10.1007/s11336-006-1177-1}.
+\item Li, Y., Miao, W., Shpitser, I., and Tchetgen Tchetgen, E. J. (2023).
+A self-censoring model for multivariate nonignorable nonmonotone missing data.
+\textit{Biometrics}, 79(4), 3203--3214.
+\href{https://doi.org/10.1111/biom.13916}{doi:10.1111/biom.13916}.
+\item Miao, W., Liu, L., Tchetgen Tchetgen, E. J., and Geng, Z. (2019).
+Identification, doubly robust estimation, and semiparametric efficiency theory
+of nonignorable missing data with a shadow variable. arXiv:1509.02556v3.
+\item Muth\'en, B. O., Kaplan, D., and Hollis, M. (1987). On structural
+equation modeling with data that are not missing completely at random.
+\textit{Psychometrika}, 52(3), 431--462.
+\href{https://doi.org/10.1007/BF02294365}{doi:10.1007/BF02294365}.
+\item Ni, L. and Shao, J. (2023). Estimation with multivariate outcomes having
+nonignorable item nonresponse. \textit{Annals of the Institute of Statistical
+Mathematics}, 75, 1--15.
+\href{https://doi.org/10.1007/s10463-022-00836-4}{doi:10.1007/s10463-022-00836-4}.
+\item Sadinle, M. and Reiter, J. P. (2017). Itemwise conditionally independent
+nonresponse modelling for incomplete multivariate data. \textit{Biometrika},
+104(1), 207--220.
+\href{https://doi.org/10.1093/biomet/asw063}{doi:10.1093/biomet/asw063}.
+\item Tang, G., Little, R. J., and Raghunathan, T. E. (2003). Analysis of
+multivariate missing data with nonignorable nonresponse. \textit{Biometrika},
+90, 747--764.
+\item Xie, H., Xue, F., and Wang, X. (2026). Identifiable deep latent variable
+models for MNAR data. arXiv:2603.24771v2.
+\item Zhao, J. and Shao, J. (2015). Semiparametric pseudo-likelihoods in
+generalized linear models with nonignorable missing data. \textit{Journal of
+the American Statistical Association}, 110(512), 1577--1590.
+\href{https://doi.org/10.1080/01621459.2014.983234}{doi:10.1080/01621459.2014.983234}.
+\end{enumerate}
+
+\end{multicols}
+
+\end{document}
