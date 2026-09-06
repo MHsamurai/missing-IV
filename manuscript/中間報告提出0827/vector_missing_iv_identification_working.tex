@@ -75,11 +75,18 @@ tensor decomposition; instrumental variable
 \begin{multicols}{2}
 
 \section{問題設定}
-多次元の測定項目がmissing not at random (MNAR)で欠測するとき，観測変数の
-full-data lawを回復するだけでは十分でない場合がある。構造方程式モデルや
-項目反応理論では，各項目が測定する構成概念そのものが潜在的であり，関心は
-潜在分布と測定パラメータの双方にある。本稿は，MNARの下で回復された観測変数の
-法則を，潜在分布と測定核へ一意に分解できる条件を考える。
+多次元の測定項目がmissing not at random (MNAR)で欠測する状況に対して，
+既存のmissingness-IV研究は，shadow-variable exclusion，positivity，completeness
+などの条件の下で，観測変数のfull-data lawを識別できることを示している。
+しかし，構造方程式モデルや項目反応理論では，各項目が測定する構成概念そのものが
+潜在的であり，関心は潜在分布と測定パラメータの双方にある。既存のmissingness-IV
+識別は顕在変数のfull-data lawの回復までを扱う一方，潜在構造の識別理論はその
+full-data lawが観測された状態から出発するため，MNARの下で両者を接続する理論には
+ギャップが残る。そこで本稿は，MNARの下で回復された観測変数の法則と潜在分布・
+測定核の識別理論を統合し，潜在分布と測定核を一意に分解できる条件を与える。
+さらに，対応する推定量を構成し，parametric selection modelを誤指定した場合に
+selection modelを直接規定しないbridge-based approachが示す有限標本上の頑健性を
+simulationにより検討する。
 
 Let $F$ denote an unobserved latent variable, and let
 $Y=(Y_1,\ldots,Y_m)$ denote the full vector of potential measurements。
