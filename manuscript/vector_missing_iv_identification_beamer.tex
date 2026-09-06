@@ -617,17 +617,21 @@ Zhao and Shao (2015, Section 2.3) provide the precedent for a plug-in order that
 \bluekey{The computation follows the identification order: recover, decompose, refine.}
 \end{frame}
 
-\begin{frame}{Simulation design: DGP and parameters}
+\begin{frame}{Simulation targets in the model}
 \small
-Allman, Matias and Rhodes (2009, Sections 3--5); fixed $X=x$, two latent classes.
-\begin{center}
-\resizebox{.86\linewidth}{!}{\input{notes/figures/simulation_dgp.tex}}
-\end{center}
-\vspace{-.7em}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{.49\textwidth}
+Fixed $X=x$; $F\in\{1,2\}$; binary $W,Y_1,Y_2,Y_3$.
+\begin{columns}[c,onlytextwidth]
+\begin{column}{.53\textwidth}
+\centering
+\resizebox{\linewidth}{!}{\input{notes/figures/simulation_dgp.tex}}
+\par\smallskip
+\footnotesize
+Original model DAG. The current simulation instead generates $Z_S\mid Y_S$; it does not impose
+$Y_S\indep Z_S\mid(F,W)$.
+\end{column}
+\begin{column}{.44\textwidth}
 \begin{block}{\term{Outcome parameters}: Stage 1}
-\small
+\footnotesize
 \[
 \begin{aligned}
 \textcolor{Blue}{\mu_j}&=\Prb(Y_j=1)=\sum_f p_f M_{jf}(1),\\
@@ -636,150 +640,68 @@ Allman, Matias and Rhodes (2009, Sections 3--5); fixed $X=x$, two latent classes
 \]
 $j=2,3$; $c\in\{00,01,10,11\}$.
 \end{block}
-\end{column}
-\begin{column}{.48\textwidth}
 \begin{block}{\term{Latent parameters}: Stage 2}
-\small
+\footnotesize
 \[
 \begin{aligned}
 p_f&=\Prb(F=f),\\
 M_{jf}(y)&=\Prb(Y_j=y\mid F=f).
 \end{aligned}
 \]
-$G_f(w)=\Prb(W=w\mid F=f)$ supplies the third view.
+\textbf{Meaning:} class shares and item--class measurement relations.
+Report $p_2$ and the six $M_{jf}(1)$ cells.
 \end{block}
 \end{column}
 \end{columns}
+\vspace{.4em}
+\footnotesize
+$n=500$; 100 Monte Carlo replications; average item response rate: $80\%$.
 \end{frame}
 
-\begin{frame}{Simulation design: calibration and five estimators}
+\begin{frame}{Simulation design: estimators and evaluation}
 \footnotesize
-\begin{center}
-$\displaystyle
-\Prb(W,Y_1,Y_2,Y_3)=\sum_{f=1}^{2}p_f G_f(W)\prod_{j=1}^{3}M_{jf}(Y_j).
-$
-\end{center}
-\vspace{-1.1em}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{.48\textwidth}
-\begin{block}{Numerical calibration}
-\scriptsize
-\[
-\begin{array}{c|rr}
- & f=1&f=2\\\hline
-p_f&.55&.45\\
-G_f(1)&.20&.80\\
-M_{1f}(1)&.15&.80\\
-M_{2f}(1)&.25&.75\\
-M_{3f}(1)&.20&.85
-\end{array}
-\]
-\vspace{-.5em}
-\[
-\begin{aligned}
-\eta_j(Y_1,Y_j)&=\alpha_j-.50Y_1-.80Y_j-1.20Y_1Y_j,\\
-\pi_j(Y_1,Y_j)&=\operatorname{logit}^{-1}\{\eta_j(Y_1,Y_j)\}.
-\end{aligned}
-\]
-\scriptsize
-\begin{itemize}
-  \setlength{\itemsep}{.15em}
-  \item $n=500$; 100 Monte Carlo replications.
-  \item $\pi_j(Y_1,Y_j)=\Prb(D_j=1\mid Y_1,Y_j)$; $Y_1$ always observed.
-  \item $\Prb(D_2=1)=\Prb(D_3=1)=.70$; average item response rate: $80\%$.
-  \item $H_{c,z}=\Prb(Z_S=z\mid Y_S=c)$:\\four categories; full rank; $Z_S$ always observed.
-\end{itemize}
-\vspace{.3em}
-Numerical values are specific to this study.
-\end{block}
-\end{column}
-\begin{column}{.49\textwidth}
+\begin{column}{.51\textwidth}
 \begin{block}{Five estimators}
-\scriptsize
+\footnotesize
 \begin{enumerate}
-  \setlength{\itemsep}{.18em}
-  \item \textbf{Complete-data oracle:} maximize the full product-mixture likelihood before missingness.
-  \item \textbf{MAR:} observed-data full-information likelihood under ignorability.
-  \item \textbf{Correct selection likelihood:} combine the latent-class model with the true logistic selection equation and maximize the marginal likelihood of $(W,Y_{\mathrm{obs}},D)$.
-  \item \textbf{Misspecified selection likelihood:} omit the $Y_1$ main effect and interaction; neither selection likelihood uses $Z_S$.
-  \item \textbf{Proposed finite-cell saturated bridge:} estimate
-  $\E\{R_Sr_S(Y_S)\mid Z_S,W\}=1$ with a four-cell inverse bridge, then fit the weighted pairwise latent-class criterion.
+  \setlength{\itemsep}{.45em}
+  \item \textbf{Complete-data oracle:} full product-mixture likelihood before missingness.
+  \item \textbf{MAR:} observed-data likelihood under ignorability.
+  \item \textbf{Correct selection likelihood:} true logistic selection model for $(W,Y_{\mathrm{obs}},D)$.
+  \item \textbf{Misspecified selection likelihood:} omit the $Y_1$ main effect and interaction. Both selection fits exclude $Z_S$.
+  \item \textbf{Proposed finite-cell bridge:}
+  $\E\{R_Sr_S(Y_S)\mid Z_S,W\}=1$; direct normalized IPW, then weighted latent-class fitting.
 \end{enumerate}
 \end{block}
+\smallskip
+\textbf{Latent results:} mean bias and pooled RMSE of $M_{jf}(1)$; bias and RMSE of $p_2$.
+\par\smallskip
+\textbf{RMSE} combines bias and Monte Carlo variability.
 \end{column}
-\end{columns}
-\end{frame}
-
-\begin{frame}{Observed-law inference}
-\begin{columns}[T,onlytextwidth]
-\begin{column}{.49\textwidth}
-\begin{block}{Stage-1 identification targets}
-\[
-\mu_j=\Prb(Y_j=1),\qquad
-p_{S,c}=\Prb(Y_S=c).
-\]
-\begin{itemize}
-  \item $\mu_2,\mu_3$: population outcome marginals.
-  \item $p_{S,c}$: four cells in each supported pair.
-  \item Proposed law: direct normalized-IPW bridge, \textbf{before decomposition}.
-\end{itemize}
-\end{block}
-\end{column}
-\begin{column}{.48\textwidth}
-\begin{block}{Four criteria for every parameter}
-\[
-\operatorname{Bias},\quad
-\operatorname{SD},\quad
-\overline{\operatorname{SE}},\quad
-\operatorname{CP}_{.95}.
-\]
-\begin{itemize}
-  \item Likelihood methods: delta-method sandwich SE.
-  \item Proposed bridge: 200 individual-level bootstraps, re-estimating both bridges.
-  \item Pointwise Wald interval:
-  $\widehat\psi\pm1.96\widehat{\operatorname{SE}}$.
-\end{itemize}
-\end{block}
-\end{column}
-\end{columns}
-\begin{takeaway}
-The other four laws are model-implied comparators; only the proposed observed-law estimate is a direct Stage-1 estimator.
-\end{takeaway}
-\end{frame}
-
-\begin{frame}{Evaluation targets: latent structure}
-\small
-\begin{columns}[T,onlytextwidth]
-\begin{column}{.48\textwidth}
-\begin{block}{Measurement kernels $M_j$}
-For binary items, $M_j(1,f)=\Prb(Y_j=1\mid F=f)$.
-\begin{itemize}
-  \item \bluekey{Meaning:} how item $j$ measures class $f$.
-  \item \bluekey{Report:} mean bias and mean RMSE over every $(j,f)$ cell.
-\end{itemize}
-\end{block}
-\end{column}
-\begin{column}{.49\textwidth}
-\begin{block}{Latent class proportions $p_f$}
-$p_f=\Prb(F=f)$ is the population share in class $f$.
-\begin{itemize}
-  \item \bluekey{Meaning:} the latent distribution itself.
-  \item \bluekey{Report:} with two classes, evaluate $p_2$ because $p_1=1-p_2$.
-\end{itemize}
-\end{block}
-\end{column}
-\end{columns}
-\vspace{.1em}
-\begin{theorembox}{Monte Carlo criteria}
+\begin{column}{.46\textwidth}
+\begin{block}{Four inference criteria}
 \footnotesize
-For a component $\psi$ of $M_j$ or $p_f$ across $B$ replications,
-\[
-\operatorname{Bias}(\widehat\psi)=B^{-1}\sum_{b=1}^B(\widehat\psi^{(b)}-\psi_0),
-\quad
-\operatorname{RMSE}(\widehat\psi)=\{B^{-1}\sum_{b=1}^B(\widehat\psi^{(b)}-\psi_0)^2\}^{1/2}.
-\]
-\textbf{Bias} measures systematic error; \textbf{RMSE} summarizes total finite-sample error.
-\end{theorembox}
+For each outcome parameter $\mu_j$ or $p_{S,c}$:
+\par\smallskip
+\begin{tabular}{@{}ll@{}}
+\textbf{Bias} & Mean estimation error\\[.3em]
+\textbf{SD} & Monte Carlo variability\\[.3em]
+\textbf{Mean SE} & Estimated uncertainty\\[.3em]
+\textbf{95\% coverage} & Intervals covering the truth
+\end{tabular}
+\smallskip
+\begin{itemize}
+  \setlength{\itemsep}{.35em}
+  \item Likelihood SE: delta-method sandwich.
+  \item Bridge SE: 200 individual-level bootstraps; re-estimate both bridges.
+  \item Pointwise Wald CI: $\widehat\psi\pm1.96\widehat{\operatorname{SE}}$.
+\end{itemize}
+\end{block}
+\end{column}
+\end{columns}
+\vspace{.6em}
+\bluekey{Proposed: direct Stage-1 outcome recovery. Comparators: four model-implied outcome laws.}
 \end{frame}
 
 \begin{frame}{Population outcome recovery}
@@ -948,6 +870,52 @@ For a proposed assignment of blockwise IVs, latent shifters, covariates, and anc
 \begin{takeaway}
 Failure can refute a design, but success does not verify shadow exclusion, measurement exclusion, or local independence.
 \end{takeaway}
+\end{frame}
+
+\begin{frame}{Appendix: simulation calibration}
+\footnotesize
+Allman, Matias and Rhodes (2009, Sections 3--5): finite product mixture.
+\[
+\Prb(W,Y_1,Y_2,Y_3)=\sum_{f=1}^{2}p_f G_f(W)\prod_{j=1}^{3}M_{jf}(Y_j).
+\]
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.43\textwidth}
+\begin{block}{Numerical parameters}
+\footnotesize
+$G_f(w)=\Prb(W=w\mid F=f)$.
+\[
+\begin{array}{c|rr}
+ & f=1&f=2\\\hline
+p_f&.55&.45\\
+G_f(1)&.20&.80\\
+M_{1f}(1)&.15&.80\\
+M_{2f}(1)&.25&.75\\
+M_{3f}(1)&.20&.85
+\end{array}
+\]
+Class labels: $M_{11}(1)<M_{12}(1)$.
+\par\smallskip
+Numerical values are specific to this study.
+\end{block}
+\end{column}
+\begin{column}{.54\textwidth}
+\begin{block}{Selection and shadow generation}
+\footnotesize
+For $j=2,3$, $\pi_j=\Prb(D_j=1\mid Y_1,Y_j)$:
+\[
+\operatorname{logit}\pi_j=\alpha_j-.50Y_1-.80Y_j-1.20Y_1Y_j.
+\]
+\begin{itemize}
+  \item $D_1=1$; $\Prb(D_2=1)=\Prb(D_3=1)=.70$.
+  \item $H_{c,z}=\Prb(Z_S=z\mid Y_S=c)$:\\four categories, full rank, always observed.
+  \item $R_S\indep Z_S\mid(Y_S,W)$ holds in this calibration.
+\end{itemize}
+\end{block}
+\end{column}
+\end{columns}
+\smallskip
+\textbf{Scope:} this shadow calibration differs from the model DAG's measurement exclusion
+$Y_S\indep Z_S\mid(F,W)$.
 \end{frame}
 
 \end{document}

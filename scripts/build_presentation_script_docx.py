@@ -186,27 +186,21 @@ SLIDES = [
     _slide_by_title("Bridge-weighted composite estimation"),
     _slide_by_title("Computation"),
     (
-        "Simulation design: DGP and parameters",
+        "Simulation targets in the model",
         [
-            "図は先ほどのlatent measurement modelを今回のDGPに合わせたものです。Xを固定し、まず二つのclassを持つFを生成します。FからWと三つの測定項目Y 1、Y 2、Y 3を条件付き独立に生成します。各pair Y 1、Y jから常時観測されるMissing IVのZ Sと観測指標D jを生成します。Y 1は常時観測されるので、pairの観測指標R SはD jに一致します。",
-            "母数の位置も図に対応させます。Fの周辺分布がp f、FからY jへの測定核がM jf、FからWへの核がG fです。Stage 1の評価対象mu jはY jの母集団周辺確率、p S,cはpairのcell probabilityです。これらは潜在classを周辺化した量であり、Stage 2で分離するp fやM jfとは区別します。",
+            "ここではp17のモデルDAGを再掲し、評価する母数を書き添えます。Z SからF、共変量U SからF、Z S、Y S、そしてFからY S、Y Sから観測指標R Sへ向かう元の矢印を保っています。Xは固定、Fは2 class、Wと各Yは二値です。Y 1は常時観測されるため、R SはD jに一致します。",
+            "Fの周辺class比率がp f、項目とclassの測定関係がM jfです。Stage 1のmu jは母集団周辺確率、p S,cはpairのcell probabilityです。これらと、Stage 2で分離する六つの測定核成分およびp 2を区別します。標本サイズは500、Monte Carlo反復は100回、平均item response rateは80 percentです。",
+            "ただし、この図は現行シミュレーションの生成法則そのものではありません。現行コードはY Sを条件にZ Sを生成するため、図が表す、FとWの下でY SとZ Sが独立というmeasurement exclusionを満たしていません。この不整合は未解決であり、現在の数値結果を図の全仮定を満たす検証と解釈することはできません。",
         ],
     ),
     (
-        "Simulation design: calibration and five estimators",
+        "Simulation design: estimators and evaluation",
         [
-            "Allman、Matias and Rhodesの有限product mixtureを用い、表の数値は本研究で設定しています。class比率は0.55と0.45、測定核は項目とclassごとに表の通りです。標本サイズは500、Monte Carlo反復は100回です。Y 1は常時観測され、Y 2とY 3の観測確率はそれぞれ平均70 percentとなるように切片を調整するため、全三項目の平均観測率は80 percentです。",
             "五手法を比較します。complete-data oracleは欠測前の尤度、MARはignorabilityの下での観測尤度、正指定selection likelihoodは真のlogistic selection equationを用います。誤指定版ではY 1の主効果とinteractionを除きます。提案法は各blockのMissing IV momentから4-cell inverse bridgeを推定し、Stage 1の法則を得た後、weighted pairwise latent-class criterionを用いて潜在構造を推定します。",
+            "outcome parameterごとに四つの指標を報告します。Biasは平均的な推定誤差、empirical SDは反復間のばらつき、平均estimated SEは各標本で得た不確実性の推定値、95 percent coverageは真値を含むpointwise Wald区間の割合です。likelihood法ではdelta-method sandwich SE、提案法では各反復で個人単位bootstrapを200回行い、両bridgeを再推定します。",
+            "潜在母数についてはbiasとRMSEを報告します。測定核のRMSEは、反復と六つのitem-by-class cellsをまとめた二乗誤差の平均の平方根であり、cell別RMSEの単純平均ではありません。p 2は単独で評価します。提案法のoutcome lawはdecomposition前のnormalized IPW推定値であり、他の四手法では推定モデルから導いた法則を比較しています。",
         ],
     ),
-    (
-        "Observed-law inference",
-        [
-            "Stage 1の直接の識別対象は、欠測し得る各outcomeの母集団周辺確率mu jと、各supported pairの4-cell確率p S,cです。Y 1は常時観測されるため、欠測outcomeの回復図ではY 2とY 3を示します。提案法では、latent decompositionを行う前に、各blockの推定bridgeによるnormalized inverse probability weightingからこれらを直接推定します。",
-            "各parameterについてbias、replication間のempirical SD、平均estimated SE、pointwise 95 percent Wald coverageを報告します。likelihoodを用いる4比較法ではrobust sandwichとdelta method、提案bridgeでは個人単位bootstrapを200回行い、各resampleでbridgeを再推定します。4比較法のoutcome lawsは各fitから導くmodel-implied quantitiesであり、直接のStage-1 estimatorと呼ぶのは提案法だけです。",
-        ],
-    ),
-    ("Evaluation targets: latent structure", _slide_by_title("Evaluation targets")[1]),
     (
         "Population outcome recovery",
         [
@@ -230,6 +224,14 @@ SLIDES = [
     ("Proof of Theorem 1 (Steps 5--6)", _slide_by_title("Steps 5 and 6")[1]),
     ("Proof of Theorem 1 (Steps 7--8)", _slide_by_title("Steps 7 and 8")[1]),
     _slide_by_title("Empirical diagnostics and falsification checks"),
+    (
+        "Simulation calibration",
+        [
+            "WとYの周辺モデルにはAllman、Matias and Rhodesの有限product mixtureを用い、数値は本研究で設定しています。class比率は0.55と0.45、G fはFを条件としたWの分布です。class labelsはY 1の測定確率の小さい順に固定します。",
+            "Y 1は常時観測されます。Y 2とY 3の観測確率は自身、Y 1、およびinteractionに依存するlogistic式で、各項目の平均観測率が70 percentとなるよう切片を調整します。全三項目の平均観測率は80 percentです。Z Sはpairの四つのcellに依存するfull-rank行列Hで生成し、常時観測します。",
+            "この生成はMissing IVのselection exclusionを満たしますが、元のモデルDAGが課すmeasurement exclusionは満たしません。二つの有限classだけを通じて四つのpair cellsを予測する元の図では、complete-case operatorのrankは高々2です。そのため、この図と現行の四cell completenessを同時に成立させたDGPではない点を区別する必要があります。",
+        ],
+    ),
 ]
 appendix_start = next(
     index for index, (title, _) in enumerate(SLIDES, start=1)
@@ -341,8 +343,8 @@ def build():
         set_run_font(run, LATIN_FONT, JAPANESE_FONT, 12, True)
 
     doc.add_paragraph(
-        "本原稿は、英語Beamer全38枚に対応する日本語の口頭説明用原稿である。"
-        "本文の識別対象、仮定、定理、推定法、simulation設定と整合させ、"
+        f"本原稿は、英語Beamer全{len(SLIDES)}枚に対応する日本語の口頭説明用原稿である。"
+        "識別対象、仮定、定理、推定法と数値結果を説明し、モデルDAGと現行simulationの未解決の不整合も明記する。"
         "証明は本編では論理の流れ、Appendixでは8ステップを説明する。"
     )
 
@@ -364,8 +366,8 @@ def build():
         ("Slides 1–7", "基礎概念、既存研究、二段階の識別戦略"),
         ("Slides 8–15", "モデルとsupported-block lawの回復"),
         ("Slides 16–22", "有限潜在クラスのtensor分解"),
-        ("Slides 23–33", "推定、計算、DGP、simulation、full joint law、結論、参考文献"),
-        ("Appendix 34–38", "定理1の8ステップ、empirical diagnostics"),
+        ("Slides 23–31", "推定、計算、評価対象と指標、simulation、full joint law、結論、参考文献"),
+        ("Appendix 32–37", "定理1の8ステップ、empirical diagnostics、数値設定"),
     ]
     for left, right in rows:
         cells = table.add_row().cells

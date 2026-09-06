@@ -1,30 +1,33 @@
+% Preserve the model DAG in latent_mnar_dag.tex; annotate its estimands.
 \begin{tikzpicture}[
   x=1cm,y=1cm,font=\sffamily,
-  obs/.style={draw,rounded corners=1pt,fill=gray!8,minimum width=17mm,
-    minimum height=10mm,align=center,inner sep=2mm,font=\small},
-  latent/.style={draw,circle,fill=white,minimum size=12mm,font=\large},
-  select/.style={draw,diamond,aspect=1.9,fill=gray!8,minimum width=21mm,
-    minimum height=12mm,align=center,inner sep=1mm,font=\small},
-  arrow/.style={-{Latex[length=2mm,width=1.3mm]},line width=.7pt},
-  lab/.style={fill=white,inner sep=1pt,font=\small,align=center},
-  note/.style={font=\small,align=center}
+  obs/.style={draw,rounded corners=1pt,fill=gray!10,minimum width=14mm,
+    minimum height=8mm,align=center,inner sep=1.5mm,font=\scriptsize},
+  covar/.style={obs,minimum width=18mm,minimum height=12mm},
+  latent/.style={draw,circle,fill=white,minimum size=9mm,font=\small},
+  select/.style={draw,diamond,aspect=1.8,fill=gray!10,minimum width=16mm,
+    minimum height=9mm,align=center,inner sep=.8mm,font=\scriptsize},
+  arrow/.style={-{Latex[length=2mm,width=1.3mm]},line width=.55pt},
+  lab/.style={fill=white,inner sep=.8pt,font=\tiny,align=center},
+  note/.style={font=\scriptsize,align=center}
 ]
-  \node[obs] (w) at (0,1.9) {$W$};
-  \node[latent] (f) at (3.05,1.9) {$F$};
-  \node[obs,minimum width=28mm,minimum height=15mm,font=\scriptsize] (y) at (6.55,1.9)
-    {$Y_S=(Y_1,Y_j)$\\[-.2mm]$S=\{1,j\},\ j=2,3$};
-  \node[select] (r) at (10.1,1.9) {$R_S=D_j$};
-  \node[obs] (z) at (6.55,-.1) {$Z_S\in\{0,1,2,3\}$};
+  \node[obs] (z) at (.75,3.30) {$Z_S$};
+  \node[latent] (f) at (3.10,3.30) {$F$};
+  \node[obs,minimum width=21mm] (y) at (5.45,3.30)
+    {$Y_S$\\[-.3mm]$(Y_1,Y_j)$};
+  \node[covar] (u) at (3.10,1.35) {$U_S$\\[-.4mm]$(X=x,W)$};
+  \node[select] (r) at (5.45,1.35) {$R_S=D_j$};
 
-  \draw[arrow] (f.west) -- node[lab,above] {$G_f(w)$} (w.east);
+  \draw[arrow] (z.east) -- (f.west);
   \draw[arrow] (f.east) -- node[lab,above] {$M_{1f}M_{jf}$} (y.west);
-  \draw[arrow] (y.east) -- node[lab,above] {$\pi_j$} (r.west);
-  \draw[arrow] (y.south) -- node[lab,right] {$H_{c,z}$} (z.north);
+  \draw[arrow] (u.north) -- node[lab,right] {$Q_F$} (f.south);
+  \draw[arrow] (u.north west) -- (z.south east);
+  \draw[arrow] (u.north east) -- (y.south west);
+  \draw[arrow] (y.south) -- node[lab,right] {$\pi_j$} (r.north);
 
-  \node[note,above=3mm of f] {$\textcolor{Blue}{p_f}=\Prb(F=f)$};
-  \node[note,above=3mm of y,text=Blue] {$\mu_j,\ p_{S,c}$};
-  \node[note,below=3mm of w] {$W\mid F=f\sim\mathrm{Bernoulli}\{G_f(1)\}$};
-  \node[note,below=3mm of r] {$D_1=1$};
-  \node[note,anchor=west] at (-.8,-.25)
-    {Circle: latent class\\Rectangle: measured variable};
+  \node[note,above=2mm of f,text=Blue] {$p_f$};
+  \node[note,above=2mm of y,text=Blue] {$\mu_j,\ p_{S,c}$};
+  \node[note] at (3.10,.20)
+    {$S=\{1,j\},\ j=2,3;\quad D_1=1$\\[1mm]
+     $R_S\indep Z_S\mid(Y_S,U_S)$};
 \end{tikzpicture}
