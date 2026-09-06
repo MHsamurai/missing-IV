@@ -187,18 +187,25 @@ SLIDES = [
     _slide_by_title("Computation"),
     _slide_by_title("Simulation design"),
     (
-        "Evaluation target: observed-variable law",
+        "Observed-law inference",
         [
-            "最終的な識別対象には観測変数全体のfull-data lawも含まれます。そこで各latent-model fitのp hat fとM hat j fから、Y 1、Y 2、Y 3の8-cell joint distributionを再構成します。このjoint lawは、各項目の平均とvarianceだけでなく、項目間の依存関係も含みます。",
-            "比較対象は五手法です。complete-data oracleは図ではpopulation truthとして示し、MAR、正しく指定したselection likelihood、誤指定selection likelihood、proposed saturated bridgeの平均推定分布を同じ8 cells上で比較します。分布全体の誤差にはtotal variation distanceを用い、補助的にP of Y j equals 1のbias、推定されたoutcome varianceのbias、推定量自体のMonte Carlo varianceを分けて報告します。",
+            "Stage 1の直接の識別対象は、欠測し得る各outcomeの母集団周辺確率mu jと、各supported pairの4-cell確率p S,cです。Y 1は常時観測されるため、欠測outcomeの回復図ではY 2とY 3を示します。提案法では、latent decompositionを行う前に、各blockの推定bridgeによるnormalized inverse probability weightingからこれらを直接推定します。",
+            "各parameterについてbias、replication間のempirical SD、平均estimated SE、pointwise 95 percent Wald coverageを報告します。likelihoodを用いる4比較法ではrobust sandwichとdelta method、提案bridgeでは個人単位bootstrapを200回行い、各resampleでbridgeを再推定します。4比較法のoutcome lawsは各fitから導くmodel-implied quantitiesであり、直接のStage-1 estimatorと呼ぶのは提案法だけです。",
         ],
     ),
     ("Evaluation targets: latent structure", _slide_by_title("Evaluation targets")[1]),
     (
-        "Observed-law recovery",
+        "Population outcome recovery",
         [
-            "全体のY分布について、proposed bridgeの平均total variation distanceは0.065です。MARの0.117より約44パーセント、誤指定selection likelihoodの0.101より約35パーセント小さく、8 cells全体をtruthに近く回復しています。MARでは高いY 2、Y 3を含むcellが不足し、誤指定selectionではY 1に関するselection項を落とした影響が反対方向の歪みとして現れます。",
-            "周辺確率のbiasも、提案法ではY 2、Y 3とも約マイナス0.010です。outcome varianceのbiasは絶対値0.0021以下でした。一方、inverse bridge weightingのためMonte Carlo varianceはMARより増えます。正指定selection likelihoodのmean total variationは0.070で提案法と同程度ですが、本結果は提案法の一般的な効率優位を意味しません。提案法の利点は、parametric selection linkを指定せずに、block lawの補正をjoint Y distributionとlatent decompositionまで接続できる点です。",
+            "母集団周辺確率の真値はmu 2 equals 0.475、mu 3 equals 0.4925です。提案Stage-1 bridgeのbiasはそれぞれマイナス0.0099、マイナス0.0096で、empirical SDと平均estimated SEは0.0379対0.0365、0.0345対0.0339でした。95 percent coverageは94 percentと93 percentで、推定SEがreplication variabilityを概ね捉えています。",
+            "これに対してMARのcoverageは9 percentと13 percent、誤指定selection likelihoodでは12 percentと11 percentでした。正しく指定したselection likelihoodはbiasがほぼゼロですが、coverageはY 2で86 percentです。本結果は提案法の効率優位を示すものではなく、parametric selection linkを指定せずに、欠測outcomeの周辺分布をStage 1で補正できることを示します。",
+        ],
+    ),
+    (
+        "Supported-block law recovery",
+        [
+            "次に、supported pairs S 12とS 13の各4 cellsをparameterごとに評価します。提案Stage-1 bridgeのcell biasはマイナス0.0099から0.0067、pointwise coverageは89 percentから95 percentでした。周辺平均だけでなく、各block lawを構成する全セルで欠測選択の補正が確認できます。",
+            "MARでは最大absolute biasが0.068で、coverageは最低10 percentでした。誤指定selection likelihoodでも最大absolute biasは0.048です。100 replicationsでは真のcoverageが95 percentの場合でもMonte Carlo standard errorが約2.2 percentage pointsあるため、個々のcoverage差はこの有限反復誤差を踏まえて解釈します。",
         ],
     ),
     ("Latent-parameter recovery", _slide_by_title("Simulation results")[1]),
@@ -208,11 +215,22 @@ SLIDES = [
     _slide_by_title("Steps 3 and 4"),
     _slide_by_title("Steps 5 and 6"),
     _slide_by_title("Steps 7 and 8"),
+    (
+        "Stage-2 full joint law",
+        [
+            "Y 2とY 3は同時に観測される必要がないため、Y 1、Y 2、Y 3の8-cell full joint lawはStage 1だけでは回復できません。これは、Stage 2で推定したclass proportionsと全measurement kernelsを有限mixtureへ代入して初めて構成されます。",
+            "この補助診断では、推定joint lawとtruthのtotal variation distance、すなわち両分布の各cell差の絶対値を合計して2で割った量を用います。提案法のmean TVは0.065、MARは0.117、誤指定selection likelihoodは0.101でした。ただし、これはlatent decompositionを含むStage-2診断であり、直接のStage-1 inference resultとは区別します。",
+        ],
+    ),
     _slide_by_title("Empirical diagnostics and falsification checks"),
 ]
+appendix_start = next(
+    index for index, (title, _) in enumerate(SLIDES, start=1)
+    if title == "Steps 1 and 2"
+)
 SLIDES = [
     (
-        f"{'Appendix ' if index >= 32 else ''}Slide {index}  {title}",
+        f"{'Appendix ' if index >= appendix_start else ''}Slide {index}  {title}",
         paragraphs,
     )
     for index, (title, paragraphs) in enumerate(SLIDES, start=1)
@@ -314,7 +332,7 @@ def build():
         set_run_font(run, LATIN_FONT, JAPANESE_FONT, 12, True)
 
     doc.add_paragraph(
-        "本原稿は、英語Beamer全36枚に対応する日本語の口頭説明用原稿である。"
+        "本原稿は、英語Beamer全38枚に対応する日本語の口頭説明用原稿である。"
         "本文の識別対象、仮定、定理、推定法、simulation設定と整合させ、"
         "証明は本編では論理の流れ、Appendixでは8ステップを説明する。"
     )
@@ -337,8 +355,8 @@ def build():
         ("Slides 1–7", "基礎概念、既存研究、二段階の識別戦略"),
         ("Slides 8–15", "モデルとsupported-block lawの回復"),
         ("Slides 16–22", "有限潜在クラスのtensor分解"),
-        ("Slides 23–31", "推定、計算、simulation、結論、参考文献"),
-        ("Appendix 32–36", "定理1の8ステップとempirical diagnostics"),
+        ("Slides 23–32", "推定、計算、simulation、結論、参考文献"),
+        ("Appendix 33–38", "定理1の8ステップ、full joint law、empirical diagnostics"),
     ]
     for left, right in rows:
         cells = table.add_row().cells

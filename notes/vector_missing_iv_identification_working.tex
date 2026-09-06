@@ -864,42 +864,68 @@ $r_S=1/\pi_S$をridge-regularized least squaresで推定し，$1\le r_S\le25$に
 解を選び，$M_1$の大小でlabelを整合させた。反復上限は800とし，
 100回のMonte Carlo replicationsでは全五手法が設定した収束基準を満たした。
 
-第一段階の識別対象は各supported-block lawであるが，定理3.1まで進めば，
-第二段階で識別したlatent class比率と測定核から観測変数全体のfull-data lawも構成できる。
-そこで主たる分布評価では，五手法の各latent-model fitから，二値outcome vector
-$Y=(Y_1,Y_2,Y_3)$の8-cell joint law
+観測変数法則については，識別段階を分けて評価する。第一に，
+$\mu_j=P(Y_j=1)$，$j=2,3$は，各項目を含むsupported blockから周辺化して得られる
+母集団outcome parameterである。第二に，
 \begin{equation}
-\widehat P_Y(y_1,y_2,y_3)
-=\sum_{f=1}^{2}\widehat p_f
-\prod_{j=1}^{3}\widehat M_{jf}(1)^{y_j}
-\{1-\widehat M_{jf}(1)\}^{1-y_j}
-\label{eq:simulation-joint-y-law}
+\begin{aligned}
+p_{S,c}&=P(Y_S=c),\qquad
+S\in\{\{1,2\},\{1,3\}\},\\
+c&\in\{00,01,10,11\}.
+\end{aligned}
+\label{eq:simulation-observed-law-targets}
 \end{equation}
-を構成する。分布全体の誤差は
+は第一段階の直接の識別対象である。$Y_1$は常時観測されるため，欠測outcomeの
+回復を評価する周辺parameterからは除く。提案法についてはlatent decomposition前の
+normalized bridge estimator
 \begin{equation}
-\operatorname{TV}(\widehat P_Y,P_Y)
-=\frac12\sum_{y\in\{0,1\}^3}
-\left|\widehat P_Y(y)-P_Y(y)\right|
-\label{eq:simulation-tv-distance}
+\begin{aligned}
+\widehat p^{\,\mathrm{br}}_{S,c}
+&=\frac{\sum_{i=1}^n R_{iS}\widehat r_S(Y_{iS})
+\mathbf{1}\{Y_{iS}=c\}}
+{\sum_{i=1}^n R_{iS}\widehat r_S(Y_{iS})},\\
+\widehat\mu^{\,\mathrm{br}}_j
+&=\sum_{c:c_j=1}\widehat p^{\,\mathrm{br}}_{S,c}.
+\end{aligned}
+\label{eq:simulation-stage1-law-estimator}
 \end{equation}
-で評価する。また，各項目について
+を用いる。比較する残り四手法については，各fitted modelが含意する同じ
+$\mu_j$と$p_{S,c}$を用いる。従って，五手法は同一の観測法則parameterを比較するが，
+その全てを第一段階推定量と呼ぶわけではない。
+
+Zhao and Shao (2015, Section 6)のsimulation reportingに従い，各parameter
+$\psi\in\{\mu_j,p_{S,c}\}$について，100 Monte Carlo replicationsから
 \begin{equation}
-\widehat\mu_j=\widehat P(Y_j=1)=\sum_f\widehat p_f\widehat M_{jf}(1),
-\qquad
-\widehat v_j=\widehat\mu_j(1-\widehat\mu_j)
-\label{eq:simulation-y-moments}
+\begin{aligned}
+\operatorname{Bias}(\widehat\psi)
+&=\frac1{100}\sum_{b=1}^{100}(\widehat\psi_b-\psi_0),\\
+\operatorname{SD}(\widehat\psi)
+&=\left\{\frac1{99}\sum_{b=1}^{100}
+(\widehat\psi_b-\overline{\widehat\psi})^2\right\}^{1/2},\\
+\overline{\operatorname{SE}}(\widehat\psi)
+&=\frac1{100}\sum_{b=1}^{100}\widehat{\operatorname{SE}}_b,\\
+\operatorname{CP}_{.95}
+&=\frac1{100}\sum_{b=1}^{100}
+\mathbf{1}\{|\widehat\psi_b-\psi_0|
+\le1.96\widehat{\operatorname{SE}}_b\}.
+\end{aligned}
+\label{eq:simulation-inference-criteria}
 \end{equation}
-を計算し，周辺確率のbias，outcome variance $v_j$のbias，および
-$\widehat\mu_j$のMonte Carlo varianceを区別して報告する。
+を報告する。Likelihood-based methodsではobserved likelihoodのindividual scoreと
+observed informationからsandwich covarianceを構成し，delta methodで
+$\widehat{\operatorname{SE}}_b$を得る。提案法では各replication内で個人を200回
+nonparametric bootstrapし，各標本で両blockのbridgeを再推定する。
+CPはparameterごとのpointwise coverageであり，同時被覆ではない。
 
 \begin{center}
 \begin{minipage}{\linewidth}
 \centering
-\includegraphics[width=0.96\linewidth]{simulation/figures/allman_y_joint_distribution_recovery_column.pdf}
-\captionof{figure}{五手法による全体のoutcome law $P(Y_1,Y_2,Y_3)$の回復。
-横軸は8つのbinary outcome cellsである。Oracleはpopulation truthを表示し，そのほかの線は
-100 Monte Carlo replicationsで平均した各model fitの分布を表す。}
-\label{fig:y-distribution-recovery}
+\includegraphics[width=0.96\linewidth]{simulation/figures/allman_outcome_marginal_inference_column.pdf}
+\captionof{figure}{母集団outcome marginalsのparameter別推論。
+SDは100 replicationsにおけるempirical standard deviation，Mean estimated SEは
+各replicationで推定したstandard errorの平均，coverageはpointwise 95\% Wald intervalの
+被覆率である。破線はbias 0またはcoverage 0.95を表す。}
+\label{fig:outcome-marginal-inference}
 \end{minipage}
 \end{center}
 
@@ -907,49 +933,87 @@ $\widehat\mu_j$のMonte Carlo varianceを区別して報告する。
 \begin{minipage}{\linewidth}
 \centering
 \resizebox{\linewidth}{!}{%
-\begin{tabular}{lrrrrr}
+\begin{tabular}{lrrrrrrrr}
 \hline
-Method&Mean TV&$\mu_2$ Bias&$v_2$ Bias&$\mu_3$ Bias&$v_3$ Bias\\
+&\multicolumn{4}{c}{$\mu_2=0.475$}&\multicolumn{4}{c}{$\mu_3=0.4925$}\\
+Method&Bias&SD&SE&CP&Bias&SD&SE&CP\\
 \hline
-Complete-data oracle&0.0406&0.0024&$-0.00048$&0.0021&$-0.00038$\\
-MAR&0.1171&$-0.0885$&$-0.01324$&$-0.0762$&$-0.00759$\\
-Selection likelihood (correct)&0.0696&0.0005&$-0.00290$&$-0.0018$&$-0.00161$\\
-Selection likelihood (misspecified)&0.1006&0.0754&$-0.00249$&0.0663&$-0.00382$\\
-Proposed saturated bridge&0.0651&$-0.0099$&$-0.00208$&$-0.0097$&$-0.00140$\\
+Complete-data oracle&0.0024&0.0246&0.0223&0.91&0.0021&0.0202&0.0223&0.97\\
+MAR&$-0.0885$&0.0313&0.0264&0.09&$-0.0762$&0.0255&0.0266&0.13\\
+Selection likelihood (correct)&0.0005&0.0543&0.0494&0.86&$-0.0018$&0.0399&0.0420&0.94\\
+Selection likelihood (misspecified)&0.0754&0.0240&0.0231&0.12&0.0663&0.0204&0.0223&0.11\\
+Proposed Stage-1 bridge&$-0.0099$&0.0379&0.0365&0.94&$-0.0096$&0.0345&0.0339&0.93\\
 \hline
 \end{tabular}}
-\captionof{table}{観測変数法則の回復。Mean TVは，各replicationで式
-\eqref{eq:simulation-tv-distance}を計算した後の平均である。$\mu_j$ Biasは
-$\widehat P(Y_j=1)$のbias，$v_j$ Biasは推定されたoutcome varianceのbiasである。
-$\widehat P(Y_j=1)$のreplication間varianceは本文中に示す。図\ref{fig:y-distribution-recovery}では
-oracleをtruthとして描くが，本表のMean TVは実際にfitしたcomplete-data oracleを評価する。}
-\label{tab:y-law-recovery}
+\captionof{table}{母集団outcome marginalsのparameter別結果。SEはmean estimated SE，
+CPはpointwise 95\% coverageである。}
+\label{tab:outcome-marginal-inference}
 \end{minipage}
 \end{center}
 
-図\ref{fig:y-distribution-recovery}に示すように，MARは$000$ cellを過大に，$111$ cellを
-過小に回復した。式\eqref{eq:simulation-missingness}により高い$Y_2,Y_3$を持つ標本ほど
-観測されにくいため，ignorabilityを課すと高値の同時生起が失われる。誤指定selection
-likelihoodでは逆に$000$ cellを過小に，$111$ cellを過大に回復しており，$Y_1$のmain effectと
-interactionを落とした影響がjoint lawへ現れている。提案法の平均分布は全8 cellsでtruthに
-近く，最大の平均cell errorは$111$ cellの0.0112であった。
+図\ref{fig:outcome-marginal-inference}と表\ref{tab:outcome-marginal-inference}では，
+MARの$\mu_2,\mu_3$ biasは$-0.0885,-0.0762$で，coverageは0.09と0.13に低下した。
+誤指定selection likelihoodではbiasの符号が逆転し，coverageは0.12と0.11であった。
+提案Stage-1 bridgeのbiasは$-0.0099,-0.0096$に縮小し，SD 0.0379, 0.0345に対して
+mean estimated SEは0.0365, 0.0339，coverageは0.94, 0.93であった。
+正指定selection likelihoodはbiasが小さい一方，$\mu_2$ではSD 0.0543に対してSE 0.0494，
+coverage 0.86であった。この差は正指定法のbiasではなく，この有限標本における
+標本変動に対する平均SEの過小評価として現れている。ただし，100反復から得たcoverageの
+Monte Carlo誤差と数値微分に基づくSEの感度を踏まえ，手法間の効率差は断定しない。
 
-表\ref{tab:y-law-recovery}では，提案法のMean TVは0.0651であり，MARの0.1171より約44\%，
-誤指定selection likelihoodの0.1006より約35\%低い。正指定selection likelihoodは平均分布
-自体ではtruthに近いが，replicationごとのMean TVは0.0696であり，本設定では提案法と同程度で
-あった。ただし，この差は有限標本のvarianceも反映するため，提案法の一般的な効率優位を意味しない。
+\begin{center}
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[width=0.96\linewidth]{simulation/figures/allman_supported_block_inference_column.pdf}
+\captionof{figure}{二つのsupported-block lawsのparameter別推論。横軸の各点は
+$S_{12}$または$S_{13}$における$(Y_1,Y_j)=00,01,10,11$のcell probabilityを表す。
+指標と破線の定義は図\ref{fig:outcome-marginal-inference}と同じである。}
+\label{fig:supported-block-inference}
+\end{minipage}
+\end{center}
 
-周辺分布についても，MARの$\mu_2,\mu_3$ biasは$-0.0885,-0.0762$であるのに対し，提案法では
-$-0.0099,-0.0097$へ縮小した。outcome varianceのbiasもMARの$-0.01324,-0.00759$から，
-提案法では$-0.00208,-0.00140$へ縮小している。一方，提案法の$\widehat\mu_j$のMonte Carlo
-varianceは0.00151と0.00117であり，MARの0.00098と0.00065より大きい。これはinverse
-bridge weightingによる効率損失を表す。正指定selection likelihoodは周辺biasがほぼ0であるが，
-Monte Carlo varianceは0.00295と0.00159であり，この設定では最も大きい。
+図\ref{fig:supported-block-inference}では，提案Stage-1 bridgeの8 cell biasesは
+$-0.0099$から0.0067，coverageは0.89から0.95の範囲であった。MARは高い$Y_j$を含む
+$10,11$ cellsで絶対biasが最大0.0680となり，coverageは一部で0.10まで低下した。
+誤指定selection likelihoodでも絶対biasは最大0.0481，coverageは0.26から0.82であった。
+従って，bridgeによる改善は周辺平均だけでなく，第一段階が直接識別するblock lawの
+各cellにおいて確認できる。100反復で真のcoverageが0.95の場合，coverage estimateの
+Monte Carlo standard errorは約0.022であるため，数percentage pointsの差は強く解釈しない。
 
-第一段階だけを切り出した補助診断でも，respondent-only distributionの$\mu_2,\mu_3$ bias
-$-0.1166,-0.1214$は，直接bridge補正後に$-0.0099,-0.0096$へ縮小した。この結果と
-図\ref{fig:y-distribution-recovery}を合わせると，bridgeが各pair lawのselection biasを補正し，
-その後のlatent decompositionが補正された法則を一つのjoint $Y$ distributionへ接続している。
+最後に，三項目のfull joint lawは第一段階だけでは得られない点を区別する。
+$Y_2$と$Y_3$を同時に含むsupported blockを仮定していないため，
+定理3.1のlatent decomposition後に限り
+\begin{equation}
+\widehat P_Y(y_1,y_2,y_3)
+=\sum_{f=1}^{2}\widehat p_f
+\prod_{j=1}^{3}\widehat M_{jf}(1)^{y_j}
+\{1-\widehat M_{jf}(1)\}^{1-y_j}
+\label{eq:simulation-joint-y-law}
+\end{equation}
+を構成できる。補助的に，8 cells全体の誤差を
+\begin{equation}
+\operatorname{TV}(\widehat P_Y,P_Y)
+=\frac12\sum_{y\in\{0,1\}^3}
+\left|\widehat P_Y(y)-P_Y(y)\right|
+\label{eq:simulation-tv-distance}
+\end{equation}
+で測る。これは二つの分布を一致させるために移動すべき確率質量に等しい。
+
+\begin{center}
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[width=0.96\linewidth]{simulation/figures/allman_y_joint_distribution_recovery_column.pdf}
+\captionof{figure}{Stage 2後の五手法によるfull outcome law
+$P(Y_1,Y_2,Y_3)$の補助診断。Oracleはpopulation truthを表示し，そのほかの線は
+100 Monte Carlo replicationsで平均した各model fitの分布を表す。}
+\label{fig:y-distribution-recovery}
+\end{minipage}
+\end{center}
+
+提案法のMean TVは0.0651であり，MARの0.1171より約44\%，誤指定selection
+likelihoodの0.1006より約35\%低かった。ここでの提案法はStage-1 bridge後に
+latent decompositionまで行った推定量であり，図\ref{fig:outcome-marginal-inference}と
+図\ref{fig:supported-block-inference}の直接Stage-1 estimatorとは区別される。
 
 \begin{center}
 \begin{minipage}{\linewidth}
