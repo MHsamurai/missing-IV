@@ -75,15 +75,23 @@ tensor decomposition; instrumental variable
 \begin{multicols}{2}
 
 \section{問題設定}
-多次元の測定項目がmissing not at random (MNAR)で欠測する状況に対して，
-既存のmissingness-IV研究は，shadow-variable exclusion，positivity，completeness
-などの条件の下で，観測変数のfull-data lawを識別できることを示している。
+本稿が扱うのは，Allman, Matias and Rhodes (2009)の
+\textit{identifiability of parameters in latent structure models with many
+observed variables}と，Ni and Shao (2023)の
+\textit{estimation with multivariate outcomes having nonignorable item
+nonresponse}が交差する問題である。欠測側では，Sadinle and Reiter (2017)が
+\textit{itemwise conditionally independent nonresponse modelling for incomplete
+multivariate data}を，Zhao and Shao (2015)がgeneralized linear modelに対する
+\textit{semiparametric pseudo-likelihoods}を提示している。さらにmissingness-IV
+研究は，shadow-variable exclusion，positivity，completenessなどの条件の下で，
+MNARで欠測するoutcomeのfull-data lawを識別する方法を与える。
+
 しかし，構造方程式モデルや項目反応理論では，各項目が測定する構成概念そのものが
 潜在的であり，関心は潜在分布と測定パラメータの双方にある。既存のmissingness-IV
-識別は顕在変数のfull-data lawの回復までを扱う一方，潜在構造の識別理論はその
-full-data lawが観測された状態から出発するため，MNARの下で両者を接続する理論には
-ギャップが残る。そこで本稿は，MNARの下で回復された観測変数の法則と潜在分布・
-測定核の識別理論を統合し，潜在分布と測定核を一意に分解できる条件を与える。
+識別は顕在変数のfull-data lawの回復までを扱う一方，Allman et al.に代表される
+潜在構造の識別理論はそのfull-data lawが観測された状態から出発するため，MNARの下で
+両者を接続する理論にはギャップが残る。そこで本稿は，MNARの下で回復された観測変数の
+法則と潜在分布・測定核の識別理論を統合し，潜在分布と測定核を一意に分解できる条件を与える。
 さらに，対応する推定量を構成し，parametric selection modelを誤指定した場合に
 selection modelを直接規定しないbridge-based approachが示す有限標本上の頑健性を
 simulationにより検討する。
