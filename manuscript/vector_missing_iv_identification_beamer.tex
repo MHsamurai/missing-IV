@@ -1,309 +1,550 @@
-\documentclass[aspectratio=169,11pt]{beamer}
+\documentclass[aspectratio=169,10pt]{beamer}
+
 \usepackage{xeCJK}
-\setCJKmainfont{Yu Gothic}
-\setCJKsansfont{Yu Gothic}
-\setCJKmonofont{Yu Gothic}
-\usepackage{amsmath,amssymb,bm}
+\setsansfont{Helvetica Neue}
+\setCJKmainfont{Hiragino Sans}
+\setCJKsansfont{Hiragino Sans}
+\setCJKmonofont{Hiragino Sans}
+\setmonofont{Menlo}
+\usepackage{amsmath,amssymb,bm,mathtools,booktabs,graphicx,tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,shapes.geometric}
 
-\usetheme{Madrid}
-\usefonttheme{professionalfonts}
+\usetheme{default}
+\definecolor{Navy}{HTML}{17365D}
+\definecolor{Blue}{HTML}{1F5AA6}
+\definecolor{PaleBlue}{HTML}{EAF2FA}
+\definecolor{Red}{HTML}{B3261E}
+\definecolor{GrayText}{HTML}{4F5965}
+\setbeamercolor{normal text}{fg=black,bg=white}
+\setbeamercolor{structure}{fg=Navy}
+\setbeamercolor{frametitle}{fg=white,bg=Navy}
+\setbeamercolor{title}{fg=Navy}
+\setbeamercolor{subtitle}{fg=Blue}
+\setbeamercolor{block title}{fg=Navy,bg=PaleBlue}
+\setbeamercolor{block body}{fg=black,bg=PaleBlue!45}
+\setbeamercolor{alerted text}{fg=Red}
+\setbeamercolor{footline}{fg=GrayText,bg=white}
 \setbeamertemplate{navigation symbols}{}
-\setbeamertemplate{footline}[frame number]
-
-\definecolor{deepblue}{RGB}{28,61,104}
-\definecolor{accent}{RGB}{176,76,45}
-\setbeamercolor{structure}{fg=deepblue}
-\setbeamercolor{alerted text}{fg=accent}
+\setbeamertemplate{itemize item}{\color{Blue}$\blacktriangleright$}
+\setbeamertemplate{itemize subitem}{\color{Navy}$\bullet$}
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamertemplate{footline}{%
+  \leavevmode\hbox{%
+    \begin{beamercolorbox}[wd=.84\paperwidth,ht=2.4ex,dp=1ex,leftskip=1.2em]{footline}
+      \scriptsize Identification of latent measurement models under multivariate MNAR
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.16\paperwidth,ht=2.4ex,dp=1ex,rightskip=1.2em plus1fil]{footline}
+      \scriptsize \insertframenumber/\inserttotalframenumber
+    \end{beamercolorbox}}
+}
+\setbeamerfont{normal text}{size*={10.5pt}{12.6pt}}
+\setbeamerfont{frametitle}{size*={14pt}{16.8pt},series=\bfseries}
+\setbeamerfont{title}{size=\LARGE,series=\bfseries}
+\setbeamerfont{subtitle}{size=\large}
+\setbeamerfont{block title}{series=\bfseries}
+\setlength{\leftmargini}{1.35em}
+\setlength{\leftmarginii}{1.15em}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.14}
 
 \newcommand{\E}{\mathbb E}
 \newcommand{\Prb}{\mathbb P}
-\newcommand{\1}{\mathbf 1}
-\newcommand{\Y}{\bm Y}
-\newcommand{\D}{\bm D}
 \newcommand{\indep}{\mathrel{\perp\!\!\!\perp}}
+\newcommand{\bluekey}[1]{\textcolor{Blue}{\textbf{#1}}}
+\newcommand{\redkey}[1]{\textcolor{Red}{\textbf{#1}}}
+\newcommand{\term}[1]{\underline{#1}}
+\newenvironment{assumptionbox}[1]{\begin{block}{Assumption: #1}}{\end{block}}
+\newenvironment{theorembox}[1]{\begin{block}{#1}}{\end{block}}
+\newenvironment{takeaway}{\begin{block}{Key message}\color{Navy}\bfseries}{\end{block}}
 
-\title{欠測IV識別のベクトル化}
-\subtitle{d'Haultfoeuille (2010), Proposition 2.1 and Theorem 2.3 の再構築}
-\author{}
+\title{Identification of Latent Measurement Models\\under Multivariate MNAR}
+\subtitle{Shadow IVs, supported blocks, and finite latent classes}
+\author{Masahiro Honda \quad Takahiro Hoshino \quad Taisuke Otsu}
+\institute{Keio University \quad RIKEN \quad London School of Economics}
 \date{}
 
 \begin{document}
 
-\begin{frame}
-  \titlepage
+\begin{frame}[plain]
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[PaleBlue] (current page.north west) rectangle ([yshift=-1.35cm]current page.north east);
+  \fill[Navy] ([yshift=.48cm]current page.south west) rectangle (current page.south east);
+  \draw[Blue,line width=2pt] ([xshift=1.05cm,yshift=-1.48cm]current page.north west)
+    -- ([xshift=-1.05cm,yshift=-1.48cm]current page.north east);
+\end{tikzpicture}
+\vspace{1.35cm}
+\titlepage
 \end{frame}
 
-\begin{frame}{問題設定}
-  \begin{itemize}
-    \item 欠測変数はベクトル
-      \[
-        \Y=(Y_1,\ldots,Y_m)'.
-      \]
-    \item 欠測確率は未観測になりうる $\Y$ 自身に依存してよい。
-    \item 常時観測変数 $Z$ を使って，完全ケース確率
-      \[
-        \pi(\bm y)=\Prb(R=1\mid\Y=\bm y)
-      \]
-      を逆問題として識別する。
-  \end{itemize}
-  \begin{alertblock}{目的}
-    MARや項目別独立を仮定せず，$P(R,\Y,Z)$ を回復する。
-  \end{alertblock}
+\begin{frame}{Nonignorable item nonresponse in latent structure models}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.48\textwidth}
+\begin{block}{Observed-data problem}
+With \term{incomplete multivariate data}, each measurement $Y_j$ may be missing not at random:
+\[
+\Prb(D_j=1\mid Y,X)\text{ depends on }Y.
+\]
+Shadow-variable methods can recover an observed-variable \term{full-data law} without imposing a parametric selection model.
+\end{block}
+\end{column}
+\begin{column}{.49\textwidth}
+\begin{block}{Latent-structure target}
+In structural equation models and item response theory, the target is not only the law of $Y$:
+\[
+\begin{aligned}
+\textcolor{Blue}{\bm Q_F}&:\text{ latent distribution},\\
+\textcolor{Blue}{\bm Q_Y}&:\text{ measurement kernels}.
+\end{aligned}
+\]
+The recovered law of $Y$ does not automatically identify this decomposition.
+\end{block}
+\end{column}
+\end{columns}
+\vspace{.3em}
+\begin{takeaway}
+The gap lies between recovery of the full-data law and identification of its latent structure.
+\end{takeaway}
 \end{frame}
 
-\begin{frame}{原論文からベクトル版への対応}
-  \centering
-  \begin{tabular}{lll}
-    \hline
-    対象 & 原論文 & ベクトル版 \\
-    \hline
-    選択・完全ケース & $D\in\{0,1\}$ & $R=\1\{\D=\bm1_m\}$ \\
-    欠測変数 & $Y$ & $\Y=(Y_1,\ldots,Y_m)'$ \\
-    常時観測IV & $Z$ & $Z$ \\
-    選択確率 & $P(y)$ & $\pi(\bm y)$ \\
-    \hline
-  \end{tabular}
-
-  \vspace{1em}
-  ベクトル化で変わるのは関数の定義域であり，
-  \alert{識別証明の骨格は変わらない}。
+\begin{frame}{Two literatures solve different stages}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.47\textwidth}
+\begin{block}{MNAR identification}
+\term{Missingness IV / shadow variable}
+\begin{itemize}
+  \item d'Haultfoeuille (2010): completeness and a conditional moment equation.
+  \item Zhao and Shao (2015): covariate-adjusted exclusion and semiparametric pseudo-likelihoods.
+  \item Miao et al. (2019): completeness on the complete-case law.
+\end{itemize}
+\end{block}
+\end{column}
+\begin{column}{.50\textwidth}
+\begin{block}{Latent-structure identification}
+\term{Many observed variables}
+\begin{itemize}
+  \item Allman, Matias and Rhodes (2009): uniqueness of a three-view probability tensor.
+  \item The starting point is an observed joint distribution without MNAR selection.
+  \item The result separates class proportions and measurement kernels.
+\end{itemize}
+\end{block}
+\end{column}
+\end{columns}
+\vspace{.3em}
+\centering\bluekey{This paper connects these two stages under multivariate MNAR.}
 \end{frame}
 
-\begin{frame}{観測データと識別範囲}
-  項目別観測指標と完全ケース指標を
+\begin{frame}{The latent mixture and the additional identification problem}
+Let $F$ denote an unobserved latent variable, $Y=(Y_1,\ldots,Y_m)$ the full vector of potential measurements, $X$ always-observed covariates, and $W$ an always-observed latent shifter.
+\[
+\Prb(Y=y\mid W=w,X=x)
+=\int\prod_{j=1}^m Q_j(y_j\mid f,x)\,dQ_F(f\mid w,x).
+\]
+For $F\in\{1,\ldots,r\}$, let $\lambda_f(w,x)=\Prb(F=f\mid W=w,X=x)$ and let $M_j(:,f;x)$ denote the conditional probability vector for item $j$. Then
+\[
+\Prb(Y\mid W,X)=\sum_{f=1}^r\lambda_f(W,X)\bigotimes_{j=1}^m M_j(:,f;X).
+\]
+\begin{takeaway}
+Identifying the left-hand side is insufficient: \redkey{$Q_F$ and $Q_Y$ require a unique tensor decomposition.}
+\end{takeaway}
+\end{frame}
+
+\begin{frame}{A latent shifter is not a missingness IV}
+Suppose $D\indep W\mid(Y,F,X)$. After integrating out $F$,
+\[
+\Prb(D=d\mid Y=y,W=w,X=x)
+=\int \Prb(D=d\mid y,f,x)\,d\Prb(f\mid y,w,x).
+\]
+If $W$ shifts $F$, the mixing distribution generally depends on $w$. Hence
+\[
+D\indep W\mid(Y,X)\quad\text{does }\textcolor{Red}{\mathbf{not}}\text{ follow.}
+\]
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.48\textwidth}
+\begin{block}{$Z_S$: missingness IV}
+Predicts $Y_S$ and satisfies an exclusion for $R_S$ conditional on $(Y_S,U_S)$.
+\end{block}
+\end{column}
+\begin{column}{.48\textwidth}
+\begin{block}{$W$: latent shifter}
+Moves the distribution of $F$ and supplies third-mode variation for decomposition.
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[plain]
+\vfill\centering
+{\color{Blue}\large\bfseries Stage 1}\par\vspace{.6em}
+{\fontsize{20}{24}\selectfont\bfseries Recover each supported-block law}\par\vspace{1em}
+{\large Shadow IV $+$ positivity $+$ complete-case completeness}
+\vfill
+\end{frame}
+
+\begin{frame}{Observed data and supported blocks}
+Let $D_j$ denote the response indicator for $Y_j$. The observed-data vector is
+\[
+O=(X,W,Z,D,Y_D),\qquad Y_D=\{Y_j:D_j=1\}.
+\]
+For a block $S\subseteq\{1,\ldots,m\}$, define
+\[
+R_S=\prod_{j\in S}D_j,\qquad Y_S=(Y_j:j\in S),\qquad U_S=(X,W).
+\]
+$Y_S$ is observed only when $R_S=1$. A block is \term{supported} if
+\[
+\pi_S(y,u):=\Prb(R_S=1\mid Y_S=y,U_S=u)>0
+\]
+on the target support.
+\begin{takeaway}
+The method requires supported anchor and extension pairs, not a global complete case.
+\end{takeaway}
+\end{frame}
+
+\begin{frame}{Single-block data-generating structure}
+\begin{columns}[c,onlytextwidth]
+\begin{column}{.56\textwidth}
+\centering
+\resizebox{.95\linewidth}{!}{\input{notes/figures/latent_mnar_dag.tex}}
+\end{column}
+\begin{column}{.41\textwidth}
+\begin{itemize}
+  \item $U_S=(X,W)$ enters the latent distribution and the observed variables.
+  \item $Z_S$ predicts $Y_S$ but has no direct arrow to $R_S$.
+  \item Missingness may depend on unobserved $Y_S$ and is therefore MNAR.
+\end{itemize}
+\end{column}
+\end{columns}
+\vspace{.3em}
+\centering\scriptsize Arrows encode the probabilistic factorization used for identification.
+\end{frame}
+
+\begin{frame}{Stage-1 assumptions}
+\begin{assumptionbox}{Blockwise covariate-adjusted missingness IV}
+For every supported block $S$,
+\[
+R_S\indep Z_S\mid(Y_S,U_S).
+\]
+\end{assumptionbox}
+\begin{assumptionbox}{Complete-case completeness}
+For $h\in L^2\{\Prb(Y_S,U_S\mid R_S=1)\}$,
+\[
+\E\{h(Y_S,U_S)\mid R_S=1,Z_S,U_S\}=0
+\Longrightarrow h(Y_S,U_S)=0.
+\]
+\end{assumptionbox}
+Positivity transfers null sets between the complete-case and full laws; completeness makes the observed conditional operator injective.
+\end{frame}
+
+\begin{frame}{Proposition 1: identification of a supported-block law}
+\begin{theorembox}{Supported-block identification}
+Under blockwise exclusion, positivity, and complete-case completeness, $\pi_S$ is the unique positive solution of
+\[
+\E\left\{\frac{R_S}{q(Y_S,U_S)}\middle|Z_S,U_S\right\}=1.
+\]
+Consequently, for every integrable $h$,
+\[
+\E h(Y_S,Z_S,U_S)
+=\E\left\{\frac{R_Sh(Y_S,Z_S,U_S)}{\pi_S(Y_S,U_S)}\right\},
+\]
+and $\Prb(Y_S,Z_S,U_S)$ is identified.
+\end{theorembox}
+\begin{takeaway}
+Each block law is recovered without specifying a parametric selection model.
+\end{takeaway}
+\end{frame}
+
+\begin{frame}{Proof sketch: the observable bridge is unique}
+\begin{enumerate}
+  \item Exclusion implies $\E(R_S\mid Y_S,Z_S,U_S)=\pi_S(Y_S,U_S)$, so the true $\pi_S$ satisfies the bridge moment.
+  \item Any other positive solution $q$ satisfies
   \[
-    \D=(D_1,\ldots,D_m)',
-    \qquad
-    R=\1\{\D=\bm1_m\}
+  \E\{q^{-1}-\pi_S^{-1}\mid R_S=1,Z_S,U_S\}=0.
   \]
-  とする。
-
-  \begin{block}{中心証明が使う観測情報}
-    \[
-      P(Z),qquad
-      \Prb\{R=1,\Y\in d\bm y,Z\in dz\}.
-    \]
-  \end{block}
-
-  部分観測ケースは追加情報になりうるが，中心定理では使わない。
+  \item Complete-case completeness gives $q^{-1}=\pi_S^{-1}$ on $R_S=1$.
+  \item Positivity extends equality to the full support; inverse weighting recovers every block functional.
+\end{enumerate}
+\begin{takeaway}
+The proof separates \bluekey{bridge uniqueness} from \bluekey{latent decomposition}.
+\end{takeaway}
 \end{frame}
 
-\begin{frame}{維持する仮定}
-  \begin{enumerate}
-    \item Shadow exclusion
-      \[
-        R\indep Z\mid\Y.
-      \]
-    \item Positivity
-      \[
-        \pi(\Y)>0\quad\text{a.s.}
-      \]
-    \item Vector $\mathcal B_{\Y}$-completeness
-      \[
-        \E\{a(\Y)\mid Z\}=0
-        \ \Longrightarrow\ a(\Y)=0,
-        \qquad a\in\mathcal B_{\Y},
-      \]
-      \[
-        \mathcal B_{\Y}
-        =\{a:\E|a(\Y)|<\infty,\ a(\Y)\text{ は下に有界}\}.
-      \]
-  \end{enumerate}
+\begin{frame}{Overlapping supported blocks replace global complete cases}
+\begin{columns}[c,onlytextwidth]
+\begin{column}{.54\textwidth}
+\centering
+\resizebox{.84\linewidth}{!}{\input{notes/figures/supported_blocks_dag.tex}}
+\end{column}
+\begin{column}{.43\textwidth}
+\begin{itemize}
+  \item Anchor pair: $S_0=\{a,b\}$.
+  \item Extension pairs: $S_j=\{j,a\}$.
+  \item Shared item $Y_a$ connects measurement kernels across blocks.
+  \item Every required pair has its own $Z_S$ and bridge.
+\end{itemize}
+\end{column}
+\end{columns}
 \end{frame}
 
-\begin{frame}{構造から条件付き独立性へ}
+\begin{frame}[plain]
+\vfill\centering
+{\color{Blue}\large\bfseries Stage 2}\par\vspace{.6em}
+{\fontsize{20}{24}\selectfont\bfseries Decompose the recovered block laws}\par\vspace{1em}
+{\large Anchor items $+$ latent shifter $+$ Kruskal uniqueness}
+\vfill
+\end{frame}
+
+\begin{frame}{Finite latent classes and the anchor tensor}
+Fix $X=x$ and let $F\in\{1,\ldots,r\}$. Define
+\[
+M_j(y,f;x)=\Prb(Y_j=y\mid F=f,X=x),\quad
+p_f(x)=\Prb(F=f\mid X=x),
+\]
+\[
+G(w,f;x)=\Prb(W=w\mid F=f,X=x).
+\]
+The recovered anchor law forms a three-way array:
+\[
+\mathcal T_{abW}(x)
+=\sum_{f=1}^r p_f(x)
+M_a(:,f;x)\otimes M_b(:,f;x)\otimes G(:,f;x).
+\]
+\begin{takeaway}
+$Y_a$, $Y_b$, and $W$ act as the three conditionally independent views.
+\end{takeaway}
+\end{frame}
+
+\begin{frame}{Anchor-pair identification conditions}
+\begin{assumptionbox}{Covariate-assisted anchor-pair structure}
+For every $x$ in a common full-probability set:
+\begin{itemize}
+  \item the anchor pair $\{a,b\}$ and all extension pairs $\{j,a\}$ are supported;
+  \item $p_f(x)>0$ and $\Prb(W=w\mid X=x)>0$;
+  \item with column Kruskal ranks $k_a,k_b,k_G$,
   \[
-    \Y=\phi(Z,\bm\varepsilon),
-    \qquad
-    \D=\psi(\Y,\bm\nu),
-    \qquad
-    \bm\nu\indep(Z,\bm\varepsilon).
+  \textcolor{Red}{\bm{k_a+k_b+k_G\ge 2r+2}};
   \]
-
-  $\Y$ は $(Z,\bm\varepsilon)$ の関数なので
-  $\bm\nu\indep(\Y,Z)$。したがって
-  \[
-    \Prb(\D=\bm d\mid\Y=\bm y,Z=z)
-    =\Prb(\D=\bm d\mid\Y=\bm y).
-  \]
-
-  \begin{block}{ベクトル版 Proposition 2.1}
-    \[
-      \D\indep Z\mid\Y
-      \quad\Longrightarrow\quad
-      R\indep Z\mid\Y.
-    \]
-  \end{block}
+  \item a known anchor score satisfies $\mu_{a1}(x)<\cdots<\mu_{ar}(x)$ and fixes the common labels.
+\end{itemize}
+\end{assumptionbox}
+The rank condition identifies the anchor decomposition; overlapping pairs propagate it to every $M_j$.
 \end{frame}
 
-\begin{frame}{真の完全ケース確率が満たす式}
-  条件付き独立性より
-  \begin{align*}
-    \E\left\{\frac{R}{\pi(\Y)}\middle|Z\right\}
-    &=\E\left[\left.
-      \frac{\E(R\mid\Y,Z)}{\pi(\Y)}\right|Z\right]\\
-    &=\E\left\{\left.
-      \frac{\pi(\Y)}{\pi(\Y)}\right|Z\right\}=1.
-  \end{align*}
-
-  \begin{alertblock}{識別モーメント}
-    \[
-      \boxed{\E\{R/\pi(\Y)\mid Z\}=1}.
-    \]
-  \end{alertblock}
+\begin{frame}{Theorem 1: integrated identification}
+\begin{theorembox}{Anchor-pair identification with $W$ as the third mode}
+Under the stage-1 assumptions and the anchor-pair conditions, the observed-data law identifies, under the fixed anchor ordering,
+\[
+p(x),\quad G(x),\quad
+Q_F(x)=\{\lambda_f(w,x)\}_{f,w},\quad
+Q_Y(x)=\{M_j(y,f;x)\}_{j,y,f}.
+\]
+Moreover, for any set of items $A$,
+\[
+\Prb(Y_A=y_A\mid W=w,X=x)
+=\sum_{f=1}^r\lambda_f(w,x)\prod_{j\in A}M_j(y_j,f;x)
+\]
+is identified even if all items in $A$ are never jointly observed.
+\end{theorembox}
 \end{frame}
 
-\begin{frame}{候補解の観測可能性}
-  候補 $q:\mathbb R^m\to(0,1]$ に対して
+\begin{frame}{Proof sketch: from the anchor tensor to all kernels}
+\begin{enumerate}
+  \item \bluekey{Recover tensors}: Proposition 1 identifies $\mathcal T_{abW}$ and each $\mathcal T_{jaW}$.
+  \item \bluekey{Decompose the anchor}: Kruskal uniqueness identifies $M_a,M_b,p,G$; simplex normalization and anchor ordering remove scaling and permutation.
+  \item \bluekey{Recover class weights}: Bayes' rule gives
   \[
-    \E\left\{\frac{R}{q(\Y)}\middle|Z\right\}=1
+  \lambda_f(w,x)=\frac{p_f(x)G(w,f;x)}{\Prb(W=w\mid X=x)}.
   \]
-  を考える。
-
-  \begin{itemize}
-    \item $R=0$ なら $R/q(\Y)=0$。
-    \item $q(\Y)$ を評価する必要があるのは $R=1$ のときだけ。
-    \item したがって左辺は完全ケースの観測分布から計算できる。
-  \end{itemize}
-
-  識別問題は，この観測可能な積分方程式の
-  \alert{解が一意か}という問題になる。
+  \item \bluekey{Extend to every item}: since $G\odot M_a$ has full column rank,
+  \[
+  M_j=T_{j\mid aW}\left[\operatorname{diag}(p)(G\odot M_a)^\top\right]^+.
+  \]
+\end{enumerate}
 \end{frame}
 
-\begin{frame}{完備性を適用する関数}
-  候補解 $q$ に対して
-  \[
-    a(\Y)=\frac{\pi(\Y)}{q(\Y)}-1
-  \]
-  と置く。
-
-  \begin{columns}[T]
-    \column{0.46\textwidth}
-    \begin{block}{下方有界性}
-      \[
-        a(\Y)\ge-1.
-      \]
-    \end{block}
-    \column{0.50\textwidth}
-    \begin{block}{可積分性}
-      \[
-        \E\left\{\frac{\pi(\Y)}{q(\Y)}\right\}=1,
-      \]
-      \[
-        \E|a(\Y)|\le2.
-      \]
-    \end{block}
-  \end{columns}
-
-  よって $a\in\mathcal B_{\Y}$。これが原論文の関数クラスを
-  維持する理由である。
+\begin{frame}{Complete identification map}
+\begin{columns}[c,onlytextwidth]
+\begin{column}{.56\textwidth}
+\centering
+\resizebox{.70\linewidth}{!}{\input{notes/figures/identification_flow.tex}}
+\end{column}
+\begin{column}{.40\textwidth}
+\begin{enumerate}
+  \item Observed pattern data
+  \item Supported-block laws
+  \item Anchor and extension tensors
+  \item Latent distribution and measurement kernels
+\end{enumerate}
+\vspace{.5em}
+\bluekey{No global complete case is required.}
+\end{column}
+\end{columns}
 \end{frame}
 
-\begin{frame}{Vector completenessによる一意性}
-  候補モーメントと条件付き独立性から
-  \begin{align*}
-    0
-    &=\E\left\{\frac{R}{q(\Y)}-1\middle|Z\right\}\\
-    &=\E\left\{\frac{\pi(\Y)}{q(\Y)}-1\middle|Z\right\}\\
-    &=\E\{a(\Y)\mid Z\}.
-  \end{align*}
-
-  $a\in\mathcal B_{\Y}$ なのでvector completenessより
-  \[
-    a(\Y)=0\quad\text{a.s.}
-    \quad\Longrightarrow\quad
-    q(\Y)=\pi(\Y)\quad\text{a.s.}
-  \]
-
-  \begin{alertblock}{結論}
-    完全ケース確率 $\pi(\Y)$ は一意に識別される。
-  \end{alertblock}
+\begin{frame}{Bridge-weighted composite estimation}
+Let $\mathcal S_*=\{\{a,b\}\}\cup\{\{j,a\}:j\notin\{a,b\}\}$. Following the identification order,
+\[
+\widehat\theta=\arg\max_{\theta\in\Theta}
+\frac1n\sum_{i=1}^n\sum_{S\in\mathcal S_*}c_S
+\frac{R_{iS}}{\widehat\pi_S(Y_{iS},U_i)}
+\log p_\theta(Y_{iS},W_i\mid X_i),
+\]
+where $\theta=\{p,G,M_1,\ldots,M_m\}$.
+\begin{itemize}
+  \item This is a \term{composite M-estimator}, not a full likelihood.
+  \item The bridge may be finite-dimensional or a regularized sieve.
+  \item Inference must include first-stage bridge estimation.
+\end{itemize}
+\begin{theorembox}{Finite-dimensional bridge}
+Under regularity and separation, $\widehat\theta\to_p\theta_0$ and
+$\sqrt n(\widehat\theta-\theta_0)\rightsquigarrow N(0,A^{-1}BA^{-\top})$.
+\end{theorembox}
 \end{frame}
 
-\begin{frame}{同時分布の復元}
-  任意の可測集合 $A$ について
-  \[
-    \Prb\{(\Y,Z)\in A\}
-    =\E\left[
-      \frac{R}{\pi(\Y)}\1\{(\Y,Z)\in A\}
-    \right].
-  \]
-  したがって
-  \[
-    P_{\Y,Z}(d\bm y,dz)
-    =\frac{P(R=1,\Y\in d\bm y,Z\in dz)}{\pi(\bm y)}.
-  \]
-
-  $R=0$ 側も
-  \[
-    \Prb\{R=0,(\Y,Z)\in A\}
-    =\E\left[
-      R\frac{1-\pi(\Y)}{\pi(\Y)}\1_A
-    \right]
-  \]
-  で復元できる。
+\begin{frame}{Identification-aligned computation}
+\begin{enumerate}
+  \item Estimate the bridge for every supported pair and check overlap.
+  \item Construct weighted anchor and extension tensors.
+  \item Initialize a nonnegative CP decomposition of the anchor tensor.
+  \item Normalize columns, fix labels, and invert extension tensors.
+  \item Run constrained block-coordinate updates from multiple starts.
+  \item Select the largest criterion and report rank, anchor, and propensity gaps.
+\end{enumerate}
+\begin{takeaway}
+The algorithm follows the same order as the identification argument.
+\end{takeaway}
 \end{frame}
 
-\begin{frame}{何が識別され、何が識別されないか}
-  \begin{columns}[T]
-    \column{0.48\textwidth}
-    \begin{block}{識別される}
-      \begin{itemize}
-        \item $\pi(\Y)$
-        \item $P(\Y,Z)$
-        \item $P(R,\Y,Z)$
-        \item $\E(\Y)$（有限なら）
-      \end{itemize}
-    \end{block}
-    \column{0.48\textwidth}
-    \begin{alertblock}{追加仮定なしには識別されない}
-      \begin{itemize}
-        \item $P(\D,\Y,Z)$ 全体
-        \item 各 $\bm d\ne\bm1_m$ の潜在的な $\Y$ 分布
-      \end{itemize}
-    \end{alertblock}
-  \end{columns}
-
-  パターン別識別には $\pi_{\bm d}(\Y)$ ごとの除外制約と
-  識別モーメントが必要である。
+\begin{frame}{Simulation design}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.48\textwidth}
+\begin{block}{Data-generating process}
+\begin{itemize}
+  \item Allman-type two-class product mixture.
+  \item $n=500$; binary $W,Y_1,Y_2,Y_3$.
+  \item $Y_1$ always observed; $Y_2,Y_3$ MNAR.
+  \item Mean item response rate: $80\%$.
+  \item Four-category full-rank shadow variable for each pair.
+  \item 100 Monte Carlo replications.
+\end{itemize}
+\end{block}
+\end{column}
+\begin{column}{.49\textwidth}
+\begin{block}{Five estimators}
+\begin{enumerate}
+  \item Complete-data oracle
+  \item MAR
+  \item Correct selection likelihood
+  \item Misspecified selection likelihood
+  \item Proposed saturated finite-cell bridge
+\end{enumerate}
+\end{block}
+Targets: bias and RMSE of $M_j$ and $p_f$.
+\end{column}
+\end{columns}
 \end{frame}
 
-\begin{frame}{主論文への接続}
-  主論文では記号を
-  \[
-    Z\longmapsto V
-  \]
-  と置き換えるだけで，同じ第一段階から $P(\Y,V)$ を復元する。
+\begin{frame}{Simulation: robustness to selection misspecification}
+\begin{columns}[c,onlytextwidth]
+\begin{column}{.56\textwidth}
+\centering
+\includegraphics[width=\linewidth]{simulation/figures/allman_bias_rmse_comparison.pdf}
+\end{column}
+\begin{column}{.41\textwidth}
+\small
+\begin{tabular}{lrr}
+\toprule
+Method & $M_j$ bias & RMSE\\
+\midrule
+Oracle & .0031 & .0351\\
+MAR & -.0496 & .0966\\
+Selection: correct & -.0008 & .0544\\
+Selection: misspec. & .0409 & .0684\\
+\textbf{Finite-cell bridge} & \textbf{-.0064} & \textbf{.0555}\\
+\bottomrule
+\end{tabular}
+\vspace{.7em}
 
-  \begin{block}{第二段階：潜在測定モデル}
-    \[
-      F=g(V)+U,
-      \qquad
-      \Y=\bm h(F)+\bm\varepsilon.
-    \]
-  \end{block}
-
-  \begin{itemize}
-    \item 第一段階：欠測IVにより $P(\Y,V)$ を復元。
-    \item 第二段階：別途の測定モデル識別条件で $g,h_1,\ldots,h_m$ を回復。
-  \end{itemize}
+The proposed estimator has lower absolute bias and RMSE than MAR and the misspecified selection likelihood. Its RMSE is close to the correctly specified likelihood, but above the oracle.
+\end{column}
+\end{columns}
 \end{frame}
 
-\begin{frame}{まとめ}
-  \begin{enumerate}
-    \item ベクトル化しても中心モーメントは
-      \[
-        \E\{R/\pi(\Y)\mid Z\}=1.
-      \]
-    \item $a=\pi/q-1$ は下に有界で $\E|a|\le2$。
-    \item Vector $\mathcal B_{\Y}$-completenessが候補解を一意にする。
-    \item $\pi$ から $P(R,\Y,Z)$ と有限な平均を復元できる。
-    \item 項目別積重みや項目別独立は不要。
-  \end{enumerate}
+\begin{frame}{Interpretation and limits}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.48\textwidth}
+\begin{block}{Advantage}
+The bridge avoids bias from specifying the wrong parametric selection equation while recovering both measurement kernels and class proportions.
+\end{block}
+\end{column}
+\begin{column}{.49\textwidth}
+\begin{block}{Cost and limits}
+\begin{itemize}
+  \item Class-proportion RMSE remains above correctly specified selection likelihood.
+  \item Robustness does not cover violations of exclusion, completeness, local independence, or the latent-class model.
+  \item Sieve inference requires additional inverse-problem theory.
+\end{itemize}
+\end{block}
+\end{column}
+\end{columns}
+\vspace{.35em}
+\begin{takeaway}
+The gain is robustness to the \redkey{selection-link specification}, not universal robustness or efficiency dominance.
+\end{takeaway}
+\end{frame}
 
-  \begin{alertblock}{主張の境界}
-    $P(R,\Y,Z)$ の識別と $P(\D,\Y,Z)$ の識別は区別する。
-  \end{alertblock}
+\begin{frame}{Conclusion}
+\begin{enumerate}
+  \item Shadow IVs and complete-case completeness identify each supported-block law without a parametric selection model.
+  \item Anchor items connect overlapping blocks, while $W$ supplies the third mode needed for tensor uniqueness.
+  \item The observed-data law then identifies finite latent-class proportions and all measurement kernels under a common label.
+  \item A bridge-weighted composite estimator follows the same order and performs well under selection-model misspecification.
+\end{enumerate}
+\vspace{.55em}
+\begin{takeaway}
+\bluekey{Recover block laws first; decompose the latent structure second.}
+\end{takeaway}
+\end{frame}
+
+\begin{frame}[allowframebreaks]{Selected references}
+\footnotesize
+\begin{thebibliography}{99}
+\bibitem{} Allman, E. S., Matias, C., and Rhodes, J. A. (2009). Identifiability of parameters in latent structure models with many observed variables. \emph{Annals of Statistics}, 37, 3099--3132.
+\bibitem{} d'Haultfoeuille, X. (2010). A new instrumental method for dealing with endogenous selection. \emph{Journal of Econometrics}, 154, 1--15.
+\bibitem{} Miao, W., Liu, L., Tchetgen Tchetgen, E. J., and Geng, Z. (2019). Identification, doubly robust estimation, and semiparametric efficiency theory of nonignorable missing data with a shadow variable. arXiv:1509.02556v3.
+\bibitem{} Zhao, J. and Shao, J. (2015). Semiparametric pseudo-likelihoods in generalized linear models with nonignorable missing data. \emph{Journal of the American Statistical Association}, 110, 1577--1590.
+\bibitem{} Holman, R. and Glas, C. A. W. (2005). Modelling non-ignorable missing-data mechanisms with item response theory models. \emph{British Journal of Mathematical and Statistical Psychology}, 58, 1--17.
+\bibitem{} Kuha, J., Katsikatsou, M., and Moustaki, I. (2018). Latent variable modelling with non-ignorable item nonresponse. \emph{Journal of the Royal Statistical Society: Series A}, 181, 907--932.
+\end{thebibliography}
+\end{frame}
+
+\appendix
+
+\begin{frame}{Appendix: extension-kernel inversion}
+For $j\notin\{a,b\}$, mode-$j$ unfolding gives
+\[
+T_{j\mid aW}(x)
+=M_j(x)\operatorname{diag}\{p(x)\}
+\{G(x)\odot M_a(x)\}^{\top}.
+\]
+The anchor Kruskal condition implies that $G\odot M_a$ has full column rank. Thus
+\[
+M_j(x)=T_{j\mid aW}(x)
+\left[\operatorname{diag}\{p(x)\}
+\{G(x)\odot M_a(x)\}^{\top}\right]^+.
+\]
+The same anchor ordering fixes the label of every extension kernel.
+\end{frame}
+
+\begin{frame}{Appendix: empirical diagnostics}
+For a proposed assignment of blockwise IVs, latent shifters, covariates, and anchor items, the data can diagnose:
+\begin{itemize}
+  \item relevance of each $Z_S$ and rank of a finite complete-case operator;
+  \item supported-block positivity and effective sample size;
+  \item third-mode rank, anchor separation, and label stability;
+  \item agreement of measurement kernels recovered from redundant blocks.
+\end{itemize}
+\begin{takeaway}
+Failure can refute a design, but success does not verify shadow exclusion, measurement exclusion, or local independence.
+\end{takeaway}
 \end{frame}
 
 \end{document}
