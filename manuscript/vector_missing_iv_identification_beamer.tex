@@ -196,7 +196,8 @@ Let $F$ denote an \term{unobserved latent variable} and let $Y=(Y_1,\ldots,Y_m)$
 =\int\prod_{j=1}^m Q_j(y_j\mid f,x)\,dQ_F(f\mid w,x).
 \]
 \begin{takeaway}
-Identifying the left-hand side is insufficient: \redkey{$Q_F$ and $Q_Y$ require a unique tensor decomposition.}
+\redkey{Recovering the full law does not separate $Q_F$ from $Q_Y$.}\\[-.1em]
+{\scriptsize The theorem below covers finite latent classes; continuous factors require additional restrictions.}
 \end{takeaway}
 \end{frame}
 
@@ -225,7 +226,9 @@ Identifying the left-hand side is insufficient: \redkey{$Q_F$ and $Q_Y$ require 
 \end{column}
 \end{columns}
 \vspace{.3em}
-\centering\bluekey{This paper connects these two stages under multivariate MNAR.}
+\begin{takeaway}
+Latent-MNAR joint models already exist. \bluekey{The new result is a theorem that connects selection-model-free supported-block recovery to a common-label latent decomposition.}
+\end{takeaway}
 \end{frame}
 
 \begin{frame}{A latent shifter is not a Missing IV}
@@ -343,8 +346,11 @@ Positivity transfers null sets between the complete-case and full laws; complete
 \end{frame}
 
 \begin{frame}{\textcolor{Red}{New!} Proposition 1}
+\small
 \begin{theorembox}{Supported-block identification}
-Under blockwise exclusion, positivity, and complete-case completeness, $\pi_S$ is the unique positive solution of
+Under blockwise exclusion, positivity, and complete-case completeness, assume
+$\pi_S^{-1}\in L^2\{\Prb(Y_S,U_S\mid R_S=1)\}$. Then $\pi_S$ is the unique positive solution with
+$q^{-1}\in L^2\{\Prb(Y_S,U_S\mid R_S=1)\}$ of
 \[
 \E\left\{\frac{R_S}{q(Y_S,U_S)}\middle|Z_S,U_S\right\}=1.
 \]
@@ -356,7 +362,7 @@ Consequently, for every integrable $h$,
 and $\Prb(Y_S,Z_S,U_S)$ is identified.
 \end{theorembox}
 \begin{takeaway}
-Each block law is recovered without specifying a parametric selection model.
+The proposition proves uniqueness within the stated bridge class; the true propensity supplies existence.
 \end{takeaway}
 \end{frame}
 
@@ -365,7 +371,7 @@ Each block law is recovered without specifying a parametric selection model.
 \resizebox{.98\linewidth}{!}{\input{notes/figures/supported_block_proof_map.tex}}
 \vspace{.35em}
 \begin{takeaway}
-Assumptions \bluekey{1, 5, and 6} construct the bridge; Assumptions \bluekey{7 and 5} establish uniqueness on the full support.
+\scriptsize Assumptions \bluekey{1, 5, and 6} verify the moment; Assumption \bluekey{7} gives complete-case uniqueness; positivity extends it to the full support.
 \end{takeaway}
 \end{frame}
 
@@ -446,15 +452,14 @@ This lemma converts the anchor-tensor rank condition into the linear-inversion r
 
 \begin{frame}{Assumption 3.1}
 \begin{assumptionbox}{Covariate-assisted anchor-pair structure}
-For every $x$ in a common full-probability set:
+The number of classes $r$ is known. For every $x$ in a common full-probability set:
 \begin{itemize}
-  \item the anchor pair $\{a,b\}$ and all extension pairs $\{j,a\}$ are supported;
-  \item $p_f(x)>0$ and $\Prb(W=w\mid X=x)>0$;
-  \item with column Kruskal ranks $k_a,k_b,k_G$,
+  \item \textbf{Anchor decomposition:} $\{a,b\}$ is supported, $p_f(x)>0$, $\Prb(W=w\mid X=x)>0$, and
   \[
   \textcolor{Red}{\bm{k_a+k_b+k_G\ge 2r+2}};
   \]
-  \item a known anchor score satisfies $\mu_{a1}(x)<\cdots<\mu_{ar}(x)$ and fixes the common labels.
+  \item \textbf{Common labels:} a known anchor score satisfies $\mu_{a1}(x)<\cdots<\mu_{ar}(x)$;
+  \item \textbf{Extension propagation:} every pair $\{j,a\}$ is supported, and Lemma 3.1 makes $G\odot M_a$ full column rank.
 \end{itemize}
 \bluekey{The three-view Kruskal condition is the same as Allman et al. (2009, Theorem 1).}
 \end{assumptionbox}
@@ -526,7 +531,8 @@ The proposed estimator is
 \begin{column}{.40\textwidth}
 \begin{itemize}
   \item \term{Composite M-estimator}, not a full likelihood.
-  \item Finite-dimensional or regularized sieve bridge.
+  \item The theorem covers a finite-dimensional bridge.
+  \item A growing sieve requires additional inverse-problem theory.
   \item $c_S>0$ balances contributions across blocks.
 \end{itemize}
 \begin{theorembox}{Finite-dimensional bridge}
@@ -541,7 +547,7 @@ The sandwich variance includes first-stage bridge estimation.
 
 \begin{frame}{Computation}
 \small
-Zhao and Shao (2015, Section 2.3) provide the precedent for updating a nuisance law and the target model in stages. Here the criterion contains a nonconvex latent mixture, so the algorithm adds \bluekey{tensor initialization, multiple starts, and constrained updates}.
+Zhao and Shao (2015, Section 2.3) provide the precedent for a plug-in order that estimates a nuisance law before the target model. The algorithm here is different because the criterion contains a nonconvex latent mixture; it uses \bluekey{tensor initialization, multiple starts, and constrained updates}.\par
 \vspace{.25em}
 \centering
 \begin{tikzpicture}[
@@ -575,7 +581,7 @@ Zhao and Shao (2015, Section 2.3) provide the precedent for updating a nuisance 
 \begin{frame}{Simulation design}
 \footnotesize
 Following Allman, Matias and Rhodes (2009, Sections 3--5), we start from the
-$r$-class, $p$-feature product mixture in manuscript equation (35).
+$r$-class, $p$-feature product mixture in manuscript equation (35); numerical parameter values are specific to this study.
 \vspace{.15em}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.48\textwidth}
@@ -620,7 +626,7 @@ M_{jf}(y)&=\Prb(Y_j=y\mid F=f).&&
   \item \textbf{MAR:} observed-data full-information likelihood under ignorability.
   \item \textbf{Correct selection likelihood:} combine the latent-class model with the true logistic selection equation and maximize the marginal likelihood of $(W,Y_{\mathrm{obs}},D)$.
   \item \textbf{Misspecified selection likelihood:} omit the $Y_1$ main effect and interaction; neither selection likelihood uses $Z_S$.
-  \item \textbf{Proposed saturated/sieve bridge:} estimate
+  \item \textbf{Proposed finite-cell saturated bridge:} estimate
   $\E\{R_Sr_S(Y_S)\mid Z_S,W\}=1$ with a four-cell inverse bridge, then fit the weighted pairwise latent-class criterion.
 \end{enumerate}
 \end{block}
@@ -698,7 +704,7 @@ For a component $\psi$ of $M_j$ or $p_f$ across $B$ replications,
 \begin{block}{Limits}
 \begin{itemize}
   \item Class-proportion RMSE can exceed correctly specified selection likelihood.
-  \item Robustness requires exclusion, completeness, local independence, and the latent-class model.
+  \item Identification assumes known $r$, anchor ordering, supported pairs, exclusion, completeness, local independence, and a finite latent-class model.
   \item Sieve inference requires additional inverse-problem theory.
 \end{itemize}
 \end{block}
@@ -798,7 +804,7 @@ This includes sets $A$ that are never jointly observed.
 \end{block}
 \end{frame}
 
-\begin{frame}{Appendix: empirical diagnostics}
+\begin{frame}{Appendix: empirical diagnostics and falsification checks}
 For a proposed assignment of blockwise IVs, latent shifters, covariates, and anchor items, the data can diagnose:
 \begin{itemize}
   \item relevance of each $Z_S$ and rank of a finite complete-case operator;

@@ -34,10 +34,12 @@ SLIDES = [
     ("Slide 5  Latent measurement model", [
         "Fを未観測の潜在変数、Y 1からY mをその測定項目、Xを通常共変量、Wを潜在分布を動かすlatent shifterとします。この構造はstructural equation modeling、SEMやitem response theory、IRTの基礎となる測定モデルです。",
         "Q FはFの潜在分布、Q jは項目jの測定核です。局所独立性の下で、観測変数の分布はQ FとQ jの積をFについて周辺化したmixtureになります。したがって左辺のfull-data lawが回復されても、Q FとQ Yを一意に分離できるとは限りません。",
+        "今回の識別定理が直接扱うのは有限潜在クラスです。連続因子のSEMやIRTへ拡張するには、測定族やcalibrationなどの追加条件が必要です。",
     ]),
     ("Slide 6  Related identification results", [
         "関連研究には二つの流れがあります。MNAR側では、d’Haultfoeuilleが条件付きmoment equationとcompleteness、Zhao and Shaoがcovariate-adjusted exclusionとsemiparametric pseudo-likelihoodを扱っています。Miaoらはcompletenessを観測可能なcomplete-case law上の条件として整理しています。",
-        "latent structure側では、Allman、Matias and Rhodesが、many observed variablesから構成されるprobability tensorの分解一意性により、latent class比率とmeasurement kernelsを識別しています。本稿は、Missing IVによるlaw recoveryとlatent tensor decompositionを二段階として接続します。",
+        "latent structure側では、Allman、Matias and Rhodesが、many observed variablesから構成されるprobability tensorの分解一意性により、latent class比率とmeasurement kernelsを識別しています。latent-MNARのjoint model自体も既に存在します。",
+        "本稿の新規性はlatent-MNAR自体ではありません。parametric selection modelを置かないsupported-block lawの回復と、共通label下でのlatent decompositionを接続し、一つの識別定理として示す点です。",
     ]),
     ("Slide 7  A latent shifter is not a Missing IV", [
         "latent shifter WとMissing IV Z Sは区別します。仮にFまで条件づければDとWが独立であっても、Fを積分するとDの条件付き分布にはP of F given Y, W, Xが残ります。WがFの分布を動かすなら、この分布は一般にWへ依存します。",
@@ -63,11 +65,11 @@ SLIDES = [
         "仮定7はcomplete-case completenessです。R Sが1である標本において、Z SとU Sで条件づけたhの期待値がゼロなら、h自体がほとんど確実にゼロであるとします。これは観測可能なcomplete-case conditional operatorの単射性です。positivityはcomplete-case lawとfull lawの零集合を対応させます。",
     ]),
     ("Slide 13  New Proposition 1", [
-        "新しい命題1は、本文の命題2.1に対応するsupported-block identificationです。exclusion、positivity、complete-case completenessの下で、observable bridge momentを満たし、逆数がcomplete-case lawの下で二乗可積分となる正値関数のうち、pi Sが唯一の解になります。",
+        "新しい命題1は、本文の命題2.1に対応するsupported-block identificationです。真のpi Sの逆数がcomplete-case lawの下で二乗可積分であると仮定します。その上で、observable bridge momentを満たし、逆数が同じL2空間に属する正値関数のうち、pi Sが唯一の解になります。存在は真のpropensityから与えられ、命題の中心はこのbridge class内の一意性です。",
         "pi Sが識別されると、R S divided by pi Sによるinverse probability weightingで任意のblock関数のfull-data expectationを再現できます。したがって各block lawが、parametric selection modelを指定せずに識別されます。",
     ]),
     ("Slide 14  Proof sketch the observable bridge is unique", [
-        "証明では仮定の役割を分けます。観測過程とsupported blockの定義、Missing IV exclusionから真のpi Sがbridge momentを満たします。別の解との差を取ると、complete cases上の条件付き期待値がゼロになります。",
+        "証明では仮定の役割を分けます。観測過程、supported blockの定義、Missing IV exclusionから、真のpi Sがbridge momentを満たすことを示します。別の解との差を取ると、complete cases上の条件付き期待値がゼロになります。",
         "complete-case completenessがその差をゼロにし、positivityが等式を対象support全体へ拡張します。最後にinverse weighting identityからblock lawの識別が従います。",
     ]),
     ("Slide 15  Stage 2", [
@@ -86,8 +88,8 @@ SLIDES = [
         "この補題により、anchor tensorのKruskal条件を、各extension itemを線形反転するためのrank条件へ変換できます。",
     ]),
     ("Slide 19  Assumption 3.1", [
-        "仮定3.1はcovariate-assisted anchor-pair structureです。class数rは既知で、anchor pairと全extension pairsがsupportedであり、class比率p fとWの周辺確率P of W equals w given X equals xは正とします。",
-        "さらにM a、M b、Gの三つのcolumn Kruskal rankの和が2rプラス2以上であることを課します。これはAllman、Matias and Rhodesのthree-view Kruskal conditionと同じです。最後に既知のanchor scoreの順序でclass labelを固定します。",
+        "仮定3.1はcovariate-assisted anchor-pair structureです。class数rは既知です。anchor decompositionには、anchor pairのsupportedness、正のclass比率とWの周辺確率、M a、M b、GのKruskal rank条件を用います。これはAllman、Matias and Rhodesのthree-view conditionと同じです。",
+        "既知のanchor scoreの厳密順序で共通labelを固定します。extension propagationでは全extension pairsがsupportedであることと、補題3.1からG Khatri–Rao M aがfull column rankになることを用います。",
     ]),
     ("Slide 20  New Theorem 1", [
         "新しい定理1は、本文の定理3.1に対応するanchor-pair identificationです。第一段階の仮定と仮定3.1の下で、観測データ法則からp、G、Wごとの潜在class分布Q F、全項目の測定核Q Yが固定された共通labelの下で識別されます。",
@@ -99,16 +101,16 @@ SLIDES = [
     ]),
     ("Slide 22  Bridge-weighted composite estimation", [
         "推定も識別と同じ順序です。第一段階はd’HaultfoeuilleのSection 3に従い、各blockでconditional moment equationを解いてpair lawをIPWで回復します。第二段階はZhao and Shaoのplug-inの順序に従い、共通のlatent mixtureをoverlapping pair lawsへ当てはめます。",
-        "提案量はfull likelihoodではなくbridge-weighted composite M-estimatorです。有限次元bridgeとregularity条件の下では一致性と漸近正規性が得られ、sandwich varianceにはfirst-stage bridgeの推定誤差も含めます。",
+        "提案量はfull likelihoodではなくbridge-weighted composite M-estimatorです。一致性と漸近正規性の定理は有限次元bridgeを対象とし、sandwich varianceにはfirst-stage bridgeの推定誤差も含めます。dimensionが増えるsieve bridgeには別途inverse-problem theoryが必要です。",
     ]),
     ("Slide 23  Computation", [
-        "Zhao and Shaoの二段階更新は、nuisance lawと推定対象を分ける先例です。ただし本稿のcriterionは非凸なlatent mixtureを含むため、tensor initialization、複数初期値、制約付き更新を組み合わせます。",
+        "Zhao and ShaoのSection 2.3は、nuisance lawを先に推定してtarget modelへplug-inする順序の先例です。本稿の更新アルゴリズムそのものの先例ではありません。本稿のcriterionは非凸なlatent mixtureを含むため、tensor initialization、複数初期値、制約付き更新を組み合わせます。",
         "具体的にはbridgeを推定してweighted tensorsを作り、anchor tensorを分解してlabelを正規化し、extension kernelsを初期化します。その後、確率単体制約の下で全パラメータを更新し、最大criterionの解を採用します。",
     ]),
     ("Slide 24  Simulation design", [
-        "simulationはAllman、Matias and RhodesのSections 3から5に従い、本文式35のr-class、p-feature product mixtureから出発します。p fはlatent class比率、G fはclass別のWの分布、M j fはclass別の項目jの測定核です。",
+        "simulationはAllman、Matias and RhodesのSections 3から5に従い、本文式35のr-class、p-feature product mixtureから出発します。Allmanらに従うのはmodel classであり、数値parameterは本研究固有です。p fはlatent class比率、G fはclass別のWの分布、M j fはclass別の項目jの測定核です。",
         "標本サイズは500、Fは2 class、WとY 1、Y 2、Y 3は二値です。Y 1は常時観測とし、Y 2とY 3は自身の値に依存して欠測するMNAR、平均item response rateは80パーセントです。各pairには4カテゴリでfull-rankのMissing IVを置き、100回反復します。",
-        "比較は五手法です。第一は欠測前のfull product-mixture likelihoodを使うcomplete-data oracle、第二はignorabilityを置くMAR full-information likelihood、第三は真のlogistic selection equationを用いてW、Y obs、Dの周辺尤度を最大化するcorrect selection likelihood、第四はY 1のmain effectとinteractionを除くmisspecified selection likelihoodです。第五の提案法は、各blockでsaturated inverse bridgeを推定し、weighted pairwise latent-class criterionを当てはめます。",
+        "比較は五手法です。第一は欠測前のfull product-mixture likelihoodを使うcomplete-data oracle、第二はignorabilityを置くMAR full-information likelihood、第三は真のlogistic selection equationを用いてW、Y obs、Dの周辺尤度を最大化するcorrect selection likelihood、第四はY 1のmain effectとinteractionを除くmisspecified selection likelihoodです。第五の提案法は、各blockで固定4-cellのfinite-cell saturated inverse bridgeを推定し、weighted pairwise latent-class criterionを当てはめます。",
     ]),
     ("Slide 25  Evaluation targets", [
         "新しい評価対象の一つ目はmeasurement kernel M jです。二値項目ではM j of 1, fは、latent classがfのときに項目jが1となる確率です。これは項目とlatent classの測定関係を表し、全てのitem-by-class cellsにわたる平均biasと平均RMSEを報告します。",
@@ -120,7 +122,7 @@ SLIDES = [
     ]),
     ("Slide 27  Conclusion and limits", [
         "第一段階ではMissing IVとcomplete-case completenessにより、parametric selection modelを置かずに各supported-block lawを識別します。第二段階ではanchor itemsとWにより、有限latent-class proportionsと全measurement kernelsを共通labelの下で識別します。推定量もこの順序に沿います。",
-        "限界もあります。提案法はselection-link misspecificationには頑健ですが、Missing IV exclusion、completeness、局所独立性、rank条件、既知のclass数、anchor ordering、latent-class modelの誤指定まで許すものではありません。また、class proportionのRMSEは正指定selection likelihoodを上回り得ます。漸近正規性は有限次元bridgeに対する結果であり、sieve inferenceには追加のinverse-problem theoryが必要です。",
+        "限界もあります。識別には、既知のclass数r、anchor ordering、supported pairs、Missing IV exclusion、completeness、局所独立性、rank条件、有限latent-class modelが必要です。提案法はselection-link misspecificationには頑健ですが、これらの仮定やlatent-class modelの誤指定まで許すものではありません。また、class proportionのRMSEは正指定selection likelihoodを上回り得ます。漸近正規性は有限次元bridgeに対する結果であり、sieve inferenceには追加のinverse-problem theoryが必要です。",
     ]),
     ("Slide 28  Selected references", [
         "Stage 1はd’HaultfoeuilleとZhao and Shao、complete-case-law上のcompletenessはMiaoら、Stage 2はAllman、Matias and Rhodesに依拠しています。Lewbelはobservational equivalenceとpoint identificationの用語、Little and Rubinは欠測機構、Heckmanはsample-selection biasの基礎として参照しています。",
@@ -137,7 +139,7 @@ SLIDES = [
     ("Appendix Slide 32  Steps 7 and 8", [
         "Step 7では各extension tensorを線形反転して全measurement kernels M jを識別します。Step 8では識別されたlatent weightsとmeasurement kernelsを局所独立モデルへ代入し、一度も同時観測されていない項目集合のjoint lawを構成します。",
     ]),
-    ("Appendix Slide 33  Empirical diagnostics", [
+    ("Appendix Slide 33  Empirical diagnostics and falsification checks", [
         "候補となるMissing IV、latent shifter、covariates、anchor itemsの割当てについて、relevance、finite complete-case operatorのrank、supported-block positivity、third-mode rank、anchor separationを診断できます。冗長なblocksから得られるmeasurement kernelsの一致はoveridentifying restrictionになります。",
         "ただし、診断に適合するだけでMissing IV exclusion、measurement exclusion、局所独立性が検証されたとはいえません。不適合は候補設計を反証できますが、適合は全仮定の正しさを保証しません。",
     ]),
