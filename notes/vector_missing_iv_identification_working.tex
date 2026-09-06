@@ -66,7 +66,8 @@ overlapping block lawsをanchor itemsとlatent shifterにより接続する。�
 モデルについて，Kruskal型rank条件の下で潜在クラス比率と全測定核を共通labelの
 下で識別し，global complete caseを必要としないbridge-weighted composite estimatorを
 構成する。有限次元bridgeに対する一致性と漸近正規性を示し，simulationでは，提案法が
-parametric selection modelの誤指定に伴うbiasを抑えながら潜在測定核を回復することを確認する。
+MNARによる観測変数分布のbiasを補正し，parametric selection modelの誤指定に伴うbiasを
+抑えながら潜在測定核を回復することを確認する。
 
 \noindent\textbf{Keywords:} MNAR; shadow variable; completeness; latent class;
 tensor decomposition; instrumental variable
@@ -851,17 +852,76 @@ $(W,Y_{\mathrm{obs}},R)$の周辺尤度を最大化する。誤指定版はselec
 $\operatorname{logit}P(D_j=1\mid Y_1,Y_j)=\gamma_{0j}+\gamma_{1j}Y_j$に制限し，
 $Y_1$のmain effectとinteractionを除く。両selection likelihoodは$F$と欠測itemを
 積分するが，shadow $Z_S$は用いない。selection indexのIRLSにおける$10^{-6}$の
-ridgeは数値安定化のためのみに用いる。最後にproposed saturated/sieve bridgeは各blockで
+ridgeは数値安定化のためのみに用いる。最後にproposed finite-cell saturated bridgeは各blockで
 \begin{equation}
 \E\{R_S r_S(Y_S)\mid Z_S,W\}=1
 \label{eq:simulation-bridge-moment}
 \end{equation}
 の標本momentから，4つの$Y_S$ cellごとに一つのparameterを持つinverse bridge
 $r_S=1/\pi_S$をridge-regularized least squaresで推定し，$1\le r_S\le25$に制約する。
-これは有限カテゴリでのsaturated sieveの実装である。そのweightを用いたpairwise latent-class criterionで
+これは有限カテゴリでのsaturated bridgeの実装である。そのweightを用いたpairwise latent-class criterionで
 測定核とclass比率を同時に更新する。全手法で6初期値からcriterionが最大の
 解を選び，$M_1$の大小でlabelを整合させた。反復上限は800とし，
 100回のMonte Carlo replicationsでは全五手法が設定した収束基準を満たした。
+
+Stage 1の識別対象は潜在parameterではなく，まず観測変数のfull-data lawである。
+そこで$\mu_j=P(Y_j=1)$および$v_j=\operatorname{Var}(Y_j)=\mu_j(1-\mu_j)$を定義し，
+respondent-only distributionと，式\eqref{eq:simulation-bridge-moment}から直接回復した
+normalized IPW distributionを母集団分布と比較する。さらに各latent-model fitから
+$\widehat\mu_j=\sum_f\widehat p_f\widehat M_{jf}(1)$を構成し，観測変数法則の回復が
+Stage 2の分解後にも維持されるかを確認する。
+
+\begin{center}
+\begin{minipage}{\linewidth}
+\centering
+\includegraphics[width=0.96\linewidth]{simulation/figures/allman_y_distribution_recovery_column.pdf}
+\captionof{figure}{Supported-pair lawsの回復。各線は100 Monte Carlo replicationsで平均した
+$(Y_1,Y_j)$の4-cell確率を表す。Respondent-only distributionでは高い$Y_j$を含むcellが
+過小に表現されるが，finite-cell saturated bridgeによる補正後の分布はpopulation truthと
+full-data empirical distributionに近い。}
+\label{fig:y-distribution-recovery}
+\end{minipage}
+\end{center}
+
+\begin{center}
+\begin{minipage}{\linewidth}
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lrrrr}
+\hline
+&\multicolumn{2}{c}{$P(Y_2=1)$}&\multicolumn{2}{c}{$P(Y_3=1)$}\\
+Method&Bias&MC Var.&Bias&MC Var.\\
+\hline
+Full-data empirical&0.0024&0.00060&0.0021&0.00041\\
+Respondent-only&$-0.1166$&0.00087&$-0.1214$&0.00067\\
+MAR&$-0.0885$&0.00098&$-0.0762$&0.00065\\
+Selection likelihood (correct)&0.0005&0.00295&$-0.0018$&0.00159\\
+Selection likelihood (misspecified)&0.0754&0.00058&0.0663&0.00042\\
+Proposed Stage-1 bridge&$-0.0099$&0.00144&$-0.0096$&0.00119\\
+Proposed latent fit&$-0.0099$&0.00151&$-0.0097$&0.00117\\
+\hline
+\end{tabular}}
+\captionof{table}{観測変数の周辺分布の回復。MC Var.は100 replicationsにおける
+$\widehat P(Y_j=1)$のempirical varianceである。Proposed Stage-1 bridgeは潜在モデルを
+当てはめる前の直接補正，Proposed latent fitはその後の有限latent-class fitを表す。}
+\label{tab:y-law-recovery}
+\end{minipage}
+\end{center}
+
+図\ref{fig:y-distribution-recovery}と表\ref{tab:y-law-recovery}に示すように，
+respondent-only analysisは$P(Y_2=1)$と$P(Y_3=1)$をそれぞれ0.1166と0.1214だけ
+過小評価した。これは式\eqref{eq:simulation-missingness}により，高い$Y_j$を持つ標本ほど
+観測されにくく，$(Y_1,Y_j)=(1,1)$ cellが選択的に失われたためである。直接bridge補正後の
+biasはそれぞれ$-0.0099$と$-0.0096$であり，respondent-only analysisに対して絶対biasを
+約92\%縮小した。RMSEも0.1202と0.1241から0.0390と0.0356へ低下した。
+
+この補正にはvarianceとのtradeoffがある。$\widehat P(Y_2=1)$と$\widehat P(Y_3=1)$の
+Monte Carlo varianceは，respondent-only analysisの0.00087と0.00067から，Stage-1 bridge
+では0.00144と0.00119へ増加した。これはinverse weightingが有効標本サイズを減少させる
+ためであるが，biasの縮小が大きいためRMSEは改善する。$\operatorname{Var}(Y_j)$のbiasも，respondent-only
+analysisの$-0.0203,-0.0172$から，bridge補正後は$-0.0020,-0.0014$へ縮小した。
+さらにProposed latent fitの周辺分布biasとMonte Carlo varianceはStage-1 bridgeとほぼ同じであり，
+有限latent-class分解が第一段階の分布補正を損なっていない。
 
 \begin{center}
 \begin{minipage}{\linewidth}
@@ -887,7 +947,7 @@ Complete-data oracle&0.0031&0.0351&$-0.0019$&0.0361\\
 MAR&$-0.0496$&0.0966&$-0.0193$&0.0572\\
 Selection likelihood (correct)&$-0.0008$&0.0544&0.0008&0.0427\\
 Selection likelihood (misspecified)&0.0409&0.0684&0.0092&0.0415\\
-Proposed saturated/sieve bridge&$-0.0064$&0.0555&$-0.0029$&0.0517\\
+Proposed finite-cell saturated bridge&$-0.0064$&0.0555&$-0.0029$&0.0517\\
 \hline
 \end{tabular}}
 \captionof{table}{Allman型simulationの主要結果。$M_j$は全item・class成分を

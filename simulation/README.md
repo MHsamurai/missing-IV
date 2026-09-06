@@ -40,6 +40,15 @@ latent class proportion `p_f`. The replication-level output retains each
 `M_jf`, the selection coefficients, convergence status, and objective value;
 the summary also reports Monte Carlo standard errors for bias and RMSE.
 
+Because Stage 1 identifies the observed-variable law, the simulation also
+evaluates each marginal probability `P(Y_j=1)`. It reports bias, Monte Carlo
+variance, and RMSE of the estimated marginal probability, together with bias
+and RMSE for the implied Bernoulli variance. A separate figure compares the
+four-cell supported-pair distributions under the population truth, the
+full-data empirical distribution, respondent-only analysis, and the direct
+bridge correction. These checks distinguish recovery of the `Y` law from the
+subsequent latent decomposition.
+
 ## Run
 
 ```bash

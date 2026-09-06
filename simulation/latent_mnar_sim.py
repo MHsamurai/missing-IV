@@ -70,6 +70,105 @@ def _pair_cell_probability(config: dict, nonanchor_item: int) -> np.ndarray:
     return output
 
 
+def _population_y_probability(config: dict) -> np.ndarray:
+    model = config["model"]
+    class_probability = np.asarray(model["class_probability"], dtype=float)
+    measurement = np.asarray(
+        [
+            model["bernoulli_probability"][name]
+            for name in ("Y1", "Y2", "Y3")
+        ],
+        dtype=float,
+    )
+    return measurement @ class_probability
+
+
+def _weighted_binary_moments(
+    value: np.ndarray, weights: np.ndarray | None = None
+) -> tuple[float, float]:
+    value = np.asarray(value, dtype=float)
+    if weights is None:
+        probability = float(value.mean())
+    else:
+        weights = np.asarray(weights, dtype=float)
+        probability = float(np.sum(weights * value) / np.sum(weights))
+    return probability, probability * (1.0 - probability)
+
+
+def evaluate_stage1_distribution_recovery(
+    dataset: dict, config: dict, replication: int
+) -> tuple[list[dict], list[dict]]:
+    """Evaluate direct recovery of Y marginals and supported-pair laws."""
+    y, w, observed = dataset["y"], dataset["w"], dataset["observed"]
+    population_y = _population_y_probability(config)
+    marginal_records: list[dict] = []
+    pair_records: list[dict] = []
+    for block, pair_list in enumerate(config["supported_pairs"]):
+        pair = tuple(pair_list)
+        mask = observed[:, pair].all(axis=1)
+        propensity, _ = estimate_saturated_bridge(
+            y[:, pair], mask, w, dataset["shadows"][:, block], config
+        )
+        bridge_weights = 1.0 / np.maximum(propensity, EPS)
+        target_item = pair[1]
+        target_probability = float(population_y[target_item])
+        target_variance = target_probability * (1.0 - target_probability)
+        marginal_estimates = {
+            "full_data_empirical": _weighted_binary_moments(y[:, target_item]),
+            "respondent_only": _weighted_binary_moments(
+                y[mask, target_item]
+            ),
+            "proposed_stage1_bridge": _weighted_binary_moments(
+                y[mask, target_item], bridge_weights
+            ),
+        }
+        for method, (mean_estimate, variance_estimate) in marginal_estimates.items():
+            marginal_records.append(
+                {
+                    "replication": replication,
+                    "method": method,
+                    "item": f"Y{target_item + 1}",
+                    "mean_estimate": mean_estimate,
+                    "mean_error": mean_estimate - target_probability,
+                    "variable_variance_estimate": variance_estimate,
+                    "variable_variance_error": variance_estimate
+                    - target_variance,
+                }
+            )
+
+        pair_cell = (2 * y[:, pair[0]] + y[:, pair[1]]).astype(int)
+        distributions = {
+            "population_truth": _pair_cell_probability(config, target_item),
+            "full_data_empirical": np.bincount(
+                pair_cell, minlength=4
+            )
+            / len(pair_cell),
+            "respondent_only": np.bincount(
+                pair_cell[mask], minlength=4
+            )
+            / mask.sum(),
+            "proposed_stage1_bridge": np.bincount(
+                pair_cell[mask], weights=bridge_weights, minlength=4
+            )
+            / bridge_weights.sum(),
+        }
+        for method, distribution in distributions.items():
+            for cell, probability in enumerate(distribution):
+                pair_records.append(
+                    {
+                        "replication": replication,
+                        "method": method,
+                        "block": block,
+                        "pair": f"Y{pair[0] + 1},Y{pair[1] + 1}",
+                        "cell": cell,
+                        "y_anchor": cell // 2,
+                        "y_item": cell % 2,
+                        "probability": float(probability),
+                    }
+                )
+    return marginal_records, pair_records
+
+
 def simulate_allman_dataset(config: dict, rng: np.random.Generator) -> dict:
     """Generate the Allman product mixture P=sum_f pi_f tensor_j p_fj."""
     n = int(config["sample_size"])
@@ -652,13 +751,27 @@ def fit_latent_model(
 
 def run_simulation(
     config: dict,
-) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+) -> tuple[
+    pd.DataFrame,
+    pd.DataFrame,
+    pd.DataFrame,
+    pd.DataFrame,
+    pd.DataFrame,
+    pd.DataFrame,
+]:
     master_rng = np.random.default_rng(int(config["seed"]))
     records, overlap_records, bridge_records = [], [], []
+    y_marginal_records, y_pair_records = [], []
+    population_y = _population_y_probability(config)
     for replication in range(int(config["replications"])):
         dataset = simulate_allman_dataset(
             config, np.random.default_rng(int(master_rng.integers(0, 2**32 - 1)))
         )
+        marginal_records, pair_records = evaluate_stage1_distribution_recovery(
+            dataset, config, replication
+        )
+        y_marginal_records.extend(marginal_records)
+        y_pair_records.extend(pair_records)
         observed = dataset["observed"]
         overlap_records.append(
             {
@@ -694,6 +807,35 @@ def run_simulation(
                 "iterations": fit["iterations"],
                 "converged": fit["converged"],
             }
+            fitted_y_probability = (
+                fit["measurement"] @ fit["class_probability"]
+            )
+            for item, estimate in enumerate(fitted_y_probability):
+                variance_estimate = float(estimate * (1.0 - estimate))
+                population_variance = float(
+                    population_y[item] * (1.0 - population_y[item])
+                )
+                record[f"Y_mean_estimate_Y{item + 1}"] = float(estimate)
+                record[f"Y_mean_error_Y{item + 1}"] = float(
+                    estimate - population_y[item]
+                )
+                record[f"Y_variance_estimate_Y{item + 1}"] = variance_estimate
+                record[f"Y_variance_error_Y{item + 1}"] = (
+                    variance_estimate - population_variance
+                )
+                if item > 0:
+                    y_marginal_records.append(
+                        {
+                            "replication": replication,
+                            "method": method,
+                            "item": f"Y{item + 1}",
+                            "mean_estimate": float(estimate),
+                            "mean_error": float(estimate - population_y[item]),
+                            "variable_variance_estimate": variance_estimate,
+                            "variable_variance_error": variance_estimate
+                            - population_variance,
+                        }
+                    )
             for item in range(measurement_error.shape[0]):
                 for latent in range(measurement_error.shape[1]):
                     suffix = f"Y{item + 1}_f{latent}"
@@ -766,9 +908,25 @@ def run_simulation(
         .reset_index(drop=True)
     )
     summary = summary.merge(monte_carlo_error, on="method", validate="one_to_one")
+    y_marginal_raw = pd.DataFrame.from_records(y_marginal_records)
+    y_summary = (
+        y_marginal_raw.groupby(["method", "item"], as_index=False)
+        .agg(
+            mean_bias=("mean_error", "mean"),
+            mean_MC_variance=("mean_estimate", lambda value: value.var(ddof=1)),
+            mean_RMSE=("mean_error", lambda value: np.sqrt(np.mean(np.square(value)))),
+            variable_variance_bias=("variable_variance_error", "mean"),
+            variable_variance_RMSE=(
+                "variable_variance_error",
+                lambda value: np.sqrt(np.mean(np.square(value))),
+            ),
+        )
+    )
     return (
         summary,
         pd.DataFrame.from_records(overlap_records),
         pd.DataFrame.from_records(bridge_records),
         raw,
+        y_summary,
+        pd.DataFrame.from_records(y_pair_records),
     )
