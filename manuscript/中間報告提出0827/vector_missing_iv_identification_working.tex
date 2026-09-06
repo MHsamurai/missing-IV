@@ -75,22 +75,24 @@ tensor decomposition; instrumental variable
 \begin{multicols}{2}
 
 \section{問題設定}
-本研究では，未観測潜在変数$F$，常時観測変数$W,X$，複数の潜在的測定値
-$Y=(Y_1,\ldots,Y_m)$について，
-\begin{align}
-F\mid(W,X)&\sim Q_F(\cdot\mid W,X),\\
-Y_j\mid(F,X)&\sim Q_j(\cdot\mid F,X;\theta_j),\\
-Y_1,\ldots,Y_m&\indep\mid(F,X)
-\end{align}
-という潜在測定モデルを考える。識別したいのは潜在分布$Q_F$と測定核
-$Q_Y=\{Q_j:j=1,\ldots,m\}$である。しかし$Y_j$は観測指標$D_j=1$の
-ときだけ観測され，$D=(D_1,\ldots,D_m)$は，後に置くblockwise exclusionを
-満たす範囲で，未観測の$Y$や$F$に依存してよい。したがって問題は，
-missing not at random (MNAR)の下でfull lawを
-回復することにとどまらず，回復可能な観測変数の法則を潜在分布と測定核へ
-一意に分解できるか，である。
+多次元の測定項目がmissing not at random (MNAR)で欠測するとき，観測変数の
+full-data lawを回復するだけでは十分でない場合がある。構造方程式モデルや
+項目反応理論では，各項目が測定する構成概念そのものが潜在的であり，関心は
+潜在分布と測定パラメータの双方にある。本稿は，MNARの下で回復された観測変数の
+法則を，潜在分布と測定核へ一意に分解できる条件を考える。
 
-本稿の潜在測定モデルの下では，このfull lawは
+Let $F$ denote an unobserved latent variable, and let
+$Y=(Y_1,\ldots,Y_m)$ denote the full vector of potential measurements。
+Let $X$ denote always-observed covariates and $W$ an always-observed latent
+shifter。潜在変数$F$の$(W,X)$に条件づけた分布を
+$Q_F(\cdot\mid W,X)$，item $j$のmeasurement kernelを
+$Q_j(\cdot\mid F,X;\theta_j)$と書き，その集合を
+$Q_Y:=\{Q_j:j=1,\ldots,m\}$とする。識別対象は$(Q_F,Q_Y)$である。
+一方，各$Y_j$はresponse indicator $D_j=1$のときだけ観測され，
+$D=(D_1,\ldots,D_m)$は，後に置くblockwise exclusionを満たす範囲で，
+未観測の$Y$や$F$に依存してよい。
+
+局所独立な潜在測定モデルの下で，$Y$のfull-data lawは
 \begin{equation}
 \begin{aligned}
 &P(Y=y\mid W=w,X=x)\\
@@ -99,7 +101,11 @@ missing not at random (MNAR)の下でfull lawを
 \end{aligned}
 \label{eq:marginal-mixture-law}
 \end{equation}
-と表される。$F\in\{1,\ldots,r\}$の場合，これは
+と表される。ここで$f,w,x,y_j$はそれぞれ$F,W,X,Y_j$の実現値である。
+$F\in\{1,\ldots,r\}$の場合，let
+$\lambda_f(w,x):=P(F=f\mid W=w,X=x)$，and let $M_j(:,f;x)$ denote the
+vector of conditional response probabilities for item $j$ given $(F=f,X=x)$。
+このとき式\eqref{eq:marginal-mixture-law}は
 $\sum_{f=1}^r\lambda_f(w,x)\bigotimes_{j=1}^m M_j(:,f;x)$というmixture
 tensorである。従来のmissingness IVによって式
 \eqref{eq:marginal-mixture-law}の左辺が識別されても，追加の分解一意性条件なしには，
