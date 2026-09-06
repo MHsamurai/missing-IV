@@ -68,6 +68,13 @@ simulation/.venv/bin/python -m jupyter nbconvert --execute --to notebook \
 
 ## Test
 
+Presentation-only line charts can be regenerated from the saved result CSVs
+without rerunning the simulation:
+
+```bash
+simulation/.venv/bin/python simulation/plot_presentation_recovery.py
+```
+
 ```bash
 simulation/.venv/bin/python -m unittest simulation.test_latent_mnar_sim
 ```

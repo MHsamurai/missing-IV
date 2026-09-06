@@ -185,7 +185,20 @@ SLIDES = [
     _slide_by_title("Proof map for Theorem 1"),
     _slide_by_title("Bridge-weighted composite estimation"),
     _slide_by_title("Computation"),
-    _slide_by_title("Simulation design"),
+    (
+        "Simulation design: DGP and parameters",
+        [
+            "図は先ほどのlatent measurement modelを今回のDGPに合わせたものです。Xを固定し、まず二つのclassを持つFを生成します。FからWと三つの測定項目Y 1、Y 2、Y 3を条件付き独立に生成します。各pair Y 1、Y jから常時観測されるMissing IVのZ Sと観測指標D jを生成します。Y 1は常時観測されるので、pairの観測指標R SはD jに一致します。",
+            "母数の位置も図に対応させます。Fの周辺分布がp f、FからY jへの測定核がM jf、FからWへの核がG fです。Stage 1の評価対象mu jはY jの母集団周辺確率、p S,cはpairのcell probabilityです。これらは潜在classを周辺化した量であり、Stage 2で分離するp fやM jfとは区別します。",
+        ],
+    ),
+    (
+        "Simulation design: calibration and five estimators",
+        [
+            "Allman、Matias and Rhodesの有限product mixtureを用い、表の数値は本研究で設定しています。class比率は0.55と0.45、測定核は項目とclassごとに表の通りです。標本サイズは500、Monte Carlo反復は100回です。Y 1は常時観測され、Y 2とY 3の観測確率はそれぞれ平均70 percentとなるように切片を調整するため、全三項目の平均観測率は80 percentです。",
+            "五手法を比較します。complete-data oracleは欠測前の尤度、MARはignorabilityの下での観測尤度、正指定selection likelihoodは真のlogistic selection equationを用います。誤指定版ではY 1の主効果とinteractionを除きます。提案法は各blockのMissing IV momentから4-cell inverse bridgeを推定し、Stage 1の法則を得た後、weighted pairwise latent-class criterionを用いて潜在構造を推定します。",
+        ],
+    ),
     (
         "Observed-law inference",
         [
@@ -197,36 +210,30 @@ SLIDES = [
     (
         "Population outcome recovery",
         [
+            "横軸を五手法、青い実線とオレンジの破線をmu 2、mu 3とした折れ線グラフです。上段はbiasとempirical SD、下段はmean estimated SEと95 percent coverageを示します。",
             "母集団周辺確率の真値はmu 2 equals 0.475、mu 3 equals 0.4925です。提案Stage-1 bridgeのbiasはそれぞれマイナス0.0099、マイナス0.0096で、empirical SDと平均estimated SEは0.0379対0.0365、0.0345対0.0339でした。95 percent coverageは94 percentと93 percentで、推定SEがreplication variabilityを概ね捉えています。",
             "これに対してMARのcoverageは9 percentと13 percent、誤指定selection likelihoodでは12 percentと11 percentでした。正しく指定したselection likelihoodはbiasがほぼゼロですが、coverageはY 2で86 percentです。本結果は提案法の効率優位を示すものではなく、parametric selection linkを指定せずに、欠測outcomeの周辺分布をStage 1で補正できることを示します。",
         ],
     ),
     (
-        "Supported-block law recovery",
+        "Stage-2 full joint law",
         [
-            "次に、supported pairs S 12とS 13の各4 cellsをparameterごとに評価します。提案Stage-1 bridgeのcell biasはマイナス0.0099から0.0067、pointwise coverageは89 percentから95 percentでした。周辺平均だけでなく、各block lawを構成する全セルで欠測選択の補正が確認できます。",
-            "MARでは最大absolute biasが0.068で、coverageは最低10 percentでした。誤指定selection likelihoodでも最大absolute biasは0.048です。100 replicationsでは真のcoverageが95 percentの場合でもMonte Carlo standard errorが約2.2 percentage pointsあるため、個々のcoverage差はこの有限反復誤差を踏まえて解釈します。",
+            "続いて、Y 1、Y 2、Y 3のfull joint lawを全体像として示します。横軸は三つのbinary outcomesの8通りの組合せ、縦軸は各cellの確率です。黒い線が母集団の真の分布、そのほかの線は各手法で推定した分布を100反復で平均したものです。",
+            "青い提案法の線は、Stage 1で回復したoverlapping block lawsをStage 2で共通の潜在構造に接続し、class比率と全measurement kernelsから構成した分布です。周辺確率だけでなく、全項目の組合せとして真の分布をどのように再現しているかを見ます。",
         ],
     ),
     ("Latent-parameter recovery", _slide_by_title("Simulation results")[1]),
     _slide_by_title("Conclusion and limits"),
     _slide_by_title("Selected references"),
-    _slide_by_title("Steps 1 and 2"),
-    _slide_by_title("Steps 3 and 4"),
-    _slide_by_title("Steps 5 and 6"),
-    _slide_by_title("Steps 7 and 8"),
-    (
-        "Stage-2 full joint law",
-        [
-            "Y 2とY 3は同時に観測される必要がないため、Y 1、Y 2、Y 3の8-cell full joint lawはStage 1だけでは回復できません。これは、Stage 2で推定したclass proportionsと全measurement kernelsを有限mixtureへ代入して初めて構成されます。",
-            "この補助診断では、推定joint lawとtruthのtotal variation distance、すなわち両分布の各cell差の絶対値を合計して2で割った量を用います。提案法のmean TVは0.065、MARは0.117、誤指定selection likelihoodは0.101でした。ただし、これはlatent decompositionを含むStage-2診断であり、直接のStage-1 inference resultとは区別します。",
-        ],
-    ),
+    ("Proof of Theorem 1 (Steps 1--2)", _slide_by_title("Steps 1 and 2")[1]),
+    ("Proof of Theorem 1 (Steps 3--4)", _slide_by_title("Steps 3 and 4")[1]),
+    ("Proof of Theorem 1 (Steps 5--6)", _slide_by_title("Steps 5 and 6")[1]),
+    ("Proof of Theorem 1 (Steps 7--8)", _slide_by_title("Steps 7 and 8")[1]),
     _slide_by_title("Empirical diagnostics and falsification checks"),
 ]
 appendix_start = next(
     index for index, (title, _) in enumerate(SLIDES, start=1)
-    if title == "Steps 1 and 2"
+    if title == "Proof of Theorem 1 (Steps 1--2)"
 )
 SLIDES = [
     (
@@ -300,6 +307,8 @@ def build():
     title_style.font.bold = True
     title_style.font.color.rgb = RGBColor(0, 0, 0)
     title_style.paragraph_format.space_after = Pt(12)
+    for border in list(title_style.element.iter(qn("w:pBdr"))):
+        border.getparent().remove(border)
 
     for style_name, size in [("Heading 1", 15), ("Heading 2", 12.5)]:
         style = styles[style_name]
@@ -355,8 +364,8 @@ def build():
         ("Slides 1–7", "基礎概念、既存研究、二段階の識別戦略"),
         ("Slides 8–15", "モデルとsupported-block lawの回復"),
         ("Slides 16–22", "有限潜在クラスのtensor分解"),
-        ("Slides 23–32", "推定、計算、simulation、結論、参考文献"),
-        ("Appendix 33–38", "定理1の8ステップ、full joint law、empirical diagnostics"),
+        ("Slides 23–33", "推定、計算、DGP、simulation、full joint law、結論、参考文献"),
+        ("Appendix 34–38", "定理1の8ステップ、empirical diagnostics"),
     ]
     for left, right in rows:
         cells = table.add_row().cells
