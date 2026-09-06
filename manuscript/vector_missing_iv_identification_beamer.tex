@@ -374,27 +374,52 @@ Assumptions \bluekey{1, 5, and 6} construct the bridge; Assumptions \bluekey{7 a
 \vfill
 \end{frame}
 
-\begin{frame}{Finite latent classes and the anchor tensor}
+\begin{frame}{The remaining decomposition problem}
+\begin{columns}[c,onlytextwidth]
+\begin{column}{.49\textwidth}
+\centering
+\resizebox{.93\linewidth}{!}{\input{notes/figures/latent_mnar_dag.tex}}
+\end{column}
+\begin{column}{.48\textwidth}
+\begin{block}{After Stage 1}
+The full law of every required $Y_S$ is identified, but the latent variable $F$ remains unobserved.
+\end{block}
 Fix $X=x$ and let $F\in\{1,\ldots,r\}$. Define
 \[
-M_j(y,f;x)=\Prb(Y_j=y\mid F=f,X=x),\quad
-p_f(x)=\Prb(F=f\mid X=x),
+\begin{aligned}
+p_f(x)&=\Prb(F=f\mid X=x),\\
+M_j(y,f;x)&=\Prb(Y_j=y\mid F=f,X=x),\\
+G(w,f;x)&=\Prb(W=w\mid F=f,X=x).
+\end{aligned}
 \]
-\[
-G(w,f;x)=\Prb(W=w\mid F=f,X=x).
-\]
-The recovered anchor law forms a three-way array:
-\[
-\mathcal T_{abW}(x)
-=\sum_{f=1}^r p_f(x)
-M_a(:,f;x)\otimes M_b(:,f;x)\otimes G(:,f;x).
-\]
+The targets are $Q_F=\{\lambda_f(w,x)\}$ and $Q_Y=\{M_j\}$.
+\end{column}
+\end{columns}
 \begin{takeaway}
-$Y_a$, $Y_b$, and $W$ act as the three conditionally independent views.
+Recovered block laws do not by themselves determine a unique latent decomposition.
 \end{takeaway}
 \end{frame}
 
-\begin{frame}{Anchor-pair identification conditions}
+\begin{frame}{Identification strategy}
+\begin{columns}[c,onlytextwidth]
+\begin{column}{.56\textwidth}
+\centering
+\resizebox{.70\linewidth}{!}{\input{notes/figures/identification_flow_en.tex}}
+\end{column}
+\begin{column}{.40\textwidth}
+\begin{enumerate}
+  \item Recover supported-block laws.
+  \item Construct anchor and extension tensors.
+  \item Uniquely decompose the anchor tensor.
+  \item Recover class weights and every measurement kernel.
+\end{enumerate}
+\vspace{.5em}
+\bluekey{Stage 2 begins with the recovered block laws.}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Stage-2 identification conditions}
 \begin{assumptionbox}{Covariate-assisted anchor-pair structure}
 For every $x$ in a common full-probability set:
 \begin{itemize}
@@ -427,38 +452,79 @@ is identified even if all items in $A$ are never jointly observed.
 \end{theorembox}
 \end{frame}
 
-\begin{frame}{Proof sketch: from the anchor tensor to all kernels}
-\begin{enumerate}
-  \item \bluekey{Recover tensors}: Proposition 1 identifies $\mathcal T_{abW}$ and each $\mathcal T_{jaW}$.
-  \item \bluekey{Decompose the anchor}: Kruskal uniqueness identifies $M_a,M_b,p,G$; simplex normalization and anchor ordering remove scaling and permutation.
-  \item \bluekey{Recover class weights}: Bayes' rule gives
-  \[
-  \lambda_f(w,x)=\frac{p_f(x)G(w,f;x)}{\Prb(W=w\mid X=x)}.
-  \]
-  \item \bluekey{Extend to every item}: since $G\odot M_a$ has full column rank,
-  \[
-  M_j=T_{j\mid aW}\left[\operatorname{diag}(p)(G\odot M_a)^\top\right]^+.
-  \]
-\end{enumerate}
+\begin{frame}{Steps 1--2: recover pair laws and form the anchor tensor}
+\begin{block}{Step 1: supported-pair laws}
+New Proposition 1 identifies
+\[
+P(Y_a,Y_b,W,X),\qquad P(Y_j,Y_a,W,X),
+\]
+and therefore $\mathcal T_{abW}(x)$ and every $\mathcal T_{jaW}(x)$.
+\end{block}
+\begin{block}{Step 2: three-view latent-class representation}
+Local independence gives
+\[
+\mathcal T_{abW}(x)
+=\sum_{f=1}^r p_f(x)
+M_a(:,f;x)\otimes M_b(:,f;x)\otimes G(:,f;x).
+\]
+\end{block}
+\begin{takeaway}
+$Y_a$, $Y_b$, and $W$ are the three conditionally independent views.
+\end{takeaway}
 \end{frame}
 
-\begin{frame}{From observed data to latent parameters}
-\begin{columns}[c,onlytextwidth]
-\begin{column}{.56\textwidth}
-\centering
-\resizebox{.70\linewidth}{!}{\input{notes/figures/identification_flow.tex}}
-\end{column}
-\begin{column}{.40\textwidth}
-\begin{enumerate}
-  \item Observed pattern data
-  \item Supported-block laws
-  \item Anchor and extension tensors
-  \item Latent distribution and measurement kernels
-\end{enumerate}
-\vspace{.5em}
-\bluekey{No global complete case is required.}
-\end{column}
-\end{columns}
+\begin{frame}{Steps 3--4: identify and normalize the anchor decomposition}
+\begin{block}{Step 3: Kruskal uniqueness}
+With column Kruskal ranks $k_a,k_b,k_G$,
+\[
+\textcolor{Red}{\bm{k_a+k_b+k_G\ge 2r+2}}
+\]
+identifies $M_a,M_b,\widetilde G$ up to a common permutation and column scaling, where $\widetilde G(:,f)=p_fG(:,f)$.
+\end{block}
+\begin{block}{Step 4: scaling and labels}
+Probability-column normalization gives
+\[
+p_f=\bm 1^\top\widetilde G(:,f),\qquad G(:,f)=\widetilde G(:,f)/p_f.
+\]
+The anchor ordering $\mu_{a1}<\cdots<\mu_{ar}$ fixes the common class labels.
+\end{block}
+\end{frame}
+
+\begin{frame}{Steps 5--6: obtain inversion rank and class weights}
+\begin{block}{Step 5: rank for linear inversion}
+The anchor Kruskal condition and the Khatri--Rao rank bound imply
+\[
+G\odot M_a\quad\text{has full column rank}.
+\]
+Hence the extension-tensor equation has a unique right-inverse solution.
+\end{block}
+\begin{block}{Step 6: latent class distribution given the shifter}
+Because $p$, $G$, and $\Prb(W=w\mid X=x)$ are identified, Bayes' rule gives
+\[
+\lambda_f(w,x)
+=\frac{p_f(x)G(w,f;x)}{\Prb(W=w\mid X=x)}.
+\]
+Thus $Q_F(x)=\{\lambda_f(w,x)\}_{f,w}$ is identified.
+\end{block}
+\end{frame}
+
+\begin{frame}{Steps 7--8: recover all kernels and unobserved joint laws}
+\begin{block}{Step 7: extension-kernel inversion}
+For every nonanchor item $j$,
+\[
+M_j=T_{j\mid aW}
+\left[\operatorname{diag}(p)(G\odot M_a)^\top\right]^+,
+\]
+so all measurement kernels $Q_Y=\{M_j\}_{j=1}^m$ are identified.
+\end{block}
+\begin{block}{Step 8: joint laws never observed together}
+For any item set $A$,
+\[
+\Prb(Y_A=y_A\mid W=w,X=x)
+=\sum_{f=1}^r\lambda_f(w,x)\prod_{j\in A}M_j(y_j,f;x).
+\]
+This includes sets $A$ that are never jointly observed.
+\end{block}
 \end{frame}
 
 \begin{frame}{Bridge-weighted composite estimation}
