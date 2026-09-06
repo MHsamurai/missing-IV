@@ -244,6 +244,14 @@ Latent-MNAR joint models already exist. \bluekey{The new result is a theorem tha
 \end{takeaway}
 \end{frame}
 
+\begin{frame}[plain]
+\vfill\centering
+{\color{Blue}\large\bfseries Model and assumptions}\par\vspace{.6em}
+{\fontsize{20}{24}\selectfont\bfseries Recover each supported-block law}\par\vspace{1em}
+{\large Missing IV $+$ positivity $+$ complete-case completeness}
+\vfill
+\end{frame}
+
 \begin{frame}{A latent shifter is not a Missing IV}
 Suppose $D\indep W\mid(Y,F,X)$. After integrating out $F$,
 \[
@@ -269,14 +277,6 @@ Moves the distribution of $F$ and supplies third-mode variation for decompositio
 \begin{takeaway}
 Recovering a block law does not itself separate $Q_F$ from $Q_Y$; $W$ supplies a decomposition mode, not a Missing IV.
 \end{takeaway}
-\end{frame}
-
-\begin{frame}[plain]
-\vfill\centering
-{\color{Blue}\large\bfseries Model and assumptions}\par\vspace{.6em}
-{\fontsize{20}{24}\selectfont\bfseries Recover each supported-block law}\par\vspace{1em}
-{\large Missing IV $+$ positivity $+$ complete-case completeness}
-\vfill
 \end{frame}
 
 \begin{frame}{A simple multivariate extension}
@@ -675,35 +675,35 @@ M_{jf}(y)&=\Prb(Y_j=y\mid F=f).&&
 
 \begin{frame}{Evaluation target: observed-variable law}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{.46\textwidth}
-\begin{block}{Stage-1 target}
-For $j=2,3$, define
+\begin{column}{.54\textwidth}
+\begin{block}{Full outcome distribution}
+For every fitted model, reconstruct all eight cells:
 \[
-\begin{aligned}
-\mu_j&=\Prb(Y_j=1),\\
-v_j&=\operatorname{Var}(Y_j)=\mu_j(1-\mu_j).
-\end{aligned}
+\widehat P_Y(y)=\sum_{f=1}^{2}\widehat p_f
+\prod_{j=1}^{3}\widehat M_{jf}(1)^{y_j}
+\{1-\widehat M_{jf}(1)\}^{1-y_j}.
 \]
-The supported-pair law contains the four probabilities
+This joint law determines marginal means, variances, and dependence.
 \[
-\Prb(Y_1=y_1,Y_j=y_j).
+\operatorname{TV}(\widehat P_Y,P_Y)
+=\tfrac12\sum_{y\in\{0,1\}^3}|\widehat P_Y(y)-P_Y(y)|.
 \]
 \end{block}
 \end{column}
-\begin{column}{.51\textwidth}
-\begin{block}{What is compared?}
+\begin{column}{.43\textwidth}
+\begin{block}{Five-method comparison}
 \begin{itemize}
-  \item Population truth and full-data empirical law.
-  \item Biased respondent-only law.
-  \item Direct normalized-IPW bridge correction.
-  \item Marginal law implied by each latent-model fit:
-  $\widehat\mu_j=\sum_f\widehat p_f\widehat M_{jf}(1)$.
+  \item Oracle, shown as population truth.
+  \item MAR.
+  \item Correct selection likelihood.
+  \item Misspecified selection likelihood.
+  \item Proposed saturated bridge.
 \end{itemize}
 \end{block}
 \end{column}
 \end{columns}
 \begin{takeaway}
-Report bias, Monte Carlo variance, and RMSE. This checks law recovery before evaluating the latent decomposition.
+Also report bias in $\Prb(Y_j=1)$ and $\operatorname{Var}(Y_j)$, separating outcome-variance bias from Monte Carlo variance.
 \end{takeaway}
 \end{frame}
 
@@ -744,23 +744,23 @@ For a component $\psi$ of $M_j$ or $p_f$ across $B$ replications,
 
 \begin{frame}{Observed-law recovery}
 \begin{columns}[c,onlytextwidth]
-\begin{column}{.67\textwidth}
+\begin{column}{.70\textwidth}
 \centering
-\includegraphics[width=\linewidth]{simulation/figures/allman_y_distribution_recovery.pdf}
+\includegraphics[width=\linewidth]{simulation/figures/allman_y_joint_distribution_recovery.pdf}
 \end{column}
-\begin{column}{.30\textwidth}
+\begin{column}{.27\textwidth}
 \small
 \begin{itemize}
-  \item Respondent-only bias:\\
-  $-0.117$ for $Y_2$; $-0.121$ for $Y_3$.
-  \item \bluekey{Bridge correction reduces absolute bias by about 92\%.}
-  \item RMSE falls from about $0.12$ to below $0.04$.
-  \item \redkey{Tradeoff:} weighting increases Monte Carlo variance.
+  \item Proposed mean TV: \bluekey{$0.065$}.
+  \item \bluekey{44\% lower} than MAR.
+  \item \bluekey{35\% lower} than misspecified selection.
+  \item Marginal bias: about $-0.010$ for both missing items.
+  \item \redkey{Tradeoff:} weighting increases Monte Carlo variance relative to MAR.
 \end{itemize}
 \end{column}
 \end{columns}
 \begin{takeaway}
-The bridge restores the supported-pair law; the subsequent latent fit preserves this correction.
+The proposed method recovers the full $Y$ law about as closely as the correctly specified selection likelihood, without specifying its parametric selection link.
 \end{takeaway}
 \end{frame}
 

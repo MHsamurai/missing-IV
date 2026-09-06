@@ -167,8 +167,8 @@ SLIDES = [
             "第二に、回復したoverlapping block lawsをanchor itemsとlatent shifterで接続し、Allman、Matias and Rhodesのtensor uniquenessとextension inversionを用いて共通label下の潜在分布と測定核へ分解します。本稿の新規性は、この二段階を一つの識別定理として接続する点です。",
         ],
     ),
-    _slide_by_title("A latent shifter is not a Missing IV"),
     _slide_by_title("Model and assumptions"),
+    _slide_by_title("A latent shifter is not a Missing IV"),
     _slide_by_title("A simple multivariate extension"),
     _slide_by_title("Observed data and supported blocks"),
     _slide_by_title("Single-block data-generating structure"),
@@ -189,16 +189,16 @@ SLIDES = [
     (
         "Evaluation target: observed-variable law",
         [
-            "第一段階の識別対象は観測変数のfull-data lawです。二値項目についてmu jをP of Y j equals 1、v jをmu j times 1 minus mu jと定義し、周辺確率と分散を評価します。supported pairについてはY 1とY jの4-cell確率を直接比較します。",
-            "population truth、full-data empirical law、respondent-only law、normalized IPWによるStage-1 bridge補正を比較します。さらに各latent-model fitが含意するmu hat j equals sum f p hat f M hat j fを計算し、Stage 2の後にも補正が維持されるか確認します。報告指標はbias、Monte Carlo variance、RMSEです。",
+            "最終的な識別対象には観測変数全体のfull-data lawも含まれます。そこで各latent-model fitのp hat fとM hat j fから、Y 1、Y 2、Y 3の8-cell joint distributionを再構成します。このjoint lawは、各項目の平均とvarianceだけでなく、項目間の依存関係も含みます。",
+            "比較対象は五手法です。complete-data oracleは図ではpopulation truthとして示し、MAR、正しく指定したselection likelihood、誤指定selection likelihood、proposed saturated bridgeの平均推定分布を同じ8 cells上で比較します。分布全体の誤差にはtotal variation distanceを用い、補助的にP of Y j equals 1のbias、推定されたoutcome varianceのbias、推定量自体のMonte Carlo varianceを分けて報告します。",
         ],
     ),
     ("Evaluation targets: latent structure", _slide_by_title("Evaluation targets")[1]),
     (
         "Observed-law recovery",
         [
-            "respondent-only analysisではP of Y 2 equals 1とP of Y 3 equals 1のbiasがそれぞれマイナス0.117とマイナス0.121です。高いY jほど観測されにくいため、特にY 1 equals 1、Y j equals 1のcellが過小に表現されています。",
-            "直接bridge補正後のbiasは両項目とも約マイナス0.010となり、absolute biasを約92パーセント縮小しました。RMSEも約0.12から0.04未満へ低下しています。一方、inverse weightingによりMonte Carlo varianceは増加します。latent fit後の周辺分布もStage-1 bridgeとほぼ同じであり、tensor分解が分布補正を損なっていません。",
+            "全体のY分布について、proposed bridgeの平均total variation distanceは0.065です。MARの0.117より約44パーセント、誤指定selection likelihoodの0.101より約35パーセント小さく、8 cells全体をtruthに近く回復しています。MARでは高いY 2、Y 3を含むcellが不足し、誤指定selectionではY 1に関するselection項を落とした影響が反対方向の歪みとして現れます。",
+            "周辺確率のbiasも、提案法ではY 2、Y 3とも約マイナス0.010です。outcome varianceのbiasは絶対値0.0021以下でした。一方、inverse bridge weightingのためMonte Carlo varianceはMARより増えます。正指定selection likelihoodのmean total variationは0.070で提案法と同程度ですが、本結果は提案法の一般的な効率優位を意味しません。提案法の利点は、parametric selection linkを指定せずに、block lawの補正をjoint Y distributionとlatent decompositionまで接続できる点です。",
         ],
     ),
     ("Latent-parameter recovery", _slide_by_title("Simulation results")[1]),

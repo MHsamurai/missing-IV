@@ -864,21 +864,41 @@ $r_S=1/\pi_S$をridge-regularized least squaresで推定し，$1\le r_S\le25$に
 解を選び，$M_1$の大小でlabelを整合させた。反復上限は800とし，
 100回のMonte Carlo replicationsでは全五手法が設定した収束基準を満たした。
 
-Stage 1の識別対象は潜在parameterではなく，まず観測変数のfull-data lawである。
-そこで$\mu_j=P(Y_j=1)$および$v_j=\operatorname{Var}(Y_j)=\mu_j(1-\mu_j)$を定義し，
-respondent-only distributionと，式\eqref{eq:simulation-bridge-moment}から直接回復した
-normalized IPW distributionを母集団分布と比較する。さらに各latent-model fitから
-$\widehat\mu_j=\sum_f\widehat p_f\widehat M_{jf}(1)$を構成し，観測変数法則の回復が
-Stage 2の分解後にも維持されるかを確認する。
+第一段階の識別対象は各supported-block lawであるが，定理3.1まで進めば，
+第二段階で識別したlatent class比率と測定核から観測変数全体のfull-data lawも構成できる。
+そこで主たる分布評価では，五手法の各latent-model fitから，二値outcome vector
+$Y=(Y_1,Y_2,Y_3)$の8-cell joint law
+\begin{equation}
+\widehat P_Y(y_1,y_2,y_3)
+=\sum_{f=1}^{2}\widehat p_f
+\prod_{j=1}^{3}\widehat M_{jf}(1)^{y_j}
+\{1-\widehat M_{jf}(1)\}^{1-y_j}
+\label{eq:simulation-joint-y-law}
+\end{equation}
+を構成する。分布全体の誤差は
+\begin{equation}
+\operatorname{TV}(\widehat P_Y,P_Y)
+=\frac12\sum_{y\in\{0,1\}^3}
+\left|\widehat P_Y(y)-P_Y(y)\right|
+\label{eq:simulation-tv-distance}
+\end{equation}
+で評価する。また，各項目について
+\begin{equation}
+\widehat\mu_j=\widehat P(Y_j=1)=\sum_f\widehat p_f\widehat M_{jf}(1),
+\qquad
+\widehat v_j=\widehat\mu_j(1-\widehat\mu_j)
+\label{eq:simulation-y-moments}
+\end{equation}
+を計算し，周辺確率のbias，outcome variance $v_j$のbias，および
+$\widehat\mu_j$のMonte Carlo varianceを区別して報告する。
 
 \begin{center}
 \begin{minipage}{\linewidth}
 \centering
-\includegraphics[width=0.96\linewidth]{simulation/figures/allman_y_distribution_recovery_column.pdf}
-\captionof{figure}{Supported-pair lawsの回復。各線は100 Monte Carlo replicationsで平均した
-$(Y_1,Y_j)$の4-cell確率を表す。Respondent-only distributionでは高い$Y_j$を含むcellが
-過小に表現されるが，finite-cell saturated bridgeによる補正後の分布はpopulation truthと
-full-data empirical distributionに近い。}
+\includegraphics[width=0.96\linewidth]{simulation/figures/allman_y_joint_distribution_recovery_column.pdf}
+\captionof{figure}{五手法による全体のoutcome law $P(Y_1,Y_2,Y_3)$の回復。
+横軸は8つのbinary outcome cellsである。Oracleはpopulation truthを表示し，そのほかの線は
+100 Monte Carlo replicationsで平均した各model fitの分布を表す。}
 \label{fig:y-distribution-recovery}
 \end{minipage}
 \end{center}
@@ -887,41 +907,49 @@ full-data empirical distributionに近い。}
 \begin{minipage}{\linewidth}
 \centering
 \resizebox{\linewidth}{!}{%
-\begin{tabular}{lrrrr}
+\begin{tabular}{lrrrrr}
 \hline
-&\multicolumn{2}{c}{$P(Y_2=1)$}&\multicolumn{2}{c}{$P(Y_3=1)$}\\
-Method&Bias&MC Var.&Bias&MC Var.\\
+Method&Mean TV&$\mu_2$ Bias&$v_2$ Bias&$\mu_3$ Bias&$v_3$ Bias\\
 \hline
-Full-data empirical&0.0024&0.00060&0.0021&0.00041\\
-Respondent-only&$-0.1166$&0.00087&$-0.1214$&0.00067\\
-MAR&$-0.0885$&0.00098&$-0.0762$&0.00065\\
-Selection likelihood (correct)&0.0005&0.00295&$-0.0018$&0.00159\\
-Selection likelihood (misspecified)&0.0754&0.00058&0.0663&0.00042\\
-Proposed Stage-1 bridge&$-0.0099$&0.00144&$-0.0096$&0.00119\\
-Proposed latent fit&$-0.0099$&0.00151&$-0.0097$&0.00117\\
+Complete-data oracle&0.0406&0.0024&$-0.00048$&0.0021&$-0.00038$\\
+MAR&0.1171&$-0.0885$&$-0.01324$&$-0.0762$&$-0.00759$\\
+Selection likelihood (correct)&0.0696&0.0005&$-0.00290$&$-0.0018$&$-0.00161$\\
+Selection likelihood (misspecified)&0.1006&0.0754&$-0.00249$&0.0663&$-0.00382$\\
+Proposed saturated bridge&0.0651&$-0.0099$&$-0.00208$&$-0.0097$&$-0.00140$\\
 \hline
 \end{tabular}}
-\captionof{table}{観測変数の周辺分布の回復。MC Var.は100 replicationsにおける
-$\widehat P(Y_j=1)$のempirical varianceである。Proposed Stage-1 bridgeは潜在モデルを
-当てはめる前の直接補正，Proposed latent fitはその後の有限latent-class fitを表す。}
+\captionof{table}{観測変数法則の回復。Mean TVは，各replicationで式
+\eqref{eq:simulation-tv-distance}を計算した後の平均である。$\mu_j$ Biasは
+$\widehat P(Y_j=1)$のbias，$v_j$ Biasは推定されたoutcome varianceのbiasである。
+$\widehat P(Y_j=1)$のreplication間varianceは本文中に示す。図\ref{fig:y-distribution-recovery}では
+oracleをtruthとして描くが，本表のMean TVは実際にfitしたcomplete-data oracleを評価する。}
 \label{tab:y-law-recovery}
 \end{minipage}
 \end{center}
 
-図\ref{fig:y-distribution-recovery}と表\ref{tab:y-law-recovery}に示すように，
-respondent-only analysisは$P(Y_2=1)$と$P(Y_3=1)$をそれぞれ0.1166と0.1214だけ
-過小評価した。これは式\eqref{eq:simulation-missingness}により，高い$Y_j$を持つ標本ほど
-観測されにくく，$(Y_1,Y_j)=(1,1)$ cellが選択的に失われたためである。直接bridge補正後の
-biasはそれぞれ$-0.0099$と$-0.0096$であり，respondent-only analysisに対して絶対biasを
-約92\%縮小した。RMSEも0.1202と0.1241から0.0390と0.0356へ低下した。
+図\ref{fig:y-distribution-recovery}に示すように，MARは$000$ cellを過大に，$111$ cellを
+過小に回復した。式\eqref{eq:simulation-missingness}により高い$Y_2,Y_3$を持つ標本ほど
+観測されにくいため，ignorabilityを課すと高値の同時生起が失われる。誤指定selection
+likelihoodでは逆に$000$ cellを過小に，$111$ cellを過大に回復しており，$Y_1$のmain effectと
+interactionを落とした影響がjoint lawへ現れている。提案法の平均分布は全8 cellsでtruthに
+近く，最大の平均cell errorは$111$ cellの0.0112であった。
 
-この補正にはvarianceとのtradeoffがある。$\widehat P(Y_2=1)$と$\widehat P(Y_3=1)$の
-Monte Carlo varianceは，respondent-only analysisの0.00087と0.00067から，Stage-1 bridge
-では0.00144と0.00119へ増加した。これはinverse weightingが有効標本サイズを減少させる
-ためであるが，biasの縮小が大きいためRMSEは改善する。$\operatorname{Var}(Y_j)$のbiasも，respondent-only
-analysisの$-0.0203,-0.0172$から，bridge補正後は$-0.0020,-0.0014$へ縮小した。
-さらにProposed latent fitの周辺分布biasとMonte Carlo varianceはStage-1 bridgeとほぼ同じであり，
-有限latent-class分解が第一段階の分布補正を損なっていない。
+表\ref{tab:y-law-recovery}では，提案法のMean TVは0.0651であり，MARの0.1171より約44\%，
+誤指定selection likelihoodの0.1006より約35\%低い。正指定selection likelihoodは平均分布
+自体ではtruthに近いが，replicationごとのMean TVは0.0696であり，本設定では提案法と同程度で
+あった。ただし，この差は有限標本のvarianceも反映するため，提案法の一般的な効率優位を意味しない。
+
+周辺分布についても，MARの$\mu_2,\mu_3$ biasは$-0.0885,-0.0762$であるのに対し，提案法では
+$-0.0099,-0.0097$へ縮小した。outcome varianceのbiasもMARの$-0.01324,-0.00759$から，
+提案法では$-0.00208,-0.00140$へ縮小している。一方，提案法の$\widehat\mu_j$のMonte Carlo
+varianceは0.00151と0.00117であり，MARの0.00098と0.00065より大きい。これはinverse
+bridge weightingによる効率損失を表す。正指定selection likelihoodは周辺biasがほぼ0であるが，
+Monte Carlo varianceは0.00295と0.00159であり，この設定では最も大きい。
+
+第一段階だけを切り出した補助診断でも，respondent-only distributionの$\mu_2,\mu_3$ bias
+$-0.1166,-0.1214$は，直接bridge補正後に$-0.0099,-0.0096$へ縮小した。この結果と
+図\ref{fig:y-distribution-recovery}を合わせると，bridgeが各pair lawのselection biasを補正し，
+その後のlatent decompositionが補正された法則を一つのjoint $Y$ distributionへ接続している。
 
 \begin{center}
 \begin{minipage}{\linewidth}
