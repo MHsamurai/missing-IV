@@ -32,7 +32,7 @@
 \setbeamertemplate{footline}{%
   \leavevmode\hbox{%
     \begin{beamercolorbox}[wd=.84\paperwidth,ht=2.4ex,dp=1ex,leftskip=1.2em]{footline}
-      \scriptsize Identification of latent measurement models under multivariate MNAR
+      \scriptsize Identification of Nonignorable Missingness via Missing IV and Latent Variable Modeling
     \end{beamercolorbox}%
     \begin{beamercolorbox}[wd=.16\paperwidth,ht=2.4ex,dp=1ex,rightskip=1.2em plus1fil]{footline}
       \scriptsize \insertframenumber/\inserttotalframenumber
@@ -79,33 +79,89 @@
 \titlepage
 \end{frame}
 
-\begin{frame}{Nonignorable item nonresponse in latent structure models}
+\begin{frame}{Missing not at random}
+Let $Y_j$ denote a measurement and let $D_j=1$ indicate that $Y_j$ is observed. The observed value is $Y_j$ only when $D_j=1$.
 \begin{columns}[T,onlytextwidth]
-\begin{column}{.48\textwidth}
-\begin{block}{Observed-data problem}
-With \term{incomplete multivariate data}, each measurement $Y_j$ may be missing not at random:
+\begin{column}{.47\textwidth}
+\begin{block}{Missing at random}
+After conditioning on observed information $X$, the response probability does not depend on the unobserved value:
 \[
-\Prb(D_j=1\mid Y,X)\text{ depends on }Y.
+D_j\indep Y_j\mid X.
 \]
-Shadow-variable methods can recover an observed-variable \term{full-data law} without imposing a parametric selection model.
 \end{block}
 \end{column}
-\begin{column}{.49\textwidth}
-\begin{block}{Latent-structure target}
-In structural equation models and item response theory, the target is not only the law of $Y$:
+\begin{column}{.50\textwidth}
+\begin{block}{Missing not at random}
+Even after conditioning on $X$, the response probability may depend on the missing value itself:
 \[
-\begin{aligned}
-\textcolor{Blue}{\bm Q_F}&:\text{ latent distribution},\\
-\textcolor{Blue}{\bm Q_Y}&:\text{ measurement kernels}.
-\end{aligned}
+\Prb(D_j=1\mid Y_j,X)\text{ depends on }Y_j.
 \]
-The recovered law of $Y$ does not automatically identify this decomposition.
 \end{block}
 \end{column}
 \end{columns}
 \vspace{.3em}
+Missing values, selection, and unobserved counterfactuals frequently arise in microdata. Under \term{MNAR}, the distribution among respondents generally differs from the full-data distribution.
 \begin{takeaway}
-The gap lies between recovery of the full-data law and identification of its latent structure.
+\bluekey{Inference based only on respondents is generally biased under MNAR.}
+\end{takeaway}
+\end{frame}
+
+\begin{frame}{Missingness IV}
+Let $R$ indicate that the outcome $Y$ is observed, and let $Z$ be an always-observed variable associated with $Y$.
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.47\textwidth}
+\begin{block}{Usual IV}
+A usual instrumental variable affects selection but has no direct effect on the outcome. By itself, it generally does not point identify the full distribution of $Y$.
+\end{block}
+\end{column}
+\begin{column}{.50\textwidth}
+\begin{assumptionbox}{Missingness IV / shadow variable}
+\[
+R\indep Z\mid Y,
+\]
+while $Z$ remains associated with $Y$.
+\end{assumptionbox}
+\end{column}
+\end{columns}
+Under positivity, this exclusion yields the observable conditional moment equation
+\[
+\E\left\{\frac{R}{\pi(Y)}\middle|Z\right\}=1,
+\qquad \pi(y)=\Prb(R=1\mid Y=y).
+\]
+Completeness of $Y$ with respect to $Z$ makes its solution unique (d'Haultfoeuille, 2010).
+\end{frame}
+
+\begin{frame}{A simple multivariate extension}
+Let $D=(D_1,\ldots,D_m)'$, $Y=(Y_1,\ldots,Y_m)'$, and $Z$ denote the response indicators, multivariate outcomes, and missingness IVs. Define the \term{global complete-case indicator}
+\[
+R=\mathbf 1\{D=\mathbf 1\}=\prod_{j=1}^m D_j.
+\]
+If
+\[
+R\indep Z\mid Y,\qquad \Prb(R=1\mid Y)>0,
+\]
+and $Y$ is complete with respect to $Z$, then
+\[
+\E\left\{\frac{R}{\pi(Y)}\middle|Z\right\}=1
+\]
+uniquely identifies $\pi(y)=\Prb(R=1\mid Y=y)$ and hence the full-data law of $Y$.
+\begin{takeaway}
+This direct extension is valid, but it relies on observing the entire vector $Y$ in a global complete case.
+\end{takeaway}
+\end{frame}
+
+\begin{frame}{Latent measurement model}
+Let $F$ denote an unobserved latent variable, $Y=(Y_1,\ldots,Y_m)$ the full vector of potential measurements, $X$ always-observed covariates, and $W$ an always-observed latent shifter.
+\[
+\Prb(Y=y\mid W=w,X=x)
+=\int\prod_{j=1}^m Q_j(y_j\mid f,x)\,dQ_F(f\mid w,x).
+\]
+For $F\in\{1,\ldots,r\}$, let $\lambda_f(w,x)=\Prb(F=f\mid W=w,X=x)$ and let $M_j(:,f;x)$ denote the conditional probability vector for item $j$. Then
+\[
+\Prb(Y\mid W,X)=\sum_{f=1}^r\lambda_f(W,X)\bigotimes_{j=1}^m M_j(:,f;X).
+\]
+\begin{takeaway}
+Identifying the left-hand side is insufficient: \redkey{$Q_F$ and $Q_Y$ require a unique tensor decomposition.}
 \end{takeaway}
 \end{frame}
 
@@ -134,21 +190,6 @@ The gap lies between recovery of the full-data law and identification of its lat
 \end{columns}
 \vspace{.3em}
 \centering\bluekey{This paper connects these two stages under multivariate MNAR.}
-\end{frame}
-
-\begin{frame}{The latent mixture and the additional identification problem}
-Let $F$ denote an unobserved latent variable, $Y=(Y_1,\ldots,Y_m)$ the full vector of potential measurements, $X$ always-observed covariates, and $W$ an always-observed latent shifter.
-\[
-\Prb(Y=y\mid W=w,X=x)
-=\int\prod_{j=1}^m Q_j(y_j\mid f,x)\,dQ_F(f\mid w,x).
-\]
-For $F\in\{1,\ldots,r\}$, let $\lambda_f(w,x)=\Prb(F=f\mid W=w,X=x)$ and let $M_j(:,f;x)$ denote the conditional probability vector for item $j$. Then
-\[
-\Prb(Y\mid W,X)=\sum_{f=1}^r\lambda_f(W,X)\bigotimes_{j=1}^m M_j(:,f;X).
-\]
-\begin{takeaway}
-Identifying the left-hand side is insufficient: \redkey{$Q_F$ and $Q_Y$ require a unique tensor decomposition.}
-\end{takeaway}
 \end{frame}
 
 \begin{frame}{A latent shifter is not a missingness IV}
