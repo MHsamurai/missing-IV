@@ -1,0 +1,35 @@
+\begin{tikzpicture}[
+  >=Latex,
+  assumption/.style={rectangle,rounded corners=2pt,draw=Blue,fill=PaleBlue,
+    minimum width=3.05cm,minimum height=.82cm,align=center,font=\scriptsize\bfseries},
+  result/.style={rectangle,rounded corners=2pt,draw=Navy,fill=black!5,
+    minimum width=3.4cm,minimum height=.85cm,align=center,font=\scriptsize},
+  final/.style={rectangle,rounded corners=2pt,draw=Red,fill=Red!6,
+    minimum width=4.1cm,minimum height=.88cm,align=center,font=\scriptsize\bfseries},
+  path/.style={-{Latex[length=2.1mm]},thick,Navy}
+]
+  \node[assumption] (a1) at (-4.0,2.0) {Assumption 1\\observed data $O$};
+  \node[assumption] (a5) at (0,2.0) {Assumption 5\\supported block, $\pi_S>0$};
+  \node[assumption] (a6) at (4.0,2.0) {Assumption 6\\$R_S\indep Z_S\mid(Y_S,U_S)$};
+
+  \node[result] (bridge) at (0,.65)
+    {observable bridge moment\\$\E\{R_S/q(Y_S,U_S)\mid Z_S,U_S\}=1$};
+  \draw[path] (a1.south) -- (bridge.north west);
+  \draw[path] (a5.south) -- (bridge.north);
+  \draw[path] (a6.south) -- (bridge.north east);
+
+  \node[assumption] (a7) at (-4.0,-.75) {Assumption 7\\complete-case completeness};
+  \node[result] (ccunique) at (0,-.75)
+    {unique on complete cases\\$q^{-1}=\pi_S^{-1}$ on $R_S=1$};
+  \draw[path] (bridge) -- (ccunique);
+  \draw[path] (a7) -- (ccunique);
+
+  \node[result] (fullunique) at (4.0,-.75)
+    {positivity extends equality\\$q=\pi_S$ on the target support};
+  \draw[path] (ccunique) -- (fullunique);
+  \draw[path] (a5.east) to[out=0,in=90] (fullunique.north);
+
+  \node[final] (law) at (2.0,-2.05)
+    {inverse weighting identifies\\$P(Y_S,Z_S,U_S)$};
+  \draw[path] (fullunique) -- (law);
+\end{tikzpicture}

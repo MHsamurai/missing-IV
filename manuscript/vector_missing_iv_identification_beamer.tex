@@ -127,7 +127,7 @@ $Z$ predicts selection and is excluded from the outcome equation.
 \end{block}
 \end{column}
 \begin{column}{.50\textwidth}
-\begin{assumptionbox}{Missing IV}
+\begin{block}{Missing IV}
 \centering
 \begin{tikzpicture}[>=Latex,node distance=1.05cm,
   var/.style={circle,draw=Navy,fill=white,minimum size=.78cm,thick},
@@ -141,7 +141,7 @@ $Z$ predicts selection and is excluded from the outcome equation.
 \end{tikzpicture}
 \par\smallskip
 $Z$ predicts $Y$ and satisfies $R\indep Z\mid Y$.
-\end{assumptionbox}
+\end{block}
 \end{column}
 \end{columns}
 \vspace{.15em}
@@ -305,24 +305,41 @@ The method requires supported anchor and extension pairs, not a global complete 
 \centering\scriptsize Arrows encode the probabilistic factorization used for identification.
 \end{frame}
 
+\begin{frame}{Overlapping supported blocks replace global complete cases}
+\begin{columns}[c,onlytextwidth]
+\begin{column}{.54\textwidth}
+\centering
+\resizebox{.84\linewidth}{!}{\input{notes/figures/supported_blocks_dag.tex}}
+\end{column}
+\begin{column}{.43\textwidth}
+\begin{itemize}
+  \item Anchor pair: $S_0=\{a,b\}$.
+  \item Extension pairs: $S_j=\{j,a\}$.
+  \item Shared item $Y_a$ connects measurement kernels across blocks.
+  \item Every required pair has its own $Z_S$ and bridge.
+\end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
+
 \begin{frame}{Stage-1 assumptions}
-\begin{assumptionbox}{Blockwise covariate-adjusted Missing IV}
+\begin{block}{Assumption 6: Blockwise covariate-adjusted Missing IV}
 For every supported block $S$,
 \[
 R_S\indep Z_S\mid(Y_S,U_S).
 \]
-\end{assumptionbox}
-\begin{assumptionbox}{Complete-case completeness}
+\end{block}
+\begin{block}{Assumption 7: Complete-case completeness}
 For $h\in L^2\{\Prb(Y_S,U_S\mid R_S=1)\}$,
 \[
 \E\{h(Y_S,U_S)\mid R_S=1,Z_S,U_S\}=0
 \Longrightarrow h(Y_S,U_S)=0.
 \]
-\end{assumptionbox}
+\end{block}
 Positivity transfers null sets between the complete-case and full laws; completeness makes the observed conditional operator injective.
 \end{frame}
 
-\begin{frame}{Proposition 1: identification of a supported-block law}
+\begin{frame}{\textcolor{Red}{New!} Proposition 1: identification of a supported-block law}
 \begin{theorembox}{Supported-block identification}
 Under blockwise exclusion, positivity, and complete-case completeness, $\pi_S$ is the unique positive solution of
 \[
@@ -341,35 +358,12 @@ Each block law is recovered without specifying a parametric selection model.
 \end{frame}
 
 \begin{frame}{Proof sketch: the observable bridge is unique}
-\begin{enumerate}
-  \item Exclusion implies $\E(R_S\mid Y_S,Z_S,U_S)=\pi_S(Y_S,U_S)$, so the true $\pi_S$ satisfies the bridge moment.
-  \item Any other positive solution $q$ satisfies
-  \[
-  \E\{q^{-1}-\pi_S^{-1}\mid R_S=1,Z_S,U_S\}=0.
-  \]
-  \item Complete-case completeness gives $q^{-1}=\pi_S^{-1}$ on $R_S=1$.
-  \item Positivity extends equality to the full support; inverse weighting recovers every block functional.
-\end{enumerate}
-\begin{takeaway}
-The proof separates \bluekey{bridge uniqueness} from \bluekey{latent decomposition}.
-\end{takeaway}
-\end{frame}
-
-\begin{frame}{Overlapping supported blocks replace global complete cases}
-\begin{columns}[c,onlytextwidth]
-\begin{column}{.54\textwidth}
 \centering
-\resizebox{.84\linewidth}{!}{\input{notes/figures/supported_blocks_dag.tex}}
-\end{column}
-\begin{column}{.43\textwidth}
-\begin{itemize}
-  \item Anchor pair: $S_0=\{a,b\}$.
-  \item Extension pairs: $S_j=\{j,a\}$.
-  \item Shared item $Y_a$ connects measurement kernels across blocks.
-  \item Every required pair has its own $Z_S$ and bridge.
-\end{itemize}
-\end{column}
-\end{columns}
+\resizebox{.98\linewidth}{!}{\input{notes/figures/supported_block_proof_map.tex}}
+\vspace{.35em}
+\begin{takeaway}
+Assumptions \bluekey{1, 5, and 6} construct the bridge; Assumptions \bluekey{7 and 5} establish uniqueness on the full support.
+\end{takeaway}
 \end{frame}
 
 \begin{frame}[plain]
