@@ -106,29 +106,51 @@ Under MNAR, respondent-only analysis can induce sample-selection bias (Heckman, 
 \end{takeaway}
 \end{frame}
 
-\begin{frame}{Missing IV}
-Let $R$ indicate that the outcome $Y$ is observed, and let $Z$ be an always-observed variable associated with $Y$.
+\begin{frame}{Usual IV and Missing IV}
+Let $R$ indicate that $Y$ is observed and let $Z$ be an always-observed auxiliary variable.
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.47\textwidth}
 \begin{block}{Usual IV}
-A usual instrumental variable affects selection but has no direct effect on the outcome. By itself, it generally does not point identify the full distribution of $Y$.
+\centering
+\begin{tikzpicture}[>=Latex,node distance=1.05cm,
+  var/.style={circle,draw=Navy,fill=white,minimum size=.78cm,thick},
+  path/.style={-{Latex[length=2mm]},thick,Navy}]
+  \node[var] (z) {$Z$};
+  \node[var,right=of z] (r) {$R$};
+  \node[var,below=of r] (y) {$Y$};
+  \draw[path] (z) -- (r);
+  \draw[path] (y) -- (r);
+  \node[text=Red,font=\bfseries] at ($(z)!.5!(y)$) {$Z\nrightarrow Y$};
+\end{tikzpicture}
+\par\smallskip
+$Z$ predicts selection and is excluded from the outcome equation.
 \end{block}
 \end{column}
 \begin{column}{.50\textwidth}
 \begin{assumptionbox}{Missing IV}
-\[
-R\indep Z\mid Y,
-\]
-while $Z$ remains associated with $Y$.
+\centering
+\begin{tikzpicture}[>=Latex,node distance=1.05cm,
+  var/.style={circle,draw=Navy,fill=white,minimum size=.78cm,thick},
+  path/.style={-{Latex[length=2mm]},thick,Navy}]
+  \node[var] (z) {$Z$};
+  \node[var,right=of z] (y) {$Y$};
+  \node[var,right=of y] (r) {$R$};
+  \draw[path] (z) -- (y);
+  \draw[path] (y) -- (r);
+  \node[text=Red,font=\bfseries] at ($(z)!.5!(r)+(0,-.72)$) {$Z\nrightarrow R$};
+\end{tikzpicture}
+\par\smallskip
+$Z$ predicts $Y$ and satisfies $R\indep Z\mid Y$.
 \end{assumptionbox}
 \end{column}
 \end{columns}
-Under positivity, this exclusion yields the observable conditional moment equation
+\vspace{.15em}
+For a Missing IV, positivity gives
 \[
 \E\left\{\frac{R}{\pi(Y)}\middle|Z\right\}=1,
-\qquad \pi(y)=\Prb(R=1\mid Y=y).
+\qquad \pi(y)=\Prb(R=1\mid Y=y),
 \]
-Completeness of $Y$ with respect to $Z$ makes its solution unique (d'Haultfoeuille, 2010).
+and completeness makes $\pi$ unique (d'Haultfoeuille, 2010, \emph{JoE}).
 \end{frame}
 
 \begin{frame}{A simple multivariate extension}
@@ -176,14 +198,15 @@ Identifying the left-hand side is insufficient: \redkey{$Q_F$ and $Q_Y$ require 
 \end{frame}
 
 \begin{frame}{Related identification results}
+\small
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.47\textwidth}
 \begin{block}{MNAR identification}
 \term{Missing IV}
 \begin{itemize}
-  \item d'Haultfoeuille (2010): completeness and a conditional moment equation.
-  \item Zhao and Shao (2015): covariate-adjusted exclusion and semiparametric pseudo-likelihoods.
-  \item Miao et al. (2019): completeness on the complete-case law.
+  \item d'Haultfoeuille (2010, \emph{JoE}):\\ completeness and a conditional moment equation.
+  \item Zhao and Shao (2015, \emph{JASA}):\\ covariate-adjusted exclusion and semiparametric pseudo-likelihoods.
+  \item Miao et al. (2019, \emph{arXiv}):\\ completeness on the complete-case law.
 \end{itemize}
 \end{block}
 \end{column}
@@ -191,7 +214,7 @@ Identifying the left-hand side is insufficient: \redkey{$Q_F$ and $Q_Y$ require 
 \begin{block}{Latent-structure identification}
 \term{Many observed variables}
 \begin{itemize}
-  \item Allman, Matias and Rhodes (2009): uniqueness of a three-view probability tensor.
+  \item Allman et al. (2009, \emph{AoS}):\\ uniqueness of a three-view probability tensor.
   \item The starting point is an observed joint distribution without MNAR selection.
   \item The result separates class proportions and measurement kernels.
 \end{itemize}
@@ -235,19 +258,30 @@ Moves the distribution of $F$ and supplies third-mode variation for decompositio
 \end{frame}
 
 \begin{frame}{Observed data and supported blocks}
-Let $D_j$ denote the response indicator for $Y_j$. The observed-data vector is
+\begin{block}{Supported block}
+A subset $S\subseteq\{1,\ldots,m\}$ is \term{supported} when all measurements in $Y_S$ are jointly observed with positive probability on the target support. A global complete case is not required.
+\end{block}
+\begin{columns}[c,onlytextwidth]
+\begin{column}{.53\textwidth}
+Let $D_j$ indicate response for $Y_j$. Then
 \[
-O=(X,W,Z,D,Y_D),\qquad Y_D=\{Y_j:D_j=1\}.
+O=(X,W,Z,D,Y_D),\quad Y_D=\{Y_j:D_j=1\},
 \]
-For a block $S\subseteq\{1,\ldots,m\}$, define
 \[
-R_S=\prod_{j\in S}D_j,\qquad Y_S=(Y_j:j\in S),\qquad U_S=(X,W).
+R_S=\prod_{j\in S}D_j,\quad
+Y_S=(Y_j:j\in S),\quad U_S=(X,W).
 \]
-$Y_S$ is observed only when $R_S=1$. A block is \term{supported} if
+The support condition is
 \[
-\pi_S(y,u):=\Prb(R_S=1\mid Y_S=y,U_S=u)>0
+\pi_S(y,u):=\Prb(R_S=1\mid Y_S=y,U_S=u)>0.
 \]
-on the target support.
+\end{column}
+\begin{column}{.44\textwidth}
+\centering
+\resizebox{.94\linewidth}{!}{\input{notes/figures/supported_block_set_diagram.tex}}
+\end{column}
+\end{columns}
+\vspace{.1em}
 \begin{takeaway}
 The method requires supported anchor and extension pairs, not a global complete case.
 \end{takeaway}
