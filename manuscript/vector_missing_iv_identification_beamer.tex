@@ -97,16 +97,16 @@ MCAR & Response does not depend on observed or missing data. $\Prb(D\mid Y)=\Prb
 \addlinespace[.15em]
 MAR & Response depends only on observed data. $\Prb(D\mid Y)=\Prb(D\mid Y_{\mathrm{obs}})$ & Multiple imputation, inverse probability weighting \\
 \addlinespace[.15em]
-NI/MNAR & Response also depends on missing data. $\Prb(D\mid Y)=\Prb(D\mid Y_{\mathrm{obs}},Y_{\mathrm{mis}})$ & Selection models, pattern-mixture models, \textcolor{Red}{\bfseries missingness IV} \\
+NI/MNAR & Response also depends on missing data. $\Prb(D\mid Y)=\Prb(D\mid Y_{\mathrm{obs}},Y_{\mathrm{mis}})$ & Selection models, pattern-mixture models, \textcolor{Red}{\bfseries Missing IV / Shadow Variable} \\
 \bottomrule
 \end{tabular}
 \vspace{.35em}
 \begin{takeaway}
-This paper studies MNAR item nonresponse and uses missingness IVs to recover full-data laws before identifying the latent structure.
+This paper studies MNAR item nonresponse and uses missing IVs, or shadow variables, to recover full-data laws before identifying the latent structure.
 \end{takeaway}
 \end{frame}
 
-\begin{frame}{Missingness IV}
+\begin{frame}{Missing IV / Shadow Variable}
 Let $R$ indicate that the outcome $Y$ is observed, and let $Z$ be an always-observed variable associated with $Y$.
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.47\textwidth}
@@ -115,7 +115,7 @@ A usual instrumental variable affects selection but has no direct effect on the 
 \end{block}
 \end{column}
 \begin{column}{.50\textwidth}
-\begin{assumptionbox}{Missingness IV / shadow variable}
+\begin{assumptionbox}{Missing IV / Shadow Variable}
 \[
 R\indep Z\mid Y,
 \]
@@ -132,7 +132,7 @@ Completeness of $Y$ with respect to $Z$ makes its solution unique (d'Haultfoeuil
 \end{frame}
 
 \begin{frame}{A simple multivariate extension}
-Let $D=(D_1,\ldots,D_m)'$, $Y=(Y_1,\ldots,Y_m)'$, and $Z$ denote the response indicators, multivariate outcomes, and missingness IVs. Define the \term{global complete-case indicator}
+Let $D=(D_1,\ldots,D_m)'$, $Y=(Y_1,\ldots,Y_m)'$, and $Z$ denote the response indicators, multivariate outcomes, and missing IVs. Define the \term{global complete-case indicator}
 \[
 R=\mathbf 1\{D=\mathbf 1\}=\prod_{j=1}^m D_j.
 \]
@@ -179,7 +179,7 @@ Identifying the left-hand side is insufficient: \redkey{$Q_F$ and $Q_Y$ require 
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.47\textwidth}
 \begin{block}{MNAR identification}
-\term{Missingness IV / shadow variable}
+\term{Missing IV / Shadow Variable}
 \begin{itemize}
   \item d'Haultfoeuille (2010): completeness and a conditional moment equation.
   \item Zhao and Shao (2015): covariate-adjusted exclusion and semiparametric pseudo-likelihoods.
@@ -202,7 +202,7 @@ Identifying the left-hand side is insufficient: \redkey{$Q_F$ and $Q_Y$ require 
 \centering\bluekey{This paper connects these two stages under multivariate MNAR.}
 \end{frame}
 
-\begin{frame}{A latent shifter is not a missingness IV}
+\begin{frame}{A latent shifter is not a missing IV}
 Suppose $D\indep W\mid(Y,F,X)$. After integrating out $F$,
 \[
 \Prb(D=d\mid Y=y,W=w,X=x)
@@ -214,7 +214,7 @@ D\indep W\mid(Y,X)\quad\text{does }\textcolor{Red}{\mathbf{not}}\text{ follow.}
 \]
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.48\textwidth}
-\begin{block}{$Z_S$: missingness IV}
+\begin{block}{$Z_S$: Missing IV / Shadow Variable}
 Predicts $Y_S$ and satisfies an exclusion for $R_S$ conditional on $(Y_S,U_S)$.
 \end{block}
 \end{column}
@@ -230,7 +230,7 @@ Moves the distribution of $F$ and supplies third-mode variation for decompositio
 \vfill\centering
 {\color{Blue}\large\bfseries Stage 1}\par\vspace{.6em}
 {\fontsize{20}{24}\selectfont\bfseries Recover each supported-block law}\par\vspace{1em}
-{\large Shadow IV $+$ positivity $+$ complete-case completeness}
+{\large Missing IV / Shadow Variable $+$ positivity $+$ complete-case completeness}
 \vfill
 \end{frame}
 
@@ -272,7 +272,7 @@ The method requires supported anchor and extension pairs, not a global complete 
 \end{frame}
 
 \begin{frame}{Stage-1 assumptions}
-\begin{assumptionbox}{Blockwise covariate-adjusted missingness IV}
+\begin{assumptionbox}{Blockwise covariate-adjusted missing IV}
 For every supported block $S$,
 \[
 R_S\indep Z_S\mid(Y_S,U_S).
@@ -476,7 +476,7 @@ The algorithm follows the same order as the identification argument.
   \item $n=500$; binary $W,Y_1,Y_2,Y_3$.
   \item $Y_1$ always observed; $Y_2,Y_3$ MNAR.
   \item Mean item response rate: $80\%$.
-  \item Four-category full-rank shadow variable for each pair.
+  \item Four-category full-rank missing IV / shadow variable for each pair.
   \item 100 Monte Carlo replications.
 \end{itemize}
 \end{block}
@@ -547,7 +547,7 @@ The gain is robustness to the \redkey{selection-link specification}, not univers
 
 \begin{frame}{Conclusion}
 \begin{enumerate}
-  \item Shadow IVs and complete-case completeness identify each supported-block law without a parametric selection model.
+  \item Missing IVs and complete-case completeness identify each supported-block law without a parametric selection model.
   \item Anchor items connect overlapping blocks, while $W$ supplies the third mode needed for tensor uniqueness.
   \item The observed-data law then identifies finite latent-class proportions and all measurement kernels under a common label.
   \item A bridge-weighted composite estimator follows the same order and performs well under selection-model misspecification.
