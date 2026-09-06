@@ -80,13 +80,13 @@
 \end{frame}
 
 \begin{frame}{Missing-data mechanisms and standard approaches}
-\fontsize{9.2pt}{11pt}\selectfont
+\fontsize{9pt}{10.5pt}\selectfont
 \begin{block}{Definition}
-Little and Rubin (2002) classify missingness as MCAR, MAR, and NI/MNAR. Let $D$ denote the response pattern, and let $Y_{\mathrm{obs}}$ and $Y_{\mathrm{mis}}$ denote observed and missing data. The auxiliary variable used below is a \textcolor{Red}{\bfseries Missing IV (also called a shadow variable)}.
+Let $D$ denote the response pattern and write $Y=(Y_{\mathrm{obs}},Y_{\mathrm{mis}})$. Little and Rubin (2002) distinguish missing completely at random (MCAR), missing at random (MAR), and missing not at random (MNAR). An instrumental variable for missingness is termed a \textcolor{Red}{\bfseries Missing IV or shadow variable}.
 \end{block}
 \vspace{.1em}
 \setlength{\tabcolsep}{3pt}
-\renewcommand{\arraystretch}{1.03}
+\renewcommand{\arraystretch}{1.0}
 \begin{tabular}{>{\raggedright\arraybackslash}p{.13\linewidth}
                 >{\raggedright\arraybackslash}p{.45\linewidth}
                 >{\raggedright\arraybackslash}p{.32\linewidth}}
@@ -97,10 +97,10 @@ MCAR & Response does not depend on observed or missing data. $\Prb(D\mid Y)=\Prb
 \addlinespace[.15em]
 MAR & Response depends only on observed data. $\Prb(D\mid Y)=\Prb(D\mid Y_{\mathrm{obs}})$ & Multiple imputation, inverse probability weighting \\
 \addlinespace[.15em]
-NI/MNAR & Response also depends on missing data. $\Prb(D\mid Y)=\Prb(D\mid Y_{\mathrm{obs}},Y_{\mathrm{mis}})$ & Selection models, pattern-mixture models, \textcolor{Red}{\bfseries Missing IV} \\
+MNAR & Response also depends on missing data. $\Prb(D\mid Y)=\Prb(D\mid Y_{\mathrm{obs}},Y_{\mathrm{mis}})$ & Selection models, pattern-mixture models, \textcolor{Red}{\bfseries Missing IV} \\
 \bottomrule
 \end{tabular}
-\vspace{.35em}
+\vspace{.15em}
 \begin{takeaway}
 Under MNAR, respondent-only analysis can induce sample-selection bias (Heckman, 1979). Missing IVs recover full-data laws before latent decomposition.
 \end{takeaway}
@@ -179,6 +179,9 @@ This direct extension is valid, but it relies on observing the entire vector $Y$
 \resizebox{.98\linewidth}{!}{\input{notes/figures/latent_measurement_model.tex}}
 \end{column}
 \begin{column}{.49\textwidth}
+\small
+This structure underlies structural equation modeling (SEM) and item response theory (IRT).
+\normalsize
 Let $F$ denote an \term{unobserved latent variable} and let $Y=(Y_1,\ldots,Y_m)$ denote its potential \term{observed measurements}.
 \begin{itemize}
   \item $Q_F(\cdot\mid W,X)$ is the latent distribution.
@@ -423,7 +426,25 @@ Injectivity of $\Phi_x$ identifies $[\theta]\in\Theta_x/\mathfrak S_r$; anchor o
 \end{columns}
 \end{frame}
 
-\begin{frame}{Stage-2 identification conditions}
+\begin{frame}{Lemma 3.1}
+\begin{theorembox}{Khatri--Rao rank}
+Let $A$ and $B$ have $r$ columns, with column Kruskal ranks $k_A$ and $k_B$. Then
+\[
+k_{B\odot A}\ge \min\{k_A+k_B-1,r\}.
+\]
+In particular,
+\[
+\redkey{$k_A+k_B\ge r+1$}
+\quad\Longrightarrow\quad
+\bluekey{$B\odot A$ has full column rank.}
+\]
+\end{theorembox}
+\begin{takeaway}
+This lemma converts the anchor-tensor rank condition into the linear-inversion rank needed for every extension item.
+\end{takeaway}
+\end{frame}
+
+\begin{frame}{Assumption 3.1}
 \begin{assumptionbox}{Covariate-assisted anchor-pair structure}
 For every $x$ in a common full-probability set:
 \begin{itemize}
@@ -440,7 +461,7 @@ For every $x$ in a common full-probability set:
 Supported overlapping pairs and anchor ordering adapt that condition to the present MNAR problem.
 \end{frame}
 
-\begin{frame}{Theorem 1}
+\begin{frame}{\textcolor{Red}{New!} Theorem 1}
 \begin{theorembox}{Anchor-pair identification with $W$ as the third mode}
 Under the stage-1 assumptions and the anchor-pair conditions, the observed-data law identifies, under the fixed anchor ordering,
 \[
@@ -455,110 +476,79 @@ Moreover, for any set of items $A$,
 \]
 is identified even if all items in $A$ are never jointly observed.
 \end{theorembox}
+\vspace{.2em}
+\bluekey{In short: recover the pair laws, decompose one anchor tensor, and obtain the latent-class distribution and every measurement kernel.}
 \end{frame}
 
-\begin{frame}{Steps 1--2: recover pair laws and form the anchor tensor}
-\begin{block}{Step 1: supported-pair laws}
-New Proposition 1 identifies
-\[
-P(Y_a,Y_b,W,X),\qquad P(Y_j,Y_a,W,X),
-\]
-and therefore $\mathcal T_{abW}(x)$ and every $\mathcal T_{jaW}(x)$.
-\end{block}
-\begin{block}{Step 2: three-view latent-class representation}
-Local independence gives
-\[
-\mathcal T_{abW}(x)
-=\sum_{f=1}^r p_f(x)
-M_a(:,f;x)\otimes M_b(:,f;x)\otimes G(:,f;x).
-\]
-\end{block}
-\begin{takeaway}
-$Y_a$, $Y_b$, and $W$ are the three conditionally independent views.
-\end{takeaway}
-\end{frame}
+\begin{frame}{Proof map for Theorem 1}
+\centering
+\begin{tikzpicture}[
+  node distance=.75cm and .70cm,
+  box/.style={draw=Navy,thick,rounded corners=2pt,fill=PaleBlue,
+    align=center,text width=3.25cm,minimum height=1.45cm,font=\small},
+  result/.style={box,fill=Blue!12,draw=Blue},
+  flow/.style={-{Latex[length=2.2mm]},line width=1.05pt,Blue}
+]
+\node[box] (observed) {Observed-data law\\$P_{\mathrm{obs}}(O)$};
+\node[box,right=of observed] (tensors) {\bluekey{Proposition 1}\\recovered anchor and\\extension tensors};
+\node[result,right=of tensors] (factors) {\bluekey{Allman uniqueness}\\$k_a+k_b+k_G\ge2r+2$\\$M_a,M_b,p,G$};
+\draw[flow] (observed) -- (tensors);
+\draw[flow] (tensors) -- (factors);
 
-\begin{frame}{Steps 3--4: identify and normalize the anchor decomposition}
-\begin{block}{Step 3: Kruskal uniqueness}
-With column Kruskal ranks $k_a,k_b,k_G$,
-\[
-\textcolor{Red}{\bm{k_a+k_b+k_G\ge 2r+2}}
-\]
-identifies $M_a,M_b,\widetilde G$ up to a common permutation and column scaling, where $\widetilde G(:,f)=p_fG(:,f)$.
-\end{block}
-\begin{block}{Step 4: scaling and labels}
-Probability-column normalization gives
-\[
-p_f=\bm 1^\top\widetilde G(:,f),\qquad G(:,f)=\widetilde G(:,f)/p_f.
-\]
-The anchor ordering $\mu_{a1}<\cdots<\mu_{ar}$ fixes the common class labels.
-\end{block}
-\end{frame}
+\node[result,below=of tensors] (latent) {\bluekey{Bayes' rule}\\latent distribution\\$Q_F=\{\lambda_f(w,x)\}$};
+\node[result,below=of factors] (kernels) {\bluekey{Lemma 3.1}\\extension inversion\\all $M_j$ and $Q_Y$};
+\draw[flow] (factors.south west) -- (latent.north east);
+\draw[flow] (factors) -- (kernels);
+\end{tikzpicture}
+\vspace{.45em}
 
-\begin{frame}{Steps 5--6: obtain inversion rank and class weights}
-\begin{block}{Step 5: rank for linear inversion}
-The anchor Kruskal condition and the Khatri--Rao rank bound imply
-\[
-G\odot M_a\quad\text{has full column rank}.
-\]
-Hence the extension-tensor equation has a unique right-inverse solution.
-\end{block}
-\begin{block}{Step 6: latent class distribution given the shifter}
-Because $p$, $G$, and $\Prb(W=w\mid X=x)$ are identified, Bayes' rule gives
-\[
-\lambda_f(w,x)
-=\frac{p_f(x)G(w,f;x)}{\Prb(W=w\mid X=x)}.
-\]
-Thus $Q_F(x)=\{\lambda_f(w,x)\}_{f,w}$ is identified.
-\end{block}
-\end{frame}
-
-\begin{frame}{Steps 7--8: recover all kernels and unobserved joint laws}
-\begin{block}{Step 7: extension-kernel inversion}
-For every nonanchor item $j$,
-\[
-M_j=T_{j\mid aW}
-\left[\operatorname{diag}(p)(G\odot M_a)^\top\right]^+,
-\]
-so all measurement kernels $Q_Y=\{M_j\}_{j=1}^m$ are identified.
-\end{block}
-\begin{block}{Step 8: joint laws never observed together}
-For any item set $A$,
-\[
-\Prb(Y_A=y_A\mid W=w,X=x)
-=\sum_{f=1}^r\lambda_f(w,x)\prod_{j\in A}M_j(y_j,f;x).
-\]
-This includes sets $A$ that are never jointly observed.
-\end{block}
+\bluekey{One anchor decomposition fixes common labels; $Q_F$ and $Q_Y$ then determine $P(Y_A\mid W,X)$ even when $Y_A$ is never jointly observed.}
 \end{frame}
 
 \begin{frame}{Bridge-weighted composite estimation}
-Let $\mathcal S_*=\{\{a,b\}\}\cup\{\{j,a\}:j\notin\{a,b\}\}$. Following the identification order,
+\small
+Stage 1 follows d'Haultfoeuille (2010, Section 3): solve the conditional moment equation blockwise and recover each pair law by IPW. Stage 2 follows the plug-in order of Zhao and Shao (2015, Sections 2.2--2.3), while fitting one latent mixture to all overlapping pair laws.
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.57\textwidth}
+Let $\mathcal S_*=\{\{a,b\}\}\cup\{\{j,a\}:j\notin\{a,b\}\}$ and
+\[
+p_\theta(y_S,w\mid x)=\sum_{f=1}^r p_f(x)G(w,f;x)
+\prod_{j\in S}M_j(y_j,f;x).
+\]
+The proposed estimator is
 \[
 \widehat\theta=\arg\max_{\theta\in\Theta}
 \frac1n\sum_{i=1}^n\sum_{S\in\mathcal S_*}c_S
-\frac{R_{iS}}{\widehat\pi_S(Y_{iS},U_i)}
-\log p_\theta(Y_{iS},W_i\mid X_i),
+\frac{R_{iS}\log p_\theta(Y_{iS},W_i\mid X_i)}
+{\widehat\pi_S(Y_{iS},U_i)}.
 \]
-where $\theta=\{p,G,M_1,\ldots,M_m\}$.
+\end{column}
+\begin{column}{.40\textwidth}
 \begin{itemize}
-  \item This is a \term{composite M-estimator}, not a full likelihood.
-  \item The bridge may be finite-dimensional or a regularized sieve.
-  \item Inference must include first-stage bridge estimation.
+  \item \term{Composite M-estimator}, not a full likelihood.
+  \item Finite-dimensional or regularized sieve bridge.
+  \item $c_S>0$ balances contributions across blocks.
 \end{itemize}
 \begin{theorembox}{Finite-dimensional bridge}
-Under regularity and separation, $\widehat\theta\to_p\theta_0$ and
+\scriptsize
+$\widehat\theta\to_p\theta_0$ and
 $\sqrt n(\widehat\theta-\theta_0)\rightsquigarrow N(0,A^{-1}BA^{-\top})$.
+The sandwich variance includes first-stage bridge estimation.
 \end{theorembox}
+\end{column}
+\end{columns}
 \end{frame}
 
 \begin{frame}{Computation}
+\small
+Zhao and Shao (2015, Section 2.3) provide the precedent for updating a nuisance law and the target model in stages. Here the criterion contains a nonconvex latent mixture, so the algorithm adds \bluekey{tensor initialization, multiple starts, and constrained updates}.
+\vspace{.25em}
 \centering
 \begin{tikzpicture}[
   node distance=.50cm,
   phase/.style={draw=Navy,thick,rounded corners=2pt,fill=PaleBlue,
-    minimum width=3.55cm,minimum height=3.25cm,align=left,text width=3.05cm,
-    inner sep=.28cm,font=\small,execute at begin node=\raggedright},
+    minimum width=3.55cm,minimum height=2.85cm,align=left,text width=3.05cm,
+    inner sep=.24cm,font=\footnotesize,execute at begin node=\raggedright},
   flow/.style={-{Latex[length=2.4mm]},line width=1.2pt,Blue},
   tag/.style={circle,fill=Blue,text=white,font=\bfseries,minimum size=.62cm}
 ]
@@ -577,12 +567,16 @@ $\sqrt n(\widehat\theta-\theta_0)\rightsquigarrow N(0,A^{-1}BA^{-\top})$.
 \draw[flow] (bridge.east) -- (tensor.west);
 \draw[flow] (tensor.east) -- (refine.west);
 \end{tikzpicture}
-\vspace{.55em}
+\vspace{.25em}
 
 \bluekey{The computation follows the identification order: recover, decompose, refine.}
 \end{frame}
 
 \begin{frame}{Simulation design}
+\footnotesize
+Following Allman, Matias and Rhodes (2009, Sections 3--5), we start from the
+$r$-class, $p$-feature product mixture in manuscript equation (35).
+\vspace{.15em}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.48\textwidth}
 \begin{block}{Data-generating process}
@@ -591,6 +585,14 @@ $\sqrt n(\widehat\theta-\theta_0)\rightsquigarrow N(0,A^{-1}BA^{-\top})$.
 \Prb(W,Y_1,Y_2,Y_3)
 =\sum_{f=1}^{2}p_f\,G_f(W)\prod_{j=1}^{3}M_{jf}(Y_j),
 \]
+\vspace{-.7em}
+\[
+\begin{aligned}
+p_f&=\Prb(F=f), & G_f(w)&=\Prb(W=w\mid F=f),\\
+M_{jf}(y)&=\Prb(Y_j=y\mid F=f).&&
+\end{aligned}
+\]
+\vspace{-.5em}
 \[
 \begin{aligned}
 \eta_j(Y_1,Y_j)&=\alpha_j-.50Y_1-.80Y_j-1.20Y_1Y_j,\\
@@ -600,6 +602,7 @@ $\sqrt n(\widehat\theta-\theta_0)\rightsquigarrow N(0,A^{-1}BA^{-\top})$.
 \]
 \small
 \begin{itemize}
+  \setlength{\itemsep}{.05em}
   \item $n=500$; binary $W,Y_1,Y_2,Y_3$.
   \item $Y_1$ always observed; $Y_2,Y_3$ MNAR.
   \item Mean item response rate: $80\%$.
@@ -610,43 +613,70 @@ $\sqrt n(\widehat\theta-\theta_0)\rightsquigarrow N(0,A^{-1}BA^{-\top})$.
 \end{column}
 \begin{column}{.49\textwidth}
 \begin{block}{Five estimators}
+\scriptsize
 \begin{enumerate}
-  \item Complete-data oracle
-  \item MAR
-  \item Correct selection likelihood
-  \item Misspecified selection likelihood
-  \item Proposed saturated finite-cell bridge
+  \setlength{\itemsep}{.18em}
+  \item \textbf{Complete-data oracle:} maximize the full product-mixture likelihood before missingness.
+  \item \textbf{MAR:} observed-data full-information likelihood under ignorability.
+  \item \textbf{Correct selection likelihood:} combine the latent-class model with the true logistic selection equation and maximize the marginal likelihood of $(W,Y_{\mathrm{obs}},D)$.
+  \item \textbf{Misspecified selection likelihood:} omit the $Y_1$ main effect and interaction; neither selection likelihood uses $Z_S$.
+  \item \textbf{Proposed saturated/sieve bridge:} estimate
+  $\E\{R_Sr_S(Y_S)\mid Z_S,W\}=1$ with a four-cell inverse bridge, then fit the weighted pairwise latent-class criterion.
 \end{enumerate}
 \end{block}
-Targets: bias and RMSE of $M_j$ and $p_f$.
 \end{column}
 \end{columns}
 \end{frame}
 
-\begin{frame}{Simulation: robustness to selection misspecification}
+\begin{frame}{Evaluation targets}
+\small
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.48\textwidth}
+\begin{block}{Measurement kernels $M_j$}
+For binary items, $M_j(1,f)=\Prb(Y_j=1\mid F=f)$.
+\begin{itemize}
+  \item \bluekey{Meaning:} how item $j$ measures class $f$.
+  \item \bluekey{Report:} mean bias and mean RMSE over every $(j,f)$ cell.
+\end{itemize}
+\end{block}
+\end{column}
+\begin{column}{.49\textwidth}
+\begin{block}{Latent class proportions $p_f$}
+$p_f=\Prb(F=f)$ is the population share in class $f$.
+\begin{itemize}
+  \item \bluekey{Meaning:} the latent distribution itself.
+  \item \bluekey{Report:} with two classes, evaluate $p_1$ because $p_2=1-p_1$.
+\end{itemize}
+\end{block}
+\end{column}
+\end{columns}
+\vspace{.1em}
+\begin{theorembox}{Monte Carlo criteria}
+\footnotesize
+For a component $\psi$ of $M_j$ or $p_f$ across $B$ replications,
+\[
+\operatorname{Bias}(\widehat\psi)=B^{-1}\sum_{b=1}^B(\widehat\psi^{(b)}-\psi_0),
+\quad
+\operatorname{RMSE}(\widehat\psi)=\{B^{-1}\sum_{b=1}^B(\widehat\psi^{(b)}-\psi_0)^2\}^{1/2}.
+\]
+\textbf{Bias} measures systematic error; \textbf{RMSE} summarizes total finite-sample error.
+\end{theorembox}
+\end{frame}
+
+\begin{frame}{Simulation results}
 \begin{columns}[c,onlytextwidth]
-\begin{column}{.56\textwidth}
+\begin{column}{.59\textwidth}
 \centering
 \includegraphics[width=\linewidth]{simulation/figures/allman_bias_rmse_comparison.pdf}
 \end{column}
-\begin{column}{.41\textwidth}
-\small
-\begin{tabular}{lrr}
-\toprule
-Method & $M_j$ bias & RMSE\\
-\midrule
-Oracle & .0031 & .0351\\
-MAR & -.0496 & .0966\\
-Selection: correct & -.0008 & .0544\\
-Selection: misspec. & .0409 & .0684\\
-\textbf{Finite-cell bridge} & \textbf{-.0064} & \textbf{.0555}\\
-\bottomrule
-\end{tabular}
-\vspace{.45em}
+\begin{column}{.38\textwidth}
 \begin{itemize}
-  \item \textbf{vs. MAR:} $|\mathrm{Bias}|$ .0064 $<$ .0496, and RMSE .0555 $<$ .0966.
-  \item \textbf{vs. misspecified selection:} $|\mathrm{Bias}|$ .0064 $<$ .0409, and RMSE .0555 $<$ .0684.
-  \item \textbf{Efficiency:} RMSE $\approx$ correct selection (.0544), but $>$ oracle (.0351).
+  \item \bluekey{Measurement kernels}\par
+  Smaller absolute bias and RMSE than MAR and misspecified selection.
+  \item \bluekey{Latent class proportions}\par
+  Proposed bias $\approx 0$; RMSE is not uniformly smallest.
+  \item \redkey{Efficiency tradeoff}\par
+  Correct selection likelihood is competitive only under correct specification.
 \end{itemize}
 \end{column}
 \end{columns}
@@ -679,7 +709,7 @@ Selection: misspec. & .0409 & .0684\\
 \end{frame}
 
 \begin{frame}{Selected references}
-\scriptsize
+\footnotesize
 \begin{thebibliography}{99}
 \bibitem{} Allman, E. S., Matias, C., and Rhodes, J. A. (2009). Identifiability of parameters in latent structure models with many observed variables. \emph{Annals of Statistics}, 37, 3099--3132.
 \bibitem{} d'Haultfoeuille, X. (2010). A new instrumental method for dealing with endogenous selection. \emph{Journal of Econometrics}, 154, 1--15.
@@ -688,27 +718,84 @@ Selection: misspec. & .0409 & .0684\\
 \bibitem{} Little, R. J. A. and Rubin, D. B. (2002). \emph{Statistical Analysis with Missing Data}. Wiley.
 \bibitem{} Miao, W., Liu, L., Tchetgen Tchetgen, E. J., and Geng, Z. (2019). Identification, doubly robust estimation, and semiparametric efficiency theory of nonignorable missing data with a shadow variable. arXiv:1509.02556v3.
 \bibitem{} Zhao, J. and Shao, J. (2015). Semiparametric pseudo-likelihoods in generalized linear models with nonignorable missing data. \emph{Journal of the American Statistical Association}, 110, 1577--1590.
-\bibitem{} Holman, R. and Glas, C. A. W. (2005). Modelling non-ignorable missing-data mechanisms with item response theory models. \emph{British Journal of Mathematical and Statistical Psychology}, 58, 1--17.
-\bibitem{} Kuha, J., Katsikatsou, M., and Moustaki, I. (2018). Latent variable modelling with non-ignorable item nonresponse. \emph{Journal of the Royal Statistical Society: Series A}, 181, 907--932.
 \end{thebibliography}
 \end{frame}
 
 \appendix
 
-\begin{frame}{Appendix: extension-kernel inversion}
-For $j\notin\{a,b\}$, mode-$j$ unfolding gives
+\begin{frame}{Appendix: Steps 1--2}
+\begin{block}{Step 1: supported-pair laws}
+New Proposition 1 identifies
 \[
-T_{j\mid aW}(x)
-=M_j(x)\operatorname{diag}\{p(x)\}
-\{G(x)\odot M_a(x)\}^{\top}.
+P(Y_a,Y_b,W,X),\qquad P(Y_j,Y_a,W,X),
 \]
-The anchor Kruskal condition implies that $G\odot M_a$ has full column rank. Thus
+and therefore $\mathcal T_{abW}(x)$ and every $\mathcal T_{jaW}(x)$.
+\end{block}
+\begin{block}{Step 2: three-view latent-class representation}
+Local independence gives
 \[
-M_j(x)=T_{j\mid aW}(x)
-\left[\operatorname{diag}\{p(x)\}
-\{G(x)\odot M_a(x)\}^{\top}\right]^+.
+\mathcal T_{abW}(x)
+=\sum_{f=1}^r p_f(x)
+M_a(:,f;x)\otimes M_b(:,f;x)\otimes G(:,f;x).
 \]
-The same anchor ordering fixes the label of every extension kernel.
+\end{block}
+\begin{takeaway}
+$Y_a$, $Y_b$, and $W$ are the three conditionally independent views.
+\end{takeaway}
+\end{frame}
+
+\begin{frame}{Appendix: Steps 3--4}
+\begin{block}{Step 3: Kruskal uniqueness}
+With column Kruskal ranks $k_a,k_b,k_G$,
+\[
+\textcolor{Red}{\bm{k_a+k_b+k_G\ge 2r+2}}
+\]
+identifies $M_a,M_b,\widetilde G$ up to a common permutation and column scaling, where $\widetilde G(:,f)=p_fG(:,f)$.
+\end{block}
+\begin{block}{Step 4: scaling and labels}
+Probability-column normalization gives
+\[
+p_f=\bm 1^\top\widetilde G(:,f),\qquad G(:,f)=\widetilde G(:,f)/p_f.
+\]
+The anchor ordering $\mu_{a1}<\cdots<\mu_{ar}$ fixes the common class labels.
+\end{block}
+\end{frame}
+
+\begin{frame}{Appendix: Steps 5--6}
+\begin{block}{Step 5: rank for linear inversion}
+The anchor Kruskal condition and Lemma 3.1 imply
+\[
+G\odot M_a\quad\text{has full column rank}.
+\]
+Hence the extension-tensor equation has a unique right-inverse solution.
+\end{block}
+\begin{block}{Step 6: latent class distribution given the shifter}
+Because $p$, $G$, and $\Prb(W=w\mid X=x)$ are identified, Bayes' rule gives
+\[
+\lambda_f(w,x)
+=\frac{p_f(x)G(w,f;x)}{\Prb(W=w\mid X=x)}.
+\]
+Thus $Q_F(x)=\{\lambda_f(w,x)\}_{f,w}$ is identified.
+\end{block}
+\end{frame}
+
+\begin{frame}{Appendix: Steps 7--8}
+\begin{block}{Step 7: extension-kernel inversion}
+For every nonanchor item $j$,
+\[
+M_j=T_{j\mid aW}
+\left[\operatorname{diag}(p)(G\odot M_a)^\top\right]^+,
+\]
+so all measurement kernels $Q_Y=\{M_j\}_{j=1}^m$ are identified.
+\end{block}
+\begin{block}{Step 8: joint laws never observed together}
+For any item set $A$,
+\[
+\Prb(Y_A=y_A\mid W=w,X=x)
+=\sum_{f=1}^r\lambda_f(w,x)\prod_{j\in A}M_j(y_j,f;x).
+\]
+This includes sets $A$ that are never jointly observed.
+\end{block}
 \end{frame}
 
 \begin{frame}{Appendix: empirical diagnostics}
