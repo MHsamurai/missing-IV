@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from itertools import product
 from pathlib import Path
 
 import numpy as np
@@ -81,6 +82,28 @@ def _population_y_probability(config: dict) -> np.ndarray:
         dtype=float,
     )
     return measurement @ class_probability
+
+
+def binary_product_mixture_joint(
+    class_probability: np.ndarray, measurement: np.ndarray
+) -> tuple[np.ndarray, np.ndarray]:
+    """Return all binary outcome cells and their product-mixture probabilities."""
+    class_probability = np.asarray(class_probability, dtype=float)
+    measurement = np.asarray(measurement, dtype=float)
+    if measurement.ndim != 2 or measurement.shape[1] != len(class_probability):
+        raise ValueError(
+            "measurement must have shape (number of items, number of classes)"
+        )
+    cells = np.asarray(
+        list(product((0, 1), repeat=measurement.shape[0])), dtype=int
+    )
+    component_probability = np.where(
+        cells[:, :, None] == 1,
+        measurement[None, :, :],
+        1.0 - measurement[None, :, :],
+    ).prod(axis=1)
+    probability = component_probability @ class_probability
+    return cells, probability
 
 
 def _weighted_binary_moments(

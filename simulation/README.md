@@ -40,14 +40,17 @@ latent class proportion `p_f`. The replication-level output retains each
 `M_jf`, the selection coefficients, convergence status, and objective value;
 the summary also reports Monte Carlo standard errors for bias and RMSE.
 
-Because Stage 1 identifies the observed-variable law, the simulation also
-evaluates each marginal probability `P(Y_j=1)`. It reports bias, Monte Carlo
-variance, and RMSE of the estimated marginal probability, together with bias
-and RMSE for the implied Bernoulli variance. A separate figure compares the
-four-cell supported-pair distributions under the population truth, the
-full-data empirical distribution, respondent-only analysis, and the direct
-bridge correction. These checks distinguish recovery of the `Y` law from the
-subsequent latent decomposition.
+Because the final identification result determines the observed-variable law,
+the headline distributional check reconstructs the complete eight-cell law
+`P(Y1,Y2,Y3)` from each of the five fitted models. It compares the mean fitted
+law with the population truth and reports the replication-level total
+variation distance. The simulation also reports bias, Monte Carlo variance,
+and RMSE for each marginal probability `P(Y_j=1)`, together with bias and RMSE
+for the implied Bernoulli variance. A separate supporting diagnostic compares
+the four-cell supported-pair distributions under respondent-only analysis and
+direct Stage-1 bridge correction. These checks distinguish recovery of the
+full `Y` law, direct block-law recovery, and the subsequent latent
+decomposition.
 
 ## Run
 
