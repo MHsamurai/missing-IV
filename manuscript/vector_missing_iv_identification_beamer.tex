@@ -6,7 +6,7 @@
 \setCJKsansfont{Noto Sans JP}
 \setCJKmonofont{Noto Sans JP}
 \setmonofont{Menlo}
-\usepackage{amsmath,amssymb,bm,mathtools,booktabs,graphicx,tikz}
+\usepackage{amsmath,amssymb,bm,mathtools,booktabs,graphicx,tikz,array}
 \usetikzlibrary{arrows.meta,positioning,calc,fit,shapes.geometric}
 
 \usetheme{default}
@@ -79,30 +79,30 @@
 \titlepage
 \end{frame}
 
-\begin{frame}{Missing not at random}
-Let $Y_j$ denote a measurement and let $D_j=1$ indicate that $Y_j$ is observed. The observed value is $Y_j$ only when $D_j=1$.
-\begin{columns}[T,onlytextwidth]
-\begin{column}{.47\textwidth}
-\begin{block}{Missing at random}
-After conditioning on observed information $X$, the response probability does not depend on the unobserved value:
-\[
-D_j\indep Y_j\mid X.
-\]
+\begin{frame}{Missing-data mechanisms and standard approaches}
+\fontsize{9.2pt}{11pt}\selectfont
+\begin{block}{Definition}
+Little and Rubin (2002) classify missingness as Missing Completely At Random (MCAR), Missing At Random (MAR), and Nonignorable or Missing Not At Random (MNAR). Let $D$ denote the response pattern, and let $Y_{\mathrm{obs}}$ and $Y_{\mathrm{mis}}$ denote observed and missing data.
 \end{block}
-\end{column}
-\begin{column}{.50\textwidth}
-\begin{block}{Missing not at random}
-Even after conditioning on $X$, the response probability may depend on the missing value itself:
-\[
-\Prb(D_j=1\mid Y_j,X)\text{ depends on }Y_j.
-\]
-\end{block}
-\end{column}
-\end{columns}
-\vspace{.3em}
-Missing values, selection, and unobserved counterfactuals frequently arise in microdata. Under \term{MNAR}, the distribution among respondents generally differs from the full-data distribution.
+\vspace{.1em}
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.03}
+\begin{tabular}{>{\raggedright\arraybackslash}p{.13\linewidth}
+                >{\raggedright\arraybackslash}p{.45\linewidth}
+                >{\raggedright\arraybackslash}p{.32\linewidth}}
+\toprule
+Mechanism & Assumption & Common approaches \\
+\midrule
+MCAR & Response does not depend on observed or missing data. $\Prb(D\mid Y)=\Prb(D)$ & Complete-case analysis, mean imputation \\
+\addlinespace[.15em]
+MAR & Response depends only on observed data. $\Prb(D\mid Y)=\Prb(D\mid Y_{\mathrm{obs}})$ & Multiple imputation, inverse probability weighting \\
+\addlinespace[.15em]
+NI/MNAR & Response also depends on missing data. $\Prb(D\mid Y)=\Prb(D\mid Y_{\mathrm{obs}},Y_{\mathrm{mis}})$ & Selection models, pattern-mixture models, \textcolor{Red}{\bfseries missingness IV} \\
+\bottomrule
+\end{tabular}
+\vspace{.35em}
 \begin{takeaway}
-\bluekey{Inference based only on respondents is generally biased under MNAR.}
+This paper studies MNAR item nonresponse and uses missingness IVs to recover full-data laws before identifying the latent structure.
 \end{takeaway}
 \end{frame}
 
@@ -151,14 +151,24 @@ This direct extension is valid, but it relies on observing the entire vector $Y$
 \end{frame}
 
 \begin{frame}{Latent measurement model}
-Let $F$ denote an unobserved latent variable, $Y=(Y_1,\ldots,Y_m)$ the full vector of potential measurements, $X$ always-observed covariates, and $W$ an always-observed latent shifter.
+\begin{columns}[c,onlytextwidth]
+\begin{column}{.48\textwidth}
+\centering
+\resizebox{.98\linewidth}{!}{\input{notes/figures/latent_measurement_model.tex}}
+\end{column}
+\begin{column}{.49\textwidth}
+Let $F$ denote an \term{unobserved latent variable} and let $Y=(Y_1,\ldots,Y_m)$ denote its potential \term{observed measurements}.
+\begin{itemize}
+  \item $Q_F(\cdot\mid W,X)$ is the latent distribution.
+  \item $Q_j(\cdot\mid F,X)$ is the measurement kernel for item $j$.
+  \item $Y_1,\ldots,Y_m$ are conditionally independent given $(F,X)$.
+\end{itemize}
+\end{column}
+\end{columns}
+\vspace{.2em}
 \[
 \Prb(Y=y\mid W=w,X=x)
 =\int\prod_{j=1}^m Q_j(y_j\mid f,x)\,dQ_F(f\mid w,x).
-\]
-For $F\in\{1,\ldots,r\}$, let $\lambda_f(w,x)=\Prb(F=f\mid W=w,X=x)$ and let $M_j(:,f;x)$ denote the conditional probability vector for item $j$. Then
-\[
-\Prb(Y\mid W,X)=\sum_{f=1}^r\lambda_f(W,X)\bigotimes_{j=1}^m M_j(:,f;X).
 \]
 \begin{takeaway}
 Identifying the left-hand side is insufficient: \redkey{$Q_F$ and $Q_Y$ require a unique tensor decomposition.}
