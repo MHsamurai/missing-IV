@@ -28,6 +28,7 @@
 \setbeamertemplate{itemize item}{\color{Blue}$\blacktriangleright$}
 \setbeamertemplate{itemize subitem}{\color{Navy}$\bullet$}
 \setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamertemplate{bibliography item}{}
 \setbeamertemplate{footline}{%
   \leavevmode\hbox{%
     \begin{beamercolorbox}[wd=.84\paperwidth,ht=2.4ex,dp=1ex,leftskip=1.2em]{footline}
@@ -55,7 +56,9 @@
 \newcommand{\term}[1]{\underline{#1}}
 \newenvironment{assumptionbox}[1]{\begin{block}{Assumption: #1}}{\end{block}}
 \newenvironment{theorembox}[1]{\begin{block}{#1}}{\end{block}}
-\newenvironment{takeaway}{\begin{block}{Key message}\color{Navy}\bfseries}{\end{block}}
+\newenvironment{takeaway}{%
+  \begin{beamercolorbox}[rounded=true,sep=.7em,wd=\linewidth]{block body}%
+  \color{Navy}\bfseries}{\end{beamercolorbox}}
 
 \title{Identification of Latent Measurement Models\\under Multivariate MNAR}
 \subtitle{Shadow IVs, supported blocks, and finite latent classes}
@@ -106,7 +109,7 @@ The gap lies between recovery of the full-data law and identification of its lat
 \end{takeaway}
 \end{frame}
 
-\begin{frame}{Two literatures solve different stages}
+\begin{frame}{Related identification results}
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.47\textwidth}
 \begin{block}{MNAR identification}
@@ -360,7 +363,7 @@ is identified even if all items in $A$ are never jointly observed.
 \end{enumerate}
 \end{frame}
 
-\begin{frame}{Complete identification map}
+\begin{frame}{From observed data to latent parameters}
 \begin{columns}[c,onlytextwidth]
 \begin{column}{.56\textwidth}
 \centering
@@ -399,7 +402,7 @@ $\sqrt n(\widehat\theta-\theta_0)\rightsquigarrow N(0,A^{-1}BA^{-\top})$.
 \end{theorembox}
 \end{frame}
 
-\begin{frame}{Identification-aligned computation}
+\begin{frame}{Computation}
 \begin{enumerate}
   \item Estimate the bridge for every supported pair and check overlap.
   \item Construct weighted anchor and extension tensors.
