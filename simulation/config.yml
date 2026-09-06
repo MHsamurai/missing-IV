@@ -54,5 +54,12 @@
     "selection_ridge": 1e-6,
     "selection_irls_max_iter": 50,
     "maximum_inverse_weight": 25.0
+  },
+  "inference": {
+    "confidence_level": 0.95,
+    "bridge_bootstrap_replications": 200,
+    "hessian_relative_step": 0.0001,
+    "score_relative_step": 0.00001,
+    "information_eigenvalue_floor": 1e-8
   }
 }

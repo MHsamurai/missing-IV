@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from itertools import product
 from pathlib import Path
+from statistics import NormalDist
 
 import numpy as np
 import pandas as pd
@@ -772,9 +773,402 @@ def fit_latent_model(
     return best
 
 
+LIKELIHOOD_INFERENCE_METHODS = (
+    "full_data_oracle",
+    "mar",
+    "selection_likelihood_correct",
+    "selection_likelihood_misspecified",
+)
+
+
+def _probability_logit(probability: np.ndarray | float) -> np.ndarray:
+    probability = np.clip(np.asarray(probability, dtype=float), 1e-8, 1.0 - 1e-8)
+    return np.log(probability / (1.0 - probability))
+
+
+def _logsumexp_rows(value: np.ndarray) -> np.ndarray:
+    maximum = np.max(value, axis=1, keepdims=True)
+    return (
+        maximum[:, 0]
+        + np.log(np.exp(value - maximum).sum(axis=1))
+    )
+
+
+def _pack_likelihood_parameters(fit: dict, method: str) -> np.ndarray:
+    parameter = np.concatenate(
+        (
+            np.atleast_1d(_probability_logit(fit["class_probability"][1])),
+            _probability_logit(fit["w_kernel"]),
+            _probability_logit(fit["measurement"]).ravel(),
+        )
+    )
+    if method in {
+        "selection_likelihood_correct",
+        "selection_likelihood_misspecified",
+    }:
+        parameter = np.concatenate(
+            (parameter, np.asarray(fit["selection_parameter"]).ravel())
+        )
+    return parameter
+
+
+def _unpack_likelihood_parameters(
+    parameter: np.ndarray, method: str
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray | None]:
+    class_one = float(expit(np.asarray([parameter[0]]))[0])
+    class_probability = np.asarray([1.0 - class_one, class_one])
+    w_kernel = expit(parameter[1:3])
+    measurement = expit(parameter[3:9]).reshape(3, 2)
+    selection_parameter = None
+    if method == "selection_likelihood_correct":
+        selection_parameter = parameter[9:].reshape(2, 4)
+    elif method == "selection_likelihood_misspecified":
+        selection_parameter = parameter[9:].reshape(2, 2)
+    return measurement, w_kernel, class_probability, selection_parameter
+
+
+def _negative_loglikelihood_contributions(
+    parameter: np.ndarray, dataset: dict, method: str
+) -> np.ndarray:
+    y, w, observed = dataset["y"], dataset["w"], dataset["observed"]
+    measurement, w_kernel, class_probability, selection_parameter = (
+        _unpack_likelihood_parameters(parameter, method)
+    )
+    if method in {"full_data_oracle", "mar"}:
+        item_observed = (
+            np.ones_like(observed, dtype=bool)
+            if method == "full_data_oracle"
+            else observed
+        )
+        log_component = np.zeros((len(y), 2))
+        for latent in (0, 1):
+            log_component[:, latent] = np.log(class_probability[latent])
+            log_component[:, latent] += _binary_log_kernel(w, w_kernel[latent])
+            for item in range(3):
+                contribution = _binary_log_kernel(
+                    y[:, item], measurement[item, latent]
+                )
+                log_component[:, latent] += np.where(
+                    item_observed[:, item], contribution, 0.0
+                )
+        return -_logsumexp_rows(log_component)
+
+    specification = (
+        "correct" if method == "selection_likelihood_correct" else "misspecified"
+    )
+    state_f = np.repeat(np.arange(2), 4)
+    state_y2 = np.tile(np.repeat(np.arange(2), 2), 2)
+    state_y3 = np.tile(np.arange(2), 4)
+    log_component = np.full((len(y), 8), -np.inf)
+    for state, latent in enumerate(state_f):
+        y2_state = np.full(len(y), state_y2[state], dtype=float)
+        y3_state = np.full(len(y), state_y3[state], dtype=float)
+        valid = ((~observed[:, 1]) | (y2_state == y[:, 1])) & (
+            (~observed[:, 2]) | (y3_state == y[:, 2])
+        )
+        candidate = np.log(class_probability[latent])
+        candidate = candidate + _binary_log_kernel(w, w_kernel[latent])
+        candidate = candidate + _binary_log_kernel(
+            y[:, 0], measurement[0, latent]
+        )
+        candidate = candidate + _binary_log_kernel(
+            y2_state, measurement[1, latent]
+        )
+        candidate = candidate + _binary_log_kernel(
+            y3_state, measurement[2, latent]
+        )
+        for local, (item, candidate_y) in enumerate(
+            ((1, y2_state), (2, y3_state))
+        ):
+            features = _selection_features(y[:, 0], candidate_y, specification)
+            probability = expit(features @ selection_parameter[local])
+            candidate = candidate + _binary_log_kernel(
+                observed[:, item].astype(float), probability
+            )
+        log_component[:, state] = np.where(valid, candidate, -np.inf)
+    return -_logsumexp_rows(log_component)
+
+
+def _finite_difference_hessian(
+    function, parameter: np.ndarray, relative_step: float
+) -> np.ndarray:
+    dimension = len(parameter)
+    step = relative_step * (1.0 + np.abs(parameter))
+    hessian = np.empty((dimension, dimension))
+    center = float(function(parameter))
+    for row in range(dimension):
+        row_step = np.zeros(dimension)
+        row_step[row] = step[row]
+        hessian[row, row] = (
+            function(parameter + row_step)
+            - 2.0 * center
+            + function(parameter - row_step)
+        ) / np.square(step[row])
+        for column in range(row):
+            column_step = np.zeros(dimension)
+            column_step[column] = step[column]
+            hessian[row, column] = hessian[column, row] = (
+                function(parameter + row_step + column_step)
+                - function(parameter + row_step - column_step)
+                - function(parameter - row_step + column_step)
+                + function(parameter - row_step - column_step)
+            ) / (4.0 * step[row] * step[column])
+    return (hessian + hessian.T) / 2.0
+
+
+def _finite_difference_jacobian(
+    function, parameter: np.ndarray, relative_step: float
+) -> np.ndarray:
+    center = np.asarray(function(parameter), dtype=float)
+    step = relative_step * (1.0 + np.abs(parameter))
+    jacobian = np.empty((len(center), len(parameter)))
+    for column in range(len(parameter)):
+        increment = np.zeros(len(parameter))
+        increment[column] = step[column]
+        jacobian[:, column] = (
+            function(parameter + increment) - function(parameter - increment)
+        ) / (2.0 * step[column])
+    return jacobian
+
+
+def _block_probability_from_latent_fit(
+    measurement: np.ndarray,
+    class_probability: np.ndarray,
+    pair: tuple[int, int],
+) -> np.ndarray:
+    probability = np.empty(4)
+    for y_anchor, y_item in product((0, 1), repeat=2):
+        cell = 2 * y_anchor + y_item
+        probability[cell] = np.sum(
+            class_probability
+            * np.where(
+                y_anchor, measurement[pair[0]], 1.0 - measurement[pair[0]]
+            )
+            * np.where(y_item, measurement[pair[1]], 1.0 - measurement[pair[1]])
+        )
+    return probability
+
+
+def _observed_law_target_from_components(
+    measurement: np.ndarray, class_probability: np.ndarray, config: dict
+) -> np.ndarray:
+    block_probability = [
+        _block_probability_from_latent_fit(
+            measurement, class_probability, tuple(pair)
+        )
+        for pair in config["supported_pairs"]
+    ]
+    marginal_probability = [
+        probability[1] + probability[3] for probability in block_probability
+    ]
+    return np.concatenate((marginal_probability, *block_probability))
+
+
+def _observed_law_target_from_fit(
+    parameter: np.ndarray, method: str, config: dict
+) -> np.ndarray:
+    measurement, _, class_probability, _ = _unpack_likelihood_parameters(
+        parameter, method
+    )
+    return _observed_law_target_from_components(
+        measurement, class_probability, config
+    )
+
+
+def _observed_law_parameter_metadata(config: dict) -> list[dict]:
+    metadata = []
+    for block, pair_list in enumerate(config["supported_pairs"]):
+        pair = tuple(pair_list)
+        target_item = pair[1]
+        metadata.append(
+            {
+                "scope": "overall_marginal",
+                "parameter": f"mu_Y{target_item + 1}",
+                "block": f"S{pair[0] + 1}{pair[1] + 1}",
+                "truth": float(_population_y_probability(config)[target_item]),
+            }
+        )
+    for block, pair_list in enumerate(config["supported_pairs"]):
+        pair = tuple(pair_list)
+        truth = _pair_cell_probability(config, pair[1])
+        for cell in range(4):
+            metadata.append(
+                {
+                    "scope": "supported_block",
+                    "parameter": (
+                        f"S{pair[0] + 1}{pair[1] + 1}_p{cell // 2}{cell % 2}"
+                    ),
+                    "block": f"S{pair[0] + 1}{pair[1] + 1}",
+                    "truth": float(truth[cell]),
+                }
+            )
+    for index, entry in enumerate(metadata):
+        entry["parameter_index"] = index
+    return metadata
+
+
+def _proposed_stage1_observed_law_target(dataset: dict, config: dict) -> np.ndarray:
+    block_probability = []
+    for block, pair_list in enumerate(config["supported_pairs"]):
+        pair = tuple(pair_list)
+        mask = dataset["observed"][:, pair].all(axis=1)
+        propensity, _ = estimate_saturated_bridge(
+            dataset["y"][:, pair],
+            mask,
+            dataset["w"],
+            dataset["shadows"][:, block],
+            config,
+        )
+        weight = 1.0 / np.maximum(propensity, EPS)
+        observed_pair = dataset["y"][mask][:, pair]
+        cell = (2 * observed_pair[:, 0] + observed_pair[:, 1]).astype(int)
+        block_probability.append(
+            np.bincount(cell, weights=weight, minlength=4) / weight.sum()
+        )
+    marginal_probability = [
+        probability[1] + probability[3] for probability in block_probability
+    ]
+    return np.concatenate((marginal_probability, *block_probability))
+
+
+def _resample_dataset(dataset: dict, index: np.ndarray) -> dict:
+    sample_size = len(dataset["y"])
+    return {
+        key: (
+            value[index]
+            if isinstance(value, np.ndarray)
+            and value.ndim > 0
+            and len(value) == sample_size
+            else value
+        )
+        for key, value in dataset.items()
+    }
+
+
+def _likelihood_target_standard_error(
+    fit: dict, dataset: dict, config: dict, method: str
+) -> tuple[np.ndarray, np.ndarray, dict]:
+    inference = config["inference"]
+    parameter = _pack_likelihood_parameters(fit, method)
+    contribution_function = lambda value: _negative_loglikelihood_contributions(
+        value, dataset, method
+    )
+    hessian = _finite_difference_hessian(
+        lambda value: contribution_function(value).sum(),
+        parameter,
+        float(inference["hessian_relative_step"]),
+    )
+    eigenvalue, eigenvector = np.linalg.eigh(hessian)
+    scale = max(float(np.max(np.abs(eigenvalue))), 1.0)
+    floor = float(inference["information_eigenvalue_floor"]) * scale
+    regularized_eigenvalue = np.maximum(eigenvalue, floor)
+    inverse_information = (
+        eigenvector * (1.0 / regularized_eigenvalue)
+    ) @ eigenvector.T
+
+    score_step = float(inference["score_relative_step"]) * (
+        1.0 + np.abs(parameter)
+    )
+    score = np.empty((len(dataset["y"]), len(parameter)))
+    for column in range(len(parameter)):
+        increment = np.zeros(len(parameter))
+        increment[column] = score_step[column]
+        score[:, column] = (
+            contribution_function(parameter + increment)
+            - contribution_function(parameter - increment)
+        ) / (2.0 * score_step[column])
+    meat = score.T @ score
+    parameter_covariance = inverse_information @ meat @ inverse_information
+    parameter_covariance = (parameter_covariance + parameter_covariance.T) / 2.0
+    target_jacobian = _finite_difference_jacobian(
+        lambda value: _observed_law_target_from_fit(value, method, config),
+        parameter,
+        float(inference["score_relative_step"]),
+    )
+    target_covariance = target_jacobian @ parameter_covariance @ target_jacobian.T
+    standard_error = np.sqrt(np.maximum(np.diag(target_covariance), 0.0))
+    estimate = _observed_law_target_from_fit(parameter, method, config)
+    return estimate, standard_error, {
+        "minimum_information_eigenvalue": float(eigenvalue.min()),
+        "information_condition_number": float(
+            eigenvalue.max() / max(eigenvalue.min(), floor)
+        ),
+        "regularized_information_directions": int(np.sum(eigenvalue < floor)),
+    }
+
+
+def evaluate_observed_law_inference(
+    dataset: dict,
+    config: dict,
+    replication: int,
+    fit_by_method: dict[str, dict],
+) -> list[dict]:
+    metadata = _observed_law_parameter_metadata(config)
+    confidence_level = float(config["inference"]["confidence_level"])
+    critical_value = NormalDist().inv_cdf(0.5 + confidence_level / 2.0)
+    method_results = {}
+    for method in LIKELIHOOD_INFERENCE_METHODS:
+        method_results[method] = _likelihood_target_standard_error(
+            fit_by_method[method], dataset, config, method
+        )
+
+    estimate = _proposed_stage1_observed_law_target(dataset, config)
+    bootstrap_rng = np.random.default_rng(
+        np.random.SeedSequence([int(config["seed"]), replication, 7102026])
+    )
+    bootstrap_estimate = []
+    sample_size = len(dataset["y"])
+    for _ in range(int(config["inference"]["bridge_bootstrap_replications"])):
+        index = bootstrap_rng.integers(0, sample_size, sample_size)
+        bootstrap_estimate.append(
+            _proposed_stage1_observed_law_target(
+                _resample_dataset(dataset, index), config
+            )
+        )
+    standard_error = np.asarray(bootstrap_estimate).std(axis=0, ddof=1)
+    method_results["proposed_stage1_bridge"] = (
+        estimate,
+        standard_error,
+        {
+            "minimum_information_eigenvalue": np.nan,
+            "information_condition_number": np.nan,
+            "regularized_information_directions": np.nan,
+        },
+    )
+
+    records = []
+    for method, (estimate, standard_error, diagnostics) in method_results.items():
+        se_method = (
+            "nonparametric bootstrap"
+            if method == "proposed_stage1_bridge"
+            else "observed-information sandwich"
+        )
+        for entry, value, se in zip(metadata, estimate, standard_error):
+            lower = float(value - critical_value * se)
+            upper = float(value + critical_value * se)
+            records.append(
+                {
+                    "replication": replication,
+                    "method": method,
+                    **entry,
+                    "estimate": float(value),
+                    "error": float(value - entry["truth"]),
+                    "estimated_se": float(se),
+                    "ci_lower": lower,
+                    "ci_upper": upper,
+                    "covered": float(lower <= entry["truth"] <= upper),
+                    "se_method": se_method,
+                    **diagnostics,
+                }
+            )
+    return records
+
+
 def run_simulation(
     config: dict,
 ) -> tuple[
+    pd.DataFrame,
+    pd.DataFrame,
     pd.DataFrame,
     pd.DataFrame,
     pd.DataFrame,
@@ -785,6 +1179,7 @@ def run_simulation(
     master_rng = np.random.default_rng(int(config["seed"]))
     records, overlap_records, bridge_records = [], [], []
     y_marginal_records, y_pair_records = [], []
+    observed_law_inference_records = []
     population_y = _population_y_probability(config)
     for replication in range(int(config["replications"])):
         dataset = simulate_allman_dataset(
@@ -806,6 +1201,7 @@ def run_simulation(
                 "minimum_true_pair_propensity": dataset["pair_propensity_true"].min(),
             }
         )
+        fit_by_method = {}
         for method in config["estimation"]["methods"]:
             fit = fit_latent_model(
                 dataset,
@@ -813,6 +1209,7 @@ def run_simulation(
                 method,
                 np.random.default_rng(int(master_rng.integers(0, 2**32 - 1))),
             )
+            fit_by_method[method] = fit
             measurement_error = fit["measurement"] - dataset["measurement_true"]
             p_error = (
                 fit["class_probability"][1]
@@ -885,6 +1282,12 @@ def run_simulation(
                     }
                 )
 
+        observed_law_inference_records.extend(
+            evaluate_observed_law_inference(
+                dataset, config, replication, fit_by_method
+            )
+        )
+
     raw = pd.DataFrame.from_records(records)
     summary = (
         raw.groupby("method", as_index=False)
@@ -945,6 +1348,32 @@ def run_simulation(
             ),
         )
     )
+    observed_law_inference_raw = pd.DataFrame.from_records(
+        observed_law_inference_records
+    )
+    observed_law_inference_summary = (
+        observed_law_inference_raw.groupby(
+            [
+                "scope",
+                "parameter_index",
+                "parameter",
+                "block",
+                "truth",
+                "method",
+                "se_method",
+            ],
+            as_index=False,
+        )
+        .agg(
+            bias=("error", "mean"),
+            empirical_sd=("estimate", lambda value: value.std(ddof=1)),
+            mean_estimated_se=("estimated_se", "mean"),
+            coverage=("covered", "mean"),
+            rmse=("error", lambda value: np.sqrt(np.mean(np.square(value)))),
+        )
+        .sort_values(["scope", "parameter_index", "method"])
+        .reset_index(drop=True)
+    )
     return (
         summary,
         pd.DataFrame.from_records(overlap_records),
@@ -952,4 +1381,6 @@ def run_simulation(
         raw,
         y_summary,
         pd.DataFrame.from_records(y_pair_records),
+        observed_law_inference_raw,
+        observed_law_inference_summary,
     )

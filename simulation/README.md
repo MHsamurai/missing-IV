@@ -40,17 +40,22 @@ latent class proportion `p_f`. The replication-level output retains each
 `M_jf`, the selection coefficients, convergence status, and objective value;
 the summary also reports Monte Carlo standard errors for bias and RMSE.
 
-Because the final identification result determines the observed-variable law,
-the headline distributional check reconstructs the complete eight-cell law
-`P(Y1,Y2,Y3)` from each of the five fitted models. It compares the mean fitted
-law with the population truth and reports the replication-level total
-variation distance. The simulation also reports bias, Monte Carlo variance,
-and RMSE for each marginal probability `P(Y_j=1)`, together with bias and RMSE
-for the implied Bernoulli variance. A separate supporting diagnostic compares
-the four-cell supported-pair distributions under respondent-only analysis and
-direct Stage-1 bridge correction. These checks distinguish recovery of the
-full `Y` law, direct block-law recovery, and the subsequent latent
-decomposition.
+Observed-law inference is separated from latent decomposition. The headline
+results report parameter-specific bias, empirical Monte Carlo standard
+deviation, mean estimated standard error, and pointwise 95% Wald coverage for
+the population marginals `P(Y2=1)` and `P(Y3=1)` and for every cell of the
+supported pairs `(Y1,Y2)` and `(Y1,Y3)`. The first four methods use the laws
+implied by their fitted models. The proposed observed-law estimator is the
+direct normalized-IPW Stage-1 bridge, before latent decomposition.
+
+Likelihood-based standard errors use a delta-method sandwich covariance based
+on the observed likelihood. Proposed Stage-1 standard errors use 200
+individual-level nonparametric bootstrap samples per Monte Carlo replication;
+each bootstrap sample re-estimates both bridges. The complete eight-cell law
+`P(Y1,Y2,Y3)` remains a supporting Stage-2 diagnostic because the two missing
+items need not be observed together. These outputs distinguish population
+marginal recovery, direct supported-block recovery, and full joint-law recovery
+after latent decomposition.
 
 ## Run
 
@@ -59,4 +64,10 @@ uv venv simulation/.venv
 uv pip install --python simulation/.venv/bin/python -r simulation/requirements.txt
 simulation/.venv/bin/python -m jupyter nbconvert --execute --to notebook \
   --inplace simulation/allman_latent_mnar_simulation.ipynb
+```
+
+## Test
+
+```bash
+simulation/.venv/bin/python -m unittest simulation.test_latent_mnar_sim
 ```
