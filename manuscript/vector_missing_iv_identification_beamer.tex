@@ -210,8 +210,10 @@ Ni and Shao (2023, \emph{AISM}) \textbf{estimate multivariate outcome parameters
 \end{frame}
 
 \begin{frame}{Motivation and objective}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.63\textwidth}
 Let $D$ denote the response pattern and $W$ a latent shifter.
-Even if the latent-conditional exclusion in manuscript Eq.~(5) holds,
+Even if manuscript Eq.~(5) holds,
 \[
 D\indep W\mid(Y,F,X),\tag{5}
 \]
@@ -223,13 +225,25 @@ marginalizing $F$ gives manuscript Eq.~(6):
 \textcolor{Red}{d\Prb(f\mid y,w,x)}.
 \end{aligned}\tag{6}
 \]
-\begin{itemize}
-  \item The posterior of $F$ may depend on $w$: $D\indep W\mid(Y,X)$ does \redkey{not} follow.
-  \item Full-law recovery alone does not identify $Q_F$ and $Q_Y$.
-\end{itemize}
+The posterior of $F$ may depend on $w$:\\
+$D\indep W\mid(Y,X)$ does \redkey{not} follow.
+\end{column}
+\begin{column}{.34\textwidth}
+\begin{block}{$Z_S$: Missing IV}
+Predicts $Y_S$; satisfies $R_S\indep Z_S\mid(Y_S,U_S)$.\\
+\bluekey{Stage 1: law recovery.}
+\end{block}
+\begin{block}{$W$: latent shifter}
+Shifts $F$; supplies third-mode variation.\\
+\bluekey{Stage 2: decomposition.}
+\end{block}
+\end{column}
+\end{columns}
+\medskip
+\textbf{Full-law recovery alone does not identify $Q_F$ and $Q_Y$.}
 \begin{takeaway}
-\bluekey{Objective: connect Stage 1 and Stage 2 for nonparametric joint identification of $Q_F$ and $Q_Y$.}\\
-No parametric selection model; finite latent classes, rank conditions, and common labels.
+\bluekey{Objective: connect both stages to jointly identify $Q_F$ and $Q_Y$ nonparametrically.}\\
+Finite latent classes; rank and label conditions; no parametric selection model.
 \end{takeaway}
 \end{frame}
 
@@ -259,33 +273,6 @@ No parametric selection model; finite latent classes, rank conditions, and commo
 {\fontsize{20}{24}\selectfont\bfseries Recover each supported-block law}\par\vspace{1em}
 {\large Missing IV $+$ positivity $+$ complete-case completeness}
 \vfill
-\end{frame}
-
-\begin{frame}{A latent shifter is not a Missing IV}
-Suppose $D\indep W\mid(Y,F,X)$. After integrating out $F$,
-\[
-\Prb(D=d\mid Y=y,W=w,X=x)
-=\int \Prb(D=d\mid y,f,x)\,d\Prb(f\mid y,w,x).
-\]
-If $W$ shifts $F$, the mixing distribution generally depends on $w$. Hence
-\[
-D\indep W\mid(Y,X)\quad\text{does }\textcolor{Red}{\mathbf{not}}\text{ follow.}
-\]
-\begin{columns}[T,onlytextwidth]
-\begin{column}{.48\textwidth}
-\begin{block}{$Z_S$: Missing IV}
-Predicts $Y_S$ and satisfies an exclusion for $R_S$ conditional on $(Y_S,U_S)$.
-\end{block}
-\end{column}
-\begin{column}{.48\textwidth}
-\begin{block}{$W$: latent shifter}
-Moves the distribution of $F$ and supplies third-mode variation for decomposition.
-\end{block}
-\end{column}
-\end{columns}
-\begin{takeaway}
-Recovering a block law does not itself separate $Q_F$ from $Q_Y$; $W$ supplies a decomposition mode, not a Missing IV.
-\end{takeaway}
 \end{frame}
 
 \begin{frame}{Assumption 1}

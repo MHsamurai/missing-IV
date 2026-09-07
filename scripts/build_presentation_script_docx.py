@@ -181,6 +181,7 @@ SLIDES = [
         [
             "ここで、なぜ二つの識別をつなぐ必要があるのかを、本文の式5と6で見ます。Dはどの項目が見えたか、Wは潜在分布を動かす変数です。仮に、Y、F、Xを条件づけると、DとWは独立だとします。これが式5です。",
             "でもFは見えないので、平均して消す必要があります。すると式6の赤い部分、Y、W、Xを見た後のFの分布が残ります。この分布はWによって変わりうるので、積分した後までDとWが独立とは言えません。つまり、latent shifterのWを、そのままMissing IVとしては使えないわけです。",
+            "右側で二つの役割を分けています。Z SはY Sと関連し、Y Sと共変量を押さえると欠測指標R Sとは独立になる変数です。これを使って、第一段階で欠測による偏りを補正します。一方、WはFの分布を動かし、第二段階で潜在構造を分けるための三つ目のviewを与えます。",
             "逆に、Missing IVでYの分布だけを回復しても、Q Fと各Q jへの分解が一つに決まるとは限りません。そこで、Stage 1の分布の回復と、Stage 2の潜在分解を接続します。selection modelの関数形を決めず、有限潜在クラスの比率と測定核を同時に識別するのが目的です。もちろん、有限クラスの測定モデル、ランクや共通ラベルの条件は置きます。この目的に対して、次のページで具体的な識別戦略を示します。",
         ],
     ),
@@ -192,7 +193,6 @@ SLIDES = [
         ],
     ),
     _slide_by_title("Model and assumptions"),
-    _slide_by_title("A latent shifter is not a Missing IV"),
     ("Assumption 1", [
         "仮定1では、何が見えているかを決めます。Yが測定項目全体、D jが項目jを観測したかどうかです。D jが1のときだけY jが見えます。X、W、ZとDはいつも見えていますが、潜在変数Fは見えません。",
         "式のOは、一人分の観測データです。いつも見える変数と、その人について実際に見えたYの成分、Y Dをまとめています。Zの中には、各blockで使うMissing IVのZ Sが含まれます。",
@@ -443,10 +443,10 @@ def build():
     set_repeat_table_header(table.rows[0])
     rows = [
         ("Slides 1–7", "基礎概念、既存研究、二段階の識別戦略"),
-        ("Slides 8–19", "仮定1から7、supported-block lawの回復"),
-        ("Slides 20–27", "仮定3.1、有限潜在クラスのtensor分解"),
-        ("Slides 28–41", "推定、仮定5.1、漸近理論、計算、simulation、結論、参考文献"),
-        ("Appendix 42–47", "定理1の8ステップ、empirical diagnostics、数値設定"),
+        ("Slides 8–18", "仮定1から7、supported-block lawの回復"),
+        ("Slides 19–26", "仮定3.1、有限潜在クラスのtensor分解"),
+        ("Slides 27–40", "推定、仮定5.1、漸近理論、計算、simulation、結論、参考文献"),
+        ("Appendix 41–46", "定理1の8ステップ、empirical diagnostics、数値設定"),
     ]
     for left, right in rows:
         cells = table.add_row().cells
