@@ -26,6 +26,7 @@ SLIDES = [
     ("Slide 3  Usual IV and Missing IV", [
         "通常のIVとMissing IVは役割が異なります。通常のIVはoutcome equationから除外され、treatmentや内生変数を動かします。これに対してMissing IVのZは、欠測指標Rへの直接効果を持たず、欠測し得るYを予測します。",
         "本稿の基本条件は、Yと共変量Uを条件づけるとRとZが独立になることです。Zのrelevanceと、このexclusion、さらにcompletenessを組み合わせて、観測確率を一意に回復します。",
+        "パイは、Yの値ごとの観測確率です。その逆数を使って観測された標本を重み付けすることで、欠測した人も含めた母集団全体のYの分布を回復します。",
     ]),
     ("Slide 4  A simple multivariate extension", [
         "単純な多変量拡張では、D jを各項目Y jの観測指標とし、全項目が同時に観測されたcomplete-case indicatorをRと置きます。Rが正の確率を持ち、vector Y全体に対するMissing IV条件とcompletenessが成立すれば、full-data lawを識別できます。",

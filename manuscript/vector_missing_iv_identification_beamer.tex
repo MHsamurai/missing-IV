@@ -117,10 +117,10 @@ Let $R$ indicate that $Y$ is observed and let $Z$ be an always-observed auxiliar
   path/.style={-{Latex[length=2mm]},thick,Navy}]
   \node[var] (z) {$Z$};
   \node[var,right=of z] (r) {$R$};
-  \node[var,below=of r] (y) {$Y$};
+  \node[var,right=of r] (y) {$Y$};
   \draw[path] (z) -- (r);
   \draw[path] (y) -- (r);
-  \node[text=Red,font=\bfseries] at ($(z)!.5!(y)$) {$Z\nrightarrow Y$};
+  \node[text=Red,font=\bfseries] at ($(z)!.5!(y)+(0,-.72)$) {$Z\nrightarrow Y$};
 \end{tikzpicture}
 \par\smallskip
 $Z$ predicts selection and is excluded from the outcome equation.
@@ -151,6 +151,8 @@ For a Missing IV, positivity gives
 \qquad \pi(y)=\Prb(R=1\mid Y=y),
 \]
 and completeness makes $\pi$ unique (d'Haultfoeuille, 2010, \emph{JoE}).
+\par\medskip
+\bluekey{Weighting observed individuals by $1/\pi(Y)$ recovers the population distribution of $Y$, including individuals with missing outcomes.}
 \end{frame}
 
 \begin{frame}{Latent measurement model}
