@@ -262,6 +262,35 @@ Ni and Shao (2023, \emph{AISM}) & \textbf{Estimate multivariate outcome paramete
 \par\smallskip
 \end{frame}
 
+\begin{frame}{Motivation and objective}
+Let $D$ denote the response pattern and $W$ a latent shifter. Even if
+\[
+D\indep W\mid(Y,F,X),
+\]
+marginalizing $F$ gives
+\[
+\Prb(D=d\mid y,w,x)=\int\Prb(D=d\mid y,f,x)\,
+\textcolor{Red}{d\Prb(f\mid y,w,x)}.
+\]
+The posterior may depend on $w$: $D\indep W\mid(Y,X)$ does \redkey{not} follow.
+\medskip
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.48\textwidth}
+\textbf{$Z_S$: Missing IV}\\
+$R_S\indep Z_S\mid(Y_S,U_S)$; predicts $Y_S$.\\
+\bluekey{Stage 1: recover the block law.}
+\end{column}
+\begin{column}{.48\textwidth}
+\textbf{$W$: latent shifter}\\
+Shifts $F$; supplies third-mode variation.\\
+\bluekey{Stage 2: separate $Q_F$ and $Q_Y$.}
+\end{column}
+\end{columns}
+\medskip
+\bluekey{Objective: connect both stages for joint identification of $Q_F,Q_Y$.}\\
+No parametric selection model; finite classes, rank and label conditions.
+\end{frame}
+
 \section{Model \& identification}
 \begin{frame}{Our contribution}
 \begin{enumerate}
@@ -273,17 +302,6 @@ Ni and Shao (2023, \emph{AISM}) & \textbf{Estimate multivariate outcome paramete
 \term{Candidate model}: sufficient conditions, not a claim of established novelty.
 \par\smallskip
 The following model and $n=1{,}000$ experiment are separate from the earlier block-bridge approach.
-\end{frame}
-
-\begin{frame}{Proposed two-stage identification}
-\centering
-\input{manuscript/figures/readable/identification_flow_en.tex}
-\par\smallskip
-\begin{takeaway}
-\bluekey{Blockwise route: requires its own complete-case completeness.}
-\end{takeaway}
-\par\smallskip
-The candidate experiment below does not validate this block-law recovery step.
 \end{frame}
 
 \begin{frame}{Lemma 2.1}
@@ -304,6 +322,17 @@ For every integrable $h$, $\E h(Y,Z,U)=\E\{Rh(Y,Z,U)/\pi(Y,U)\}$ identifies the 
 \end{theorembox}
 \bluekey{Blockwise route: positivity alone does not supply completeness.}
 \par{\slideannotation d'Haultfoeuille (2010, \emph{JoE}); Miao et al. (2019, arXiv). This lemma is not the candidate identification result.}
+\end{frame}
+
+\begin{frame}{Proposed two-stage identification}
+\centering
+\input{manuscript/figures/readable/identification_flow_en.tex}
+\par\smallskip
+\begin{takeaway}
+\bluekey{Blockwise route: requires its own complete-case completeness.}
+\end{takeaway}
+\par\smallskip
+The candidate experiment below does not validate this block-law recovery step.
 \end{frame}
 
 \begin{frame}{Assumption 5}
