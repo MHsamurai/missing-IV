@@ -146,14 +146,19 @@ $Z$ predicts $Y$ and satisfies $R\indep Z\mid Y$.
 \end{columns}
 \vspace{.15em}
 Missing IV and positivity give the moment equation; completeness identifies $\pi$:
+\setlength{\abovedisplayskip}{4pt}
+\setlength{\belowdisplayskip}{4pt}
 \[
 \E\left\{\frac{R}{\pi(Y)}\middle|Z\right\}=1,
 \qquad \pi(y)=\Prb(R=1\mid Y=y),
 \]
 {\footnotesize
-d'Haultfoeuille (2010, \emph{JoE}) identifies the full law through conditional moments.\par
-Zhao and Shao (2015, \emph{JASA}) identify GLM parameters under covariate-adjusted exclusion.\par
-Miao et al. (2019, arXiv) identify the full law using shadow variables and complete-case completeness.
+\begin{itemize}
+\setlength{\itemsep}{0pt}
+\item d'Haultfoeuille (2010, \emph{JoE}) identifies the full law through conditional moments.
+\item Zhao and Shao (2015, \emph{JASA}) identify GLM parameters under covariate-adjusted exclusion.
+\item Miao et al. (2019, arXiv) identify the full law using shadow variables and complete-case completeness.
+\end{itemize}
 }
 \par
 \bluekey{Weight observed individuals by $1/\pi(Y)$ to recover the population distribution, including individuals with missing outcomes.}
