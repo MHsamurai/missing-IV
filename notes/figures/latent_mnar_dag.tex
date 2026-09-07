@@ -25,8 +25,8 @@
   \node[obs] (z) at (5.30,2.45) {$Z_S$};
   \node[select] (r) at (5.30,.65) {$R_S$};
   \draw[arrow] (v.east) -- (q.west);
-  \draw[arrow] (v.north) to[out=90,in=180] (z.west);
-  \draw[arrow] (v.south) to[out=-90,in=180] (r.west);
+  \draw[arrow] (v.north) -- (z.west);
+  \draw[arrow] (v.south) -- (r.west);
   \draw[arrow] (q.north east) -- (z.south west);
   \draw[arrow] (q.south east) -- (r.north west);
   \node[font=\scriptsize] at (3.15,-.15)
