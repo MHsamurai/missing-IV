@@ -1,33 +1,25 @@
-% Preserve the model DAG in latent_mnar_dag.tex; annotate its estimands.
+% A particular DGP satisfying the two marginal models, not their full family.
 \begin{tikzpicture}[
   x=1cm,y=1cm,font=\sffamily,
   obs/.style={draw,rounded corners=1pt,fill=gray!10,minimum width=14mm,
-    minimum height=8mm,align=center,inner sep=1.5mm,font=\scriptsize},
-  covar/.style={obs,minimum width=18mm,minimum height=12mm},
+    minimum height=8mm,align=center,inner sep=1mm,font=\scriptsize},
   latent/.style={draw,circle,fill=white,minimum size=9mm,font=\small},
   select/.style={draw,diamond,aspect=1.8,fill=gray!10,minimum width=16mm,
-    minimum height=9mm,align=center,inner sep=.8mm,font=\scriptsize},
+    minimum height=9mm,inner sep=.8mm,font=\scriptsize},
   arrow/.style={-{Latex[length=2mm,width=1.3mm]},line width=.55pt},
-  lab/.style={fill=white,inner sep=.8pt,font=\tiny,align=center},
-  note/.style={font=\scriptsize,align=center}
+  lab/.style={fill=white,inner sep=1pt,font=\tiny,align=center}
 ]
-  \node[obs] (z) at (.75,3.30) {$Z_S$};
-  \node[latent] (f) at (3.10,3.30) {$F$};
-  \node[obs,minimum width=21mm] (y) at (5.45,3.30)
-    {$Y_S$\\[-.3mm]$(Y_1,Y_j)$};
-  \node[covar] (u) at (3.10,1.35) {$U_S$\\[-.4mm]$(X=x,W)$};
-  \node[select] (r) at (5.45,1.35) {$R_S=D_j$};
-
-  \draw[arrow] (z.east) -- (f.west);
-  \draw[arrow] (f.east) -- node[lab,above] {$M_{1f}M_{jf}$} (y.west);
-  \draw[arrow] (u.north) -- node[lab,right] {$Q_F$} (f.south);
-  \draw[arrow] (u.north west) -- (z.south east);
-  \draw[arrow] (u.north east) -- (y.south west);
-  \draw[arrow] (y.south) -- node[lab,right] {$\pi_j$} (r.north);
-
-  \node[note,above=2mm of f,text=Blue] {$p_f$};
-  \node[note,above=2mm of y,text=Blue] {$\mu_j,\ p_{S,c}$};
-  \node[note] at (3.10,.20)
-    {$S=\{1,j\},\ j=2,3;\quad D_1=1$\\[1mm]
-     $R_S\indep Z_S\mid(Y_S,U_S)$};
+  \node[latent] (f) at (2.9,4.25) {$F$};
+  \node[obs] (w) at (.8,2.65) {$W$};
+  \node[obs,minimum width=21mm] (y) at (4.5,2.65) {$Y_S=(Y_1,Y_j)$};
+  \node[obs] (z) at (2.65,.8) {$Z_S$};
+  \node[select] (r) at (5.8,.8) {$R_S=D_j$};
+  \draw[arrow] (f.south west) -- node[lab,above left] {$G(w,f)$} (w.north);
+  \draw[arrow] (f.south east) -- node[lab,above right] {$M_{1f}M_{jf}$} (y.north);
+  \draw[arrow] (y.south west) -- node[lab,above left] {$H(z\mid Y_S)$} (z.north);
+  \draw[arrow] (y.south east) -- node[lab,above right] {$\pi_j(Y_1,Y_j)$} (r.north);
+  \node[font=\scriptsize,text=Blue,above=2mm of f] {$p_f$};
+  \node[font=\scriptsize,text=Blue,right=2mm of y,align=left] {$\mu_j$\\$p_{S,c}$};
+  \node[font=\scriptsize,align=center] at (3.2,-.05)
+    {$X=x,\quad S=\{1,j\},\ j=2,3,\quad D_1=1$};
 \end{tikzpicture}

@@ -279,6 +279,58 @@ Recovering a block law does not itself separate $Q_F$ from $Q_Y$; $W$ supplies a
 \end{takeaway}
 \end{frame}
 
+\begin{frame}{Assumption 1}
+\begin{block}{Observation process}
+Let $Y=(Y_1,\ldots,Y_m)$ denote the measurement vector and let
+$D=(D_1,\ldots,D_m)\in\{0,1\}^m$ denote its response indicators.
+\begin{itemize}
+  \item $Y_j$ is observed if and only if $D_j=1$.
+  \item $X,W,Z,D$ are always observed; the latent variable $F$ is not.
+  \item $Z$ collects the block-specific Missing IVs $Z_S$.
+\end{itemize}
+The \term{observed data for one individual} are
+\[
+O=(X,W,Z,D,Y_D),\qquad Y_D=\{Y_j:D_j=1\}.
+\]
+\end{block}
+\bluekey{$O$ records the response pattern and only the measurements actually observed.}
+\end{frame}
+
+\begin{frame}{Assumptions 2 and 3}
+\begin{block}{Assumption 2: Latent-distribution shift}
+Let $X$ denote ordinary covariates and $W$ the \term{latent shifter}.
+The conditional latent distribution, with $Z$ marginalized, is
+\[
+F\mid(W,X)\sim Q_F(\cdot\mid W,X).
+\]
+\end{block}
+\begin{block}{Assumption 3: Measurement process}
+Let $Q_j$ denote the \term{measurement kernel} of item $j$ and
+$\theta_j$ its parameter. For $j=1,\ldots,m$,
+\[
+Y_j\mid(F,X)\sim Q_j(\cdot\mid F,X;\theta_j).
+\]
+\end{block}
+\bluekey{$Q_F$ describes who is in each latent class; $Q_j$ describes what each class measures.}
+\end{frame}
+
+\begin{frame}{Assumption 4}
+\begin{block}{Local independence and measurement exclusion}
+With $Z$ marginalized, the \textbf{joint} measurement law satisfies
+\[
+P(Y\mid F,W,X)=\prod_{j=1}^m Q_j(Y_j\mid F,X).
+\]
+\begin{itemize}
+  \item All items are mutually conditionally independent given $(F,X)$.
+  \item $W$ shifts $Q_F$ but does not directly enter the measurement kernels.
+  \item This is a restriction on the full item vector, not merely pairwise independence.
+\end{itemize}
+\end{block}
+\begin{takeaway}
+We do not assume $Y\indep Z\mid(F,W,X)$. Missing-IV exclusion is a separate restriction on the response indicator (Assumption 6).
+\end{takeaway}
+\end{frame}
+
 \begin{frame}{A simple multivariate extension}
 Let $D=(D_1,\ldots,D_m)'$, $Y=(Y_1,\ldots,Y_m)'$, and $Z$ denote the response indicators, multivariate outcomes, and missing IVs. Define the \term{global complete-case indicator}
 \[
@@ -298,16 +350,13 @@ This direct extension is valid, but it relies on observing the entire vector $Y$
 \end{takeaway}
 \end{frame}
 
-\begin{frame}{Observed data and supported blocks}
+\begin{frame}{Assumption 5}
 \begin{block}{Supported block}
 A subset $S\subseteq\{1,\ldots,m\}$ is \term{supported} when all measurements in $Y_S$ are jointly observed with positive probability on the target support. A global complete case is not required.
 \end{block}
 \begin{columns}[c,onlytextwidth]
 \begin{column}{.53\textwidth}
-Let $D_j$ indicate response for $Y_j$. Then
-\[
-O=(X,W,Z,D,Y_D),\quad Y_D=\{Y_j:D_j=1\},
-\]
+For a block $S$, define
 \[
 R_S=\prod_{j\in S}D_j,\quad
 Y_S=(Y_j:j\in S),\quad U_S=(X,W).
@@ -316,41 +365,38 @@ The support condition is
 \[
 \pi_S(y,u):=\Prb(R_S=1\mid Y_S=y,U_S=u)>0.
 \]
+$U_S,Z_S,R_S$ are always observed. The entire $Y_S$ is available when $R_S=1$; a partially observed block is not used as a complete block.
 \end{column}
 \begin{column}{.44\textwidth}
 \centering
 \resizebox{.94\linewidth}{!}{\input{notes/figures/supported_block_set_diagram.tex}}
 \end{column}
 \end{columns}
-\vspace{.1em}
-\begin{takeaway}
-The method requires supported anchor and extension pairs, not a global complete case.
-\end{takeaway}
 \end{frame}
 
-\begin{frame}{Single-block data-generating structure}
+\begin{frame}{Two marginal views of the model}
 \begin{columns}[c,onlytextwidth]
 \begin{column}{.56\textwidth}
 \centering
-\resizebox{.95\linewidth}{!}{\input{notes/figures/latent_mnar_dag.tex}}
+\resizebox{.78\linewidth}{!}{\input{notes/figures/latent_mnar_dag.tex}}
 \end{column}
 \begin{column}{.41\textwidth}
 \begin{itemize}
-  \item $U_S=(X,W)$ enters the latent distribution and the observed variables.
-  \item $Z_S$ predicts $Y_S$ but has no direct arrow to $R_S$.
-  \item Missingness may depend on unobserved $Y_S$ and is therefore MNAR.
+  \item \textbf{Measurement law:} marginalize $Z,D$; Assumption 4 gives the product kernels.
+  \item \textbf{Missing-IV law:} marginalize $F,Y_{-S}$; Assumption 6 gives $R_S\indep Z_S\mid(Y_S,U_S)$.
+  \item The two panels are not one joint DAG for $(F,Y,Z,D)$.
 \end{itemize}
 \end{column}
 \end{columns}
 \vspace{.3em}
-\centering\scriptsize Arrows encode the probabilistic factorization used for identification.
+\centering\small $P(y_S,z_S,r_S\mid u)=P(y_S\mid u)P(z_S\mid y_S,u)P(r_S\mid y_S,u)$.
 \end{frame}
 
 \begin{frame}{Overlapping supported blocks replace global complete cases}
 \begin{columns}[c,onlytextwidth]
 \begin{column}{.54\textwidth}
 \centering
-\resizebox{.84\linewidth}{!}{\input{notes/figures/supported_blocks_dag.tex}}
+\resizebox{.78\linewidth}{!}{\input{notes/figures/supported_blocks_dag.tex}}
 \end{column}
 \begin{column}{.43\textwidth}
 \begin{itemize}
@@ -358,12 +404,13 @@ The method requires supported anchor and extension pairs, not a global complete 
   \item Extension pairs: $S_j=\{j,a\}$.
   \item Shared item $Y_a$ connects measurement kernels across blocks.
   \item Every required pair has its own $Z_S$ and bridge.
+  \item Each panel is a full-data marginal of the same joint law, not an independent block.
 \end{itemize}
 \end{column}
 \end{columns}
 \end{frame}
 
-\begin{frame}{Stage-1 assumptions}
+\begin{frame}{Assumptions 6 and 7}
 \begin{block}{Assumption 6: Blockwise covariate-adjusted Missing IV}
 For every supported block $S$,
 \[
@@ -376,6 +423,7 @@ For $h\in L^2\{\Prb(Y_S,U_S\mid R_S=1)\}$,
 \E\{h(Y_S,U_S)\mid R_S=1,Z_S,U_S\}=0
 \Longrightarrow h(Y_S,U_S)=0.
 \]
+The conclusion holds almost surely on $\{R_S=1\}$.
 \end{block}
 Positivity transfers null sets between the complete-case and full laws; completeness makes the observed conditional operator injective.
 \end{frame}
@@ -422,7 +470,7 @@ The proposition proves uniqueness within the stated bridge class; the true prope
 \begin{columns}[c,onlytextwidth]
 \begin{column}{.49\textwidth}
 \centering
-\resizebox{.93\linewidth}{!}{\input{notes/figures/latent_mnar_dag.tex}}
+\resizebox{.77\linewidth}{!}{\input{notes/figures/latent_mnar_dag.tex}}
 \end{column}
 \begin{column}{.48\textwidth}
 \begin{block}{After Stage 1}
@@ -467,26 +515,42 @@ Injectivity of $\Phi_x$ identifies $[\theta]\in\Theta_x/\mathfrak S_r$; anchor o
 \end{columns}
 \end{frame}
 
-\begin{frame}{Assumption 3.1}
-\bluekey{Start from the same three-view Kruskal condition as Allman et al. (2009, Theorem 1).}
-\vspace{.15em}
-\begin{assumptionbox}{Covariate-assisted anchor-pair structure}
-The number of classes $r$ is known. For every $x$ in a common full-probability set:
+\begin{frame}{Assumption 3.1: Support and model}
+\begin{block}{Covariate-assisted anchor-pair structure (1/2)}
+Let $F\in\{1,\ldots,r\}$ with known $r\ge2$, and let the item spaces
+$\mathcal Y_j$ and the support $\mathcal W_x$ of $W\mid X=x$ be finite.
+For every $x$ in a common set $\mathcal X_0$ with $P_X(\mathcal X_0)=1$:
 \begin{itemize}
-  \item \textbf{Anchor decomposition:} $\{a,b\}$ is supported, $p_f(x)>0$, $\Prb(W=w\mid X=x)>0$, and
+  \item Assumptions 2--4 hold; $p_f(x)>0$ for every class, and $P(W=w\mid X=x)>0$ for every $w\in\mathcal W_x$.
+  \item The anchor pair $\{a,b\}$ and every extension pair $\{j,a\}$, $j\notin\{a,b\}$, satisfy Assumptions 1 and 5--7 for every $w$.
+  \item Each required pair satisfies the bridge-class condition of Proposition 1:
   \[
-  \textcolor{Red}{\bm{k_a+k_b+k_G\ge 2r+2}};
+  \pi_S^{-1}\in L^2\{P(Y_S,U_S\mid R_S=1)\}.
   \]
-  \item \textbf{Common labels:} a known anchor score satisfies $\mu_{a1}(x)<\cdots<\mu_{ar}(x)$;
-  \item \textbf{Extension propagation:} every pair $\{j,a\}$ is supported, and Lemma 3.1 makes $G\odot M_a$ full column rank.
 \end{itemize}
-\end{assumptionbox}
-Supported overlapping pairs and anchor ordering adapt that condition to the present MNAR problem.
+\end{block}
+\end{frame}
+
+\begin{frame}{Assumption 3.1: Rank and labels}
+\bluekey{The same three-view Kruskal condition as Allman et al. (2009, Theorem 1).}
+\begin{block}{Covariate-assisted anchor-pair structure (2/2)}
+Let $k_a,k_b,k_G$ be the column Kruskal ranks of $M_a,M_b,G$.
+For every $x\in\mathcal X_0$,
+\[
+\textcolor{Red}{\bm{k_a+k_b+k_G\ge 2r+2}}.
+\]
+For a known anchor score $s_a$, define
+\[
+\mu_{af}(x)=\sum_y s_a(y)M_a(y,f;x).
+\]
+The same strict ordering $\mu_{a1}(x)<\cdots<\mu_{ar}(x)$ holds throughout $\mathcal X_0$.
+\end{block}
+\bluekey{The rank condition identifies the factors; anchor ordering fixes a common class label.}
 \end{frame}
 
 \begin{frame}{Lemma 3.1}
 \begin{theorembox}{Khatri--Rao rank}
-Let $A$ and $B$ have $r$ columns, with column Kruskal ranks $k_A$ and $k_B$. Then
+Let $A$ and $B$ have $r$ nonzero columns, with column Kruskal ranks $k_A$ and $k_B$. Then
 \[
 k_{B\odot A}\ge \min\{k_A+k_B-1,r\}.
 \]
@@ -574,14 +638,92 @@ The proposed estimator is
   \item A growing sieve requires additional inverse-problem theory.
   \item $c_S>0$ balances contributions across blocks.
 \end{itemize}
-\begin{theorembox}{Finite-dimensional bridge}
-\scriptsize
-$\widehat\theta\to_p\theta_0$ and
-$\sqrt n(\widehat\theta-\theta_0)\rightsquigarrow N(0,A^{-1}BA^{-\top})$.
-The sandwich variance includes first-stage bridge estimation.
-\end{theorembox}
 \end{column}
 \end{columns}
+\end{frame}
+
+\begin{frame}{Conditions for estimation}
+\begin{block}{Proposition 4.1: A unique population maximizer}
+\begin{itemize}
+  \item Assumptions 1--7 and 3.1 hold, including anchor ordering.
+  \item $\theta_0\in\Theta$ correctly generates the latent measurement model.
+  \item For each required pair, $p_\theta(y_S,w\mid x)>0$ on a common support.
+  \item The population criterion uses the true bridge and fixed weights $c_S>0$.
+\end{itemize}
+Then the bridge-weighted population criterion has the unique maximizer $\theta_0$.
+\end{block}
+\bluekey{Bridge weighting recovers full pair expectations; zero KL loss fixes every pair law, and Theorem 1 fixes the latent parameters.}
+\end{frame}
+
+\begin{frame}{Assumption 5.1: Regularity}
+Let $O_1,\ldots,O_n$ be i.i.d. and write $\beta=(\theta,\eta)$,
+where $\eta=(\eta_S:S\in\mathcal S_*)$ contains the bridge parameters.
+Use free coordinates after removing simplex constraints.
+\begin{block}{Regularity and separation (1/3)}
+\begin{itemize}
+  \item $\theta,\eta$ are finite-dimensional and correctly specified.
+  \item Their parameter spaces are compact; the true parameters are interior points.
+  \item The first-stage population moment has the unique zero $\eta_0$.
+  \item The criterion and first-stage moments are twice continuously differentiable near the truth, with square-integrable envelopes.
+  \item The bridge Jacobian, composite-score Jacobian, and corresponding Godambe matrix are nonsingular.
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{Assumption 5.1: Uniform convergence}
+\begin{block}{Regularity and separation (2/3)}
+Let $\widehat Q_n(\theta,\widehat\eta)$ denote the plug-in criterion and
+$Q_0(\theta)$ its population version with the true bridge.
+\[
+\sup_{\theta\in\Theta}
+|\widehat Q_n(\theta,\widehat\eta)-Q_0(\theta)|\xrightarrow{p}0.
+\]
+The population maximum is separated: for every $\varepsilon>0$ with a nonempty constraint set,
+\[
+\sup_{\theta\in\Theta:\|\theta-\theta_0\|\ge\varepsilon}Q_0(\theta)
+<Q_0(\theta_0).
+\]
+\end{block}
+\bluekey{These global conditions justify consistency; local smoothness alone does not.}
+\end{frame}
+
+\begin{frame}{Assumption 5.1: First stage and separation}
+\begin{block}{Regularity and separation (3/3)}
+The first-stage estimator is regular and asymptotically linear:
+\[
+\sqrt n(\widehat\eta-\eta_0)
+=n^{-1/2}\sum_{i=1}^n\varphi_\eta(O_i)+o_p(1),\quad
+\E\varphi_\eta=0,\quad \E\|\varphi_\eta\|^2<\infty.
+\]
+The following are uniformly bounded away from zero:
+\begin{itemize}
+  \item class probabilities and supported-pair propensities;
+  \item the smallest nonzero singular value of the anchor tensor's $W$-mode unfolding (rows: $W$; columns: $(Y_a,Y_b)$);
+  \item the minors supporting the Kruskal-rank conditions;
+  \item adjacent gaps in the anchor ordering.
+\end{itemize}
+\end{block}
+\bluekey{Identification alone does not imply regular estimation or stable inference.}
+\end{frame}
+
+\begin{frame}{Theorem 5.1}
+\begin{theorembox}{Consistency and asymptotic normality}
+Under Assumption 5.1 and Proposition 4.1,
+\[
+\widehat\theta\to_p\theta_0,\qquad
+\sqrt n(\widehat\theta-\theta_0)\rightsquigarrow N(0,A^{-1}BA^{-\top}).
+\]
+Let $\psi$ denote the composite score. At $(\theta_0,\eta_0)$,
+\[
+A=\E(\partial_\theta\psi),\qquad C=\E(\partial_\eta\psi),\qquad
+B=\operatorname{Var}\{\psi+C\varphi_\eta\}.
+\]
+\end{theorembox}
+\begin{itemize}
+  \item The sandwich variance includes \textbf{first-stage bridge estimation}.
+  \item Individual-level bootstrap repeats both stages and label alignment.
+  \item A growing sieve needs additional rate and inverse-problem conditions.
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Computation}
@@ -623,11 +765,11 @@ Fixed $X=x$; $F\in\{1,2\}$; binary $W,Y_1,Y_2,Y_3$.
 \begin{columns}[c,onlytextwidth]
 \begin{column}{.53\textwidth}
 \centering
-\resizebox{\linewidth}{!}{\input{notes/figures/simulation_dgp.tex}}
+\resizebox{.86\linewidth}{!}{\input{notes/figures/simulation_dgp.tex}}
 \par\smallskip
 \footnotesize
-Original model DAG. The current simulation instead generates $Z_S\mid Y_S$; it does not impose
-$Y_S\indep Z_S\mid(F,W)$.
+This DGP satisfies the marginal measurement model and Missing-IV exclusion.
+It additionally makes $R_S\indep(F,W,Z_S)\mid Y_S$.
 \end{column}
 \begin{column}{.44\textwidth}
 \begin{block}{\term{Outcome parameters}: Stage 1}
@@ -914,8 +1056,8 @@ For $j=2,3$, $\pi_j=\Prb(D_j=1\mid Y_1,Y_j)$:
 \end{column}
 \end{columns}
 \smallskip
-\textbf{Scope:} this shadow calibration differs from the model DAG's measurement exclusion
-$Y_S\indep Z_S\mid(F,W)$.
+\textbf{Scope:} $W$ is excluded from the measurement kernels after marginalizing $Z$.
+The four-cell shadow operators have full rank; $Y_S\indep Z_S\mid(F,W)$ is not required.
 \end{frame}
 
 \end{document}

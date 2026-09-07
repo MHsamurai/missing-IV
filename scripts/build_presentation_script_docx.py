@@ -84,7 +84,7 @@ SLIDES = [
         "つまり第二段階は、回復済みblock lawsをanchor decompositionとextension inversionで潜在分布と測定核へ分ける操作です。",
     ]),
     ("Slide 18  Lemma 3.1", [
-        "補題3.1はKhatri–Rao積のrank条件です。AとBのcolumn Kruskal rankの和がrプラス1以上なら、B Khatri–Rao Aはfull column rankになります。",
+        "補題3.1はKhatri–Rao積のrank条件です。AとBはゼロ列を持たないとします。column Kruskal rankの和がrプラス1以上なら、B Khatri–Rao Aはfull column rankになります。",
         "この補題により、anchor tensorのKruskal条件を、各extension itemを線形反転するためのrank条件へ変換できます。",
     ]),
     ("Slide 19  Assumption 3.1", [
@@ -169,28 +169,73 @@ SLIDES = [
     ),
     _slide_by_title("Model and assumptions"),
     _slide_by_title("A latent shifter is not a Missing IV"),
+    ("Assumption 1", [
+        "仮定1は観測過程です。Yは全測定項目、Dは各項目を観測したかを示す二値指標です。Y jはD jが1の場合にだけ観測され、X、W、Z、Dは常時観測されます。Fは潜在変数で観測されません。",
+        "Oは一個体の観測データを表します。常時観測変数に、実際に観測された項目だけからなるY Dを加えたものです。Zには各blockで必要なMissing IV Z Sが含まれます。",
+    ]),
+    ("Assumptions 2 and 3", [
+        "仮定2では通常共変量をX、潜在分布を動かすlatent shifterをWとします。Q FはWとXを条件とするFの分布です。この分布ではZを周辺化しています。",
+        "仮定3は測定過程です。Q jはFとXを条件とする項目Y jの分布、theta jはそのパラメータです。Q Fは潜在classの構成、Q jは各classと測定項目との関係を記述します。",
+    ]),
+    ("Assumption 4", [
+        "仮定4は、Zを周辺化した測定モデルに局所独立性とWのmeasurement exclusionを課します。F、W、Xを条件としたY全体の分布が、Wを含まない各Q jの積になります。全項目の同時分布に対する条件であって、pairwise independenceだけではありません。",
+        "ここでF、W、Xの下でYとZが独立とは仮定しません。この強い条件は削除し、ZとYの関連を許します。Missing IVとしてのZのexclusionは、仮定6で欠測指標Rに対して別に課します。この区別によって、測定モデルと四cellのshadow operatorを両立できます。",
+    ]),
     _slide_by_title("A simple multivariate extension"),
-    _slide_by_title("Observed data and supported blocks"),
-    _slide_by_title("Single-block data-generating structure"),
+    ("Assumption 5", [
+        "仮定5では、Sを測定項目の部分集合、Y Sをその測定ベクトル、U SをXとW、R SをS内のD jの積と定義します。R Sが1ならblock全体が観測されています。一部だけ観測されたblockは、complete blockとしては用いません。",
+        "supported blockとは、対象support上で、Y SとU Sを条件とする観測確率pi Sが正であるblockです。必要なのはanchor pairとextension pairsであり、全項目のglobal complete caseは必要としません。",
+    ]),
+    ("Two marginal views of the model", [
+        "図は、一つの完全データ法則の異なる周辺を二つに分けています。上段ではZとDを周辺化し、Fと測定項目の関係を示します。U SからY Sへの辺はXの効果だけであり、Wは測定核へ入りません。項目間の局所独立性は仮定4の積分解によって課しています。",
+        "下段はFとblock外の項目を周辺化した顕在変数のfull-data lawです。Y Sはここでも欠測し得る変数です。Y SとU Sの下でZ SとR Sが独立になる分解を表します。上下の図を一つのDAGとして結合したり、FとZの追加の独立性を読んだりするものではありません。",
+    ]),
     _slide_by_title("Overlapping supported blocks replace global complete cases"),
-    _slide_by_title("Stage-1 assumptions"),
+    ("Assumptions 6 and 7", _slide_by_title("Stage-1 assumptions")[1]),
     _slide_by_title("New Proposition 1"),
     _slide_by_title("Proof sketch the observable bridge is unique"),
     _slide_by_title("Finite latent-class identification"),
     _slide_by_title("The remaining decomposition problem"),
     _slide_by_title("Identification strategy"),
-    _slide_by_title("Assumption 3.1"),
+    ("Assumption 3.1: Support and model", [
+        "仮定3.1の前半は、finite latent-class modelの対象範囲と第一段階との接続です。class数rは既知で2以上、項目空間とXで条件づけたWのsupportは有限です。全ての条件を、Xの共通の確率1の集合上で課します。",
+        "仮定2から4が成立し、各class比率とWのsupport上の確率は正です。anchor pairと全extension pairsについて仮定1、5から7を満たし、真の逆観測確率はcomplete-case lawの下で二乗可積分とします。これが命題1を各pairへ適用する条件です。",
+    ]),
+    ("Assumption 3.1: Rank and labels", [
+        "後半はrankとlabelです。M a、M b、Gのcolumn Kruskal rankの和を2rプラス2以上とします。三つのviewに対するこの条件自体はAllmanらのTheorem 1と同じです。",
+        "さらに既知のanchor scoreを各classのM aで平均したmu afについて、全てのXで同じ厳密順序を課します。rankが因子を置換を除いて固定し、orderingが共通labelを固定します。GとM aのKhatri–Rao積のfull column rankは、次の補題から導く結論であり、追加仮定ではありません。",
+    ]),
     _slide_by_title("Lemma 3.1"),
     _slide_by_title("New Theorem 1"),
     _slide_by_title("Proof map for Theorem 1"),
     _slide_by_title("Bridge-weighted composite estimation"),
+    ("Conditions for estimation", [
+        "本文の命題4.1の条件も明記します。仮定1から7と3.1に加え、真のthetaが潜在モデルを正しく生成し、全てのpair densityが共通support上で正とします。母集団criterionには真のbridgeと固定された正のblock重みを使います。",
+        "IPWによって各pairのfull-data expectationが回復されます。真値とのcriterionの差はKL divergenceの正の加重和なので、最大値が等しければ全pair lawsが一致し、定理1からthetaも一致します。これが推定の母集団での一意性です。",
+    ]),
+    ("Assumption 5.1: Regularity", [
+        "漸近理論では個体の観測データが独立同分布であるとします。betaを潜在パラメータthetaとbridgeパラメータetaの組とします。確率単体制約を除いた自由座標で、両者は有限次元で正しく指定され、パラメータ空間はcompact、真値は内点です。",
+        "first-stage population momentの零点は真値だけとします。criterionとmomentは真値近傍で二回連続微分可能で、必要なenvelopeは二乗可積分です。bridgeとcomposite scoreのJacobian、および対応するGodambe行列が非特異であることも仮定します。",
+    ]),
+    ("Assumption 5.1: Uniform convergence", [
+        "一致性には真値の近傍の微分可能性だけでは不十分です。sample criterionは、推定したbridgeをplug-inした状態で、パラメータ空間全体にわたり真のbridgeを用いた母集団criterionへ一様に収束すると仮定します。",
+        "また、真値から任意の正の距離だけ離れたパラメータの母集団criterionは、真値での最大値より厳密に小さいとします。この一様収束と分離を用いてargmax theoremを適用することが、一致性の根拠です。",
+    ]),
+    ("Assumption 5.1: First stage and separation", [
+        "仮定5.1の後半では、bridge推定量がregular asymptotically linearであると仮定します。そのinfluence functionは平均ゼロで有限分散を持ちます。",
+        "さらに、class比率、supported-pair propensity、anchor tensorのW-mode unfoldingの最小の非零特異値、Kruskal rankを支えるminor、anchor orderingの隣接gapが一様にゼロから離れているとします。unfoldingはWを行、Y aとY bを列とする行列です。識別だけでは推定の正則性や安定した推論までは従わないので、これらを別に明示しています。",
+    ]),
+    ("Theorem 5.1", [
+        "命題4.1と仮定5.1の下で、有限次元bridgeを用いた推定量の一致性と漸近正規性を得ます。Aはcomposite scoreのtheta微分の期待値、Cはeta微分の期待値です。分散BはscoreだけでなくCとfirst-stage influence functionの積を含みます。",
+        "したがってsandwich分散にはbridgeを推定した誤差も入ります。個人単位bootstrapでも両段階とlabel alignmentをやり直します。増大するsieveについてはこの定理だけでは足りず、推定速度とinverse-problemの条件が追加で必要です。",
+    ]),
     _slide_by_title("Computation"),
     (
         "Simulation targets in the model",
         [
-            "ここではp17のモデルDAGを再掲し、評価する母数を書き添えます。Z SからF、共変量U SからF、Z S、Y S、そしてFからY S、Y Sから観測指標R Sへ向かう元の矢印を保っています。Xは固定、Fは2 class、Wと各Yは二値です。Y 1は常時観測されるため、R SはD jに一致します。",
+            "ここではシミュレーションで実際に使う生成法則を図示し、評価する母数を書き添えます。Xは固定で、FからWと各Yを条件付き独立に生成し、そのY SからZ SとR Sを生成します。Fは2 class、Wと各Yは二値です。Y 1は常時観測されるため、R SはD jに一致します。",
             "Fの周辺class比率がp f、項目とclassの測定関係がM jfです。Stage 1のmu jは母集団周辺確率、p S,cはpairのcell probabilityです。これらと、Stage 2で分離する六つの測定核成分およびp 2を区別します。標本サイズは500、Monte Carlo反復は100回、平均item response rateは80 percentです。",
-            "ただし、この図は現行シミュレーションの生成法則そのものではありません。現行コードはY Sを条件にZ Sを生成するため、図が表す、FとWの下でY SとZ Sが独立というmeasurement exclusionを満たしていません。この不整合は未解決であり、現在の数値結果を図の全仮定を満たす検証と解釈することはできません。",
+            "このDGPは、Zを周辺化した仮定4の測定モデルとMissing IV exclusionを満たします。さらにY Sの下でR SとF、W、Z Sが独立になる具体的な生成例です。この追加の独立性を一般の識別定理の仮定として課しているわけではありません。",
         ],
     ),
     (
@@ -229,7 +274,7 @@ SLIDES = [
         [
             "WとYの周辺モデルにはAllman、Matias and Rhodesの有限product mixtureを用い、数値は本研究で設定しています。class比率は0.55と0.45、G fはFを条件としたWの分布です。class labelsはY 1の測定確率の小さい順に固定します。",
             "Y 1は常時観測されます。Y 2とY 3の観測確率は自身、Y 1、およびinteractionに依存するlogistic式で、各項目の平均観測率が70 percentとなるよう切片を調整します。全三項目の平均観測率は80 percentです。Z Sはpairの四つのcellに依存するfull-rank行列Hで生成し、常時観測します。",
-            "この生成はMissing IVのselection exclusionを満たしますが、元のモデルDAGが課すmeasurement exclusionは満たしません。二つの有限classだけを通じて四つのpair cellsを予測する元の図では、complete-case operatorのrankは高々2です。そのため、この図と現行の四cell completenessを同時に成立させたDGPではない点を区別する必要があります。",
+            "有限supportを全列挙した母集団で検証すると、各Wの下でcomplete-case operatorのrankは4、三つのviewのKruskal rankの和は6、extension inversionのrankは2です。改訂した仮定4では、FとWの下でY SとZ Sが独立という強い条件は不要です。これらは識別条件の確認であり、推定量の全正則条件を数値的に証明するものではありません。",
         ],
     ),
 ]
@@ -344,7 +389,7 @@ def build():
 
     doc.add_paragraph(
         f"本原稿は、英語Beamer全{len(SLIDES)}枚に対応する日本語の口頭説明用原稿である。"
-        "識別対象、仮定、定理、推定法と数値結果を説明し、モデルDAGと現行simulationの未解決の不整合も明記する。"
+        "識別対象、本文の全仮定、定理、推定法と数値結果を説明する。測定モデルはZを周辺化した法則とし、Missing IV exclusionと区別する。"
         "証明は本編では論理の流れ、Appendixでは8ステップを説明する。"
     )
 
@@ -364,10 +409,10 @@ def build():
     set_repeat_table_header(table.rows[0])
     rows = [
         ("Slides 1–7", "基礎概念、既存研究、二段階の識別戦略"),
-        ("Slides 8–15", "モデルとsupported-block lawの回復"),
-        ("Slides 16–22", "有限潜在クラスのtensor分解"),
-        ("Slides 23–31", "推定、計算、評価対象と指標、simulation、full joint law、結論、参考文献"),
-        ("Appendix 32–37", "定理1の8ステップ、empirical diagnostics、数値設定"),
+        ("Slides 8–18", "仮定1から7、supported-block lawの回復"),
+        ("Slides 19–26", "仮定3.1、有限潜在クラスのtensor分解"),
+        ("Slides 27–40", "推定、仮定5.1、漸近理論、計算、simulation、結論、参考文献"),
+        ("Appendix 41–46", "定理1の8ステップ、empirical diagnostics、数値設定"),
     ]
     for left, right in rows:
         cells = table.add_row().cells

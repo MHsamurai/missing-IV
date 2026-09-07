@@ -256,8 +256,9 @@ Zhao--Shao型exclusionと観測complete-case law上のcompletenessを課し，
 block lawを潜在クラスへ分解せず，欠測機構の除去だけを識別目標とする。
 
 \noindent\textbf{仮定1（観測過程）.}
-$D=(D_1,\ldots,D_m)\in\{0,1\}^m$，$Y_j$は$D_j=1$のときだけ観測される。
-$X,W,Z,D$は常時観測され，
+$Y=(Y_1,\ldots,Y_m)$を測定項目，$D=(D_1,\ldots,D_m)\in\{0,1\}^m$を
+観測指標とし，$Y_j$は$D_j=1$のときだけ観測される。
+$X,W,Z,D$は常時観測される。$O$を一個体の観測データとして，
 \begin{equation}
 O=(X,W,Z,D,Y_D),\qquad Y_D=\{Y_j:D_j=1\}.
 \label{eq:observed-data}
@@ -265,31 +266,35 @@ O=(X,W,Z,D,Y_D),\qquad Y_D=\{Y_j:D_j=1\}.
 ここで$Z$は必要なblockごとのshadow $Z_S$を含む情報の集合である。
 
 \noindent\textbf{仮定2（潜在分布のshift）.}
-$F\mid(W,X)\sim Q_F(\cdot\mid W,X)$。
+$F$を潜在変数，$X$を通常共変量，$W$をlatent shifterとする。
+$Q_F$は$Z$を周辺化した潜在変数の条件付き分布であり，
+$F\mid(W,X)\sim Q_F(\cdot\mid W,X)$とする。
 
 \noindent\textbf{仮定3（測定過程）.}
-$Y_j\mid(F,X)\sim Q_j(\cdot\mid F,X;\theta_j)$，$j=1,\ldots,m$。
+$Q_j$を項目$j$の測定核，$\theta_j$をそのパラメータとし，
+$Y_j\mid(F,X)\sim Q_j(\cdot\mid F,X;\theta_j)$，$j=1,\ldots,m$とする。
 
 \noindent\textbf{仮定4（局所独立性とexclusion）.}
 \begin{equation}
-P(Y\mid F,W,X,Z)=\prod_{j=1}^m Q_j(Y_j\mid F,X).
+P(Y\mid F,W,X)=\prod_{j=1}^m Q_j(Y_j\mid F,X).
 \label{eq:local-independence}
 \end{equation}
-式\eqref{eq:local-independence}は，$Y_1,\ldots,Y_m$が$(F,X)$の下で条件付き独立であり，$W$が
-測定核へ直接入らない。$Z_S$も測定核へ直接入らないが，$(W,X)$の下で
-$F$と関連し，潜在分布を通じて$Y_S$を予測してよい。従って
-$F\mid(W,X)\sim Q_F$は$Z$を周辺化した分布であり，完全データ法則では
-$P(F,Z\mid W,X)$を制限しない。
+式\eqref{eq:local-independence}は，$Z$を周辺化した法則における
+$Y_1,\ldots,Y_m$の局所独立性と，測定核に対する$W$のexclusionを表す。
+これは全項目の同時分布に対する積分解であり，pairwise independenceだけではない。
+$Y\indep Z\mid(F,W,X)$は仮定しない。$Z_S$と$Y_S$の関連を許し，
+欠測機構に対する$Z_S$のexclusionは仮定6で別途課す。
 
 \begin{center}
 \begin{minipage}{\linewidth}
 \centering
 \input{notes/figures/latent_mnar_dag.tex}
-\captionof{figure}{単一supported blockにおける潜在測定・欠測機構。
-円は潜在変数，四角は顕在変数，diamondはblock観測指標を表す。
-$U_S=(X,W)$は共変量として$F,Z_S,Y_S$へ入り，$Z_S$は$F$を通じて
-$Y_S$と関連する。$R_S\indep Z_S\mid(Y_S,U_S)$より，$Z_S$から$R_S$への
-直接辺は置かない。}
+\captionof{figure}{単一supported blockの二つの周辺モデル。
+上段は$Z,D$を周辺化した測定モデルで，$U_S=(X,W)$から$Y_S$への辺は
+$X$の効果だけを表し，項目間の局所独立性は式\eqref{eq:local-independence}で課す。
+下段は$F,Y_{-S}$を周辺化したmissing-IVモデルで，
+$R_S\indep Z_S\mid(Y_S,U_S)$を表す。両図は完全データ全体に対する
+一つのDAGではない。円は潜在変数，四角は顕在変数，diamondはblock観測指標を表す。}
 \label{fig:latent-mnar-dag}
 \end{minipage}
 \end{center}
@@ -353,13 +358,15 @@ Jacobian行列のfull-rank条件を用いる。}
 \centering
 \resizebox{\linewidth}{!}{\input{notes/figures/supported_blocks_dag.tex}}
 \captionof{figure}{複数のsupported blocksにおける多次元missing IV，
-outcome，block indicatorの構造。各外枠は一つのsupported blockを表し，
-内部の小さな四角は$\bm Z_S$と$Y_S$の各成分，diamondは
+outcome，block indicatorの周辺モデル（$F$を周辺化）。各外枠は一つのsupported blockを表し，
+内部の小さな四角は$\bm Z_S$と$Y_S$の各成分で，矢印の接続先は各ベクトル全体を
+囲む枠である。diamondは
 $R_S=\prod_{k\in S}D_k$を表す。anchor items $Y_a,Y_b$をblock間で
 含む$S_0=\{a,b\}$がanchor pairを構成し，各extension pair
 $S_j=\{j,a\}$は$Y_a$を共有して測定核を伝播する。縦の省略記号は
 $S_0,S_1,\ldots,S_J$のsupported pairsを表す。各blockで
-$U_S$は$F,\bm Z_S,Y_S$へ入り，$\bm Z_S$から$R_S$への直接辺は置かない。
+$U_S$は$Y_S,\bm Z_S,R_S$へ入り，$\bm Z_S$から$R_S$への直接辺は置かない。
+各図は同一の完全データ法則の周辺であり，block間の独立性を表すものではない。
 灰色はextension pairsに共通するanchor item $Y_a$を表す。}
 \label{fig:supported-blocks-dag}
 \end{minipage}
@@ -495,7 +502,7 @@ $\Theta_x$上でglobal point identificationを示す。
 \subsection{統合識別定理}
 
 \noindent\textbf{補題3.1（Khatri--Rao rank）.}
-$r$列を持つ行列$A,B$のcolumn Kruskal rankを$k_A,k_B$とすると，
+ゼロ列を持たない$r$列の行列$A,B$のcolumn Kruskal rankを$k_A,k_B$とすると，
 \begin{equation}
 k_{B\odot A}\ge\min\{k_A+k_B-1,r\}.
 \label{eq:khatri-rao-rank-bound}
@@ -507,7 +514,9 @@ $r$は既知で，以下の条件が全ての$x\in\mathcal X_0$で成立する�
 仮定2--4が成立し，各$f$で$p_f(x)>0$，各
 $w\in\mathcal W_x$で$P(W=w\mid X=x)>0$とする。anchor pair
 $\{a,b\}$と，各$j\notin\{a,b\}$に対するextension pair $\{j,a\}$は
-全ての$w\in\mathcal W_x$でsupportedであり，仮定6--7を満たす。
+全ての$w\in\mathcal W_x$でsupportedであり，仮定1および5--7を満たす。
+各pairでは，命題2.1の条件
+$\pi_S^{-1}\in L^2\{P(Y_S,U_S\mid R_S=1)\}$も成立する。
 $M_a,M_b,G$のcolumn Kruskal rankを
 $k_a,k_b,k_G$として
 \begin{equation}
@@ -547,7 +556,7 @@ $P(W=w_\ell\mid X=x)$上で条件付け・周辺化することにより，
 $\mathcal T_{abW}(x)$と各$\mathcal T_{jaW}(x)$が識別される。
 
 \noindent\textbf{Step 2（三方向配列のlatent-class表現）.}
-仮定4の局所独立性とmeasurement exclusionより，$X=x$を条件として
+仮定4の$Z$を周辺化した局所独立性と$W$のmeasurement exclusionより，$X=x$を条件として
 $Y_a,Y_b,W$は$F$の下で相互に独立である。従って
 \begin{equation}
 \mathcal T_{abW}(x)
@@ -695,14 +704,28 @@ $(O_i)_{i=1}^n$は独立同分布であり，$\beta=(\theta,\eta)$，
 $\eta=(\eta_S:S\in\mathcal S_*)$とする。
 
 \noindent\textbf{仮定5.1（regularity and separation）.}
-$\theta$と$\eta$は有限次元で正しく指定され，$\Theta$と各bridge parameter spaceは
-compactで真値は内点にある。first-stageのpopulation momentは$\eta_0$だけを零とする。
+$\theta$と$\eta$は有限次元で正しく指定される。確率単体の制約を除いた自由座標で，
+$\Theta$と各bridge parameter spaceはcompactで真値は内点にある。
+first-stageのpopulation momentは$\eta_0$だけを零とする。
+式\eqref{eq:composite-criterion}のsample criterionを$\widehat Q_n(\theta,\widehat\eta)$，
+真のbridgeを用いた母集団版を$Q_0(\theta)$と書くと，
+\begin{equation}
+\begin{aligned}
+&\sup_{\theta\in\Theta}|\widehat Q_n(\theta,\widehat\eta)-Q_0(\theta)|
+  \xrightarrow{p}0,\\
+&\sup_{\|\theta-\theta_0\|\ge\varepsilon}Q_0(\theta)<Q_0(\theta_0)
+  \quad(\varepsilon>0)
+\end{aligned}
+\label{eq:regular-uniform-separation}
+\end{equation}
+を仮定する。ただし下段の上限は$\Theta$内の非空な対象集合について取る。
 criterionとfirst-stage momentsは真値近傍で二回連続微分可能で，必要な
 envelopeは二乗可積分である。bridgeのJacobian，composite scoreのJacobian，
 および対応するGodambe行列は非特異である。first-stage estimatorは平均0で
 有限分散のinfluence function $\varphi_\eta(O)$を持つregular asymptotically linear
 estimatorである。さらにclass probability，
-supported-pair propensity，anchor tensorの最小特異値，Kruskal rankを
+supported-pair propensity，anchor tensorの$W$-mode unfolding
+（行が$W$，列が$(Y_a,Y_b)$）の最小の非零特異値，Kruskal rankを
 支えるminor，およびanchor orderingの隣接gapは，全て0から一様に離れる。
 
 \noindent\textbf{定理5.1（有限次元bridgeの一致性と漸近正規性）.}
@@ -732,8 +755,9 @@ B&=\operatorname{Var}\{\psi(O;\theta_0,\eta_0)
 anchor orderingによるlabel alignmentまでを全て再実行する。
 
 \noindent\textbf{証明概略.}
-一様大数の法則，first-stage momentの一意な零点，および命題4.1から
-$(\widehat\eta,\widehat\theta)\xrightarrow{p}(\eta_0,\theta_0)$を得る。
+first-stageのasymptotic linearityから$\widehat\eta\xrightarrow{p}\eta_0$を得る。
+式\eqref{eq:regular-uniform-separation}と命題4.1にargmax theoremを適用すると
+$\widehat\theta\xrightarrow{p}\theta_0$が従う。
 first-stageのasymptotic linearityより
 $\sqrt n(\widehat\eta-\eta_0)=n^{-1/2}\sum_i\varphi_\eta(O_i)+o_p(1)$である。
 これを$\theta$のscore expansionへ代入すれば，

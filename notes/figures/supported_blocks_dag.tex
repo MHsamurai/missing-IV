@@ -1,66 +1,41 @@
+% Observed-variable marginal views, with F integrated out in each block.
 \begin{tikzpicture}[
   x=1cm,y=1cm,font=\sffamily,
-  smallobs/.style={draw, rounded corners=.8pt, fill=gray!10, minimum width=7mm,
-    minimum height=5.2mm, inner sep=.7mm, font=\tiny},
-  covar/.style={draw, rounded corners=1pt, fill=white, minimum width=13mm,
-    minimum height=9mm, align=center, inner sep=.8mm, font=\tiny},
-  latent/.style={draw, circle, fill=white, minimum size=6.5mm, inner sep=.5mm,
-    font=\tiny},
-  select/.style={draw, diamond, aspect=1.65, fill=gray!10, minimum width=15mm,
-    minimum height=8mm, align=center, inner sep=.5mm, font=\tiny},
-  group/.style={draw=gray!55, rounded corners=1.5pt, inner sep=1.2mm},
-  block/.style={draw=gray!65, rounded corners=2pt, inner sep=2.2mm},
-  arrow/.style={-{Latex[length=1.8mm,width=1.2mm]}, line width=.5pt},
+  smallobs/.style={draw,rounded corners=.8pt,fill=gray!10,minimum width=8mm,
+    minimum height=5.2mm,inner sep=.7mm,font=\tiny},
+  covar/.style={draw,rounded corners=1pt,fill=white,minimum width=15mm,
+    minimum height=8mm,align=center,inner sep=.8mm,font=\tiny},
+  select/.style={draw,diamond,aspect=1.65,fill=gray!10,minimum width=15mm,
+    minimum height=8mm,align=center,inner sep=.5mm,font=\tiny},
+  group/.style={draw=gray!55,rounded corners=1.5pt,inner sep=1.2mm},
+  block/.style={draw=gray!65,rounded corners=2pt,inner sep=2.2mm},
+  arrow/.style={-{Latex[length=1.8mm,width=1.2mm]},line width=.5pt},
   title/.style={fill=white,inner xsep=1mm,font=\scriptsize\bfseries,anchor=west}
 ]
-  % Anchor pair block S_0={a,b}.
-  \node[covar] (u0) at (2.65,7.20) {$U_{S_0}$\\$(X,W)$};
-  \node[smallobs] (z01) at (1.05,6.45) {$Z_{0,1}$};
-  \node[font=\tiny] (zd0) at (1.05,6.00) {$\vdots$};
-  \node[smallobs] (z0q) at (1.05,5.55) {$Z_{0,q_0}$};
-  \node[group,fit=(z01)(zd0)(z0q)] (zg0) {};
-  \node[latent] (f0) at (2.65,6.00) {$F$};
-  \node[smallobs,fill=gray!22] (ya0) at (4.25,6.25) {$Y_a$};
-  \node[smallobs] (yb0) at (4.25,5.75) {$Y_b$};
-  \node[group,fit=(ya0)(yb0)] (yg0) {};
-  \node[font=\tiny,anchor=north] (zl0) at ($(zg0.south)+(0,-.05)$) {$\bm Z_{S_0}$};
-  \node[font=\tiny,anchor=north] (yl0) at ($(yg0.south)+(0,-.05)$) {$Y_{S_0}$};
-  \node[select] (r0) at (6.45,6.00) {$R_{S_0}$\\$=\prod_{k\in S_0}D_k$};
-  \draw[arrow] (u0.west) -- (zg0.north);
-  \draw[arrow] (u0.south) -- (f0.north);
-  \draw[arrow] (u0.east) -- (yg0.north);
-  \draw[arrow] (zg0.east) -- (f0.west);
-  \draw[arrow] (f0.east) -- (yg0.west);
-  \draw[arrow] (yg0.east) -- (r0.west);
-  \node[block,fit=(u0)(zg0)(f0)(yg0)(r0)(zl0)(yl0),minimum width=72mm] (b0) {};
-  \node[title] at (b0.north west) {$S_0=\{a,b\}$};
-
-  \node[font=\Large] at (3.65,4.10) {$\vdots$};
-
-  % Representative extension pair S_J={J,a}.
-  \node[covar] (uJ) at (2.65,3.00) {$U_{S_J}$\\$(X,W)$};
-  \node[smallobs] (zJ1) at (1.05,2.25) {$Z_{J,1}$};
-  \node[font=\tiny] (zdJ) at (1.05,1.80) {$\vdots$};
-  \node[smallobs] (zJq) at (1.05,1.35) {$Z_{J,q_J}$};
-  \node[group,fit=(zJ1)(zdJ)(zJq)] (zgJ) {};
-  \node[latent] (fJ) at (2.65,1.80) {$F$};
-  \node[smallobs] (yJ) at (4.25,2.05) {$Y_J$};
-  \node[smallobs,fill=gray!22] (yaJ) at (4.25,1.55) {$Y_a$};
-  \node[group,fit=(yJ)(yaJ)] (ygJ) {};
-  \node[font=\tiny,anchor=north] (zlJ) at ($(zgJ.south)+(0,-.05)$) {$\bm Z_{S_J}$};
-  \node[font=\tiny,anchor=north] (ylJ) at ($(ygJ.south)+(0,-.05)$) {$Y_{S_J}$};
-  \node[select] (rJ) at (6.45,1.80) {$R_{S_J}$\\$=\prod_{k\in S_J}D_k$};
-  \draw[arrow] (uJ.west) -- (zgJ.north);
-  \draw[arrow] (uJ.south) -- (fJ.north);
-  \draw[arrow] (uJ.east) -- (ygJ.north);
-  \draw[arrow] (zgJ.east) -- (fJ.west);
-  \draw[arrow] (fJ.east) -- (ygJ.west);
-  \draw[arrow] (ygJ.east) -- (rJ.west);
-  \node[block,fit=(uJ)(zgJ)(fJ)(ygJ)(rJ)(zlJ)(ylJ),minimum width=72mm] (bJ) {};
-  \node[title] at (bJ.north west) {$S_J=\{J,a\}$};
-
-  \node[font=\scriptsize,align=center] at (3.65,-.35)
-    {$S_0,S_1,\ldots,S_J\in\mathcal S$,\quad
-     $R_S\mathrel{\perp\!\!\!\perp}\bm Z_S\mid(Y_S,U_S)$\\
+  \foreach \tag/\height/\itemlabel/\setlabel in {0/4.4/b/{a,b},J/0/J/{J,a}} {
+    \begin{scope}[yshift=\height cm]
+      \node[covar] (u\tag) at (3.5,3.0) {$U_{S_\tag}=(X,W)$};
+      \node[smallobs] (z\tag 1) at (1.05,1.95) {$Z_{\tag,1}$};
+      \node[font=\tiny] (zd\tag) at (1.05,1.5) {$\vdots$};
+      \node[smallobs] (z\tag q) at (1.05,1.05) {$Z_{\tag,q_\tag}$};
+      \node[group,fit=(z\tag 1)(zd\tag)(z\tag q)] (zg\tag) {};
+      \node[smallobs,fill=gray!22] (ya\tag) at (3.5,1.78) {$Y_a$};
+      \node[smallobs] (yb\tag) at (3.5,1.22) {$Y_\itemlabel$};
+      \node[group,fit=(ya\tag)(yb\tag)] (yg\tag) {};
+      \node[font=\tiny,anchor=north] (zl\tag) at ($(zg\tag.south)+(0,-.05)$) {$\bm Z_{S_\tag}$};
+      \node[font=\tiny,anchor=north] (yl\tag) at ($(yg\tag.south)+(0,-.05)$) {$Y_{S_\tag}$};
+      \node[select] (r\tag) at (6.0,1.5) {$R_{S_\tag}$\\$=\prod_{k\in S_\tag}D_k$};
+      \draw[arrow] (u\tag.west) -- (zg\tag.north);
+      \draw[arrow] (u\tag.south) -- (yg\tag.north);
+      \draw[arrow] (u\tag.east) -- (r\tag.north);
+      \draw[arrow] (yg\tag.west) -- (zg\tag.east);
+      \draw[arrow] (yg\tag.east) -- (r\tag.west);
+      \node[block,fit=(u\tag)(zg\tag)(yg\tag)(r\tag)(zl\tag)(yl\tag),minimum width=72mm] (b\tag) {};
+      \node[title] at (b\tag.north west) {$S_\tag=\{\setlabel\}$};
+    \end{scope}
+  }
+  \node[font=\Large] at ($(b0.south)!.5!(bJ.north)$) {$\vdots$};
+  \node[font=\scriptsize,align=center,anchor=north] at ($(bJ.south)+(0,-.2)$)
+    {$F$ marginalized;\quad $R_S\mathrel{\perp\!\!\!\perp}\bm Z_S\mid(Y_S,U_S)$\\
      gray $Y_a$: shared anchor item across extension pairs};
 \end{tikzpicture}
