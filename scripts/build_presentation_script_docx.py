@@ -16,38 +16,39 @@ JAPANESE_FONT = "BIZ UDPGothic"
 
 SLIDES = [
     ("Slide 1  Title", [
-        "本報告の題目は、欠測IVと潜在変数モデリングによる非無作為欠測の識別です。多次元の測定項目がmissing not at random、すなわちMNARで欠測する状況で、潜在分布と測定核をどのように識別するかを議論します。",
-        "中心となる考え方は二段階です。第一段階でMissing IVとsupported blockを用いて観測変数のblock lawを回復し、第二段階でanchor itemsとlatent shifterを用いて、その法則を有限潜在クラスへ一意に分解します。",
+        "本日は、欠測IVと潜在変数モデリングによる非無作為欠測の識別についてお話しします。知りたいのは、欠測した項目の分布だけではありません。その項目の背後にある潜在クラスと、各項目がクラスをどう測っているかも知りたい、という問題です。",
+        "考え方は二段階です。まず、Missing IVを使って欠測による偏りを取り除きます。その後、重なりのある項目の組と、潜在分布を動かす変数を使って、潜在クラスの比率と測定核を分けていきます。",
     ]),
     ("Slide 2  Missing-data mechanisms and standard approaches", [
-        "まず欠測機構を整理します。Dをresponse pattern、Y obsとY misを観測部分と欠測部分とします。MCARではDはYに依存せず、MARでは観測値だけに依存します。MNARではDが欠測値そのものにも依存するため、通常の補完やrespondent-only analysisではsample-selection biasが生じ得ます。",
-        "本報告では、欠測のためのinstrumental variableを最初にMissing IVまたはshadow variableと呼び、以後はMissing IVに統一します。Missing IVによってfull-data lawを回復した後に、潜在構造を分解することが課題です。",
+        "まず、欠測を三つに分けます。図のDは、どの項目が観測されたかを表します。Y obsは見えている部分、Y misは欠測している部分です。",
+        "MCARは、欠測がYの値と関係しない場合です。MARは、見えている値で条件づければ、欠測した値には依存しない場合です。今回扱うMNARでは、欠測した値そのものにも依存します。このとき、回答者だけを分析すると、母集団とは違う人たちを見てしまうことがあります。Heckmanの選択バイアスの話にもつながります。",
+        "そこで使うのが、Missing IV、別名shadow variableです。以後はMissing IVと呼びます。これを使って、欠測した人も含む母集団の分布を回復できるかを考えます。",
     ]),
     ("Slide 3  Usual IV and Missing IV", [
-        "通常のIVとMissing IVは役割が異なります。通常のIVはoutcome equationから除外され、treatmentや内生変数を動かします。これに対してMissing IVのZは、欠測指標Rへの直接効果を持たず、欠測し得るYを予測します。",
-        "本稿の基本条件は、Yと共変量Uを条件づけるとRとZが独立になることです。Zのrelevanceと、このexclusion、さらにcompletenessを組み合わせて、観測確率を一意に回復します。",
-        "パイは、Yの値ごとの観測確率です。その逆数を使って観測された標本を重み付けすることで、欠測した人も含めた母集団全体のYの分布を回復します。",
+        "左右の図では、Zの役割が違います。左は、欠測への応用で使う通常型のIVです。観測されるかどうかのRには関わる一方、Yのモデルからは除外します。右のMissing IVは逆で、Yとは関連しますが、Yを条件づけた後にはRと独立だと考えます。共変量がある場合は、それも一緒に条件づけます。",
+        "式のパイは、Yの値ごとの観測確率です。Missing IVの条件と、観測確率が正であることから、この式が成り立ちます。さらにcompletenessという、Zが識別に十分な情報を持つ条件を置くと、パイが一つに決まります。",
+        "あとは、その逆数で観測された人を重み付けします。たとえば観測確率が半分なら、重みは2です。観測されにくい人に大きな重みを付けて、欠測した人も含む母集団全体のYの分布を回復する、という考え方です。",
     ]),
     ("Slide 4  A simple multivariate extension", [
-        "単純な多変量拡張では、D jを各項目Y jの観測指標とし、全項目が同時に観測されたcomplete-case indicatorをRと置きます。Rが正の確率を持ち、vector Y全体に対するMissing IV条件とcompletenessが成立すれば、full-data lawを識別できます。",
-        "ただし、この方法は全項目を同時に観測するglobal complete caseを必要とします。項目数が多い場合にはこの確率が極端に小さくなり得るため、本稿では後でsupported blocksへ置き換えます。",
+        "ここで、Yを一つの変数ではなく、複数項目のベクトルにしてみます。一番単純なのは、全項目がそろった人だけをcomplete caseとして使う方法です。各項目が見えたかをD jで表し、その積をRとします。",
+        "ベクトルYに対しても、Missing IVとcompletenessの条件が成り立ち、対象となる値ごとの観測確率が正なら、同じ考え方で母集団分布を回復できます。ただ、項目が増えると全てがそろう人は少なくなります。そこで、全項目ではなく、小さな組ごとに回復する方法へ進みます。",
     ]),
     ("Slide 5  Latent measurement model", [
-        "Fを未観測の潜在変数、Y 1からY mをその測定項目、Xを通常共変量、Wを潜在分布を動かすlatent shifterとします。この構造はstructural equation modeling、SEMやitem response theory、IRTの基礎となる測定モデルです。",
-        "Q FはFの潜在分布、Q jは項目jの測定核です。局所独立性の下で、観測変数の分布はQ FとQ jの積をFについて周辺化したmixtureになります。完全データで三つのviewが十分なrankを持つ場合、Allman、Matias and Rhodesの結果により、有限class比率と測定核はlabelを除いて識別されます。",
-        "今回の識別定理が直接扱うのは有限潜在クラスです。連続因子のSEMやIRTへ拡張するには、測定族やcalibrationなどの追加条件が必要です。",
+        "次に、項目の背後にある潜在変数を考えます。左の丸が、直接は見えないFです。右の四角が、Fを測る項目Y 1からY mです。構造方程式モデリング、SEMや、項目反応理論、IRTで使う測定モデルの基本形です。",
+        "Q Fは、Fがどのように分布しているかを表します。Wはその分布を動かす変数で、latent shifterと呼びます。Q jは、FとXが決まったときに項目jがどう分布するか、つまり測定核です。Xは通常の共変量で、Fにも各項目にも入ります。",
+        "下の式では、FとXの下で項目が独立だとして、各測定核を掛けています。それをFの分布で平均すると、Yの分布になります。有限潜在クラスでは、三つのviewに十分なランクがあれば、クラスの入れ替えを除いて分解が一つに決まります。これがAllman、Matias、Rhodesの結果です。連続因子のSEMやIRTまで同じ条件だけで識別できる、という話ではありません。",
     ]),
     ("Slide 6  Related identification results", [
-        "関連研究を三つに整理します。scalar Missing IVではd’Haultfoeuille、Zhao and Shao、Miaoらがcompletenessとconditional moment identificationを扱います。multivariate MNARではTangら、Sadinle and Reiter、Liら、Ni and Shaoがpattern restrictionやitemwise nonresponse modelを扱います。",
-        "latent structure側ではAllman、Matias and Rhodesのtensor uniquenessに加え、Muthénら、Holman and Glas、Lee and Tang、Harel and Schafer、Jungら、Kano and Takai、Kuhaらがlatent variableとnonignorable missingnessを同時に扱い、Xieらはdeep latent MNARを検討しています。latent-MNARのjoint model自体は既知です。",
-        "本稿の新規性はlatent-MNAR自体ではありません。parametric selection modelを置かないsupported-block lawの回復と、共通label下でのlatent decompositionを接続し、一つの識別定理として示す点です。",
+        "関連研究は、ここでは三つの流れに分けています。一つ目は、d’HaultfoeuilleやZhaoとShaoらのMissing IVです。二つ目は、TangらやNiとShaoらの、複数項目のMNARを扱う研究です。欠測パターンや項目ごとの欠測に、どのような制約を置くかを考えています。",
+        "三つ目が潜在構造です。Allmanらはテンソル分解の一意性を扱っています。また、Muthénら、LeeとTang、Jungら、KanoとTakai、Kuhaらなど、潜在変数とMNARを一緒に扱う研究も既にあります。近年はXieらの深層学習を使う研究もあります。",
+        "ですので、新しいのは潜在変数とMNARを一緒に扱うこと自体ではありません。欠測モデルのパラメトリックな形を決めずにblockの分布を回復し、それを共通のラベルを持つ潜在構造につなぐ。この二段階を、一つの識別定理として示す点です。",
     ]),
     ("Slide 7  A latent shifter is not a Missing IV", [
-        "latent shifter WとMissing IV Z Sは区別します。仮にFまで条件づければDとWが独立であっても、Fを積分するとDの条件付き分布にはP of F given Y, W, Xが残ります。WがFの分布を動かすなら、この分布は一般にWへ依存します。",
-        "したがって、Wは周辺化後のMissing IVにはなりません。Z Sはblock lawをMNAR selectionから回復し、Wは回復後のtensorにthird-mode variationを与えます。block lawを回復しただけではQ FとQ Yは分離されないため、この二つの役割を接続する必要があります。",
+        "ここは少し注意が必要です。潜在分布を動かすWと、欠測を補正するZ Sは、同じ役割ではありません。Fまで条件づけるとDとWが独立でも、Fを平均して消すと、Y、W、Xの下でのFの分布が式に残ります。この分布は、一般にはWによって変わります。",
+        "つまり、Wがlatent shifterだからといって、そのままMissing IVに使えるわけではありません。Z Sは欠測による偏りを取り除くために使います。Wは、その後の分布を潜在構造に分けるとき、三つ目のviewとして使います。まず回復して、その後で分解する、という順番になります。",
     ]),
     ("Slide 8  Model and assumptions", [
-        "第一段階では、Missing IV、positivity、complete-case completenessを用いて、観測データから各supported-block lawを回復します。この段階ではlatent mixtureの分解は行いません。",
+        "ここから第一段階です。まずはMissing IVを使って、小さな項目の組ごとに、欠測した人も含めた分布を回復します。まだ潜在クラスには分けません。そのために何を仮定するかを、順に見ていきます。",
     ]),
     ("Slide 9  Observed data and supported blocks", [
         "D jをY jの観測指標とし、Oを観測変数の集合とします。Oは常時観測されるX、W、Z、Dと、Dによって選択されたYの成分Y Dから構成されます。R Sは集合Sの全項目が観測されたことを示すblock indicatorです。R SがゼロならY Sは欠測であり、観測データには値を持つ変数として現れません。",
@@ -58,55 +59,58 @@ SLIDES = [
         "一方、R Sは欠測し得るY Sに依存してよく、MNARを許容します。ここでのDAGは、本稿が用いる条件付き独立性と分布の関係を整理したものです。",
     ]),
     ("Slide 11  Overlapping supported blocks replace global complete cases", [
-        "global complete caseの代わりに、重なりを持つsupported pairsを用います。S 0はanchor itemsのY aとY bを含み、各nonanchor item Y jには、Y jと共通anchor Y aからなるextension pairを用意します。",
-        "各pairに固有のMissing IV Z Sとbridgeを置き、第一段階でpair lawを回復します。第二段階では共有されたanchorを通じて、block間のmeasurement kernelとclass labelを接続します。",
+        "この図のように、全項目がそろう代わりに、重なりのあるペアを使います。最初のS 0は、基準となるY aとY bのペアです。この二つをanchor itemsと呼びます。残りのY jについては、共通のY aと組にしたextension pairを用意します。",
+        "各ペアには、それぞれMissing IVとbridgeを置きます。まずペアごとの分布を回復し、その後、共通のanchorを使って測定核とクラスのラベルをそろえていきます。全項目を一度に観測する必要はありません。",
     ]),
     ("Slide 12  Stage-1 assumptions", [
-        "仮定6はblockwise covariate-adjusted Missing IVです。各supported blockについて、Y SとU Sを条件づけるとR SとZ Sが独立であるとします。",
-        "仮定7はcomplete-case completenessです。R Sが1である標本において、Z SとU Sで条件づけたhの期待値がゼロなら、h自体がほとんど確実にゼロであるとします。これは観測可能なcomplete-case conditional operatorの単射性です。positivityはcomplete-case lawとfull lawの零集合を対応させます。",
+        "仮定6は、先ほどのMissing IVの条件をblockごとに置いたものです。Y Sと共変量U Sが同じなら、Z Sは、そのblockが観測されたかどうかのR Sと独立だとします。",
+        "仮定7がcomplete-case completenessです。そのblockが全て見えた人たちの中で考えます。二乗可積分な関数hについて、Z SとU Sのどの条件でも平均がゼロなら、h自体もほとんど確実にゼロだとします。違う関数を条件付き平均だけでは区別できない、ということが起きないための条件です。",
+        "ここで使うのは、全項目のcomplete caseではなく、そのblockのcomplete caseです。さらに観測確率が正なので、そこで確率ゼロとなる集合と、母集団で確率ゼロとなる集合を対応させられます。",
     ]),
     ("Slide 13  New Proposition 1", [
-        "新しい命題1は、本文の命題2.1に対応するsupported-block identificationです。真のpi Sの逆数がcomplete-case lawの下で二乗可積分であると仮定します。その上で、observable bridge momentを満たし、逆数が同じL2空間に属する正値関数のうち、pi Sが唯一の解になります。存在は真のpropensityから与えられ、命題の中心はこのbridge class内の一意性です。",
-        "pi Sが識別されると、R S divided by pi Sによるinverse probability weightingで任意のblock関数のfull-data expectationを再現できます。したがって各block lawが、parametric selection modelを指定せずに識別されます。",
+        "ここが第一段階の結果です。本文では命題2.1に当たります。真の観測確率の逆数について、blockのcomplete caseでの二乗平均が有限だとします。",
+        "その上で、このbridgeの式を満たす候補を考えます。候補は正の関数で、その逆数も同じ二乗可積分な関数の範囲に入るものです。この範囲では、観測確率パイSが一つに決まる、という命題です。真の観測確率が解になるので、ポイントは解の存在より、一意性にあります。",
+        "パイSが分かれば、観測された人をその逆数で重み付けできます。すると、blockについての可積分な関数、つまり絶対値の期待値が有限な関数の平均を、母集団の平均に戻せます。平均一つだけでなく、blockの分布全体が識別できるわけです。",
     ]),
     ("Slide 14  Proof sketch the observable bridge is unique", [
-        "証明では仮定の役割を分けます。観測過程、supported blockの定義、Missing IV exclusionから、真のpi Sがbridge momentを満たすことを示します。別の解との差を取ると、complete cases上の条件付き期待値がゼロになります。",
-        "complete-case completenessがその差をゼロにし、positivityが等式を対象support全体へ拡張します。最後にinverse weighting identityからblock lawの識別が従います。",
+        "証明の流れはこの図の通りです。まず、観測過程とsupported block、Missing IVの条件から、真のパイSがbridgeの式を満たすと分かります。次に、別の解もあるとして、二つの逆数の差を取ります。",
+        "その差の条件付き平均は、blockのcomplete caseではゼロになります。completenessを使うと、差そのものがゼロです。さらにpositivityを使って、この一致を母集団でもほとんど確実な一致に広げます。あとは逆確率で重み付けすれば、blockの分布が回復できます。",
     ]),
     ("Slide 15  Finite latent-class identification", [
-        "第二段階では、第一段階で回復したblock lawsを有限潜在クラスへ分解します。anchor itemsとlatent shifterを用いてKruskal型の一意性を得ることが目的です。",
+        "ここから第二段階です。blockの分布が分かったとして、それを潜在クラスの比率と測定核に分けられるでしょうか。anchor itemsとWを使って、この分解が一つに決まる条件を考えます。",
     ]),
     ("Slide 16  The remaining decomposition problem", [
-        "第一段階の後には、必要なY S、W、Xのfull pair lawsが識別されています。しかし潜在変数Fは未観測であり、同じpair lawを生成するp f、G、M jが複数存在する可能性があります。",
-        "ここでp fはclass比率、Gはclass別のWの分布、M jはclass別の測定核です。Lewbelの用語では、同じobserved-data lawを生成する二つの値はobservationally equivalentです。anchor orderingを課さないとclass permutationを除く同値類が識別され、orderingを課すと正規化されたparameter space上でpoint identificationを得ます。",
+        "第一段階で、必要なペアについて、欠測した人も含むY S、W、Xの分布が分かりました。ただ、Fそのものは見えていません。同じペアの分布を作れる潜在構造が、複数あるかもしれません。",
+        "分けたいのは三つです。p fがクラスの比率、GがクラスごとのWの分布、M jがクラスごとの測定核です。同じ観測データの分布を作る値どうしは、Lewbelの言葉でobservationally equivalentと呼びます。第一段階によって、観測データの分布が同じなら、回復したテンソルも同じになります。",
+        "ただし、クラス1と2の名前を入れ替えるだけでは、データの分布は変わりません。順序を決めなければ、識別されるのは、この入れ替えを同じものとみなした同値類です。anchorの順序で名前もそろえると、正規化したパラメータ空間で一つの値に決まります。",
     ]),
     ("Slide 17  Identification strategy", [
-        "識別戦略は四段階です。まずsupported-block lawsを回復し、次にanchor tensorとextension tensorsを構成します。anchor tensorを一意に分解してp、G、M a、M bを得た後、class weightsを回復し、各extension tensorを線形反転して全M jを得ます。",
-        "つまり第二段階は、回復済みblock lawsをanchor decompositionとextension inversionで潜在分布と測定核へ分ける操作です。",
+        "全体の流れを、この図で見ます。まずblockの分布を回復し、それをテンソルに並べます。テンソルは、ここでは確率を並べた多次元の表だと思ってください。",
+        "最初に、Y a、Y b、Wからなるanchorのテンソルを分解します。これでp、Gと、二つのanchorの測定核が分かります。次にpとGからWごとのクラス比率を求め、残りの項目はextensionの式を一つずつ解いていきます。全部を一度に分解するのではなく、基準を決めてから広げる順番です。",
     ]),
     ("Slide 18  Lemma 3.1", [
-        "補題3.1はKhatri–Rao積のrank条件です。AとBはゼロ列を持たないとします。column Kruskal rankの和がrプラス1以上なら、B Khatri–Rao Aはfull column rankになります。",
-        "この補題により、anchor tensorのKruskal条件を、各extension itemを線形反転するためのrank条件へ変換できます。",
+        "この補題は、残りの項目の式を一つに解けることを保証します。使うのはKhatri–Rao積で、対応する列どうしのクロネッカー積を並べたものです。",
+        "AとBにはゼロの列がないとします。二つの列Kruskal rankの和がrプラス1以上なら、この積は列フルランクになります。つまり、anchorを分解するときの条件から、extensionを解くためのランクも確保できる、という役割です。",
     ]),
     ("Slide 19  Assumption 3.1", [
         "仮定3.1はcovariate-assisted anchor-pair structureです。class数rは既知です。anchor decompositionには、anchor pairのsupportedness、正のclass比率とWの周辺確率、M a、M b、GのKruskal rank条件を用います。これはAllman、Matias and Rhodesのthree-view conditionと同じです。",
         "既知のanchor scoreの厳密順序で共通labelを固定します。extension propagationでは全extension pairsがsupportedであることと、補題3.1からG Khatri–Rao M aがfull column rankになることを用います。",
     ]),
     ("Slide 20  New Theorem 1", [
-        "新しい定理1は、本文の定理3.1に対応するanchor-pair identificationです。第一段階の仮定と仮定3.1の下で、観測データ法則からp、G、Wごとの潜在class分布Q F、全項目の測定核Q Yが固定された共通labelの下で識別されます。",
-        "要するに、pair lawsを回復し、一つのanchor tensorを分解すれば、latent-class distributionと全measurement kernelsが得られます。その結果、同時観測されたことのない項目集合についてもjoint lawを構成できます。",
+        "これが本研究の中心となる定理1で、本文の定理3.1です。第一段階の仮定と仮定3.1の下で、pとG、Wごとの潜在分布Q F、全項目の測定核Q Yが、共通のラベルの下で識別できます。",
+        "要するに、必要なペアの分布を回復して、一つのanchorのテンソルを分解し、残りを順に解けばよい、ということです。潜在クラスの比率だけでも、測定核だけでもなく、両方が分かります。さらに、このモデルの下では、一度も同時に観測されていない項目の組合せについても、同時分布を作れます。",
     ]),
     ("Slide 21  Proof map for Theorem 1", [
-        "証明の流れを一枚で示します。observed-data lawから命題1でanchor tensorとextension tensorsを回復し、Allman型の一意性からM a、M b、p、Gを共通labelの下で得ます。",
-        "次に補題3.1でextension inversionのrankを確保します。pとGにはBayes則を適用してWごとのlatent distributionを得た後、各extension tensorを反転して全M jを回復します。詳細な8ステップはAppendixに置いています。",
+        "証明で何を使うかを、この一枚にまとめています。出発点は観測データの分布です。命題1で各テンソルを回復し、Allman型の一意性を使って、M a、M b、p、Gを取り出します。確率の和とanchorの順序を使い、大きさとラベルも固定します。",
+        "残りは二つの操作です。pとGにはベイズ則を使い、Wごとのクラス比率を求めます。extensionには補題3.1を使い、残りの測定核を一つずつ解きます。詳しい8ステップは、後ろのAppendixに置いています。",
     ]),
     ("Slide 22  Bridge-weighted composite estimation", [
-        "推定も識別と同じ順序です。第一段階はd’HaultfoeuilleのSection 3に従い、各blockでconditional moment equationを解いてpair lawをIPWで回復します。第二段階はZhao and Shaoのplug-inの順序に従い、共通のlatent mixtureをoverlapping pair lawsへ当てはめます。",
-        "提案量はfull likelihoodではなくbridge-weighted composite M-estimatorです。一致性と漸近正規性の定理は有限次元bridgeを対象とし、sandwich varianceにはfirst-stage bridgeの推定誤差も含めます。dimensionが増えるsieve bridgeには別途inverse-problem theoryが必要です。",
+        "推定も、いまの識別と同じ順番で進めます。まずd’Haultfoeuilleの第3節に沿って、blockごとに条件付きモーメントの式を解き、逆確率重み付け、IPWでペアの分布を回復します。次に、重なりのあるペアに共通の潜在モデルを当てはめます。先に補助的な分布を推定してから代入する順序は、ZhaoとShaoに沿っています。",
+        "ここで使うのは、一つのfull likelihoodではありません。ペアごとの対数密度をbridgeで重み付けして足す、compositeな基準です。これを最大にするM推定量を使います。分散を求めるときも、最初のbridgeを推定した誤差を含めます。後で示す一致性と漸近正規性は、bridgeの次元を固定した場合の結果です。",
     ]),
     ("Slide 23  Computation", [
-        "Zhao and ShaoのSection 2.3は、nuisance lawを先に推定してtarget modelへplug-inする順序の先例です。本稿の更新アルゴリズムそのものの先例ではありません。本稿のcriterionは非凸なlatent mixtureを含むため、tensor initialization、複数初期値、制約付き更新を組み合わせます。",
-        "具体的にはbridgeを推定してweighted tensorsを作り、anchor tensorを分解してlabelを正規化し、extension kernelsを初期化します。その後、確率単体制約の下で全パラメータを更新し、最大criterionの解を採用します。",
+        "計算も、回復、分解、更新の順番です。まずbridgeを推定し、重み付きのテンソルを作ります。anchorを分解してラベルをそろえ、残りの測定核の初期値を出します。",
+        "その後、確率が非負で和が1になる制約を守りながら、全体を更新します。目的関数は非凸なので、初期値は複数試し、得られた解の中で目的関数が最大のものを採ります。これだけで大域的な最大値を保証するわけではありません。ZhaoとShaoの第2.3節から引き継ぐのはplug-inの順序で、更新法をそのまま移しているわけではありません。",
     ]),
     ("Slide 24  Simulation design", [
         "simulationはAllman、Matias and RhodesのSections 3から5に従い、本文式35のr-class、p-feature product mixtureから出発します。Allmanらに従うのはmodel classであり、数値parameterは本研究固有です。p fはlatent class比率、G fはclass別のWの分布、M j fはclass別の項目jの測定核です。",
@@ -118,31 +122,36 @@ SLIDES = [
         "二つ目はlatent class proportion p f、つまり母集団におけるclass fの比率です。本文の結果表に合わせてp 2を評価し、p 1は1 minus p 2で決まります。Biasは系統誤差を、RMSEはbiasとreplication variabilityを合わせた有限標本誤差を表します。",
     ]),
     ("Slide 26  Simulation results", [
-        "measurement kernelsについて、提案法はMARと誤指定selection likelihoodよりabsolute biasとRMSEが小さく、測定関係をより正確に回復しています。これは、selection equationを直接指定せず、Missing IVからblock lawsを回復しているためと考えられます。",
-        "latent class proportionsについても提案法のbiasはほぼゼロですが、RMSEが全比較で常に最小になるわけではありません。正しく指定されたparametric selection likelihoodは効率面で競争的であり、提案法の利点は誤指定回避と引き換えの頑健性にあります。",
+        "こちらは、潜在構造まで分けた後の結果です。測定核では、提案法のbiasの絶対値とRMSEが、MARと誤指定したselection likelihoodより小さくなっています。欠測モデルの形を直接決めず、Missing IVからペアの分布を回復していることが効いていると考えられます。",
+        "クラス比率のbiasもほぼゼロです。ただし、RMSEがどの手法よりも小さいわけではありません。欠測モデルを正しく指定できれば、パラメトリックな方法も効率の面で有力です。提案法の利点は、常に一番精度が高いことではなく、欠測モデルの形の誤指定を避けられる点にあります。",
     ]),
     ("Slide 27  Conclusion and limits", [
-        "第一段階ではMissing IVとcomplete-case completenessにより、parametric selection modelを置かずに各supported-block lawを識別します。第二段階ではanchor itemsとWにより、有限latent-class proportionsと全measurement kernelsを共通labelの下で識別します。推定量もこの順序に沿います。",
-        "限界もあります。識別には、既知のclass数r、anchor ordering、supported pairs、Missing IV exclusion、completeness、局所独立性、rank条件、有限latent-class modelが必要です。提案法はselection-link misspecificationには頑健ですが、これらの仮定やlatent-class modelの誤指定まで許すものではありません。また、class proportionのRMSEは正指定selection likelihoodを上回り得ます。漸近正規性は有限次元bridgeに対する結果であり、sieve inferenceには追加のinverse-problem theoryが必要です。",
+        "最後にまとめます。第一段階では、Missing IVとblockのcomplete-case completenessを使って、欠測モデルの形をパラメトリックに決めずに各blockの分布を回復します。第二段階では、anchor itemsとWを使い、潜在クラス比率と全ての測定核を共通のラベルで識別します。この接続を定理にして、同じ順序で推定量も作りました。",
+        "ただし、何にでも頑健というわけではありません。クラス数は既知で、有限潜在クラスの測定モデルが正しいことが前提です。必要なペアが観測されること、Missing IVの除外制約、completeness、局所独立性、ランク条件、anchorの順序も必要です。",
+        "また、クラス比率のRMSEは、正しく指定したselection likelihoodより大きくなることがあります。漸近理論も、ここでは有限次元のbridgeに限ります。次元を増やすsieveまで広げるには、逆問題としての追加の条件が要ります。欠測モデルの形を決めずに回復と分解をつなげられることが、今回のポイントです。",
     ]),
     ("Slide 28  Selected references", [
-        "Stage 1はd’HaultfoeuilleとZhao and Shao、complete-case-law上のcompletenessはMiaoら、Stage 2はAllman、Matias and Rhodesに依拠しています。Lewbelはobservational equivalenceとpoint identificationの用語、Little and Rubinは欠測機構、Heckmanはsample-selection biasの基礎として参照しています。",
+        "主に参照した文献はこちらです。第一段階はd’HaultfoeuilleとZhao、Shao、complete-caseでのcompletenessはMiaoらを参照しています。第二段階はAllman、Matias、Rhodesです。識別の言葉遣いはLewbel、欠測の分類はLittleとRubin、選択バイアスはHeckmanに沿っています。",
     ]),
     ("Appendix Slide 29  Steps 1 and 2", [
-        "Step 1では命題1によりanchor pairと全extension pairsのfull lawsを回復します。Step 2ではX equals xを固定し、局所独立性からY a、Y b、WをFとX equals xの下で三つの条件付き独立なviewとするanchor tensorを構成します。",
+        "最初の二つのステップです。Step 1では、命題1でanchor pairと全extension pairの分布を回復します。Step 2ではXをxに固定し、Y a、Y b、Wの確率をテンソルに並べます。",
+        "仮定した測定モデルから、FとXの下でこの三つは条件付き独立です。そのため、クラスごとの三つの確率ベクトルの積を、クラス比率で重み付けして足す形に書けます。これが分解の出発点です。",
     ]),
     ("Appendix Slide 30  Steps 3 and 4", [
-        "Step 3ではKruskal rank conditionからanchor tensorの分解をcommon permutationとcolumn scalingを除いて一意にします。Step 4では確率ベクトルの列和でscalingを固定し、anchor orderingでclass labelsを固定します。",
+        "Step 3では、Kruskalのランク条件を使います。これで、テンソルの分解は、クラスの入れ替えと列の大きさの調整を除いて一つに決まります。",
+        "Step 4では、その二つの曖昧さをなくします。確率ベクトルは和が1なので、列の大きさを固定できます。クラスの名前は、anchorの平均スコアが小さい順にそろえます。",
     ]),
     ("Appendix Slide 31  Steps 5 and 6", [
-        "Step 5では補題3.1によりG Khatri–Rao M aがfull column rankであることを示し、extension inversionを一意にします。Step 6では識別されたpとGへBayes則を適用し、WとXを条件とするlatent class distributionを得ます。",
+        "Step 5では補題3.1を使い、GとM aのKhatri–Rao積が列フルランクだと示します。これで、残りの項目の測定核を求める線形の式が、一つに解けます。",
+        "Step 6では、既に分かったpとGにベイズ則を使います。クラスごとのWの分布から、今度はWとXが与えられたときのクラス比率を求めます。これがQ Fです。",
     ]),
     ("Appendix Slide 32  Steps 7 and 8", [
-        "Step 7では各extension tensorを線形反転して全measurement kernels M jを識別します。Step 8では識別されたlatent weightsとmeasurement kernelsを局所独立モデルへ代入し、一度も同時観測されていない項目集合のjoint lawを構成します。",
+        "Step 7では、各extensionのテンソルから、残りのM jを順に解きます。これで全項目の測定核がそろいます。",
+        "最後のStep 8では、その測定核と潜在クラスの比率を、局所独立モデルの式に戻します。すると、一度も同時に観測されていない項目の組合せについても、モデルの下で同時分布を作れます。ここまでで、回復と分解がつながります。",
     ]),
     ("Appendix Slide 33  Empirical diagnostics and falsification checks", [
-        "候補となるMissing IV、latent shifter、covariates、anchor itemsの割当てについて、relevance、finite complete-case operatorのrank、supported-block positivity、third-mode rank、anchor separationを診断できます。冗長なblocksから得られるmeasurement kernelsの一致はoveridentifying restrictionになります。",
-        "ただし、診断に適合するだけでMissing IV exclusion、measurement exclusion、局所独立性が検証されたとはいえません。不適合は候補設計を反証できますが、適合は全仮定の正しさを保証しません。",
+        "応用では、どの変数をMissing IV、W、通常共変量、anchorにするかを決めます。その割当てについて、データで確認できる部分もあります。たとえばZの関連の強さ、有限カテゴリでのcomplete-case行列のランク、必要なblockが観測される確率、Wのviewのランク、anchorの分離です。",
+        "余分なblockも回復できれば、別のblockから求めた測定核が一致するかも調べられます。ただし、これらを通過しただけで、Missing IVの除外制約や測定モデルの除外制約、局所独立性まで正しいとは言えません。合わなければ設計を疑えますが、合えば全て証明できる、というものではありません。",
     ]),
 ]
 
@@ -164,32 +173,34 @@ SLIDES = [
     (
         "Proposed two-stage identification",
         [
-            "本稿の方法を先に概観します。第一に、Zhao and Shaoの除外制約とd’Haultfoeuilleのconditional moment equationを各supported blockへ適用し、parametric selection modelを置かずにblock lawを回復します。",
-            "第二に、回復したoverlapping block lawsをanchor itemsとlatent shifterで接続し、Allman、Matias and Rhodesのtensor uniquenessとextension inversionを用いて共通label下の潜在分布と測定核へ分解します。本稿の新規性は、この二段階を一つの識別定理として接続する点です。",
+            "先に、本研究の流れをお見せします。第一段階は、欠測した人も含めたblockの分布を回復することです。ZhaoとShaoの除外制約と、d’Haultfoeuilleの条件付きモーメントの式を使います。欠測確率を特定のパラメトリックな形に決める必要はありません。",
+            "第二段階は、回復した分布を潜在クラスに分けることです。共通するanchor itemsとWを使い、Allmanらの分解の一意性につなげます。最初のanchorを分けた後、残りの項目を順に解きます。この二段階を接続して、一つの識別定理にするのが今回の提案です。",
         ],
     ),
     _slide_by_title("Model and assumptions"),
     _slide_by_title("A latent shifter is not a Missing IV"),
     ("Assumption 1", [
-        "仮定1は観測過程です。Yは全測定項目、Dは各項目を観測したかを示す二値指標です。Y jはD jが1の場合にだけ観測され、X、W、Z、Dは常時観測されます。Fは潜在変数で観測されません。",
-        "Oは一個体の観測データを表します。常時観測変数に、実際に観測された項目だけからなるY Dを加えたものです。Zには各blockで必要なMissing IV Z Sが含まれます。",
+        "仮定1では、何が見えているかを決めます。Yが測定項目全体、D jが項目jを観測したかどうかです。D jが1のときだけY jが見えます。X、W、ZとDはいつも見えていますが、潜在変数Fは見えません。",
+        "式のOは、一人分の観測データです。いつも見える変数と、その人について実際に見えたYの成分、Y Dをまとめています。Zの中には、各blockで使うMissing IVのZ Sが含まれます。",
     ]),
     ("Assumptions 2 and 3", [
-        "仮定2では通常共変量をX、潜在分布を動かすlatent shifterをWとします。Q FはWとXを条件とするFの分布です。この分布ではZを周辺化しています。",
-        "仮定3は測定過程です。Q jはFとXを条件とする項目Y jの分布、theta jはそのパラメータです。Q Fは潜在classの構成、Q jは各classと測定項目との関係を記述します。",
+        "仮定2と3は、先ほどの測定モデルを式にしたものです。仮定2のQ Fは、WとXが与えられたときのFの分布です。Xは通常の共変量、Wは潜在分布を動かす変数です。ここではZについて平均を取っており、Zは条件に入っていません。",
+        "仮定3のQ jは、FとXが与えられたときのY jの分布です。シータjが、その測定核のパラメータです。クラスの構成を表すのがQ F、各クラスが項目にどう表れるかを示すのがQ j、と分けて考えます。",
     ]),
     ("Assumption 4", [
-        "仮定4は、Zを周辺化した測定モデルに局所独立性とWのmeasurement exclusionを課します。F、W、Xを条件としたY全体の分布が、Wを含まない各Q jの積になります。全項目の同時分布に対する条件であって、pairwise independenceだけではありません。",
-        "ここでF、W、Xの下でYとZが独立とは仮定しません。この強い条件は削除し、ZとYの関連を許します。Missing IVとしてのZのexclusionは、仮定6で欠測指標Rに対して別に課します。この区別によって、測定モデルと四cellのshadow operatorを両立できます。",
+        "仮定4には二つの内容があります。一つは、FとXを押さえると、項目全体が条件付き独立になることです。二項目ずつ独立というだけではなく、全ての項目の同時分布が、この積に分かれると仮定します。",
+        "もう一つは、Wが測定核に直接入らないことです。Wは潜在分布を動かしますが、FとXを決めた後の項目の分布は変えません。これは、Zについて平均を取った測定モデルの条件です。",
+        "F、W、Xを条件づけたらYとZも独立、とは言っていません。ZとYには関連があってよいです。Missing IVとしてのZの条件は、欠測指標Rとの独立性として、後の仮定6で別に置きます。",
     ]),
     _slide_by_title("A simple multivariate extension"),
     ("Assumption 5", [
-        "仮定5では、Sを測定項目の部分集合、Y Sをその測定ベクトル、U SをXとW、R SをS内のD jの積と定義します。R Sが1ならblock全体が観測されています。一部だけ観測されたblockは、complete blockとしては用いません。",
-        "supported blockとは、対象support上で、Y SとU Sを条件とする観測確率pi Sが正であるblockです。必要なのはanchor pairとextension pairsであり、全項目のglobal complete caseは必要としません。",
+        "ここで使うblockは、項目の一部分をまとめたものです。Sがその項目の集合、Y Sがその組の測定値、U SがXとWです。R Sは、その組のD jを全部掛けたものです。1なら、そのblockの項目は全て見えています。0なら、少なくとも一つが欠測しています。",
+        "一部だけ見えたblockは、全体が見えたblockとしては使いません。対象となるY SとU Sの値ごとに、block全体が観測される確率パイSが正であることを、supportedと呼びます。後で必要になるのはanchor pairとextension pairで、全項目が同時に見えることではありません。",
     ]),
     ("Two marginal views of the model", [
-        "図は、一つの完全データ法則の異なる周辺を二つに分けています。上段ではZとDを周辺化し、Fと測定項目の関係を示します。U SからY Sへの辺はXの効果だけであり、Wは測定核へ入りません。項目間の局所独立性は仮定4の積分解によって課しています。",
-        "下段はFとblock外の項目を周辺化した顕在変数のfull-data lawです。Y Sはここでも欠測し得る変数です。Y SとU Sの下でZ SとR Sが独立になる分解を表します。上下の図を一つのDAGとして結合したり、FとZの追加の独立性を読んだりするものではありません。",
+        "同じモデルを、見る変数を変えて二つに分けた図です。上は、ZとDについて平均した測定モデルです。Fと項目の関係を見ています。U SからY Sへの矢印はXの効果だけで、Wは測定核には入りません。項目間の局所独立性は、仮定4の積の式で置いています。",
+        "下は、Fとblock外の項目について平均した図です。Y SとU Sが決まると、Z SとR Sが独立になる関係を表しています。ここでいうfull-data lawは、回答者だけでなく、欠測した人も含む母集団の分布です。図にY Sがあっても、全員で見えているという意味ではありません。",
+        "上下を合体させて一つのDAGとして読むものではありません。特に、この図からFとZの追加の独立性を読み取ることはしません。",
     ]),
     _slide_by_title("Overlapping supported blocks replace global complete cases"),
     ("Assumptions 6 and 7", _slide_by_title("Stage-1 assumptions")[1]),
@@ -199,67 +210,73 @@ SLIDES = [
     _slide_by_title("The remaining decomposition problem"),
     _slide_by_title("Identification strategy"),
     ("Assumption 3.1: Support and model", [
-        "仮定3.1の前半は、finite latent-class modelの対象範囲と第一段階との接続です。class数rは既知で2以上、項目空間とXで条件づけたWのsupportは有限です。全ての条件を、Xの共通の確率1の集合上で課します。",
-        "仮定2から4が成立し、各class比率とWのsupport上の確率は正です。anchor pairと全extension pairsについて仮定1、5から7を満たし、真の逆観測確率はcomplete-case lawの下で二乗可積分とします。これが命題1を各pairへ適用する条件です。",
+        "仮定3.1は二枚に分けています。まず、どのモデルを扱うかです。潜在クラス数rは既知で、2以上とします。項目が取る値も、Xで条件づけたWが取る値も有限です。条件は全て、Xについて共通の確率1の集合上で置きます。",
+        "仮定2から4の測定モデルが成り立ち、各クラスの比率と、Wのサポート上の確率は正とします。また、anchor pairと全extension pairが仮定1、5から7を満たします。逆観測確率の二乗平均も、blockのcomplete caseで有限です。これで、命題1を必要な全ペアに使えます。",
     ]),
     ("Assumption 3.1: Rank and labels", [
-        "後半はrankとlabelです。M a、M b、Gのcolumn Kruskal rankの和を2rプラス2以上とします。三つのviewに対するこの条件自体はAllmanらのTheorem 1と同じです。",
-        "さらに既知のanchor scoreを各classのM aで平均したmu afについて、全てのXで同じ厳密順序を課します。rankが因子を置換を除いて固定し、orderingが共通labelを固定します。GとM aのKhatri–Rao積のfull column rankは、次の補題から導く結論であり、追加仮定ではありません。",
+        "次は、分解を一つに決める条件です。M a、M b、Gの列Kruskal rankの和が、2rプラス2以上だとします。三つのviewに対するこのランク条件は、AllmanらのTheorem 1と同じです。",
+        "これだけでは、クラスの名前の入れ替えが残ります。そこで、既知のanchor scoreをクラスごとに平均したミューafに、厳密な順序を付けます。先ほどのXの集合上で、同じ順序を使います。ランクで分解を決め、順序で名前をそろえる、という二つの役割です。",
+        "なお、GとM aのKhatri–Rao積が列フルランクになることは、別に仮定しません。次の補題で、今の条件から導きます。",
     ]),
     _slide_by_title("Lemma 3.1"),
     _slide_by_title("New Theorem 1"),
     _slide_by_title("Proof map for Theorem 1"),
     _slide_by_title("Bridge-weighted composite estimation"),
     ("Conditions for estimation", [
-        "本文の命題4.1の条件も明記します。仮定1から7と3.1に加え、真のthetaが潜在モデルを正しく生成し、全てのpair densityが共通support上で正とします。母集団criterionには真のbridgeと固定された正のblock重みを使います。",
-        "IPWによって各pairのfull-data expectationが回復されます。真値とのcriterionの差はKL divergenceの正の加重和なので、最大値が等しければ全pair lawsが一致し、定理1からthetaも一致します。これが推定の母集団での一意性です。",
+        "次に、推定の基準も真値で一つに最大になるかを確認します。ここは本文の命題4.1です。これまでの仮定1から7と3.1に加え、潜在モデルが正しく、全ペアの密度が共通のサポート上で正だとします。母集団の基準には、真のbridgeと、固定した正のblock重みを使います。",
+        "IPWによって、ペアの平均を母集団の平均に戻せます。真値との目的関数の差は、分布の違いを測るKLダイバージェンスの正の加重和になります。差がゼロなら、全ペアの分布が同じです。すると定理1から、潜在パラメータも同じだと分かります。",
     ]),
     ("Assumption 5.1: Regularity", [
-        "漸近理論では個体の観測データが独立同分布であるとします。betaを潜在パラメータthetaとbridgeパラメータetaの組とします。確率単体制約を除いた自由座標で、両者は有限次元で正しく指定され、パラメータ空間はcompact、真値は内点です。",
-        "first-stage population momentの零点は真値だけとします。criterionとmomentは真値近傍で二回連続微分可能で、必要なenvelopeは二乗可積分です。bridgeとcomposite scoreのJacobian、および対応するGodambe行列が非特異であることも仮定します。",
+        "ここからは、標本を増やしたときの推定量の性質です。個人ごとの観測データは独立同分布とします。シータが潜在モデルの母数、イータがbridgeの母数で、この二つをまとめたものがベータです。",
+        "確率の和が1という制約を除いた自由な座標で、どちらも有限次元とし、モデルは正しく指定されているとします。パラメータ空間はコンパクトで、真値は境界ではなく内側にあります。第一段階の母集団モーメントがゼロになるのも、真値だけとします。",
+        "計算に必要な滑らかさも置きます。目的関数とモーメントは真値の近くで二回連続微分でき、それらを抑える関数は二乗可積分です。また、bridgeとcomposite scoreのヤコビアン、それに対応するGodambe行列は非特異とします。",
     ]),
     ("Assumption 5.1: Uniform convergence", [
-        "一致性には真値の近傍の微分可能性だけでは不十分です。sample criterionは、推定したbridgeをplug-inした状態で、パラメータ空間全体にわたり真のbridgeを用いた母集団criterionへ一様に収束すると仮定します。",
-        "また、真値から任意の正の距離だけ離れたパラメータの母集団criterionは、真値での最大値より厳密に小さいとします。この一様収束と分離を用いてargmax theoremを適用することが、一致性の根拠です。",
+        "真値の近くだけが滑らかでも、推定量がそこへ近づくとは限りません。そこで、推定したbridgeを代入した標本の目的関数が、真のbridgeを使う母集団の目的関数に、パラメータ空間全体で一様に近づくと仮定します。",
+        "もう一つ、真値から一定以上離れた場所では、母集団の目的関数が最大値より確実に低くなるとします。この一様収束と最大値の分離を使い、argmax定理から一致性を得ます。近所の微分条件と、空間全体の条件を分けている点が大事です。",
     ]),
     ("Assumption 5.1: First stage and separation", [
-        "仮定5.1の後半では、bridge推定量がregular asymptotically linearであると仮定します。そのinfluence functionは平均ゼロで有限分散を持ちます。",
-        "さらに、class比率、supported-pair propensity、anchor tensorのW-mode unfoldingの最小の非零特異値、Kruskal rankを支えるminor、anchor orderingの隣接gapが一様にゼロから離れているとします。unfoldingはWを行、Y aとY bを列とする行列です。識別だけでは推定の正則性や安定した推論までは従わないので、これらを別に明示しています。",
+        "第一段階の誤差も扱います。bridge推定量は正則で、真値からの誤差を、漸近的に影響関数の標本平均で表せると仮定します。その影響関数は平均ゼロで、分散は有限です。",
+        "また、識別できるかどうかの境目に近づきすぎない条件を置きます。クラス比率とペアの観測確率は、一様にゼロから離れているとします。anchorのテンソルを、Wが行、Y aとY bが列になる行列に並べ替えたときの、最小の非零特異値も同様です。",
+        "Kruskal rankを支える小行列式の絶対値と、anchorの順序で隣り合う平均スコアの差も、一様にゼロから離す必要があります。識別ができることと、安定した推論ができることは別なので、この条件を加えています。",
     ]),
     ("Theorem 5.1", [
-        "命題4.1と仮定5.1の下で、有限次元bridgeを用いた推定量の一致性と漸近正規性を得ます。Aはcomposite scoreのtheta微分の期待値、Cはeta微分の期待値です。分散BはscoreだけでなくCとfirst-stage influence functionの積を含みます。",
-        "したがってsandwich分散にはbridgeを推定した誤差も入ります。個人単位bootstrapでも両段階とlabel alignmentをやり直します。増大するsieveについてはこの定理だけでは足りず、推定速度とinverse-problemの条件が追加で必要です。",
+        "以上の命題4.1と仮定5.1の下で、有限次元のbridgeを使う推定量は一致性と漸近正規性を持ちます。標本が増えると真値に近づき、その誤差をルートn倍したものが、漸近的に正規分布に従うという結果です。",
+        "分散の式で大事なのは、bridgeを推定した誤差も入ることです。Aはcomposite scoreをシータで微分した期待値、Cはイータで微分した期待値です。Bにはscoreに加え、Cと第一段階の影響関数の積が入ります。bridgeが既知だとして分散を出してはいけません。",
+        "個人単位のbootstrapを使うなら、両段階の推定とラベル合わせを毎回やり直します。なお、次元を増やしていくsieveは、この定理の範囲外です。推定速度や逆問題としての追加の条件が必要です。",
     ]),
     _slide_by_title("Computation"),
     (
         "Simulation targets in the model",
         [
-            "ここではシミュレーションで実際に使う生成法則を図示し、評価する母数を書き添えます。Xは固定で、FからWと各Yを条件付き独立に生成し、そのY SからZ SとR Sを生成します。Fは2 class、Wと各Yは二値です。Y 1は常時観測されるため、R SはD jに一致します。",
-            "Fの周辺class比率がp f、項目とclassの測定関係がM jfです。Stage 1のmu jは母集団周辺確率、p S,cはpairのcell probabilityです。これらと、Stage 2で分離する六つの測定核成分およびp 2を区別します。標本サイズは500、Monte Carlo反復は100回、平均item response rateは80 percentです。",
-            "このDGPは、Zを周辺化した仮定4の測定モデルとMissing IV exclusionを満たします。さらにY Sの下でR SとF、W、Z Sが独立になる具体的な生成例です。この追加の独立性を一般の識別定理の仮定として課しているわけではありません。",
+            "ここからシミュレーションです。Xは固定し、Fは二つのクラスとします。Fが決まると、Wと各Yを条件付き独立に作ります。その後、ペアの値Y SからZ SとR Sを作ります。Wと三つのYは全て二値です。Y 1はいつも見えているので、ペアが全部見えるかどうかは、もう一方のD jで決まります。",
+            "右側は、何を評価するかです。第一段階のミューjは、母集団全体でY jが1になる確率です。p S,cは、ペアの00、01、10、11それぞれの確率です。これに対して第二段階のp fはクラスの比率、M jfはクラスfで項目jが1になる確率を表します。M jfは三項目かける二クラスで六つ、クラス比率はp 2を評価します。",
+            "標本サイズは500で、データを作って推定する作業を100回繰り返します。全項目の平均観測率は80パーセントです。この生成モデルは、Zを平均して消した仮定4とMissing IVの条件を満たします。さらに、Y Sの下でR SとF、W、Z Sが独立になる作り方ですが、この追加条件を一般の識別定理にも求めるわけではありません。",
         ],
     ),
     (
         "Simulation design: estimators and evaluation",
         [
-            "五手法を比較します。complete-data oracleは欠測前の尤度、MARはignorabilityの下での観測尤度、正指定selection likelihoodは真のlogistic selection equationを用います。誤指定版ではY 1の主効果とinteractionを除きます。提案法は各blockのMissing IV momentから4-cell inverse bridgeを推定し、Stage 1の法則を得た後、weighted pairwise latent-class criterionを用いて潜在構造を推定します。",
-            "outcome parameterごとに四つの指標を報告します。Biasは平均的な推定誤差、empirical SDは反復間のばらつき、平均estimated SEは各標本で得た不確実性の推定値、95 percent coverageは真値を含むpointwise Wald区間の割合です。likelihood法ではdelta-method sandwich SE、提案法では各反復で個人単位bootstrapを200回行い、両bridgeを再推定します。",
-            "潜在母数についてはbiasとRMSEを報告します。測定核のRMSEは、反復と六つのitem-by-class cellsをまとめた二乗誤差の平均の平方根であり、cell別RMSEの単純平均ではありません。p 2は単独で評価します。提案法のoutcome lawはdecomposition前のnormalized IPW推定値であり、他の四手法では推定モデルから導いた法則を比較しています。",
+            "比較するのは五つです。一つ目は、欠測前の全データを使うoracleです。二つ目は、欠測を無視できると考えて観測尤度を使うMARです。三つ目は、欠測のlogisticモデルを正しく指定したselection likelihoodです。四つ目は、そこからY 1の主効果と交互作用を落とした誤指定版です。この二つのselection likelihoodには、どちらもZ Sを入れません。",
+            "五つ目が提案法です。各blockのMissing IVの式から、四つのセルに対応する逆観測確率のbridgeを推定します。まず正規化したIPWで分布を回復し、その後、重み付きのペアの基準で潜在モデルを当てはめます。次の図で見る提案法のYの分布は、潜在分解をする前の第一段階の結果です。他の四手法は、当てはめたモデルからYの分布を求めています。",
+            "Yの母数ごとに、四つを見ます。Biasは平均的なずれ、SDは100回の推定値のばらつきです。平均SEは、各データから推定した標準誤差の平均なので、SDと近いかを見ます。95パーセントcoverageは、母数ごとのWald信頼区間が真値を含んだ割合です。区間は推定値プラスマイナス1.96 SEで作ります。",
+            "尤度法のSEにはデルタ法とsandwich分散を使います。提案法では、各反復の中で個人単位のbootstrapを200回行い、二つのbridgeを毎回推定し直します。潜在母数はbiasとRMSEで見ます。測定核のRMSEは、100反復と六つの成分の二乗誤差をまとめて平均し、平方根を取ります。成分ごとのRMSEの単純平均ではありません。p 2は別に評価します。",
         ],
     ),
     (
         "Population outcome recovery",
         [
-            "横軸を五手法、青い実線とオレンジの破線をmu 2、mu 3とした折れ線グラフです。上段はbiasとempirical SD、下段はmean estimated SEと95 percent coverageを示します。",
-            "母集団周辺確率の真値はmu 2 equals 0.475、mu 3 equals 0.4925です。提案Stage-1 bridgeのbiasはそれぞれマイナス0.0099、マイナス0.0096で、empirical SDと平均estimated SEは0.0379対0.0365、0.0345対0.0339でした。95 percent coverageは94 percentと93 percentで、推定SEがreplication variabilityを概ね捉えています。",
-            "これに対してMARのcoverageは9 percentと13 percent、誤指定selection likelihoodでは12 percentと11 percentでした。正しく指定したselection likelihoodはbiasがほぼゼロですが、coverageはY 2で86 percentです。本結果は提案法の効率優位を示すものではなく、parametric selection linkを指定せずに、欠測outcomeの周辺分布をStage 1で補正できることを示します。",
+            "まず、潜在構造に分ける前に、Yの分布が戻っているかを見ます。横軸が五つの手法、青い実線がミュー2、オレンジの破線がミュー3です。上がbiasとSD、下が平均SEとcoverageです。",
+            "提案法は、MARと誤指定したselection likelihoodよりbiasの絶対値が小さくなっています。SDと平均SEも近く、coverageは94パーセントと93パーセントでした。この設定では、推定した標準誤差が、実際の推定値のばらつきをおおむね捉えています。",
+            "数字を補足すると、ミュー2とミュー3の真値は0.475と0.4925です。提案法のbiasはマイナス0.0099とマイナス0.0096です。SDと平均SEは、ミュー2で0.0379と0.0365、ミュー3で0.0345と0.0339でした。",
+            "一方、MARのcoverageは9パーセントと13パーセント、誤指定版は12パーセントと11パーセントです。正指定版のbiasはほぼゼロですが、Y 2のcoverageは86パーセントでした。100反復の結果なので、常にこの被覆率になるとは言えません。ここで言いたいのは、提案法が常に最も効率的ということではなく、欠測モデルの形を決めずに第一段階でYの偏りを補正できた、という点です。",
         ],
     ),
     (
         "Stage-2 full joint law",
         [
-            "続いて、Y 1、Y 2、Y 3のfull joint lawを全体像として示します。横軸は三つのbinary outcomesの8通りの組合せ、縦軸は各cellの確率です。黒い線が母集団の真の分布、そのほかの線は各手法で推定した分布を100反復で平均したものです。",
-            "青い提案法の線は、Stage 1で回復したoverlapping block lawsをStage 2で共通の潜在構造に接続し、class比率と全measurement kernelsから構成した分布です。周辺確率だけでなく、全項目の組合せとして真の分布をどのように再現しているかを見ます。",
+            "今度は、三つのYの同時分布を見ます。横軸は0と1の八通りの組合せ、縦軸はそれぞれが起こる確率です。黒い線が母集団の真の分布で、ほかの線は100反復の推定結果を平均しています。",
+            "ここでの青い提案法の線は、第二段階まで使った結果です。回復したペアの分布を共通の潜在構造につなぎ、クラス比率と全ての測定核から、三項目の同時分布を作っています。先ほどの項目ごとの確率と違い、今度は項目の組合せまで再現できているかを見ています。",
         ],
     ),
     ("Latent-parameter recovery", _slide_by_title("Simulation results")[1]),
@@ -273,9 +290,9 @@ SLIDES = [
     (
         "Simulation calibration",
         [
-            "WとYの周辺モデルにはAllman、Matias and Rhodesの有限product mixtureを用い、数値は本研究で設定しています。class比率は0.55と0.45、G fはFを条件としたWの分布です。class labelsはY 1の測定確率の小さい順に固定します。",
-            "Y 1は常時観測されます。Y 2とY 3の観測確率は自身、Y 1、およびinteractionに依存するlogistic式で、各項目の平均観測率が70 percentとなるよう切片を調整します。全三項目の平均観測率は80 percentです。Z Sはpairの四つのcellに依存するfull-rank行列Hで生成し、常時観測します。",
-            "有限supportを全列挙した母集団で検証すると、各Wの下でcomplete-case operatorのrankは4、三つのviewのKruskal rankの和は6、extension inversionのrankは2です。改訂した仮定4では、FとWの下でY SとZ Sが独立という強い条件は不要です。これらは識別条件の確認であり、推定量の全正則条件を数値的に証明するものではありません。",
+            "こちらは、シミュレーションの具体的な設定です。WとYのモデルの形は、Allman、Matias、Rhodesの有限クラスのproduct mixtureに沿っています。ただし、数値は本研究で決めています。クラス比率は0.55と0.45です。G fはクラスごとのWの分布で、ラベルはY 1が1となる確率の小さい順にそろえます。",
+            "Y 1はいつも観測されます。Y 2とY 3は、自分自身の値、Y 1、その交互作用に依存するlogistic式で観測を決めます。切片を調整し、それぞれの平均観測率を70パーセントにします。Y 1の100パーセントと合わせて、三項目平均で80パーセントです。Z Sは、ペアの四つのセルに依存するフルランクの行列Hから作り、いつも観測します。",
+            "取り得る値を全て並べ、母集団で条件も確認しています。各Wの下でcomplete-caseの行列のランクは4、三つのviewのKruskal rankの和は6、extensionを解く行列のランクは2でした。FとWの下でY SとZ Sまで独立にする必要はありません。これは識別条件の確認であって、推定に必要な正則条件を全て数値的に証明した、という意味ではありません。",
         ],
     ),
 ]
@@ -383,15 +400,15 @@ def build():
     header.alignment = WD_ALIGN_PARAGRAPH.LEFT
     add_page_number(section.footer.paragraphs[0])
 
-    doc.add_paragraph("欠測IVと潜在変数モデリングによる非無作為欠測の識別", style="Title")
+    doc.add_paragraph("欠測IVと潜在変数モデリングによる\n非無作為欠測の識別", style="Title")
     subtitle = doc.add_paragraph("英語Beamer対応 日本語発表原稿")
     for run in subtitle.runs:
         set_run_font(run, LATIN_FONT, JAPANESE_FONT, 12, True)
 
     doc.add_paragraph(
-        f"本原稿は、英語Beamer全{len(SLIDES)}枚に対応する日本語の口頭説明用原稿である。"
-        "識別対象、本文の全仮定、定理、推定法と数値結果を説明する。測定モデルはZを周辺化した法則とし、Missing IV exclusionと区別する。"
-        "証明は本編では論理の流れ、Appendixでは8ステップを説明する。"
+        f"英語Beamer全{len(SLIDES)}枚に対応した、日本語の発表原稿です。"
+        "欠測した人も含む分布をまず回復し、その後で潜在クラスの比率と測定核を分ける、という流れで説明します。"
+        "各スライドの仮定と数値は残し、本編では証明の流れを、Appendixでは8ステップの詳細を説明します。"
     )
 
     doc.add_paragraph("発表の構成", style="Heading 1")
