@@ -299,6 +299,63 @@ $R_S\indep Z_S\mid(Y_S,U_S)$を表す。両図は完全データ全体に対す�
 \end{minipage}
 \end{center}
 
+blockごとの回復へ進む前に，global complete caseを用いる直接の多次元拡張を整理する。
+以下はd'Haultfoeuille (2010, Theorem 2.3)のvector版に対応する識別結果を，
+Miao et al. (2019, Condition 1)と同様のcomplete-case completenessの下で表したものである。
+
+\noindent\textbf{補題2.1（global complete-case lawの回復）.}
+$U=(X,W)$，$R=\prod_{j=1}^mD_j$とし，$U,Z,R$は常時観測され，
+$Y=(Y_1,\ldots,Y_m)$全体は$R=1$のとき観測されるとする。
+$P_1=P(Y,U\mid R=1)$をcomplete-case lawとする。
+次のexclusionとpositivityを仮定する：
+\begin{equation}
+\begin{aligned}
+&R\indep Z\mid(Y,U),\\
+&\pi(y,u):=P(R=1\mid Y=y,U=u)>0.
+\end{aligned}
+\label{eq:global-complete-case-exclusion}
+\end{equation}
+さらに$\pi^{-1}\in L^2(P_1)$であり，任意の$h\in L^2(P_1)$に対して
+\begin{equation}
+\begin{aligned}
+&\E\{h(Y,U)\mid R=1,Z,U\}=0\\
+&\qquad\Longrightarrow h(Y,U)=0\quad P_1\text{-a.s.}
+\end{aligned}
+\label{eq:global-complete-case-completeness}
+\end{equation}
+が成立するとする。このとき$\pi$は，$q^{-1}\in L^2(P_1)$を満たす
+正値関数$q$のうち，
+\begin{equation}
+\E\{R/q(Y,U)\mid Z,U\}=1
+\label{eq:global-complete-case-bridge}
+\end{equation}
+の唯一解である。任意の可積分関数$h$について
+\begin{equation}
+\E h(Y,Z,U)=\E\{Rh(Y,Z,U)/\pi(Y,U)\},
+\label{eq:global-complete-case-recovery}
+\end{equation}
+となり，$P(Y,Z,U)$が識別される。
+
+\noindent\textbf{証明.}
+式\eqref{eq:global-complete-case-exclusion}より
+$\E(R\mid Y,Z,U)=\pi(Y,U)$であるから，真の$\pi$は
+式\eqref{eq:global-complete-case-bridge}を満たす。別の解$q$について両式の差を取り，
+正の$P(R=1\mid Z,U)$で除すと，
+\begin{equation}
+\E\{q^{-1}-\pi^{-1}\mid R=1,Z,U\}=0.
+\label{eq:global-complete-case-uniqueness}
+\end{equation}
+逆数の差は$L^2(P_1)$に属するので，式\eqref{eq:global-complete-case-completeness}より
+$q^{-1}=\pi^{-1}$が$P_1$-a.s.に成り立つ。positivityにより$P_1$と
+$P(Y,U)$は同じ零集合を持つから，$q=\pi$が母集団でもa.s.に成り立つ。
+最後に$\E(Rh/\pi\mid Y,Z,U)=h$を周辺化すると
+式\eqref{eq:global-complete-case-recovery}を得る。\hfill$\square$
+
+補題2.1は$R=1$となる確率が対象support全体で正であることを必要とする。
+以下ではこの要請を各supported blockへ局所化し，global complete caseを要求しない。
+なお，式\eqref{eq:global-complete-case-exclusion}は積$R$に対する条件であり，
+各$D_j$についてのexclusionだけからは一般に従わない。
+
 \noindent\textbf{仮定5（supported block）.}
 $S\subseteq\{1,\ldots,m\}$について
 \begin{equation}
@@ -844,7 +901,18 @@ $Y_1$は常時観測とし，$Y_2,Y_3$の観測確率をそれぞれ
 \end{aligned}
 \label{eq:simulation-missingness}
 \end{equation}
-とする。$\alpha_j$は標本ごとではなく，式
+とする。$\pi_j(y_1,y_j)$を式\eqref{eq:simulation-missingness}の観測確率とし，
+欠測指標の同時分布を
+\begin{equation}
+\begin{aligned}
+&P(D=d\mid F,W,Y,Z)\\
+&\quad=\mathbf{1}\{d_1=1\}\prod_{j=2}^3
+\pi_j(Y_1,Y_j)^{d_j}\{1-\pi_j(Y_1,Y_j)\}^{1-d_j}
+\end{aligned}
+\label{eq:simulation-response-pattern}
+\end{equation}
+と定める。すなわち，$Y$の下で$D_2,D_3$を独立に生成する。
+$\alpha_j$は標本ごとではなく，式
 \eqref{eq:simulation-latent-class-model}の母集団分布に対して平均item観測率が
 80\%となるよう固定する。式\eqref{eq:simulation-missingness}は$Y_j$自身に
 依存するためMNARである。100反復での平均item観測率は0.8005，
@@ -866,6 +934,26 @@ P(Z_S\mid Y_1,Y_j)=
 \end{equation}
 とする。式\eqref{eq:simulation-shadow-matrix}はfull rankであり，欠測確率に
 $Z_S$を入れないため$R_S\indep Z_S\mid(Y_S,W)$が成立する。
+
+式\eqref{eq:simulation-shadow-matrix}は同時分布を指定するcalibrationであり，
+生成順序を$Y$から$Z$へ固定するものではない。$g_f(y)=\prod_{j=1}^3M_{jf}(y_j)$，
+$Z=(Z_{S_0},Z_{S_3})$とし，両blockの行列$H$の積を
+$K(y,z)=\prod_{S\in\{S_0,S_3\}}H_{y_S,z_S}$と置く。Bayes則により
+\begin{equation}
+\begin{aligned}
+A_f(z)&=\sum_y g_f(y)K(y,z),\\
+B_f(y\mid z)&=\frac{g_f(y)K(y,z)}{A_f(z)}
+\end{aligned}
+\label{eq:simulation-z-first-kernels}
+\end{equation}
+とすれば，$F$と$W\mid F$を生成した後，$Z\mid F\sim A_F$，
+$Y\mid(F,Z)\sim B_F$，最後に式\eqref{eq:simulation-response-pattern}で$D$を生成できる。
+$Z$は16通り，$Y$は8通りのjoint cellから生成し，条件付きで成分を独立に
+生成するとは仮定しない。
+$A_f(z)B_f(y\mid z)=g_f(y)K(y,z)$なので，この$Z$先行の生成順序は
+元の$P(F,W,Y,Z,D)$を変えず，$Z$を周辺化した測定核も保存する。%
+\footnote{以下の100反復の数値結果は同じ同時分布を$Y$先行で生成した標本に基づく。
+再現用の実装ではこの旧生成順序も保持している。生成順序の変更のみから因果効果の識別は導かれない。}
 
 比較するのは次の五手法である。complete-data oracleは欠測前の
 $(W,Y_1,Y_2,Y_3)$に対するfull product-mixture likelihoodを最大化する。MARは

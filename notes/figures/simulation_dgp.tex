@@ -1,4 +1,4 @@
-% A particular DGP satisfying the two marginal models, not their full family.
+% A single-block marginal of the exact Z-before-Y simulation factorization.
 \begin{tikzpicture}[
   x=1cm,y=1cm,font=\sffamily,
   obs/.style={draw,rounded corners=1pt,fill=gray!10,minimum width=14mm,
@@ -9,17 +9,19 @@
   arrow/.style={-{Latex[length=2mm,width=1.3mm]},line width=.55pt},
   lab/.style={fill=white,inner sep=1pt,font=\tiny,align=center}
 ]
-  \node[latent] (f) at (2.9,4.25) {$F$};
-  \node[obs] (w) at (.8,2.65) {$W$};
-  \node[obs,minimum width=21mm] (y) at (4.5,2.65) {$Y_S=(Y_1,Y_j)$};
-  \node[obs] (z) at (2.65,.8) {$Z_S$};
-  \node[select] (r) at (5.8,.8) {$R_S=D_j$};
-  \draw[arrow] (f.south west) -- node[lab,above left] {$G(w,f)$} (w.north);
-  \draw[arrow] (f.south east) -- node[lab,above right] {$M_{1f}M_{jf}$} (y.north);
-  \draw[arrow] (y.south west) -- node[lab,above left] {$H(z\mid Y_S)$} (z.north);
-  \draw[arrow] (y.south east) -- node[lab,above right] {$\pi_j(Y_1,Y_j)$} (r.north);
+  \node[latent] (f) at (3.65,4.25) {$F$};
+  \node[obs] (w) at (.7,4.25) {$W$};
+  \node[obs] (z) at (.7,1.65) {$Z_S$};
+  \node[obs,minimum width=24mm] (y) at (3.65,1.65) {$Y_S=(Y_1,Y_j)$};
+  \node[select,minimum width=22mm] (r) at (6.55,1.65) {$R_S=D_j$};
+  \draw[arrow] (f.west) -- node[lab,above] {$G(w,f)$} (w.east);
+  \draw[arrow] (f.south west) -- node[lab,above left] {$A_{Sf}(z)$} (z.north);
+  \draw[arrow] (f.south) -- node[lab,right] {$B_{Sf}(y_S\mid z)$} (y.north);
+  \draw[arrow] (z.east) -- (y.west);
+  \draw[arrow] (y.east) -- node[lab,above] {$\pi_j$} (r.west);
   \node[font=\scriptsize,text=Blue,above=2mm of f] {$p_f$};
-  \node[font=\scriptsize,text=Blue,right=2mm of y,align=left] {$\mu_j$\\$p_{S,c}$};
-  \node[font=\scriptsize,align=center] at (3.2,-.05)
-    {$X=x,\quad S=\{1,j\},\ j=2,3,\quad D_1=1$};
+  \node[font=\scriptsize,text=Blue,below=2mm of y] {$\mu_j,\ p_{S,c},\ M_{jf}$};
+  \node[font=\scriptsize,align=center] at (3.2,.25)
+    {$\sum_z A_{Sf}(z)B_{Sf}(y_S\mid z)=M_{1f}(y_1)M_{jf}(y_j)$\\
+     $X=x,\quad S=\{1,j\},\ j=2,3,\quad D_1=1$};
 \end{tikzpicture}
