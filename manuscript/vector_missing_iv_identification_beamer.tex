@@ -325,124 +325,6 @@ $U_S,Z_S,R_S$ are always observed. Use $Y_S$ as a complete block only when $R_S=
 \end{columns}
 \end{frame}
 
-\begin{frame}{Stage 1 (1): Recover the block law}
-\bluekey{Recover the population law, including people with missing items.}\par
-\smallskip
-Let $Y_S$ be the items in block $S$, $R_S=1$ indicate that all are observed,
-and $U_S=(X,W)$ be observed covariates.
-\begin{block}{\textcolor{Red}{New!} Proposition 1: Key result}
-With Missing IV $Z_S$, positivity and complete-case completeness,
-\[
-\E\left\{\frac{R_S}{\pi_S(Y_S,U_S)}\middle|Z_S,U_S\right\}=1,
-\qquad \pi_S(y,u)=\Prb(R_S=1\mid Y_S=y,U_S=u).
-\]
-The moment identifies $\pi_S$ in the stated bridge class, hence the
-block law $\Prb(Y_S,Z_S,U_S)$ is identified.
-\end{block}
-\begin{itemize}
-\item Weight observed blocks by $1/\pi_S$ to correct MNAR selection.
-\item \redkey{No parametric selection model}; exclusion and completeness are required.
-\end{itemize}
-{\slideannotation Assumptions 1, 5--7 and $\pi_S^{-1}\in L^2\{P(Y_S,U_S\mid R_S=1)\}$; details in Appendix.}
-\end{frame}
-
-\begin{frame}{Stage 1 (2): Use overlapping pairs}
-\bluekey{We need the required pairs to be observable, not all items at once.}
-\begin{block}{Supported blocks}
-Each required block has positive observation probability on its target support.
-Use anchor pair $\{a,b\}$ and extension pairs $\{j,a\}$:
-\[
-\underbrace{(Y_a,Y_b,W)}_{\text{anchor law}}
-\qquad\longleftrightarrow\qquad
-\underbrace{(Y_j,Y_a,W)}_{\text{extension law for each }j}.
-\]
-\end{block}
-\begin{itemize}
-\item Apply Stage 1 separately to each pair, conditional on $X$.
-\item The shared item $Y_a$ connects the recovered pair laws.
-\item $Z_S$ corrects missingness; $W$ supplies variation for latent decomposition.
-\end{itemize}
-\medskip
-\begin{takeaway}
-\bluekey{Output: overlapping pair laws.}\quad
-\redkey{Global complete cases are not required.}
-\end{takeaway}
-\end{frame}
-
-\begin{frame}{Stage 2 (1): Identify the latent structure}
-\bluekey{Decompose one anchor tensor, then recover every extension item.}\par
-\smallskip
-Let $F\in\{1,\ldots,r\}$ denote the latent class,
-$M_j(y,f;x)=\Prb(Y_j=y\mid F=f,X=x)$, and
-$\lambda_f(w,x)=\Prb(F=f\mid W=w,X=x)$.
-\begin{block}{\textcolor{Red}{New!} Theorem 1: Key result}
-The recovered law of $(Y_a,Y_b,W)\mid X$ identifies the anchor factors.
-Overlapping extension laws then identify
-\[
-\underbrace{Q_F=\{\lambda_f(w,x)\}}_{\text{latent-class distribution}}
-\qquad\text{and}\qquad
-\underbrace{Q_Y=\{M_j(y,f;x)\}_j}_{\text{all measurement kernels}}.
-\]
-\end{block}
-\begin{itemize}
-\item Allman et al. (2009, \emph{AoS}): three views, with $W$ as the third mode.
-\item Known finite $r$, finite supports, local independence and measurement exclusion.
-\item Three-view ranks satisfy $k_a+k_b+k_G\ge 2r+2$ (Assumption 3.1).
-\item Anchor ordering fixes \redkey{common labels}; otherwise identification is up to permutation.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Selected references}
-\footnotesize
-\begin{thebibliography}{99}
-\bibitem{} Allman, E. S., Matias, C., and Rhodes, J. A. (2009). Identifiability of parameters in latent structure models with many observed variables. \emph{Annals of Statistics}, 37, 3099--3132.
-\bibitem{} d'Haultfoeuille, X. (2010). A new instrumental method for dealing with endogenous selection. \emph{Journal of Econometrics}, 154, 1--15.
-\bibitem{} Heckman, J. J. (1979). Sample selection bias as a specification error. \emph{Econometrica}, 47, 153--161.
-\end{thebibliography}
-\end{frame}
-
-\begin{frame}{Selected references (continued)}
-\begin{thebibliography}{99}
-\bibitem{} Lewbel, A. (2019). The identification zoo: Meanings of identification in econometrics. \emph{Journal of Economic Literature}, 57, 835--903.
-\bibitem{} Little, R. J. A. and Rubin, D. B. (2002). \emph{Statistical Analysis with Missing Data}. Wiley.
-\bibitem{} Miao, W., Liu, L., Tchetgen Tchetgen, E. J., and Geng, Z. (2019). Identification, doubly robust estimation, and semiparametric efficiency theory of nonignorable missing data with a shadow variable. arXiv:1509.02556v3.
-\bibitem{} Zhao, J. and Shao, J. (2015). Semiparametric pseudo-likelihoods in generalized linear models with nonignorable missing data. \emph{Journal of the American Statistical Association}, 110, 1577--1590.
-\end{thebibliography}
-\end{frame}
-
-\appendix
-
-\begin{frame}{Motivation and objective}
-Let $\bm R$ denote the response pattern and $W$ a latent shifter. Even if
-\[
-\bm R\indep W\mid(Y,F,X),
-\]
-marginalizing $F$ gives
-\[
-\Prb(\bm R=\bm r\mid y,w,x)=\int\Prb(\bm R=\bm r\mid y,f,x)\,
-\textcolor{Red}{d\Prb(f\mid y,w,x)}.
-\]
-The posterior may depend on $w$: $\bm R\indep W\mid(Y,X)$ does \redkey{not} follow.
-\medskip
-\begin{columns}[T,onlytextwidth]
-\begin{column}{.48\textwidth}
-\textbf{$Z_S$: Missing IV}\\
-$R_S\indep Z_S\mid(Y_S,U_S)$; predicts $Y_S$.\\
-\bluekey{Stage 1: recover the block law.}
-\end{column}
-\begin{column}{.48\textwidth}
-\textbf{$W$: latent shifter}\\
-Shifts $F$; supplies third-mode variation.\\
-\bluekey{Stage 2: separate $Q_F$ and $Q_Y$.}
-\end{column}
-\end{columns}
-\medskip
-\bluekey{Objective: connect both stages for joint identification of $Q_F,Q_Y$.}\\
-No parametric selection model; finite classes, rank and label conditions.
-\end{frame}
-
-
-
 \begin{frame}[plain]
 \vfill\centering
 {\color{Blue}\large\bfseries Model and assumptions}\par\vspace{.6em}
@@ -562,6 +444,50 @@ and $\Prb(Y_S,Z_S,U_S)$ is identified.
 \end{frame}
 
 
+\begin{frame}{Stage 1 (1): Recover the block law}
+\bluekey{Recover the population law, including people with missing items.}\par
+\smallskip
+Let $Y_S$ be the items in block $S$, $R_S=1$ indicate that all are observed,
+and $U_S=(X,W)$ be observed covariates.
+\begin{block}{\textcolor{Red}{New!} Proposition 1: Key result}
+With Missing IV $Z_S$, positivity and complete-case completeness,
+\[
+\E\left\{\frac{R_S}{\pi_S(Y_S,U_S)}\middle|Z_S,U_S\right\}=1,
+\qquad \pi_S(y,u)=\Prb(R_S=1\mid Y_S=y,U_S=u).
+\]
+The moment identifies $\pi_S$ in the stated bridge class, hence the
+block law $\Prb(Y_S,Z_S,U_S)$ is identified.
+\end{block}
+\begin{itemize}
+\item Weight observed blocks by $1/\pi_S$ to correct MNAR selection.
+\item \redkey{No parametric selection model}; exclusion and completeness are required.
+\end{itemize}
+{\slideannotation Assumptions 1, 5--7 and $\pi_S^{-1}\in L^2\{P(Y_S,U_S\mid R_S=1)\}$; details in Appendix.}
+\end{frame}
+
+\begin{frame}{Stage 1 (2): Use overlapping pairs}
+\bluekey{We need the required pairs to be observable, not all items at once.}
+\begin{block}{Supported blocks}
+Each required block has positive observation probability on its target support.
+Use anchor pair $\{a,b\}$ and extension pairs $\{j,a\}$:
+\[
+\underbrace{(Y_a,Y_b,W)}_{\text{anchor law}}
+\qquad\longleftrightarrow\qquad
+\underbrace{(Y_j,Y_a,W)}_{\text{extension law for each }j}.
+\]
+\end{block}
+\begin{itemize}
+\item Apply Stage 1 separately to each pair, conditional on $X$.
+\item The shared item $Y_a$ connects the recovered pair laws.
+\item $Z_S$ corrects missingness; $W$ supplies variation for latent decomposition.
+\end{itemize}
+\medskip
+\begin{takeaway}
+\bluekey{Output: overlapping pair laws.}\quad
+\redkey{Global complete cases are not required.}
+\end{takeaway}
+\end{frame}
+
 \begin{frame}[plain]
 \vfill\centering
 {\color{Blue}\large\bfseries Finite latent-class identification}\par\vspace{.6em}
@@ -670,6 +596,80 @@ is identified even if all items in $A$ are never jointly observed.
 \vspace{.2em}
 \bluekey{In short: recover the pair laws, decompose one anchor tensor, and obtain the latent-class distribution and every measurement kernel.}
 \end{frame}
+
+
+\begin{frame}{Stage 2 (1): Identify the latent structure}
+\bluekey{Decompose one anchor tensor, then recover every extension item.}\par
+\smallskip
+Let $F\in\{1,\ldots,r\}$ denote the latent class,
+$M_j(y,f;x)=\Prb(Y_j=y\mid F=f,X=x)$, and
+$\lambda_f(w,x)=\Prb(F=f\mid W=w,X=x)$.
+\begin{block}{\textcolor{Red}{New!} Theorem 1: Key result}
+The recovered law of $(Y_a,Y_b,W)\mid X$ identifies the anchor factors.
+Overlapping extension laws then identify
+\[
+\underbrace{Q_F=\{\lambda_f(w,x)\}}_{\text{latent-class distribution}}
+\qquad\text{and}\qquad
+\underbrace{Q_Y=\{M_j(y,f;x)\}_j}_{\text{all measurement kernels}}.
+\]
+\end{block}
+\begin{itemize}
+\item Allman et al. (2009, \emph{AoS}): three views, with $W$ as the third mode.
+\item Known finite $r$, finite supports, local independence and measurement exclusion.
+\item Three-view ranks satisfy $k_a+k_b+k_G\ge 2r+2$ (Assumption 3.1).
+\item Anchor ordering fixes \redkey{common labels}; otherwise identification is up to permutation.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Selected references}
+\footnotesize
+\begin{thebibliography}{99}
+\bibitem{} Allman, E. S., Matias, C., and Rhodes, J. A. (2009). Identifiability of parameters in latent structure models with many observed variables. \emph{Annals of Statistics}, 37, 3099--3132.
+\bibitem{} d'Haultfoeuille, X. (2010). A new instrumental method for dealing with endogenous selection. \emph{Journal of Econometrics}, 154, 1--15.
+\bibitem{} Heckman, J. J. (1979). Sample selection bias as a specification error. \emph{Econometrica}, 47, 153--161.
+\end{thebibliography}
+\end{frame}
+
+\begin{frame}{Selected references (continued)}
+\begin{thebibliography}{99}
+\bibitem{} Lewbel, A. (2019). The identification zoo: Meanings of identification in econometrics. \emph{Journal of Economic Literature}, 57, 835--903.
+\bibitem{} Little, R. J. A. and Rubin, D. B. (2002). \emph{Statistical Analysis with Missing Data}. Wiley.
+\bibitem{} Miao, W., Liu, L., Tchetgen Tchetgen, E. J., and Geng, Z. (2019). Identification, doubly robust estimation, and semiparametric efficiency theory of nonignorable missing data with a shadow variable. arXiv:1509.02556v3.
+\bibitem{} Zhao, J. and Shao, J. (2015). Semiparametric pseudo-likelihoods in generalized linear models with nonignorable missing data. \emph{Journal of the American Statistical Association}, 110, 1577--1590.
+\end{thebibliography}
+\end{frame}
+
+\appendix
+
+\begin{frame}{Motivation and objective}
+Let $\bm R$ denote the response pattern and $W$ a latent shifter. Even if
+\[
+\bm R\indep W\mid(Y,F,X),
+\]
+marginalizing $F$ gives
+\[
+\Prb(\bm R=\bm r\mid y,w,x)=\int\Prb(\bm R=\bm r\mid y,f,x)\,
+\textcolor{Red}{d\Prb(f\mid y,w,x)}.
+\]
+The posterior may depend on $w$: $\bm R\indep W\mid(Y,X)$ does \redkey{not} follow.
+\medskip
+\begin{columns}[T,onlytextwidth]
+\begin{column}{.48\textwidth}
+\textbf{$Z_S$: Missing IV}\\
+$R_S\indep Z_S\mid(Y_S,U_S)$; predicts $Y_S$.\\
+\bluekey{Stage 1: recover the block law.}
+\end{column}
+\begin{column}{.48\textwidth}
+\textbf{$W$: latent shifter}\\
+Shifts $F$; supplies third-mode variation.\\
+\bluekey{Stage 2: separate $Q_F$ and $Q_Y$.}
+\end{column}
+\end{columns}
+\medskip
+\bluekey{Objective: connect both stages for joint identification of $Q_F,Q_Y$.}\\
+No parametric selection model; finite classes, rank and label conditions.
+\end{frame}
+
 
 
 \begin{frame}{Appendix: Proof sketch for Proposition 1}
