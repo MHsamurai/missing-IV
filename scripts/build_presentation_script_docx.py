@@ -33,7 +33,6 @@ SLIDES = [
     ("Slide 4  Lemma 2.1", [
         "まず、Missing IVをベクトルYへそのまま広げる方法を、補題2.1として整理します。全項目がそろった人をcomplete caseとし、各D jの積をRとします。UはXとW、P 1はcomplete caseの中でのYとUの分布です。",
         "条件は、YとUを押さえたときのRとZの独立性、対象全体で正の観測確率、それからcomplete-caseでのcompletenessです。正確には、観測確率の逆数と候補の逆数を、P 1の下で二乗平均が有限な関数に限ります。この範囲で、式を満たすパイが一つに決まります。",
-        "証明は、二つの解があるとして逆数の差を取ります。completenessでその差がゼロと分かり、positivityでその一致を母集団全体へ広げます。あとは逆確率で重み付けすれば、Y、Z、Uの分布を回復できます。",
         "これは既存のMissing IVの直接の多次元拡張です。ただし、全項目がそろう確率が、対象全体で正である必要があります。そこで次に、この条件を小さなblockごとに置き直します。",
     ]),
     ("Slide 5  Latent measurement model", [
@@ -219,7 +218,6 @@ SLIDES = [
     _slide_by_title("Overlapping supported blocks replace global complete cases"),
     ("Assumptions 6 and 7", _slide_by_title("Stage-1 assumptions")[1]),
     _slide_by_title("New Proposition 1"),
-    _slide_by_title("Proof sketch the observable bridge is unique"),
     _slide_by_title("Finite latent-class identification"),
     _slide_by_title("The remaining decomposition problem"),
     _slide_by_title("Identification strategy"),
@@ -234,7 +232,6 @@ SLIDES = [
     ]),
     _slide_by_title("Lemma 3.1"),
     _slide_by_title("New Theorem 1"),
-    _slide_by_title("Proof map for Theorem 1"),
     _slide_by_title("Bridge-weighted composite estimation"),
     ("Conditions for estimation", [
         "次に、推定の基準も真値で一つに最大になるかを確認します。ここは本文の命題4.1です。これまでの仮定1から7と3.1に加え、潜在モデルが正しく、全ペアの密度が共通のサポート上で正だとします。母集団の基準には、真のbridgeと、固定した正のblock重みを使います。",
@@ -297,6 +294,10 @@ SLIDES = [
     ("Latent-parameter recovery", _slide_by_title("Simulation results")[1]),
     _slide_by_title("Conclusion and limits"),
     _slide_by_title("Selected references"),
+    ("Proof sketch for Proposition 1", _slide_by_title("Proof sketch the observable bridge is unique")[1] + [
+        "補題2.1も同じ証明です。全項目を一つのblockと見て、二つのbridgeの逆数の差を取り、complete-case completenessとpositivityで一意性を示します。最後にIPWで全体の分布を回復します。",
+    ]),
+    _slide_by_title("Proof map for Theorem 1"),
     ("Proof of Theorem 1 (Steps 1--2)", _slide_by_title("Steps 1 and 2")[1]),
     ("Proof of Theorem 1 (Steps 3--4)", _slide_by_title("Steps 3 and 4")[1]),
     ("Proof of Theorem 1 (Steps 5--6)", _slide_by_title("Steps 5 and 6")[1]),
@@ -314,7 +315,7 @@ SLIDES = [
 ]
 appendix_start = next(
     index for index, (title, _) in enumerate(SLIDES, start=1)
-    if title == "Proof of Theorem 1 (Steps 1--2)"
+    if title == "Proof sketch for Proposition 1"
 )
 SLIDES = [
     (
@@ -443,10 +444,10 @@ def build():
     set_repeat_table_header(table.rows[0])
     rows = [
         ("Slides 1–7", "基礎概念、既存研究、二段階の識別戦略"),
-        ("Slides 8–18", "仮定1から7、supported-block lawの回復"),
-        ("Slides 19–26", "仮定3.1、有限潜在クラスのtensor分解"),
-        ("Slides 27–40", "推定、仮定5.1、漸近理論、計算、simulation、結論、参考文献"),
-        ("Appendix 41–46", "定理1の8ステップ、empirical diagnostics、数値設定"),
+        ("Slides 8–17", "仮定1から7、supported-block lawの回復"),
+        ("Slides 18–24", "仮定3.1、有限潜在クラスのtensor分解"),
+        ("Slides 25–38", "推定、仮定5.1、漸近理論、計算、simulation、結論、参考文献"),
+        ("Appendix 39–46", "証明スケッチ、定理1の8ステップ、empirical diagnostics、数値設定"),
     ]
     for left, right in rows:
         cells = table.add_row().cells

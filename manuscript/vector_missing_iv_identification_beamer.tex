@@ -343,8 +343,6 @@ Then $\pi$ uniquely solves, among positive $q$ with $q^{-1}\in L^2(P_1)$,
 \]
 For every integrable $h$, $\E h(Y,Z,U)=\E\{Rh(Y,Z,U)/\pi(Y,U)\}$ identifies the full law.
 \end{theorembox}
-\textbf{Proof sketch:} subtract two bridge equations; complete-case completeness identifies $1/\pi$; positivity transfers equality to the population; apply IPW.
-\par\smallskip
 \bluekey{A direct vector extension, but it requires global complete-case positivity.}
 \par{\footnotesize d'Haultfoeuille (2010, \emph{JoE}); Miao et al. (2019, arXiv).}
 \end{frame}
@@ -448,14 +446,6 @@ The proposition proves uniqueness within the stated bridge class; the true prope
 \end{takeaway}
 \end{frame}
 
-\begin{frame}{Proof sketch: the observable bridge is unique}
-\centering
-\resizebox{.98\linewidth}{!}{\input{notes/figures/supported_block_proof_map.tex}}
-\vspace{.35em}
-\begin{takeaway}
-\scriptsize Assumptions \bluekey{1, 5, and 6} verify the moment; Assumption \bluekey{7} gives complete-case uniqueness; positivity extends it to the full support.
-\end{takeaway}
-\end{frame}
 
 \begin{frame}[plain]
 \vfill\centering
@@ -584,33 +574,6 @@ is identified even if all items in $A$ are never jointly observed.
 \bluekey{In short: recover the pair laws, decompose one anchor tensor, and obtain the latent-class distribution and every measurement kernel.}
 \end{frame}
 
-\begin{frame}{Proof map for Theorem 1}
-\centering
-\begin{tikzpicture}[
-  node distance=.75cm and .70cm,
-  box/.style={draw=Navy,thick,rounded corners=2pt,fill=PaleBlue,
-    align=center,text width=3.25cm,minimum height=1.45cm,font=\small},
-  result/.style={box,fill=Blue!12,draw=Blue},
-  flow/.style={-{Latex[length=2.2mm]},line width=1.05pt,Blue}
-]
-\node[box] (observed) {Observed-data law\\$P_{\mathrm{obs}}(O)$};
-\node[box,right=of observed] (tensors) {\bluekey{Proposition 1}\\recovered anchor and\\extension tensors};
-\node[result,right=of tensors] (factors) {\bluekey{Allman uniqueness}\\$k_a+k_b+k_G\ge2r+2$\\$M_a,M_b,p,G$};
-\draw[flow] (observed) -- (tensors);
-\draw[flow] (tensors) -- (factors);
-
-\node[result,below=of tensors] (latent) {\bluekey{Bayes' rule}\\latent distribution\\$Q_F=\{\lambda_f(w,x)\}$};
-\node[result,below=of factors] (kernels) {\bluekey{Lemma 3.1}\\extension inversion\\all $M_j$ and $Q_Y$};
-\draw[flow] (factors.south west) -- (latent.north east);
-\draw[flow] (factors) -- (kernels);
-\node[result,below=.65cm of latent,xshift=2.0cm] (theorem) {\redkey{New Theorem 1}\\$Q_F$, $Q_Y$, and unobserved\\joint item laws identified};
-\draw[flow] (latent.south) -- (theorem.north west);
-\draw[flow] (kernels.south) -- (theorem.north east);
-\end{tikzpicture}
-\vspace{.2em}
-
-\bluekey{One anchor decomposition fixes common labels; $Q_F$ and $Q_Y$ then determine $P(Y_A\mid W,X)$ even when $Y_A$ is never jointly observed.}
-\end{frame}
 
 \begin{frame}{Bridge-weighted composite estimation}
 \small
@@ -924,6 +887,44 @@ Recovered class proportions and measurement kernels reconstruct $\Prb(Y_1,Y_2,Y_
 \end{frame}
 
 \appendix
+
+\begin{frame}{Appendix: Proof sketch for Proposition 1}
+\centering
+\resizebox{.98\linewidth}{!}{\input{notes/figures/supported_block_proof_map.tex}}
+\vspace{.35em}
+\begin{takeaway}
+\scriptsize Assumptions \bluekey{1, 5, and 6} verify the moment; Assumption \bluekey{7} gives complete-case uniqueness; positivity extends it to the full support.
+Lemma 2.1 follows by taking $S=\{1,\ldots,m\}$ and applying IPW.
+\end{takeaway}
+\end{frame}
+
+\begin{frame}{Appendix: Proof map for Theorem 1}
+\centering
+\begin{tikzpicture}[
+  node distance=.75cm and .70cm,
+  box/.style={draw=Navy,thick,rounded corners=2pt,fill=PaleBlue,
+    align=center,text width=3.25cm,minimum height=1.45cm,font=\small},
+  result/.style={box,fill=Blue!12,draw=Blue},
+  flow/.style={-{Latex[length=2.2mm]},line width=1.05pt,Blue}
+]
+\node[box] (observed) {Observed-data law\\$P_{\mathrm{obs}}(O)$};
+\node[box,right=of observed] (tensors) {\bluekey{Proposition 1}\\recovered anchor and\\extension tensors};
+\node[result,right=of tensors] (factors) {\bluekey{Allman uniqueness}\\$k_a+k_b+k_G\ge2r+2$\\$M_a,M_b,p,G$};
+\draw[flow] (observed) -- (tensors);
+\draw[flow] (tensors) -- (factors);
+
+\node[result,below=of tensors] (latent) {\bluekey{Bayes' rule}\\latent distribution\\$Q_F=\{\lambda_f(w,x)\}$};
+\node[result,below=of factors] (kernels) {\bluekey{Lemma 3.1}\\extension inversion\\all $M_j$ and $Q_Y$};
+\draw[flow] (factors.south west) -- (latent.north east);
+\draw[flow] (factors) -- (kernels);
+\node[result,below=.65cm of latent,xshift=2.0cm] (theorem) {\redkey{New Theorem 1}\\$Q_F$, $Q_Y$, and unobserved\\joint item laws identified};
+\draw[flow] (latent.south) -- (theorem.north west);
+\draw[flow] (kernels.south) -- (theorem.north east);
+\end{tikzpicture}
+\vspace{.2em}
+
+\bluekey{One anchor decomposition fixes common labels; $Q_F$ and $Q_Y$ then determine $P(Y_A\mid W,X)$ even when $Y_A$ is never jointly observed.}
+\end{frame}
 
 \begin{frame}{Appendix: Proof of Theorem 1 (Steps 1--2)}
 \begin{block}{Step 1: supported-pair laws}
