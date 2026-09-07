@@ -17,7 +17,7 @@
   \node (w) at (.7,3.5) {$W$};
   \node (z) at (.7,1.7) {$Z_S$};
   \node[obs,minimum width=2.6cm] (y) at (4.25,1.7) {$Y_S=(Y_1,Y_j)$};
-  \node[select] (r) at (8.1,1.7) {$R_S=D_j$};
+  \node[select] (r) at (8.1,1.7) {$R_S=R_j$};
   \draw[arrow] (v.east |- w.east) -- (f.west);
   \draw[arrow] (v.east |- z.east) -- (f.south west);
   \draw[arrow] (f.south) -- node[lab,right] {$B_{Sf}(y_S\mid z)$} (y.north);
@@ -25,7 +25,7 @@
   \draw[arrow] (y.east) -- node[lab,above] {$\pi_j$} (r.west);
   \node[text=Blue] at (4.25,4.1) {$P(F\mid W,Z_S)$};
   \node[text=Blue] at (4.25,.95) {$\mu_j,\ p_{S,c},\ M_{jf}$};
-  % Fixed X, S, and D_1 are stated in the surrounding slide text.
+  % Fixed X, S, and R_1 are stated in the surrounding slide text.
   \node[align=center] at (4.25,.4)
     {$\sum_z A_{Sf}(z)B_{Sf}(y_S\mid z)=M_{1f}(y_1)M_{jf}(y_j)$};
 \end{tikzpicture}%

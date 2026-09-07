@@ -98,15 +98,15 @@
 
 \section{Motivation}
 \begin{frame}{Missing-data mechanisms and standard approaches}
-Let $D$ be the response pattern; $Y=(Y_{\mathrm{obs}},Y_{\mathrm{mis}})$.
+Let $\bm R$ be the response pattern; $Y=(Y_{\mathrm{obs}},Y_{\mathrm{mis}})$.
 \smallskip
 \renewcommand{\arraystretch}{1.05}
 \begin{tabular}{@{}p{.19\linewidth}p{.40\linewidth}p{.36\linewidth}@{}}
 \toprule
 Mechanism & Response probability & Common approaches\\
 \midrule
-MCAR & $\Prb(D\mid Y)=\Prb(D)$ & Complete-case analysis\\[.5em]
-MAR & $\Prb(D\mid Y)=\Prb(D\mid Y_{\mathrm{obs}})$ & Multiple imputation; IPW\\[.5em]
+MCAR & $\Prb(\bm R\mid Y)=\Prb(\bm R)$ & Complete-case analysis\\[.5em]
+MAR & $\Prb(\bm R\mid Y)=\Prb(\bm R\mid Y_{\mathrm{obs}})$ & Multiple imputation; IPW\\[.5em]
 MNAR & May depend on $Y_{\mathrm{mis}}$ even given $Y_{\mathrm{obs}}$ & Selection / pattern-mixture models; \redkey{Missing IV}\\
 \bottomrule
 \end{tabular}
@@ -284,7 +284,7 @@ Ni and Shao (2023, \emph{AISM}) & \textbf{Estimate multivariate outcome paramete
 
 \begin{frame}{Lemma 2.1}
 \small
-Let $U=(X,W)$, $R=\prod_{j=1}^mD_j$, and $P_1=\Prb(Y,U\mid R=1)$.
+Let $U=(X,W)$, $R=\prod_{j=1}^mR_j$, and $P_1=\Prb(Y,U\mid R=1)$.
 $U,Z,R$ are always observed; the entire vector $Y$ is observed when $R=1$.
 \begin{theorembox}{Global complete-case recovery}
 Assume $R\indep Z\mid(Y,U)$, $\pi(y,u)=\Prb(R=1\mid y,u)>0$, and $\pi^{-1}\in L^2(P_1)$.
@@ -310,7 +310,7 @@ A subset $S\subseteq\{1,\ldots,m\}$ is \term{supported} when all measurements in
 \begin{column}{.53\textwidth}
 For a block $S$, define
 \[
-R_S=\prod_{j\in S}D_j,\quad Y_S=(Y_j:j\in S).
+R_S=\prod_{j\in S}R_j,\quad Y_S=(Y_j:j\in S).
 \]
 $U_S=(X,W)$. The support condition is
 \[
@@ -595,16 +595,16 @@ Class-share bias $\approx0$; \redkey{RMSE is not uniformly smallest.}
 \appendix
 
 \begin{frame}{Motivation and objective}
-Let $D$ denote the response pattern and $W$ a latent shifter. Even if
+Let $\bm R$ denote the response pattern and $W$ a latent shifter. Even if
 \[
-D\indep W\mid(Y,F,X),
+\bm R\indep W\mid(Y,F,X),
 \]
 marginalizing $F$ gives
 \[
-\Prb(D=d\mid y,w,x)=\int\Prb(D=d\mid y,f,x)\,
+\Prb(\bm R=\bm r\mid y,w,x)=\int\Prb(\bm R=\bm r\mid y,f,x)\,
 \textcolor{Red}{d\Prb(f\mid y,w,x)}.
 \]
-The posterior may depend on $w$: $D\indep W\mid(Y,X)$ does \redkey{not} follow.
+The posterior may depend on $w$: $\bm R\indep W\mid(Y,X)$ does \redkey{not} follow.
 \medskip
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.48\textwidth}
@@ -636,15 +636,15 @@ No parametric selection model; finite classes, rank and label conditions.
 \begin{frame}{Assumption 1}
 \begin{block}{Observation process}
 Let $Y=(Y_1,\ldots,Y_m)$ denote the measurement vector and let
-$D=(D_1,\ldots,D_m)\in\{0,1\}^m$ denote its response indicators.
+$\bm R=(R_1,\ldots,R_m)\in\{0,1\}^m$ denote its response indicators.
 \begin{itemize}
-  \item $Y_j$ is observed if and only if $D_j=1$.
-  \item $X,W,Z,D$ are always observed; the latent variable $F$ is not.
+  \item $Y_j$ is observed if and only if $R_j=1$.
+  \item $X,W,Z,\bm R$ are always observed; the latent variable $F$ is not.
   \item $Z$ collects the block-specific Missing IVs $Z_S$.
 \end{itemize}
 The \term{observed data for one individual} are
 \[
-O=(X,W,Z,D,Y_D),\qquad Y_D=\{Y_j:D_j=1\}.
+O=(X,W,Z,\bm R,Y_{\bm R}),\qquad Y_{\bm R}=\{Y_j:R_j=1\}.
 \]
 \end{block}
 \bluekey{$O$ records the response pattern and only the measurements actually observed.}
@@ -694,7 +694,7 @@ We do not assume $Y\indep Z\mid(F,W,X)$. Missing-IV exclusion is a separate rest
 \input{manuscript/figures/readable/latent_mnar_dag.tex}
 \medskip
 \raggedright
-\textbf{Measurement law:} marginalize $Z,D$; Assumption 4 gives product kernels.\\
+\textbf{Measurement law:} marginalize $Z,\bm R$; Assumption 4 gives product kernels.\\
 \textbf{Missing-IV law:} marginalize $F,Y_{-S}$; Assumption 6 gives exclusion.
 {\slideannotation These are two marginal views, not one joint DAG. No extra $F$--$Z$ independence is imposed.}
 \end{frame}
@@ -1101,12 +1101,12 @@ Numerical values are specific to this study.
 \end{frame}
 
 \begin{frame}{Appendix: selection and shadow calibration}
-For $j=2,3$, let $\pi_j=\Prb(D_j=1\mid Y_1,Y_j)$:
+For $j=2,3$, let $\pi_j=\Prb(R_j=1\mid Y_1,Y_j)$:
 \[
 \operatorname{logit}\pi_j=\alpha_j-.50Y_1-.80Y_j-1.20Y_1Y_j.
 \]
 \begin{itemize}
-\item $D_1=1$; $\Prb(D_2=1)=\Prb(D_3=1)=.70$.
+\item $R_1=1$; $\Prb(R_2=1)=\Prb(R_3=1)=.70$.
 \item $H_{c,z}=\Prb(Z_S=z\mid Y_S=c)$: four categories, full rank; $Z_S$ always observed.
 \item Given $F$, draw joint $Z$ before joint $Y$ by Bayes factorization.
 \item $R_S\indep Z_S\mid(Y_S,W)$; no $Y_S\indep Z_S\mid(F,W)$ restriction.
