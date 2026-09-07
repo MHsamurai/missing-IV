@@ -151,11 +151,10 @@ Missing IV and positivity give the moment equation; completeness identifies $\pi
 \qquad \pi(y)=\Prb(R=1\mid Y=y),
 \]
 {\footnotesize
-\begin{tabular}{@{}p{.38\linewidth}p{.59\linewidth}@{}}
-d'Haultfoeuille (2010, \emph{JoE}) & Conditional-moment identification of the full law.\\
-Zhao and Shao (2015, \emph{JASA}) & Covariate-adjusted exclusion; GLM identification.\\
-Miao et al. (2019, arXiv) & Shadow-variable identification; complete-case completeness.
-\end{tabular}}
+d'Haultfoeuille (2010, \emph{JoE}) identifies the full law through conditional moments.\par
+Zhao and Shao (2015, \emph{JASA}) identify GLM parameters under covariate-adjusted exclusion.\par
+Miao et al. (2019, arXiv) identify the full law using shadow variables and complete-case completeness.
+}
 \par
 \bluekey{Weight observed individuals by $1/\pi(Y)$ to recover the population distribution, including individuals with missing outcomes.}
 \end{frame}
@@ -181,10 +180,10 @@ In structural equation modeling (SEM) and item response theory (IRT), \term{late
 =\int\prod_{j=1}^m Q_j(y_j\mid f,x)\,dQ_F(f\mid w,x).
 \]
 {\footnotesize
-\textbf{Complete-data identification:} Allman et al. (2009, \emph{AoS}): three-view rank conditions identify finite class proportions and measurement kernels up to labels.\par
-\textbf{Latent-MNAR models and estimation:} Muth\'en et al. (1987, \emph{Psychometrika}); Holman and Glas (2005, \emph{BJMSP}); Lee and Tang (2006, \emph{Psychometrika}); Harel and Schafer (2009, \emph{Biometrika}); Jung et al. (2011, \emph{CSDA}); Kuha et al. (2018, \emph{JRSS A}).\par
-\textbf{Linear SEM:} Kano and Takai (2011, \emph{JMVA}), estimation under SEM identification constraints.\par
-\textbf{Deep latent MNAR:} Xie et al. (2026, arXiv).
+Allman et al. (2009, \emph{AoS}) \textbf{identify finite class proportions and measurement kernels} up to labels under three-view rank conditions.\par
+\textbf{Latent models and inference under nonignorable missingness} have long been studied in biometrics and psychometrics (Muth\'en et al., 1987, \emph{Psychometrika}; Holman and Glas, 2005, \emph{BJMSP}; Lee and Tang, 2006, \emph{Psychometrika}; Harel and Schafer, 2009, \emph{Biometrika}; Jung et al., 2011, \emph{CSDA}; Kuha et al., 2018, \emph{JRSS A}).\par
+Kano and Takai (2011, \emph{JMVA}) \textbf{consistently estimate linear SEMs} under identification and latent ignorability.\par
+Xie et al. (2026, arXiv) study MNAR identification with deep latent models.
 }
 \end{frame}
 
@@ -192,19 +191,14 @@ In structural equation modeling (SEM) and item response theory (IRT), \term{late
 \term{Nonignorable item nonresponse} in \term{incomplete multivariate data}:
 \par\medskip
 {\footnotesize
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{.32\linewidth}>{\raggedright\arraybackslash}p{.65\linewidth}@{}}
-\toprule
-\textbf{Study} & \textbf{Identification route / target}\\
-\midrule
-Tang et al. (2003, \emph{Biometrika}) & Complete-case conditional laws; multivariate regression parameters.\\[.3em]
-Sadinle and Reiter (2017, \emph{Biometrika}) & Itemwise conditionally independent nonresponse; multivariate full-data law.\\[.3em]
-Li et al. (2023, \emph{Biometrics}) & Self-censoring model and completeness.\\[.3em]
-Ni and Shao (2023, \emph{AISM}) & Nonresponse instrument and parametric propensity.\\
-\bottomrule
-\end{tabular}}
+Tang et al. (2003, \emph{Biometrika}) \textbf{identify multivariate regression parameters} using complete-case conditional laws.\par
+Sadinle and Reiter (2017, \emph{Biometrika}) \textbf{identify the multivariate full-data law} under itemwise conditionally independent nonresponse.\par
+Li et al. (2023, \emph{Biometrics}) \textbf{identify the full law} under self-censoring and completeness.\par
+Ni and Shao (2023, \emph{AISM}) \textbf{estimate multivariate outcome parameters} using a nonresponse instrument and parametric propensity.
+}
 \par\medskip
 \textbf{Why leave the selection model unspecified?}
-\par{\footnotesize Zhao and Shao (2015, \emph{JASA}, Sections 1 and 6).}
+\par{\footnotesize Zhao and Shao (2015, \emph{JASA}, Sections 1 and 6) motivate semiparametric estimation.}
 \begin{itemize}
   \item \textbf{Full parametric likelihood:} can be efficient if correct; selection-link errors can induce bias.
   \item \textbf{Semiparametric route:} outcome model specified; selection mechanism unspecified.
