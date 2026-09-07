@@ -165,7 +165,43 @@ Missing IV + positivity give the moment; completeness identifies $\pi$:
 \end{itemize}
 }
 \par
-\bluekey{Inverse-probability weighting recovers the full-data distribution.}
+\bluekey{IPW recovers the full-data law; its latent components remain to be identified.}
+\end{frame}
+
+\begin{frame}{From outcome-law recovery to latent identification}
+\bluekey{Recovering the outcome law does not by itself identify its latent components.}
+\par\smallskip
+Our illustrative representation: latent $F$, observed covariates $U$ (conditioned on).
+\par\smallskip
+{\centering
+\begin{tikzpicture}[>=Latex,node distance=1.5cm,
+ observed/.style={rectangle,draw=Navy,minimum size=.7cm,thick},
+ latent/.style={circle,draw=Navy,minimum size=.7cm,thick},
+ path/.style={-{Latex[length=2mm]},thick,Navy}]
+\node[observed] (z) {$Z$};
+\node[latent,right=of z] (f) {$F$};
+\node[observed,right=of f] (y) {$Y$};
+\node[observed,right=of y] (r) {$R$};
+\draw[path] (z)--(f);
+\draw[path] (f)--(y);
+\draw[path] (y)--(r);
+\end{tikzpicture}
+\par}
+\[
+\bigl\{P(F\mid Z,U),P(Y\mid F,U)\bigr\}
+\ \xrightarrow{\text{integrate out }F}\ P(Y\mid Z,U).
+\]
+\begin{block}{Two different identification targets}
+\begin{itemize}
+\item \textbf{Missing IV:} observed-data law $\longrightarrow$ outcome law
+(or GLM parameters under Zhao--Shao's model).
+\item \textbf{Our question:} recovered outcome laws $\longrightarrow$
+\redkey{latent distribution and measurement kernels?}
+\end{itemize}
+\end{block}
+\bluekey{We study conditions for this additional decomposition.}
+\par\smallskip
+{\slideannotation d'Haultfoeuille (2010, \emph{JoE}); Zhao and Shao (2015, \emph{JASA}). The DAG is our illustration.}
 \end{frame}
 
 \begin{frame}{Latent measurement model}

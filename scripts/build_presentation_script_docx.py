@@ -378,7 +378,12 @@ if len(DETAILED_SLIDES) != 53:
     raise ValueError("Expected the original 53 detailed narratives")
 SLIDES = (DETAILED_SLIDES[:7] + SUMMARY_SLIDES + DETAILED_SLIDES[31:44]
           + DETAILED_SLIDES[7:31] + DETAILED_SLIDES[44:])
-APPENDIX_START = 25
+SLIDES.insert(3, ("From outcome-law recovery to latent identification", [
+    "ここで、観測される項目の分布を戻すことと、その背後にある潜在構造を知ることを分けます。この図では、ZとYの関係を潜在変数Fが媒介し、Yから観測指標Rへつながる、という簡単な場合を描いています。共変量Uは条件づけて省略しています。これは私たちの問題を説明するための図で、ZhaoとShaoがこの潜在変数モデルを仮定しているという意味ではありません。",
+    "潜在分布と測定核が与えられれば、Fを積分することで、ZとUごとのYの分布が得られます。既存のMissing IVの理論が扱うのは、この積分後のoutcome law、あるいはZhaoとShaoの場合にはGLMのパラメータです。潜在変数を明示的に置くことや、実際に積分計算することが、既存法の必須条件というわけではありません。",
+    "私たちが知りたいのは、その先です。戻したoutcomeの分布から、潜在分布と測定核をそれぞれ取り出せるか。積分する向きは書けても、逆向きの分解が一つに決まるとは限りません。そこで、その追加の識別に必要な条件を考えます。",
+]))
+APPENDIX_START = 26
 
 
 def beamer_frames():
@@ -417,8 +422,8 @@ def align_with_beamer(slides):
     for index, ((title, _), (frame_title, _)) in enumerate(zip(slides, frames), 1):
         if title.casefold() != frame_title.casefold():
             raise ValueError(f"Slide {index}: script {title!r} != Beamer {frame_title!r}")
-    if len(slides) != 57 or slides[APPENDIX_START - 1][0] != "Motivation and objective":
-        raise ValueError("Expected 57 slides with Motivation and objective at Appendix slide 25")
+    if len(slides) != 58 or slides[APPENDIX_START - 1][0] != "Motivation and objective":
+        raise ValueError("Expected 58 slides with Motivation and objective at Appendix slide 26")
     expected_appendix = APPENDIX_START - 1
     if [is_appendix for _, is_appendix in frames] != [
         i >= expected_appendix for i in range(len(slides))
@@ -538,8 +543,8 @@ def build():
     doc.add_paragraph(
         f"英語Beamer全{len(SLIDES)}枚に対応した、日本語の発表原稿です。"
         "欠測した人も含む分布をまず回復し、その後で潜在クラスの比率と測定核を分ける、という流れで説明します。"
-        "本編24枚では二段階の要約、推定理論と数値結果を説明します。"
-        "25枚目からのAppendixには、元の詳細な動機、仮定、識別と推定の議論を残し、その後に証明と数値設定を収めています。"
+        "本編25枚では二段階の要約、推定理論と数値結果を説明します。"
+        "26枚目からのAppendixには、元の詳細な動機、仮定、識別と推定の議論を残し、その後に証明と数値設定を収めています。"
     )
 
     doc.add_paragraph("発表の構成", style="Heading 1")
