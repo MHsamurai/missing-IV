@@ -408,6 +408,25 @@ P_{\mathrm{obs},\theta}=P_{\mathrm{obs},\widetilde\theta}
 {\slideannotation Identification terminology: Lewbel (2019, \emph{JEL}).}
 \end{frame}
 
+\begin{frame}{\textcolor{Red}{New!} Theorem 1}
+\begin{theorembox}{Anchor-pair identification with $W$ as the third mode}
+Under the stage-1 assumptions and the anchor-pair conditions, the observed-data law identifies, under the fixed anchor ordering,
+\[
+p(x),\quad G(x),\quad
+Q_F(x)=\{\lambda_f(w,x)\}_{f,w},\quad
+Q_Y(x)=\{M_j(y,f;x)\}_{j,y,f}.
+\]
+Moreover, for any set of items $A$,
+\[
+\Prb(Y_A=y_A\mid W=w,X=x)
+=\sum_{f=1}^r\lambda_f(w,x)\prod_{j\in A}M_j(y_j,f;x)
+\]
+is identified even if all items in $A$ are never jointly observed.
+\end{theorembox}
+\vspace{.2em}
+\bluekey{In short: recover the pair laws, decompose one anchor tensor, and obtain the latent-class distribution and every measurement kernel.}
+\end{frame}
+
 \begin{frame}{Candidate model: the generating DAG}
 \centering
 \begin{tikzpicture}[
