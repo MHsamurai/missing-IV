@@ -132,10 +132,11 @@ SLIDES = [
         "こちらは、潜在構造まで分けた後の結果です。測定核では、提案法のbiasの絶対値とRMSEが、MARと誤指定したselection likelihoodより小さくなっています。欠測モデルの形を直接決めず、Missing IVからペアの分布を回復していることが効いていると考えられます。",
         "クラス比率のbiasもほぼゼロです。ただし、RMSEがどの手法よりも小さいわけではありません。欠測モデルを正しく指定できれば、パラメトリックな方法も効率の面で有力です。提案法の利点は、常に一番精度が高いことではなく、欠測モデルの形の誤指定を避けられる点にあります。",
     ]),
-    ("Slide 27  Conclusion and limits", [
+    ("Slide 27  Contribution & Limitation & Future Work", [
         "最後にまとめます。第一段階では、Missing IVとblockのcomplete-case completenessを使って、欠測モデルの形をパラメトリックに決めずに各blockの分布を回復します。第二段階では、anchor itemsとWを使い、潜在クラス比率と全ての測定核を共通のラベルで識別します。この接続を定理にして、同じ順序で推定量も作りました。",
         "ただし、何にでも頑健というわけではありません。クラス数は既知で、有限潜在クラスの測定モデルが正しいことが前提です。必要なペアが観測されること、Missing IVの除外制約、completeness、局所独立性、ランク条件、anchorの順序も必要です。",
-        "また、クラス比率のRMSEは、正しく指定したselection likelihoodより大きくなることがあります。漸近理論も、ここでは有限次元のbridgeに限ります。次元を増やすsieveまで広げるには、逆問題としての追加の条件が要ります。欠測モデルの形を決めずに回復と分解をつなげられることが、今回のポイントです。",
+        "効率の面でも、クラス比率のRMSEは、正しく指定したselection likelihoodより大きくなることがあります。常に一番精度が高い、と言っているわけではありません。",
+        "今後の課題は、有限次元のbridgeについて示した推測理論を、標本数とともに次元を増やすsieveへ広げることです。そのためには、収束速度や逆問題について追加の理論が必要です。",
     ]),
     ("Slide 28  Selected references", [
         "主に参照した文献はこちらです。第一段階はd’HaultfoeuilleとZhao、Shao、complete-caseでのcompletenessはMiaoらを参照しています。第二段階はAllman、Matias、Rhodesです。識別の言葉遣いはLewbel、欠測の分類はLittleとRubin、選択バイアスはHeckmanに沿っています。",
@@ -315,7 +316,7 @@ SLIDES = [
         ],
     ),
     ("Latent-parameter recovery", _slide_by_title("Simulation results")[1]),
-    _slide_by_title("Conclusion and limits"),
+    _slide_by_title("Contribution & Limitation & Future Work"),
     ("Selected references", [
         "主に参照した文献を二枚に分けています。このページのAllman、Matias、Rhodesは潜在分解の一意性、d’HaultfoeuilleはMissing IVを使った分布の回復、Heckmanは選択バイアスの議論に対応します。",
     ]),
@@ -404,7 +405,7 @@ def beamer_frames():
             if divider is None:
                 raise ValueError("Unrecognized untitled Beamer frame")
             title = divider.group(1)
-        title = title.removeprefix("Appendix: ")
+        title = title.removeprefix("Appendix: ").replace(r"\&", "&")
         frames.append((title, match.start() > appendix_offset))
     return frames
 

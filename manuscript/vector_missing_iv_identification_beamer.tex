@@ -462,19 +462,22 @@ For each outcome parameter $\mu_j$ or $p_{S,c}$:
 Class-share bias $\approx0$; \redkey{RMSE is not uniformly smallest.}
 \end{frame}
 
-\begin{frame}{Conclusion and limits}
+\begin{frame}{Contribution \& Limitation \& Future Work}
+\bluekey{Contribution}
 \begin{itemize}
-\item \bluekey{Stage 1:} Missing IV and complete-case completeness recover block laws without a parametric selection model.
-\item \bluekey{Stage 2:} anchors and $W$ identify class shares and measurement kernels under common labels.
-\item \bluekey{Estimation:} bridge weighting follows the same two-stage order.
-\item \redkey{Efficiency:} class-share RMSE can exceed correctly specified selection likelihood.
+\item Connect Missing-IV block-law recovery and latent decomposition in one theorem.
+\item Identify class shares and measurement kernels under common labels; construct a bridge-weighted estimator.
+\item No parametric selection model or global complete cases required.
 \end{itemize}
-\textbf{Required:} known $r$, finite latent classes, supported pairs, exclusion, completeness, local independence, rank and anchor ordering.
-\medskip
-\textbf{Limit:} growing-sieve inference needs additional inverse-problem theory.
-\begin{takeaway}
-Robust to selection-link misspecification, not universally robust or efficiency-dominant.
-\end{takeaway}
+\redkey{Limitation}
+\begin{itemize}
+\item Requires known finite $r$, supported pairs, exclusion, completeness, local independence, rank and anchor ordering.
+\item Not robust to all model violations; not uniformly more efficient than correctly specified selection likelihood.
+\end{itemize}
+\bluekey{Future Work}
+\begin{itemize}
+\item Extend finite-dimensional inference to growing-sieve bridges with additional inverse-problem theory.
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Selected references}
