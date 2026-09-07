@@ -366,6 +366,24 @@ $U_S,Z_S,R_S$ are always observed. Use $Y_S$ as a complete block only when $R_S=
 \bluekey{Candidate DGP: four-cell block rank $2<4$; arbitrary-block completeness fails.}
 \end{frame}
 
+\begin{frame}{Two marginal views of the model}
+\centering
+\input{manuscript/figures/readable/latent_mnar_dag.tex}
+\medskip
+\raggedright
+\textbf{Measurement law:} marginalize $Z,D$; Assumption 4 gives product kernels.\\
+\textbf{Missing-IV law:} marginalize $F,Y_{-S}$; Assumption 6 gives exclusion.
+{\slideannotation These are two marginal views, not one joint DAG. No extra $F$--$Z$ independence is imposed.}
+\end{frame}
+
+\begin{frame}{Overlapping supported blocks}
+\centering
+\input{manuscript/figures/readable/supported_blocks_dag.tex}
+\medskip
+\bluekey{Recover each pair separately; common anchors connect the latent labels.}\\
+A global complete case is not required.
+\end{frame}
+
 \begin{frame}{Candidate model: the generating DAG}
 \centering
 \begin{tikzpicture}[
