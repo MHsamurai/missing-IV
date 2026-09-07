@@ -384,6 +384,30 @@ $U_S,Z_S,R_S$ are always observed. Use $Y_S$ as a complete block only when $R_S=
 A global complete case is not required.
 \end{frame}
 
+\begin{frame}{The remaining decomposition problem}
+\textbf{After Stage 1:} each required block law is known; $F$ is still unobserved.
+Fix $X=x$ and $F\in\{1,\ldots,r\}$.
+\[
+\begin{aligned}
+p_f(x)&=\Prb(F=f\mid X=x),&
+G(w,f;x)&=\Prb(W=w\mid F=f,X=x),\\
+M_j(y,f;x)&=\Prb(Y_j=y\mid F=f,X=x).
+\end{aligned}
+\]
+Let $\theta=(p,G,M_1,\ldots,M_m)$ and $\Phi_x:\theta\mapsto T(\theta)$.
+\[
+P_{\mathrm{obs},\theta}=P_{\mathrm{obs},\widetilde\theta}
+\quad\Longrightarrow\quad T(\theta)=T(\widetilde\theta)
+\qquad\text{(Proposition 1).}
+\]
+\begin{itemize}
+\item Injectivity up to permutation identifies $[\theta]\in\Theta_x/\mathfrak S_r$.
+\item Anchor ordering fixes labels and identifies $\theta$ itself.
+\end{itemize}
+\bluekey{Targets: $Q_F=\{\lambda_f(w,x)\}$ and $Q_Y=\{M_j\}$.}
+{\slideannotation Identification terminology: Lewbel (2019, \emph{JEL}).}
+\end{frame}
+
 \begin{frame}{Candidate model: the generating DAG}
 \centering
 \begin{tikzpicture}[
