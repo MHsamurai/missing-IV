@@ -92,6 +92,11 @@
 \titlepage
 \end{frame}
 
+\begin{frame}{Outline}
+\tableofcontents[hideallsubsections]
+\end{frame}
+
+\section{Motivation}
 \begin{frame}{Missing-data mechanisms and standard approaches}
 Let $D$ be the response pattern; $Y=(Y_{\mathrm{obs}},Y_{\mathrm{mis}})$.
 \smallskip
@@ -257,6 +262,7 @@ Ni and Shao (2023, \emph{AISM}) & \textbf{Estimate multivariate outcome paramete
 \par\smallskip
 \end{frame}
 
+\section{Model \& identification}
 \begin{frame}{Our contribution}
 \begin{enumerate}
   \setlength{\itemsep}{2em}
@@ -265,6 +271,58 @@ Ni and Shao (2023, \emph{AISM}) & \textbf{Estimate multivariate outcome paramete
 \end{enumerate}
 \bigskip
 {\slideannotation Subject to the stated exclusion, support, and rank conditions.}
+\end{frame}
+
+\begin{frame}{Proposed two-stage identification}
+\centering
+\input{manuscript/figures/readable/identification_flow_en.tex}
+\medskip
+\begin{takeaway}
+\bluekey{New: connect block-law recovery and latent decomposition in one theorem.}
+\end{takeaway}
+\end{frame}
+
+\begin{frame}{Lemma 2.1}
+\small
+Let $U=(X,W)$, $R=\prod_{j=1}^mD_j$, and $P_1=\Prb(Y,U\mid R=1)$.
+$U,Z,R$ are always observed; the entire vector $Y$ is observed when $R=1$.
+\begin{theorembox}{Global complete-case recovery}
+Assume $R\indep Z\mid(Y,U)$, $\pi(y,u)=\Prb(R=1\mid y,u)>0$, and $\pi^{-1}\in L^2(P_1)$.
+For every $h\in L^2(P_1)$, assume
+\[
+\E\{h(Y,U)\mid R=1,Z,U\}=0\ \Longrightarrow\ h=0\quad P_1\text{-a.s.}
+\]
+Then $\pi$ uniquely solves, among positive $q$ with $q^{-1}\in L^2(P_1)$,
+\[
+\E\{R/q(Y,U)\mid Z,U\}=1,
+\]
+For every integrable $h$, $\E h(Y,Z,U)=\E\{Rh(Y,Z,U)/\pi(Y,U)\}$ identifies the full law.
+\end{theorembox}
+\bluekey{A direct vector extension, but it requires global complete-case positivity.}
+\par{\footnotesize d'Haultfoeuille (2010, \emph{JoE}); Miao et al. (2019, arXiv).}
+\end{frame}
+
+\begin{frame}{Assumption 5}
+\begin{block}{Supported block}
+A subset $S\subseteq\{1,\ldots,m\}$ is \term{supported} when all measurements in $Y_S$ are jointly observed with positive probability on the target support. A global complete case is not required.
+\end{block}
+\begin{columns}[c,onlytextwidth]
+\begin{column}{.53\textwidth}
+For a block $S$, define
+\[
+R_S=\prod_{j\in S}D_j,\quad Y_S=(Y_j:j\in S).
+\]
+$U_S=(X,W)$. The support condition is
+\[
+\pi_S(y,u):=\Prb(R_S=1\mid y,u)>0.
+\]
+$U_S,Z_S,R_S$ are always observed. Use $Y_S$ as a complete block only when $R_S=1$.
+\end{column}
+\begin{column}{.44\textwidth}
+\centering
+\input{manuscript/figures/readable/supported_block_set_diagram.tex}
+\end{column}
+\end{columns}
 \end{frame}
 
 \begin{frame}{Stage 1 (1): Recover the block law}
@@ -408,8 +466,10 @@ Zhao and Shao (2015, \emph{JASA}, Section 2.3) provide the precedent for a plug-
 \bluekey{The computation follows the identification order: recover, decompose, refine.}
 \end{frame}
 
+\section{Simulation}
 \begin{frame}{Simulation targets in the model}
 Fixed $X=x$; $F\in\{1,2\}$; binary $W,Y_1,Y_2,Y_3$.\par
+{\slideannotation Conditional factorization of the simulated joint law; arrows do not assert causal effects.}\par
 \centering
 \input{manuscript/figures/readable/simulation_dgp.tex}\par
 \raggedright
@@ -563,14 +623,7 @@ Shifts $F$; supplies third-mode variation.\\
 No parametric selection model; finite classes, rank and label conditions.
 \end{frame}
 
-\begin{frame}{Proposed two-stage identification}
-\centering
-\input{manuscript/figures/readable/identification_flow_en.tex}
-\medskip
-\begin{takeaway}
-\bluekey{New: connect block-law recovery and latent decomposition in one theorem.}
-\end{takeaway}
-\end{frame}
+
 
 \begin{frame}[plain]
 \vfill\centering
@@ -632,48 +685,9 @@ We do not assume $Y\indep Z\mid(F,W,X)$. Missing-IV exclusion is a separate rest
 \end{takeaway}
 \end{frame}
 
-\begin{frame}{Lemma 2.1}
-\small
-Let $U=(X,W)$, $R=\prod_{j=1}^mD_j$, and $P_1=\Prb(Y,U\mid R=1)$.
-$U,Z,R$ are always observed; the entire vector $Y$ is observed when $R=1$.
-\begin{theorembox}{Global complete-case recovery}
-Assume $R\indep Z\mid(Y,U)$, $\pi(y,u)=\Prb(R=1\mid y,u)>0$, and $\pi^{-1}\in L^2(P_1)$.
-For every $h\in L^2(P_1)$, assume
-\[
-\E\{h(Y,U)\mid R=1,Z,U\}=0\ \Longrightarrow\ h=0\quad P_1\text{-a.s.}
-\]
-Then $\pi$ uniquely solves, among positive $q$ with $q^{-1}\in L^2(P_1)$,
-\[
-\E\{R/q(Y,U)\mid Z,U\}=1,
-\]
-For every integrable $h$, $\E h(Y,Z,U)=\E\{Rh(Y,Z,U)/\pi(Y,U)\}$ identifies the full law.
-\end{theorembox}
-\bluekey{A direct vector extension, but it requires global complete-case positivity.}
-\par{\footnotesize d'Haultfoeuille (2010, \emph{JoE}); Miao et al. (2019, arXiv).}
-\end{frame}
 
-\begin{frame}{Assumption 5}
-\begin{block}{Supported block}
-A subset $S\subseteq\{1,\ldots,m\}$ is \term{supported} when all measurements in $Y_S$ are jointly observed with positive probability on the target support. A global complete case is not required.
-\end{block}
-\begin{columns}[c,onlytextwidth]
-\begin{column}{.53\textwidth}
-For a block $S$, define
-\[
-R_S=\prod_{j\in S}D_j,\quad Y_S=(Y_j:j\in S).
-\]
-$U_S=(X,W)$. The support condition is
-\[
-\pi_S(y,u):=\Prb(R_S=1\mid y,u)>0.
-\]
-$U_S,Z_S,R_S$ are always observed. Use $Y_S$ as a complete block only when $R_S=1$.
-\end{column}
-\begin{column}{.44\textwidth}
-\centering
-\input{manuscript/figures/readable/supported_block_set_diagram.tex}
-\end{column}
-\end{columns}
-\end{frame}
+
+
 
 \begin{frame}{Two marginal views of the model}
 \centering
