@@ -349,6 +349,37 @@ SLIDES = [
 ]
 
 
+DETAILED_SLIDES = SLIDES
+SUMMARY_SLIDES = [
+    ("Stage 1 (1): Recover the block law", [
+        "まず第一段階です。知りたいのは、回答した人だけでなく、欠測した人も含めたblockの分布です。Sは一緒に扱う項目の組、R Sはその組が全部見えているかを表します。U SにはXとWをまとめています。",
+        "ここで使うZ SがMissing IVです。項目の値とは関連しますが、その値とU Sを押さえると、blockが見えるかどうかとは独立になります。この条件から、逆観測確率を重みにした条件付きモーメントの式が出てきます。complete-caseでのcompletenessとpositivityを置くと、bridgeが一つに決まります。",
+        "あとは、blockが全部見えた人をその重みで重み付けします。すると、Y S、Z S、U Sの母集団の同時分布が戻ります。一意性は、逆観測確率がcomplete caseで二乗可積分になる、ここで定めたbridgeの範囲での結果です。欠測確率をlogisticなどの形に決めなくてよい、というのが、この段階のポイントです。",
+    ]),
+    ("Stage 1 (2): Use overlapping pairs", [
+        "次に、どのblockを回復するかです。全項目が同時に見える人を集める必要はありません。基準になる二つの項目aとbのペアと、aと残りの項目jを組にしたペアを使います。項目aが共通しているので、ペアどうしが重なっています。",
+        "必要なペアごとに、先ほどのMissing IV、completeness、positivityの条件を置いて分布を回復します。得られるのは、各ペアとWの母集団の分布です。まだ潜在クラスや測定核まで分かったわけではないので、それを次の段階で分けます。",
+        "ここではZ SとWの役割も分けておきます。Z Sは欠測の偏りを補正するための変数です。Wは潜在構造を分けるための三つ目のviewになります。潜在分布を動かすWを、そのままMissing IVとして使えるとは限りません。",
+    ]),
+    ("Stage 2 (1): Identify the latent structure", [
+        "第二段階では、戻したペアの分布から、その背後の潜在構造を取り出します。クラス数rは既知で有限、項目とWが取り得る値も有限とします。さらに、FとXの下での局所独立性と、Wが測定核に直接入らないことを仮定します。ランク条件は、三つのviewのKruskal rank、k a、k b、k Gの和が2rプラス2以上、というものです。",
+        "まずanchorの二項目とWの確率を、三つの方向を持つ表、テンソルに並べます。Kruskalのランク条件があると、この分解はクラスの入れ替えと大きさの調整を除いて一つに決まります。確率の和を1にし、anchorのスコアで順序をそろえると、クラス比率p、Wのクラス別分布G、二つの測定核が分かります。",
+        "残りの項目は、共通のanchorを含むペアから線形の式を解いて求めます。これで全ての測定核が同じクラス名でそろい、ベイズ則からWごとのクラス比率も分かります。この測定モデルの下では、全項目の同時分布も組み立てられます。",
+    ]),
+    ("Stage 2 (2): Connect identification to estimation", [
+        "ここまでで分かったWごとのクラス比率と各測定核を使うと、任意の項目集合Aの同時分布を作れます。クラスごとに各項目の確率を掛け、ラムダfで重み付けして足す、という式です。一度も一緒に観測されていない項目にも使えますが、局所独立性など、いまの測定モデルの下での結果です。",
+        "推定も、いま説明した順番で進めます。まず各ペアのbridgeを推定して、重み付きの分布を作ります。その後、ペアどうしに共通する潜在クラスモデルを当てはめます。使うのは、ペアごとの対数密度をbridgeで重み付けして足したcompositeな基準です。",
+        "識別の結果によって、母集団でどの値を目指すかが決まります。ただ、それだけで標本からの推定が安定するわけではありません。一様収束や真値での最大値の分離、滑らかさ、bridgeの正則性など、推定の条件も必要です。詳しい条件はAppendixに残しています。",
+        "次の定理では、固定した有限次元のbridgeについて、一致性と漸近正規性を示します。分散には、最初にbridgeを推定した誤差も入れます。bridgeの次元を増やすsieveの理論まで示しているわけではない、という範囲も押さえておきます。",
+    ]),
+]
+if len(DETAILED_SLIDES) != 53:
+    raise ValueError("Expected the original 53 detailed narratives")
+SLIDES = (DETAILED_SLIDES[:7] + SUMMARY_SLIDES + DETAILED_SLIDES[31:44]
+          + DETAILED_SLIDES[7:31] + DETAILED_SLIDES[44:])
+APPENDIX_START = 25
+
+
 def beamer_frames():
     """Read this deck's frame titles, including its plain section dividers."""
     source = re.sub(r"(?<!\\)%[^\n]*", "", BEAMER.read_text(encoding="utf-8"))
@@ -385,8 +416,9 @@ def align_with_beamer(slides):
     for index, ((title, _), (frame_title, _)) in enumerate(zip(slides, frames), 1):
         if title.casefold() != frame_title.casefold():
             raise ValueError(f"Slide {index}: script {title!r} != Beamer {frame_title!r}")
-    expected_appendix = next(i for i, (title, _) in enumerate(slides)
-                             if title == "Proof sketch for Proposition 1")
+    if len(slides) != 57 or slides[APPENDIX_START - 1][0] != "Motivation and objective":
+        raise ValueError("Expected 57 slides with Motivation and objective at Appendix slide 25")
+    expected_appendix = APPENDIX_START - 1
     if [is_appendix for _, is_appendix in frames] != [
         i >= expected_appendix for i in range(len(slides))
     ]:
@@ -396,10 +428,7 @@ def align_with_beamer(slides):
 
 SLIDES = align_with_beamer(SLIDES)
 SLIDE_NUMBERS = {title: index for index, (title, _) in enumerate(SLIDES, 1)}
-appendix_start = next(
-    index for index, (title, _) in enumerate(SLIDES, start=1)
-    if title == "Proof sketch for Proposition 1"
-)
+appendix_start = APPENDIX_START
 SLIDES = [
     (
         f"{'Appendix ' if index >= appendix_start else ''}Slide {index}  {title}",
@@ -508,7 +537,8 @@ def build():
     doc.add_paragraph(
         f"英語Beamer全{len(SLIDES)}枚に対応した、日本語の発表原稿です。"
         "欠測した人も含む分布をまず回復し、その後で潜在クラスの比率と測定核を分ける、という流れで説明します。"
-        "各スライドの仮定と数値は残し、本編では証明の流れを、Appendixでは8ステップの詳細を説明します。"
+        "本編24枚では二段階の要約、推定理論と数値結果を説明します。"
+        "25枚目からのAppendixには、元の詳細な動機、仮定、識別と推定の議論を残し、その後に証明と数値設定を収めています。"
     )
 
     doc.add_paragraph("発表の構成", style="Heading 1")
@@ -526,10 +556,10 @@ def build():
             set_run_font(run, LATIN_FONT, JAPANESE_FONT, 10, True)
     set_repeat_table_header(table.rows[0])
     sections = [
-        ("Title", "基礎概念、既存研究、二段階の識別戦略"),
-        ("Model and assumptions", "仮定1から7、supported-block lawの回復"),
-        ("Finite latent-class identification", "仮定3.1、有限潜在クラスのtensor分解"),
-        ("Bridge-weighted composite estimation", "推定、仮定5.1、漸近理論、計算、simulation、結論、参考文献"),
+        ("Title", "基礎概念、既存研究、問題設定"),
+        (SUMMARY_SLIDES[0][0], "二段階の要約 分布の回復、重なるペア、潜在構造の識別、推定への接続"),
+        ("New Theorem 5.1", "漸近理論、計算、simulation、結論、参考文献"),
+        ("Motivation and objective", "詳細な動機、モデルと仮定、block lawの回復、潜在識別、推定条件"),
         ("Proof sketch for Proposition 1", "証明スケッチ、定理1の8ステップ、empirical diagnostics、数値設定"),
     ]
     starts = [SLIDE_NUMBERS[title] for title, _ in sections]

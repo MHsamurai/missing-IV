@@ -233,6 +233,270 @@ Ni and Shao (2023, \emph{AISM}) & \textbf{Estimate multivariate outcome paramete
 \end{takeaway}
 \end{frame}
 
+\begin{frame}{Stage 1 (1): Recover the block law}
+\bluekey{Recover the population law, including people with missing items.}\par
+\smallskip
+Let $Y_S$ be the items in block $S$, $R_S=1$ indicate that all are observed,
+and $U_S=(X,W)$ be observed covariates.
+\begin{block}{\textcolor{Red}{New!} Proposition 1: Key result}
+With Missing IV $Z_S$, positivity and complete-case completeness,
+\[
+\E\left\{\frac{R_S}{\pi_S(Y_S,U_S)}\middle|Z_S,U_S\right\}=1,
+\qquad \pi_S(y,u)=\Prb(R_S=1\mid Y_S=y,U_S=u).
+\]
+The moment identifies $\pi_S$ in the stated bridge class, hence the
+block law $\Prb(Y_S,Z_S,U_S)$ is identified.
+\end{block}
+\begin{itemize}
+\item Weight observed blocks by $1/\pi_S$ to correct MNAR selection.
+\item \redkey{No parametric selection model}; exclusion and completeness are required.
+\end{itemize}
+{\slideannotation Assumptions 1, 5--7 and $\pi_S^{-1}\in L^2\{P(Y_S,U_S\mid R_S=1)\}$; details in Appendix.}
+\end{frame}
+
+\begin{frame}{Stage 1 (2): Use overlapping pairs}
+\bluekey{We need the required pairs to be observable, not all items at once.}
+\begin{block}{Supported blocks}
+Each required block has positive observation probability on its target support.
+Use anchor pair $\{a,b\}$ and extension pairs $\{j,a\}$:
+\[
+\underbrace{(Y_a,Y_b,W)}_{\text{anchor law}}
+\qquad\longleftrightarrow\qquad
+\underbrace{(Y_j,Y_a,W)}_{\text{extension law for each }j}.
+\]
+\end{block}
+\begin{itemize}
+\item Apply Stage 1 separately to each pair, conditional on $X$.
+\item The shared item $Y_a$ connects the recovered pair laws.
+\item $Z_S$ corrects missingness; $W$ supplies variation for latent decomposition.
+\end{itemize}
+\medskip
+\begin{takeaway}
+\bluekey{Output: overlapping pair laws.}\quad
+\redkey{Global complete cases are not required.}
+\end{takeaway}
+\end{frame}
+
+\begin{frame}{Stage 2 (1): Identify the latent structure}
+\bluekey{Decompose one anchor tensor, then recover every extension item.}\par
+\smallskip
+Let $F\in\{1,\ldots,r\}$ denote the latent class,
+$M_j(y,f;x)=\Prb(Y_j=y\mid F=f,X=x)$, and
+$\lambda_f(w,x)=\Prb(F=f\mid W=w,X=x)$.
+\begin{block}{\textcolor{Red}{New!} Theorem 1: Key result}
+The recovered law of $(Y_a,Y_b,W)\mid X$ identifies the anchor factors.
+Overlapping extension laws then identify
+\[
+\underbrace{Q_F=\{\lambda_f(w,x)\}}_{\text{latent-class distribution}}
+\qquad\text{and}\qquad
+\underbrace{Q_Y=\{M_j(y,f;x)\}_j}_{\text{all measurement kernels}}.
+\]
+\end{block}
+\begin{itemize}
+\item Allman et al. (2009, \emph{AoS}): three views, with $W$ as the third mode.
+\item Known finite $r$, finite supports, local independence and measurement exclusion.
+\item Three-view ranks satisfy $k_a+k_b+k_G\ge 2r+2$ (Assumption 3.1).
+\item Anchor ordering fixes \redkey{common labels}; otherwise identification is up to permutation.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Stage 2 (2): Connect identification to estimation}
+\begin{block}{Recover the joint outcome law}
+For any item set $A$, including items never jointly observed,
+\[
+\Prb(Y_A=y_A\mid W=w,X=x)
+=\sum_{f=1}^r\lambda_f(w,x)\prod_{j\in A}M_j(y_j,f;x).
+\]
+\end{block}
+\begin{itemize}
+\item \textbf{Stage 1:} estimate each pair's inverse observation probability.
+\item \textbf{Stage 2:} fit a \term{bridge-weighted composite criterion} to the observed pairs.
+\end{itemize}
+\medskip
+\begin{takeaway}
+\bluekey{New: connect MNAR block-law recovery and latent decomposition in one identification theorem.}
+\end{takeaway}
+\medskip
+\textbf{Next:} finite-dimensional inference under Appendix regularity conditions;
+account for bridge estimation.
+\end{frame}
+
+\begin{frame}{\textcolor{Red}{New!} Theorem 5.1}
+\begin{theorembox}{Consistency and asymptotic normality}
+Under Assumption 5.1 and Proposition 4.1,
+\[
+\widehat\theta\to_p\theta_0,\qquad
+\sqrt n(\widehat\theta-\theta_0)\rightsquigarrow N(0,A^{-1}BA^{-\top}).
+\]
+Let $\psi$ denote the composite score. At $(\theta_0,\eta_0)$,
+\[
+A=\E(\partial_\theta\psi),\qquad C=\E(\partial_\eta\psi),\qquad
+B=\operatorname{Var}\{\psi+C\varphi_\eta\}.
+\]
+\end{theorembox}
+\begin{itemize}
+  \item The sandwich variance includes \textbf{first-stage bridge estimation}.
+  \item Individual-level bootstrap repeats both stages and label alignment.
+  \item A growing sieve needs additional rate and inverse-problem conditions.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Computation}
+\small
+Zhao and Shao (2015, \emph{JASA}, Section 2.3) provide the precedent for a plug-in order that estimates a nuisance law before the target model. The algorithm here is different because the criterion contains a nonconvex latent mixture; it uses \bluekey{tensor initialization, multiple starts, and constrained updates}.\par
+\vspace{.25em}
+\centering
+\begin{tikzpicture}[
+  node distance=.50cm,
+  phase/.style={draw=Navy,thick,rounded corners=2pt,fill=PaleBlue,
+    minimum width=4.1cm,minimum height=2.85cm,align=left,text width=3.65cm,
+    inner sep=.24cm,font=\footnotesize,execute at begin node=\raggedright},
+  flow/.style={-{Latex[length=2.4mm]},line width=1.2pt,Blue},
+  tag/.style={circle,fill=Blue,text=white,font=\bfseries,minimum size=.62cm}
+]
+\node[phase] (bridge) {\hspace{.62cm}\bluekey{Bridge}\par\medskip
+\textbf{1.} Estimate $\pi_S$ and check overlap.\par\smallskip
+\textbf{2.} Build weighted pair tensors.};
+\node[tag] at ([xshift=.35cm,yshift=-.35cm]bridge.north west) {1};
+\node[phase,right=of bridge] (tensor) {\hspace{.62cm}\bluekey{Decomposition}\par\medskip
+\textbf{3.} Initialize nonnegative CP factors.\par\smallskip
+\textbf{4.} Normalize columns, fix labels, and invert extension tensors.};
+\node[tag] at ([xshift=.35cm,yshift=-.35cm]tensor.north west) {2};
+\node[phase,right=of tensor] (refine) {\hspace{.62cm}\bluekey{Refinement}\par\medskip
+\textbf{5.} Apply constrained updates from several starts.\par\smallskip
+\textbf{6.} Select the largest criterion and report diagnostic gaps.};
+\node[tag] at ([xshift=.35cm,yshift=-.35cm]refine.north west) {3};
+\draw[flow] (bridge.east) -- (tensor.west);
+\draw[flow] (tensor.east) -- (refine.west);
+\end{tikzpicture}
+\vspace{.25em}
+
+\bluekey{The computation follows the identification order: recover, decompose, refine.}
+\end{frame}
+
+\begin{frame}{Simulation targets in the model}
+Fixed $X=x$; $F\in\{1,2\}$; binary $W,Y_1,Y_2,Y_3$.\par
+\centering
+\input{manuscript/figures/readable/simulation_dgp.tex}\par
+\raggedright
+$A_{Sf}=\Prb(Z_S\mid F=f)$; $B_{Sf}=\Prb(Y_S\mid F=f,Z_S)$.\\
+\textbf{After marginalizing $Z$:} product measurement kernels.\par
+$n=500$; 100 replications; mean item response rate: $80\%$.
+\end{frame}
+
+\begin{frame}{Outcome and latent parameters}
+\begin{block}{Stage 1: outcome probabilities}
+\[
+\mu_j=\Prb(Y_j=1)=\sum_f p_fM_{jf}(1),\qquad
+p_{S,c}=\Prb(Y_1=c_1,Y_j=c_j).
+\]
+$j=2,3$; $S=\{1,j\}$; $c\in\{00,01,10,11\}$.
+\end{block}
+\begin{block}{Stage 2: class shares and measurement kernels}
+\[
+p_f=\Prb(F=f),\qquad M_{jf}(y)=\Prb(Y_j=y\mid F=f).
+\]
+Report $p_2$ and the six $M_{jf}(1)$ components.
+\end{block}
+\bluekey{Outcome recovery and latent decomposition have distinct targets.}
+\end{frame}
+
+\begin{frame}{Simulation design: five estimators}
+\begin{enumerate}
+\item \textbf{Complete-data oracle:} product-mixture likelihood before missingness.
+\item \textbf{MAR:} observed-data likelihood under ignorability.
+\item \textbf{Correct selection likelihood:} true logistic selection model.
+\item \textbf{Misspecified selection likelihood:} omit $Y_1$ main effect and interaction. Both selection fits exclude $Z_S$.
+\item \textbf{Proposed finite-cell bridge:}
+\[
+\E\{R_Sr_S(Y_S)\mid Z_S,W\}=1.
+\]
+Direct normalized IPW, then weighted latent-class fitting.
+\end{enumerate}
+\bluekey{Proposed outcome recovery uses Stage 1; comparators use fitted models.}
+\end{frame}
+
+\begin{frame}{Simulation evaluation criteria}
+For each outcome parameter $\mu_j$ or $p_{S,c}$:
+\par\medskip
+\begin{tabular}{@{}ll@{}}
+\textbf{Bias} & Mean estimation error\\[.35em]
+\textbf{SD} & Monte Carlo variability\\[.35em]
+\textbf{Mean SE} & Estimated uncertainty\\[.35em]
+\textbf{95\% coverage} & Intervals covering the truth
+\end{tabular}
+\begin{itemize}
+\item Likelihood SE: delta-method sandwich.
+\item Bridge SE: 200 individual-level bootstraps; re-estimate both bridges.
+\item Pointwise Wald CI: $\widehat\psi\pm1.96\widehat{\operatorname{SE}}$.
+\end{itemize}
+\textbf{Latent results:} bias and pooled RMSE of $M_{jf}(1)$; bias and RMSE of $p_2$. RMSE combines bias and variability.
+\end{frame}
+
+\begin{frame}{Population outcome recovery: bias and SD}
+\centering
+\includegraphics{manuscript/figures/readable/allman_outcome_marginal_inference_bias_sd_chart.pdf}
+\medskip
+\bluekey{Proposed Stage 1: less absolute bias than MAR and misspecified selection.}
+\end{frame}
+
+\begin{frame}{Population outcome recovery: SE and coverage}
+\centering
+\includegraphics{manuscript/figures/readable/allman_outcome_marginal_inference_se_coverage_chart.pdf}
+\medskip
+\bluekey{Proposed: estimated SE tracks SD; coverage is near 95\%.}
+\end{frame}
+
+\begin{frame}{Stage-2 full joint law}
+\centering
+\includegraphics{manuscript/figures/readable/allman_y_joint_distribution_chart.pdf}
+\medskip
+\bluekey{Recovered class shares and kernels reconstruct $\Prb(Y_1,Y_2,Y_3)$.}
+\end{frame}
+
+\begin{frame}{Latent-parameter recovery}
+\centering
+\includegraphics{manuscript/figures/readable/allman_bias_rmse_comparison_chart.pdf}
+\medskip
+\bluekey{$M_j$: less bias and RMSE than MAR / misspecified selection.}\\
+Class-share bias $\approx0$; \redkey{RMSE is not uniformly smallest.}
+\end{frame}
+
+\begin{frame}{Conclusion and limits}
+\begin{itemize}
+\item \bluekey{Stage 1:} Missing IV and complete-case completeness recover block laws without a parametric selection model.
+\item \bluekey{Stage 2:} anchors and $W$ identify class shares and measurement kernels under common labels.
+\item \bluekey{Estimation:} bridge weighting follows the same two-stage order.
+\item \redkey{Efficiency:} class-share RMSE can exceed correctly specified selection likelihood.
+\end{itemize}
+\textbf{Required:} known $r$, finite latent classes, supported pairs, exclusion, completeness, local independence, rank and anchor ordering.
+\medskip
+\textbf{Limit:} growing-sieve inference needs additional inverse-problem theory.
+\begin{takeaway}
+Robust to selection-link misspecification, not universally robust or efficiency-dominant.
+\end{takeaway}
+\end{frame}
+
+\begin{frame}{Selected references}
+\footnotesize
+\begin{thebibliography}{99}
+\bibitem{} Allman, E. S., Matias, C., and Rhodes, J. A. (2009). Identifiability of parameters in latent structure models with many observed variables. \emph{Annals of Statistics}, 37, 3099--3132.
+\bibitem{} d'Haultfoeuille, X. (2010). A new instrumental method for dealing with endogenous selection. \emph{Journal of Econometrics}, 154, 1--15.
+\bibitem{} Heckman, J. J. (1979). Sample selection bias as a specification error. \emph{Econometrica}, 47, 153--161.
+\end{thebibliography}
+\end{frame}
+
+\begin{frame}{Selected references (continued)}
+\begin{thebibliography}{99}
+\bibitem{} Lewbel, A. (2019). The identification zoo: Meanings of identification in econometrics. \emph{Journal of Economic Literature}, 57, 835--903.
+\bibitem{} Little, R. J. A. and Rubin, D. B. (2002). \emph{Statistical Analysis with Missing Data}. Wiley.
+\bibitem{} Miao, W., Liu, L., Tchetgen Tchetgen, E. J., and Geng, Z. (2019). Identification, doubly robust estimation, and semiparametric efficiency theory of nonignorable missing data with a shadow variable. arXiv:1509.02556v3.
+\bibitem{} Zhao, J. and Shao, J. (2015). Semiparametric pseudo-likelihoods in generalized linear models with nonignorable missing data. \emph{Journal of the American Statistical Association}, 110, 1577--1590.
+\end{thebibliography}
+\end{frame}
+
+\appendix
+
 \begin{frame}{Motivation and objective}
 Let $D$ denote the response pattern and $W$ a latent shifter. Even if
 \[
@@ -632,181 +896,6 @@ The following are uniformly bounded away from zero:
 \bluekey{Identification alone does not imply regular estimation or stable inference.}
 \end{frame}
 
-\begin{frame}{\textcolor{Red}{New!} Theorem 5.1}
-\begin{theorembox}{Consistency and asymptotic normality}
-Under Assumption 5.1 and Proposition 4.1,
-\[
-\widehat\theta\to_p\theta_0,\qquad
-\sqrt n(\widehat\theta-\theta_0)\rightsquigarrow N(0,A^{-1}BA^{-\top}).
-\]
-Let $\psi$ denote the composite score. At $(\theta_0,\eta_0)$,
-\[
-A=\E(\partial_\theta\psi),\qquad C=\E(\partial_\eta\psi),\qquad
-B=\operatorname{Var}\{\psi+C\varphi_\eta\}.
-\]
-\end{theorembox}
-\begin{itemize}
-  \item The sandwich variance includes \textbf{first-stage bridge estimation}.
-  \item Individual-level bootstrap repeats both stages and label alignment.
-  \item A growing sieve needs additional rate and inverse-problem conditions.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Computation}
-\small
-Zhao and Shao (2015, \emph{JASA}, Section 2.3) provide the precedent for a plug-in order that estimates a nuisance law before the target model. The algorithm here is different because the criterion contains a nonconvex latent mixture; it uses \bluekey{tensor initialization, multiple starts, and constrained updates}.\par
-\vspace{.25em}
-\centering
-\begin{tikzpicture}[
-  node distance=.50cm,
-  phase/.style={draw=Navy,thick,rounded corners=2pt,fill=PaleBlue,
-    minimum width=4.1cm,minimum height=2.85cm,align=left,text width=3.65cm,
-    inner sep=.24cm,font=\footnotesize,execute at begin node=\raggedright},
-  flow/.style={-{Latex[length=2.4mm]},line width=1.2pt,Blue},
-  tag/.style={circle,fill=Blue,text=white,font=\bfseries,minimum size=.62cm}
-]
-\node[phase] (bridge) {\hspace{.62cm}\bluekey{Bridge}\par\medskip
-\textbf{1.} Estimate $\pi_S$ and check overlap.\par\smallskip
-\textbf{2.} Build weighted pair tensors.};
-\node[tag] at ([xshift=.35cm,yshift=-.35cm]bridge.north west) {1};
-\node[phase,right=of bridge] (tensor) {\hspace{.62cm}\bluekey{Decomposition}\par\medskip
-\textbf{3.} Initialize nonnegative CP factors.\par\smallskip
-\textbf{4.} Normalize columns, fix labels, and invert extension tensors.};
-\node[tag] at ([xshift=.35cm,yshift=-.35cm]tensor.north west) {2};
-\node[phase,right=of tensor] (refine) {\hspace{.62cm}\bluekey{Refinement}\par\medskip
-\textbf{5.} Apply constrained updates from several starts.\par\smallskip
-\textbf{6.} Select the largest criterion and report diagnostic gaps.};
-\node[tag] at ([xshift=.35cm,yshift=-.35cm]refine.north west) {3};
-\draw[flow] (bridge.east) -- (tensor.west);
-\draw[flow] (tensor.east) -- (refine.west);
-\end{tikzpicture}
-\vspace{.25em}
-
-\bluekey{The computation follows the identification order: recover, decompose, refine.}
-\end{frame}
-
-\begin{frame}{Simulation targets in the model}
-Fixed $X=x$; $F\in\{1,2\}$; binary $W,Y_1,Y_2,Y_3$.\par
-\centering
-\input{manuscript/figures/readable/simulation_dgp.tex}\par
-\raggedright
-$A_{Sf}=\Prb(Z_S\mid F=f)$; $B_{Sf}=\Prb(Y_S\mid F=f,Z_S)$.\\
-\textbf{After marginalizing $Z$:} product measurement kernels.\par
-$n=500$; 100 replications; mean item response rate: $80\%$.
-\end{frame}
-
-\begin{frame}{Outcome and latent parameters}
-\begin{block}{Stage 1: outcome probabilities}
-\[
-\mu_j=\Prb(Y_j=1)=\sum_f p_fM_{jf}(1),\qquad
-p_{S,c}=\Prb(Y_1=c_1,Y_j=c_j).
-\]
-$j=2,3$; $S=\{1,j\}$; $c\in\{00,01,10,11\}$.
-\end{block}
-\begin{block}{Stage 2: class shares and measurement kernels}
-\[
-p_f=\Prb(F=f),\qquad M_{jf}(y)=\Prb(Y_j=y\mid F=f).
-\]
-Report $p_2$ and the six $M_{jf}(1)$ components.
-\end{block}
-\bluekey{Outcome recovery and latent decomposition have distinct targets.}
-\end{frame}
-
-\begin{frame}{Simulation design: five estimators}
-\begin{enumerate}
-\item \textbf{Complete-data oracle:} product-mixture likelihood before missingness.
-\item \textbf{MAR:} observed-data likelihood under ignorability.
-\item \textbf{Correct selection likelihood:} true logistic selection model.
-\item \textbf{Misspecified selection likelihood:} omit $Y_1$ main effect and interaction. Both selection fits exclude $Z_S$.
-\item \textbf{Proposed finite-cell bridge:}
-\[
-\E\{R_Sr_S(Y_S)\mid Z_S,W\}=1.
-\]
-Direct normalized IPW, then weighted latent-class fitting.
-\end{enumerate}
-\bluekey{Proposed outcome recovery uses Stage 1; comparators use fitted models.}
-\end{frame}
-
-\begin{frame}{Simulation evaluation criteria}
-For each outcome parameter $\mu_j$ or $p_{S,c}$:
-\par\medskip
-\begin{tabular}{@{}ll@{}}
-\textbf{Bias} & Mean estimation error\\[.35em]
-\textbf{SD} & Monte Carlo variability\\[.35em]
-\textbf{Mean SE} & Estimated uncertainty\\[.35em]
-\textbf{95\% coverage} & Intervals covering the truth
-\end{tabular}
-\begin{itemize}
-\item Likelihood SE: delta-method sandwich.
-\item Bridge SE: 200 individual-level bootstraps; re-estimate both bridges.
-\item Pointwise Wald CI: $\widehat\psi\pm1.96\widehat{\operatorname{SE}}$.
-\end{itemize}
-\textbf{Latent results:} bias and pooled RMSE of $M_{jf}(1)$; bias and RMSE of $p_2$. RMSE combines bias and variability.
-\end{frame}
-
-\begin{frame}{Population outcome recovery: bias and SD}
-\centering
-\includegraphics{manuscript/figures/readable/allman_outcome_marginal_inference_bias_sd_chart.pdf}
-\medskip
-\bluekey{Proposed Stage 1: less absolute bias than MAR and misspecified selection.}
-\end{frame}
-
-\begin{frame}{Population outcome recovery: SE and coverage}
-\centering
-\includegraphics{manuscript/figures/readable/allman_outcome_marginal_inference_se_coverage_chart.pdf}
-\medskip
-\bluekey{Proposed: estimated SE tracks SD; coverage is near 95\%.}
-\end{frame}
-
-\begin{frame}{Stage-2 full joint law}
-\centering
-\includegraphics{manuscript/figures/readable/allman_y_joint_distribution_chart.pdf}
-\medskip
-\bluekey{Recovered class shares and kernels reconstruct $\Prb(Y_1,Y_2,Y_3)$.}
-\end{frame}
-
-\begin{frame}{Latent-parameter recovery}
-\centering
-\includegraphics{manuscript/figures/readable/allman_bias_rmse_comparison_chart.pdf}
-\medskip
-\bluekey{$M_j$: less bias and RMSE than MAR / misspecified selection.}\\
-Class-share bias $\approx0$; \redkey{RMSE is not uniformly smallest.}
-\end{frame}
-
-\begin{frame}{Conclusion and limits}
-\begin{itemize}
-\item \bluekey{Stage 1:} Missing IV and complete-case completeness recover block laws without a parametric selection model.
-\item \bluekey{Stage 2:} anchors and $W$ identify class shares and measurement kernels under common labels.
-\item \bluekey{Estimation:} bridge weighting follows the same two-stage order.
-\item \redkey{Efficiency:} class-share RMSE can exceed correctly specified selection likelihood.
-\end{itemize}
-\textbf{Required:} known $r$, finite latent classes, supported pairs, exclusion, completeness, local independence, rank and anchor ordering.
-\medskip
-\textbf{Limit:} growing-sieve inference needs additional inverse-problem theory.
-\begin{takeaway}
-Robust to selection-link misspecification, not universally robust or efficiency-dominant.
-\end{takeaway}
-\end{frame}
-
-\begin{frame}{Selected references}
-\footnotesize
-\begin{thebibliography}{99}
-\bibitem{} Allman, E. S., Matias, C., and Rhodes, J. A. (2009). Identifiability of parameters in latent structure models with many observed variables. \emph{Annals of Statistics}, 37, 3099--3132.
-\bibitem{} d'Haultfoeuille, X. (2010). A new instrumental method for dealing with endogenous selection. \emph{Journal of Econometrics}, 154, 1--15.
-\bibitem{} Heckman, J. J. (1979). Sample selection bias as a specification error. \emph{Econometrica}, 47, 153--161.
-\end{thebibliography}
-\end{frame}
-
-\begin{frame}{Selected references (continued)}
-\begin{thebibliography}{99}
-\bibitem{} Lewbel, A. (2019). The identification zoo: Meanings of identification in econometrics. \emph{Journal of Economic Literature}, 57, 835--903.
-\bibitem{} Little, R. J. A. and Rubin, D. B. (2002). \emph{Statistical Analysis with Missing Data}. Wiley.
-\bibitem{} Miao, W., Liu, L., Tchetgen Tchetgen, E. J., and Geng, Z. (2019). Identification, doubly robust estimation, and semiparametric efficiency theory of nonignorable missing data with a shadow variable. arXiv:1509.02556v3.
-\bibitem{} Zhao, J. and Shao, J. (2015). Semiparametric pseudo-likelihoods in generalized linear models with nonignorable missing data. \emph{Journal of the American Statistical Association}, 110, 1577--1590.
-\end{thebibliography}
-\end{frame}
-
-\appendix
 
 \begin{frame}{Appendix: Proof sketch for Proposition 1}
 \centering
