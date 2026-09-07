@@ -107,7 +107,7 @@ Under MNAR, respondent-only analysis can induce sample-selection bias (Heckman, 
 \end{frame}
 
 \begin{frame}{Usual IV and Missing IV}
-Let $R$ indicate that $Y$ is observed and let $Z$ be an always-observed auxiliary variable.
+Let $R=1$ indicate that $Y$ is observed; $Z$ is always observed.
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.47\textwidth}
 \begin{block}{Usual IV}
@@ -122,7 +122,7 @@ Let $R$ indicate that $Y$ is observed and let $Z$ be an always-observed auxiliar
   \draw[path] (y) -- (r);
   \node[text=Red,font=\bfseries] at ($(z)!.5!(y)+(0,-.72)$) {$Z\nrightarrow Y$};
 \end{tikzpicture}
-\par\smallskip
+\par
 $Z$ predicts selection and is excluded from the outcome equation.
 \end{block}
 \end{column}
@@ -139,37 +139,39 @@ $Z$ predicts selection and is excluded from the outcome equation.
   \draw[path] (y) -- (r);
   \node[text=Red,font=\bfseries] at ($(z)!.5!(r)+(0,-.72)$) {$Z\nrightarrow R$};
 \end{tikzpicture}
-\par\smallskip
+\par
 $Z$ predicts $Y$ and satisfies $R\indep Z\mid Y$.
 \end{block}
 \end{column}
 \end{columns}
 \vspace{.15em}
-For a Missing IV, positivity gives
+Missing IV and positivity give the moment equation; completeness identifies $\pi$:
 \[
 \E\left\{\frac{R}{\pi(Y)}\middle|Z\right\}=1,
 \qquad \pi(y)=\Prb(R=1\mid Y=y),
 \]
-and completeness makes $\pi$ unique (d'Haultfoeuille, 2010, \emph{JoE}).
-\par\medskip
-\bluekey{Weighting observed individuals by $1/\pi(Y)$ recovers the population distribution of $Y$, including individuals with missing outcomes.}
+{\footnotesize
+\begin{tabular}{@{}p{.38\linewidth}p{.59\linewidth}@{}}
+d'Haultfoeuille (2010, \emph{JoE}) & Conditional-moment identification of the full law.\\
+Zhao and Shao (2015, \emph{JASA}) & Covariate-adjusted exclusion; GLM identification.\\
+Miao et al. (2019) & Shadow-variable identification; complete-case completeness.
+\end{tabular}}
+\par
+\bluekey{Weight observed individuals by $1/\pi(Y)$ to recover the population distribution, including individuals with missing outcomes.}
 \end{frame}
 
 \begin{frame}{Latent measurement model}
 \begin{columns}[c,onlytextwidth]
 \begin{column}{.48\textwidth}
 \centering
-\resizebox{.98\linewidth}{!}{\input{notes/figures/latent_measurement_model.tex}}
+\resizebox{.86\linewidth}{!}{\input{notes/figures/latent_measurement_model.tex}}
 \end{column}
 \begin{column}{.49\textwidth}
-\small
-This structure underlies structural equation modeling (SEM) and item response theory (IRT).
-\normalsize
-Let $F$ denote an \term{unobserved latent variable} and let $Y=(Y_1,\ldots,Y_m)$ denote its potential \term{observed measurements}.
+In structural equation modeling (SEM) and item response theory (IRT), \term{latent} $F$ underlies measurements $Y=(Y_1,\ldots,Y_m)$.
 \begin{itemize}
   \item $Q_F(\cdot\mid W,X)$ is the latent distribution.
-  \item $Q_j(\cdot\mid F,X)$ is the measurement kernel for item $j$.
-  \item $Y_1,\ldots,Y_m$ are conditionally independent given $(F,X)$.
+  \item $Q_j(\cdot\mid F,X)$ is the item measurement kernel.
+  \item Items are conditionally independent given $(F,X)$.
 \end{itemize}
 \end{column}
 \end{columns}
@@ -178,51 +180,69 @@ Let $F$ denote an \term{unobserved latent variable} and let $Y=(Y_1,\ldots,Y_m)$
 \Prb(Y=y\mid W=w,X=x)
 =\int\prod_{j=1}^m Q_j(y_j\mid f,x)\,dQ_F(f\mid w,x).
 \]
+{\footnotesize
+\textbf{Complete-data identification:} Allman et al. (2009, \emph{AoS}): three-view rank conditions identify finite class proportions and measurement kernels up to labels.\par\smallskip
+\textbf{Latent-MNAR models and estimation:} Muth\'en et al. (1987); Holman and Glas (2005); Lee and Tang (2006); Harel and Schafer (2009); Jung et al. (2011); Kuha et al. (2018).\par\smallskip
+\textbf{Linear SEM:} Kano and Takai (2011), estimation under SEM identification constraints.\par
+\textbf{Deep latent MNAR:} Xie et al. (2026).
+}
+\end{frame}
+
+\begin{frame}{Multivariate MNAR and the remaining gap}
+\term{Nonignorable item nonresponse} in \term{incomplete multivariate data}:
+\par\medskip
+\begin{tabular}{@{}p{.29\linewidth}p{.68\linewidth}@{}}
+\toprule
+\textbf{Study} & \textbf{Identification route / target}\\
+\midrule
+Tang et al. (2003) & Complete-case conditional laws; multivariate regression parameters.\\[.7em]
+Sadinle and Reiter (2017) & Itemwise conditionally independent nonresponse; multivariate full-data law.\\[.7em]
+Li et al. (2023) & Self-censoring model and completeness.\\[.7em]
+Ni and Shao (2023) & Nonresponse instrument and parametric propensity.\\
+\bottomrule
+\end{tabular}
+\par\medskip
+\textbf{Different identification targets}
+\begin{itemize}
+  \item Full-data laws, regression parameters, or population functionals.
+  \item A recovered law of $Y$ does not by itself determine $Q_F$ and $Q_Y=\{Q_j\}$ separately.
+\end{itemize}
 \begin{takeaway}
-With complete data, three sufficiently informative views identify finite class proportions and measurement kernels up to labels (Allman et al., 2009).
+\bluekey{The gap: connect MNAR full-law recovery to a unique latent decomposition.}
 \end{takeaway}
 \end{frame}
 
-\begin{frame}{Related identification results}
-\scriptsize
+\begin{frame}{Motivation and objective}
 \begin{columns}[T,onlytextwidth]
-\begin{column}{.31\textwidth}
-\begin{block}{Scalar Missing IV}
+\begin{column}{.48\textwidth}
+\begin{block}{Incomplete measurements}
 \begin{itemize}
-  \item d'Haultfoeuille (2010, \emph{JoE})
-  \item Zhao and Shao (2015, \emph{JASA})
-  \item Miao et al. (2019)
+  \item Cognitive tests not completed.
+  \item Selective assessments in Parkinson's disease.
+  \item Severity-dependent test ordering.
+  \item Nonresponse to sensitive items.
 \end{itemize}
-Completeness and conditional-moment identification.
 \end{block}
 \end{column}
-\begin{column}{.32\textwidth}
-\begin{block}{Multivariate MNAR}
+\begin{column}{.49\textwidth}
+\begin{block}{What we need to distinguish}
 \begin{itemize}
-  \item Tang et al. (2003)
-  \item Sadinle and Reiter (2017)
-  \item Li et al. (2023)
-  \item Ni and Shao (2023)
+  \item \bluekey{Latent class composition}: $Q_F$.
+  \item \bluekey{Class-specific measurement relations}: $Q_Y=\{Q_j\}$.
+  \item Item marginals alone do not separate these two sources of variation.
 \end{itemize}
-Pattern restrictions and itemwise nonresponse models.
-\end{block}
-\end{column}
-\begin{column}{.34\textwidth}
-\begin{block}{Latent structures}
-\begin{itemize}
-  \item Allman et al. (2009, \emph{AoS})
-  \item Muth\'en et al. (1987); Holman and Glas (2005)
-  \item Lee and Tang (2006); Harel and Schafer (2009)
-  \item Jung et al. (2011); Kano and Takai (2011); Kuha et al. (2018)
-  \item Xie et al. (2026): deep latent MNAR
-\end{itemize}
-Tensor uniqueness or jointly specified latent-MNAR models.
 \end{block}
 \end{column}
 \end{columns}
-\vspace{.15em}
+\par\medskip
+\textbf{Objective}
+\begin{itemize}
+  \item Identify finite class proportions and all measurement kernels under a \term{common label}.
+  \item No parametric selection model or global complete-case requirement.
+  \item Construct a \term{bridge-weighted composite estimator}.
+\end{itemize}
 \begin{takeaway}
-Latent-MNAR joint models already exist. \bluekey{The new result is a theorem that connects selection-model-free supported-block recovery to a common-label latent decomposition.}
+\bluekey{Connect supported-block recovery and latent decomposition in a single identification theorem.}
 \end{takeaway}
 \end{frame}
 

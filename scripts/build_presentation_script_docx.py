@@ -27,6 +27,7 @@ SLIDES = [
     ("Slide 3  Usual IV and Missing IV", [
         "左右の図では、Zの役割が違います。左は、欠測への応用で使う通常型のIVです。観測されるかどうかのRには関わる一方、Yのモデルからは除外します。右のMissing IVは逆で、Yとは関連しますが、Yを条件づけた後にはRと独立だと考えます。共変量がある場合は、それも一緒に条件づけます。",
         "式のパイは、Yの値ごとの観測確率です。Missing IVの条件と、観測確率が正であることから、この式が成り立ちます。さらにcompletenessという、Zが識別に十分な情報を持つ条件を置くと、パイが一つに決まります。",
+        "この考え方の背景にあるのが、ここに挙げた三つの研究です。d’Haultfoeuilleは、条件付きモーメントの式から母集団の分布を識別します。ZhaoとShaoは共変量を調整した除外制約の下で、GLMのパラメータを識別します。Miaoらはshadow variableによる識別を扱い、観測されたcomplete-caseの分布でcompletenessを考えます。三つとも、識別の対象や条件が全く同じというわけではありません。",
         "あとは、その逆数で観測された人を重み付けします。たとえば観測確率が半分なら、重みは2です。観測されにくい人に大きな重みを付けて、欠測した人も含む母集団全体のYの分布を回復する、という考え方です。",
     ]),
     ("Slide 4  A simple multivariate extension", [
@@ -37,11 +38,12 @@ SLIDES = [
         "次に、項目の背後にある潜在変数を考えます。左の丸が、直接は見えないFです。右の四角が、Fを測る項目Y 1からY mです。構造方程式モデリング、SEMや、項目反応理論、IRTで使う測定モデルの基本形です。",
         "Q Fは、Fがどのように分布しているかを表します。Wはその分布を動かす変数で、latent shifterと呼びます。Q jは、FとXが決まったときに項目jがどう分布するか、つまり測定核です。Xは通常の共変量で、Fにも各項目にも入ります。",
         "下の式では、FとXの下で項目が独立だとして、各測定核を掛けています。それをFの分布で平均すると、Yの分布になります。有限潜在クラスでは、三つのviewに十分なランクがあれば、クラスの入れ替えを除いて分解が一つに決まります。これがAllman、Matias、Rhodesの結果です。連続因子のSEMやIRTまで同じ条件だけで識別できる、という話ではありません。",
+        "一方、潜在変数とMNARを一緒に扱うモデルや推定の研究もあります。Muthénら、HolmanとGlas、LeeとTang、HarelとSchafer、Jungら、Kuhaらがこの流れです。KanoとTakaiは、通常のSEMの識別制約を置いた上での線形モデルの推定を扱っています。近年はXieらのように、深層潜在変数モデルを使う研究もあります。なので、潜在変数と欠測を一緒に扱うこと自体が、新しいわけではありません。",
     ]),
-    ("Slide 6  Related identification results", [
-        "関連研究は、ここでは三つの流れに分けています。一つ目は、d’HaultfoeuilleやZhaoとShaoらのMissing IVです。二つ目は、TangらやNiとShaoらの、複数項目のMNARを扱う研究です。欠測パターンや項目ごとの欠測に、どのような制約を置くかを考えています。",
-        "三つ目が潜在構造です。Allmanらはテンソル分解の一意性を扱っています。また、Muthénら、LeeとTang、Jungら、KanoとTakai、Kuhaらなど、潜在変数とMNARを一緒に扱う研究も既にあります。近年はXieらの深層学習を使う研究もあります。",
-        "ですので、新しいのは潜在変数とMNARを一緒に扱うこと自体ではありません。欠測モデルのパラメトリックな形を決めずにblockの分布を回復し、それを共通のラベルを持つ潜在構造につなぐ。この二段階を、一つの識別定理として示す点です。",
+    ("Slide 6  Multivariate MNAR and the remaining gap", [
+        "もう一つが、複数項目のMNARを扱う研究です。Tangらは、complete-caseの条件付き分布を使って、多変量の回帰パラメータを識別します。SadinleとReiterは、項目ごとの条件付き独立な欠測を考え、外部IVを使わずに多変量のfull-data lawを識別する流れです。",
+        "Liらはself-censoringのモデルとcompletenessを、NiとShaoはnonresponse instrumentとパラメトリックな観測確率を使います。研究によって、分布全体、回帰パラメータ、母集団の要約量と、知りたい対象が違います。",
+        "ここで本稿が考えるのは、その先です。欠測を補正してYの分布が分かっても、それだけでQ Fと各Q jが別々に分かるわけではありません。MNARの下での分布の回復を、潜在クラス比率と測定核の一意な分解へ、どうつなぐか。ここが今回の問題です。",
     ]),
     ("Slide 7  A latent shifter is not a Missing IV", [
         "ここは少し注意が必要です。潜在分布を動かすWと、欠測を補正するZ Sは、同じ役割ではありません。Fまで条件づけるとDとWが独立でも、Fを平均して消すと、Y、W、Xの下でのFの分布が式に残ります。この分布は、一般にはWによって変わります。",
@@ -169,11 +171,19 @@ SLIDES = [
     _slide_by_title("Missing-data mechanisms and standard approaches"),
     _slide_by_title("Usual IV and Missing IV"),
     _slide_by_title("Latent measurement model"),
-    _slide_by_title("Related identification results"),
+    _slide_by_title("Multivariate MNAR and the remaining gap"),
+    (
+        "Motivation and objective",
+        [
+            "たとえば、認知機能の検査を最後まで受けられない人がいる場合を考えます。ほかにも、パーキンソン病の運動機能や認知機能、バイオマーカーが一部の人だけで測られる場合や、重症度によって検査が選ばれる場合があります。答えにくい質問だけが欠測する、という場面もあります。これらは、今回の枠組みで考えたい応用例です。",
+            "こうした場面では、各項目の平均や分布だけでなく、背後にあるクラスの構成と、そのクラスが各項目にどう表れるかを分けて知りたいわけです。それがQ FとQ jです。観測された項目の分布だけを比べても、この二つは区別できません。",
+            "そこで、有限潜在クラスの比率と全項目の測定核を、共通のラベルの下で識別することを目指します。特定のパラメトリックな欠測モデルや、全項目がそろうcomplete caseは要求せず、必要なblockで回復して、それらをつなぎます。さらに、bridgeで重み付けした推定量を作ります。新規性は、この回復と分解の接続を、一つの識別定理として示す点にあります。",
+        ],
+    ),
     (
         "Proposed two-stage identification",
         [
-            "先に、本研究の流れをお見せします。第一段階は、欠測した人も含めたblockの分布を回復することです。ZhaoとShaoの除外制約と、d’Haultfoeuilleの条件付きモーメントの式を使います。欠測確率を特定のパラメトリックな形に決める必要はありません。",
+            "この目的に対して、二段階で進めます。第一段階は、欠測した人も含めたblockの分布を回復することです。ZhaoとShaoの除外制約と、d’Haultfoeuilleの条件付きモーメントの式を使います。欠測確率を特定のパラメトリックな形に決める必要はありません。",
             "第二段階は、回復した分布を潜在クラスに分けることです。共通するanchor itemsとWを使い、Allmanらの分解の一意性につなげます。最初のanchorを分けた後、残りの項目を順に解きます。この二段階を接続して、一つの識別定理にするのが今回の提案です。",
         ],
     ),
@@ -427,10 +437,10 @@ def build():
     set_repeat_table_header(table.rows[0])
     rows = [
         ("Slides 1–7", "基礎概念、既存研究、二段階の識別戦略"),
-        ("Slides 8–18", "仮定1から7、supported-block lawの回復"),
-        ("Slides 19–26", "仮定3.1、有限潜在クラスのtensor分解"),
-        ("Slides 27–40", "推定、仮定5.1、漸近理論、計算、simulation、結論、参考文献"),
-        ("Appendix 41–46", "定理1の8ステップ、empirical diagnostics、数値設定"),
+        ("Slides 8–19", "仮定1から7、supported-block lawの回復"),
+        ("Slides 20–27", "仮定3.1、有限潜在クラスのtensor分解"),
+        ("Slides 28–41", "推定、仮定5.1、漸近理論、計算、simulation、結論、参考文献"),
+        ("Appendix 42–47", "定理1の8ステップ、empirical diagnostics、数値設定"),
     ]
     for left, right in rows:
         cells = table.add_row().cells
