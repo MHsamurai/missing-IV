@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from contextlib import redirect_stdout
 from copy import deepcopy
+import hashlib
 from io import StringIO
 import json
 from unittest import TestCase, main, mock
@@ -11,6 +12,7 @@ from unittest import TestCase, main, mock
 import numpy as np
 
 from simulation import dgp_validation as validation
+from simulation import latent_mnar_sim as simulation
 from simulation.latent_mnar_sim import load_config, simulate_allman_dataset
 
 
@@ -227,6 +229,7 @@ class PopulationValidationTest(TestCase):
         # A stub supplies every (F,W,Y) state; no sampling or frequency estimates.
         cells = np.indices((2,) * 5).reshape(5, -1).T
         config = deepcopy(self.config)
+        config["sampling_order"] = "outcome_first"
         config["sample_size"] = len(cells)
         rng = mock.Mock()
         rng.choice.return_value = cells[:, 0]
@@ -255,7 +258,7 @@ class PopulationValidationTest(TestCase):
 
     def test_report_is_deterministic_and_ignores_sampling_and_estimator_settings(self) -> None:
         changed = deepcopy(self.config)
-        for name in ("seed", "sample_size", "replications", "estimation", "inference"):
+        for name in ("seed", "sample_size", "replications", "sampling_order", "estimation", "inference"):
             changed.pop(name)
         with mock.patch.object(np.random, "default_rng", side_effect=AssertionError("no sampling")):
             self.assertEqual(validation.validate_dgp(changed), self.report)
@@ -276,6 +279,212 @@ class PopulationValidationTest(TestCase):
             with mock.patch.object(validation, "load_config", side_effect=error), redirect_stdout(stream):
                 self.assertEqual(validation.main(["--config", "missing.json"]), 1)
             self.assertFalse(json.loads(stream.getvalue())["passed"])
+
+
+class SamplingOrderTest(TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.config = load_config(validation.DEFAULT_CONFIG)
+
+    def _reconstruct_sampler_population(self, config: dict) -> validation.Population:
+        """Recover cell masses from the actual sampler's RNG arguments."""
+        config = deepcopy(config)
+        population = validation.enumerate_population(config)
+        cells = np.indices(population.joint.shape).reshape(9, -1).T
+        config["sample_size"] = n = len(cells)
+        f, w, y, z, d = cells[:, 0], cells[:, 1], cells[:, 2:5], cells[:, 5:7], cells[:, 7:9]
+        rows = np.arange(n)
+        class_probability = np.asarray(config["model"]["class_probability"])
+        kernels = config["model"]["bernoulli_probability"]
+        measurement = np.asarray([kernels[name] for name in ("Y1", "Y2", "Y3")])
+        pair_cells = [2 * y[:, pair[0]] + y[:, pair[1]] for pair in config["supported_pairs"]]
+        expected_response = np.column_stack([
+            population.propensities[block, cell] for block, cell in enumerate(pair_cells)
+        ])
+        rng = mock.Mock()
+        rng.choice.return_value = f
+        if config["sampling_order"] == "outcome_first":
+            rng.binomial.side_effect = [w, y]
+            shadow = np.asarray(config["shadow"]["probability_given_pair_cell"])
+            expected_probability = [shadow[cell] for cell in pair_cells]
+            expected_indices = [z[:, 0], z[:, 1]]
+        else:
+            rng.binomial.return_value = w
+            # Derive expected conditionals from the independent enumerator.
+            joint_fyz = population.joint.sum(axis=(1, 7, 8)).reshape(2, 8, 16)
+            joint_fz = joint_fyz.sum(axis=1)
+            z_given_f = joint_fz / class_probability[:, None]
+            y_given_fz = joint_fyz.transpose(0, 2, 1) / joint_fz[:, :, None]
+            z_index = 4 * z[:, 0] + z[:, 1]
+            expected_probability = [z_given_f[f], y_given_fz[f, z_index]]
+            expected_indices = [z_index, y @ np.asarray([4, 2, 1])]
+
+        # Interior quantiles force each cell while exercising actual decoding.
+        uniform_draws = [
+            (probability.cumsum(axis=1)[rows, index] - probability[rows, index] / 2)[:, None]
+            for probability, index in zip(expected_probability, expected_indices)
+        ]
+        uniform_draws.extend(
+            np.where(d[:, block] == 1, expected_response[:, block] / 2,
+                     (1 + expected_response[:, block]) / 2)
+            for block in range(2)
+        )
+        rng.uniform.side_effect = uniform_draws
+        with mock.patch.object(simulation, "_categorical_draw", wraps=simulation._categorical_draw) as draw:
+            dataset = simulate_allman_dataset(config, rng)
+        rng.choice.assert_called_once()
+        self.assertEqual(rng.choice.call_args.args, (2,))
+        self.assertEqual(rng.choice.call_args.kwargs["size"], n)
+        np.testing.assert_array_equal(rng.choice.call_args.kwargs["p"], class_probability)
+        self.assertEqual(rng.binomial.call_args_list[0].args[0], 1)
+        w_probability = rng.binomial.call_args_list[0].args[1]
+        np.testing.assert_array_equal(w_probability, np.asarray(kernels["W"])[f])
+        mass = rng.choice.call_args.kwargs["p"][f] * np.where(w == 1, w_probability, 1 - w_probability)
+        if config["sampling_order"] == "outcome_first":
+            self.assertEqual(rng.binomial.call_count, 2)
+            self.assertEqual(rng.binomial.call_args_list[1].args[0], 1)
+            y_probability = rng.binomial.call_args_list[1].args[1]
+            np.testing.assert_array_equal(y_probability, measurement[:, f].T)
+            mass *= np.where(y == 1, y_probability, 1 - y_probability).prod(axis=1)
+        else:
+            self.assertEqual(rng.binomial.call_count, 1)
+        self.assertEqual(draw.call_count, 2)
+        for call, expected, index in zip(draw.call_args_list, expected_probability, expected_indices):
+            np.testing.assert_allclose(call.args[0], expected, atol=1e-14, rtol=0)
+            self.assertIs(call.args[1], rng)
+            mass *= call.args[0][rows, index]
+        self.assertEqual(rng.uniform.call_args_list, [
+            mock.call(size=(n, 1)), mock.call(size=(n, 1)), mock.call(size=n), mock.call(size=n),
+        ])
+        np.testing.assert_array_equal(dataset["w"], w)
+        np.testing.assert_array_equal(dataset["y"], y)
+        np.testing.assert_array_equal(dataset["shadows"], z)
+        self.assertEqual(dataset["y"].dtype, np.dtype(float))
+        self.assertEqual(dataset["observed"].dtype, np.dtype(bool))
+        np.testing.assert_array_equal(dataset["observed"][:, 0], np.ones(n, dtype=bool))
+        for block, pair in enumerate(config["supported_pairs"]):
+            np.testing.assert_array_equal(dataset["observed"][:, pair[1]], d[:, block])
+        np.testing.assert_allclose(dataset["pair_propensity_true"], expected_response, atol=1e-14, rtol=0)
+        np.testing.assert_allclose(dataset["selection_parameter_true"][:, 0], population.intercepts, atol=1e-14, rtol=0)
+        propensity = dataset["pair_propensity_true"]
+        mass *= np.where(d == 1, propensity, 1 - propensity).prod(axis=1)
+        return validation.Population(
+            joint=mass.reshape(population.joint.shape), pairs=population.pairs,
+            propensities=population.propensities, intercepts=population.intercepts,
+        )
+
+    def test_draw_probabilities_and_decoding_reconstruct_all_2048_cells(self) -> None:
+        for sampling_order in ("outcome_first", "shadow_first"):
+            for reverse_pairs in (False, True):
+                with self.subTest(sampling_order=sampling_order, reverse_pairs=reverse_pairs):
+                    config = deepcopy(self.config)
+                    config["sampling_order"] = sampling_order
+                    if reverse_pairs:
+                        config["supported_pairs"].reverse()
+                    actual = self._reconstruct_sampler_population(config).joint
+                    expected = validation.enumerate_population(config).joint
+                    self.assertEqual(actual.size, 2048)
+                    self.assertTrue((actual > 0).all())
+                    self.assertAlmostEqual(float(actual.sum()), 1)
+                    np.testing.assert_allclose(actual, expected, atol=1e-15, rtol=0)
+
+    def test_both_samplers_preserve_exclusion_and_complete_case_operators(self) -> None:
+        for sampling_order in ("outcome_first", "shadow_first"):
+            with self.subTest(sampling_order=sampling_order):
+                config = deepcopy(self.config)
+                config["sampling_order"] = sampling_order
+                population = self._reconstruct_sampler_population(config)
+                for block in range(2):
+                    checks = validation._block_checks(population, block)
+                    self.assertLess(checks["selection_exclusion_error"], 1e-14)
+                    self.assertLess(checks["selection_equation_error"], 1e-14)
+                    self.assertLess(checks["pair_law_recovery_error"], 1e-14)
+                    for operator in checks["operators"]:
+                        self.assertEqual(operator["complete_case"]["rank"], 4)
+                        self.assertEqual(operator["bridge_design"]["rank"], 4)
+                        self.assertLess(operator["inverse_bridge_moment_error"], 1e-14)
+                self.assertFalse(validation._strong_exclusion(population)["holds"])
+
+    def test_shadow_first_kernels_are_normalized_and_handle_unreachable_z(self) -> None:
+        model = self.config["model"]["bernoulli_probability"]
+        measurement = np.asarray([model[name] for name in ("Y1", "Y2", "Y3")])
+        for shadow in (np.asarray(self.config["shadow"]["probability_given_pair_cell"]),
+                       np.tile([1.0, 0.0, 0.0, 0.0], (4, 1))):
+            with self.subTest(shadow=shadow.tolist()):
+                y, z, a, b = simulation._shadow_first_kernels(measurement, shadow, self.config["supported_pairs"])
+                self.assertEqual(y.shape, (8, 3))
+                self.assertEqual(z.shape, (16, 2))
+                self.assertEqual(a.shape, (2, 16))
+                self.assertEqual(b.shape, (2, 16, 8))
+                self.assertTrue(np.isfinite(b).all())
+                np.testing.assert_allclose(a.sum(axis=1), 1, atol=1e-14, rtol=0)
+                np.testing.assert_allclose(b.sum(axis=2), 1, atol=1e-14, rtol=0)
+                for f in range(2):
+                    _, expected_y = simulation.binary_product_mixture_joint(np.eye(2)[f], measurement)
+                    np.testing.assert_allclose(a[f] @ b[f], expected_y, atol=1e-14, rtol=0)
+
+    def test_outcome_first_and_missing_setting_reproduce_prechange_seed(self) -> None:
+        # Captured from the legacy generator before introducing sampling_order.
+        expected_fingerprint = "343bfe555afeb88bf7640614b845e2e007401105cfc8de6cea990c55bce03969"
+        expected_next = [0.6582645595591033, 0.7805263878554914, 0.9849032530054229, 0.8170749578271959]
+        for explicit in (False, True):
+            with self.subTest(explicit=explicit):
+                config = deepcopy(self.config)
+                config["sample_size"] = 500
+                config.pop("sampling_order", None)
+                if explicit:
+                    config["sampling_order"] = "outcome_first"
+                rng = np.random.default_rng(260826)
+                dataset = simulate_allman_dataset(config, rng)
+                fingerprint = hashlib.sha256()
+                for name in ("w", "y", "shadows", "observed"):
+                    fingerprint.update(np.asarray(dataset[name], dtype=np.uint8).tobytes())
+                self.assertEqual(fingerprint.hexdigest(), expected_fingerprint)
+                np.testing.assert_array_equal(rng.random(4), expected_next)
+
+    def test_shadow_first_tail_roundoff_stays_in_last_cell(self) -> None:
+        config = deepcopy(self.config)
+        config["sample_size"] = 1
+        model = config["model"]["bernoulli_probability"]
+        measurement = np.asarray([model[name] for name in ("Y1", "Y2", "Y3")])
+        y, z, a, b = simulation._shadow_first_kernels(
+            measurement, np.asarray(config["shadow"]["probability_given_pair_cell"]),
+            config["supported_pairs"],
+        )
+        high = np.nextafter(1.0, 0.0)
+        for f in range(2):
+            for zi in range(16):
+                with self.subTest(f=f, zi=zi):
+                    rng = mock.Mock()
+                    rng.choice.return_value = np.asarray([f])
+                    rng.binomial.return_value = np.asarray([0])
+                    rng.uniform.side_effect = [
+                        np.asarray([[a[f].cumsum()[zi] - a[f, zi] / 2]]),
+                        np.asarray([[high]]), np.asarray([0.5]), np.asarray([0.5]),
+                    ]
+                    dataset = simulate_allman_dataset(config, rng)
+                    np.testing.assert_array_equal(dataset["shadows"], z[[zi]])
+                    np.testing.assert_array_equal(dataset["y"], y[[-1]])
+
+    def test_current_config_uses_shadow_first_and_repeats_seeded_draws(self) -> None:
+        self.assertEqual(self.config["sampling_order"], "shadow_first")
+        config = deepcopy(self.config)
+        config["sample_size"] = 17
+        first_rng, second_rng = np.random.default_rng(42), np.random.default_rng(42)
+        first = simulate_allman_dataset(config, first_rng)
+        second = simulate_allman_dataset(config, second_rng)
+        self.assertEqual(first.keys(), second.keys())
+        for key in first:
+            np.testing.assert_array_equal(first[key], second[key])
+        np.testing.assert_array_equal(first_rng.random(4), second_rng.random(4))
+
+    def test_unknown_sampling_order_fails_before_drawing(self) -> None:
+        config = deepcopy(self.config)
+        config["sampling_order"] = "shadow_frist"
+        rng = mock.Mock()
+        with self.assertRaisesRegex(ValueError, "Unknown sampling order"):
+            simulate_allman_dataset(config, rng)
+        self.assertEqual(rng.mock_calls, [])
 
 
 if __name__ == "__main__":

@@ -193,8 +193,51 @@ def evaluate_stage1_distribution_recovery(
     return marginal_records, pair_records
 
 
+def _shadow_first_kernels(
+    measurement: np.ndarray,
+    shadow_probability: np.ndarray,
+    supported_pairs: list[list[int]],
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    """Return Y cells, Z cells, P(Z|F), and P(Y|F,Z) for the same joint law."""
+    y_cells = np.asarray(
+        list(product((0, 1), repeat=measurement.shape[0])), dtype=int
+    )
+    z_cells = np.asarray(
+        list(product(range(shadow_probability.shape[1]), repeat=len(supported_pairs))),
+        dtype=int,
+    )
+    y_given_f = np.where(
+        y_cells[None, :, :] == 1,
+        measurement.T[:, None, :],
+        1.0 - measurement.T[:, None, :],
+    ).prod(axis=2)
+    z_given_y = np.ones((len(y_cells), len(z_cells)))
+    for block, pair in enumerate(supported_pairs):
+        pair_cell = 2 * y_cells[:, pair[0]] + y_cells[:, pair[1]]
+        z_given_y *= shadow_probability[pair_cell[:, None], z_cells[None, :, block]]
+
+    # A_f(z) and B_f(y|z) retain dependence within both joint vectors.
+    joint_yz_given_f = y_given_f[:, :, None] * z_given_y[None, :, :]
+    z_given_f = joint_yz_given_f.sum(axis=1)
+    # An unreachable Z cell can use any normalized conditional Y distribution.
+    y_given_fz = np.broadcast_to(
+        y_given_f[:, None, :],
+        (measurement.shape[1], len(z_cells), len(y_cells)),
+    ).copy()
+    np.divide(
+        joint_yz_given_f.transpose(0, 2, 1),
+        z_given_f[:, :, None],
+        out=y_given_fz,
+        where=z_given_f[:, :, None] > 0,
+    )
+    return y_cells, z_cells, z_given_f, y_given_fz
+
+
 def simulate_allman_dataset(config: dict, rng: np.random.Generator) -> dict:
-    """Generate the Allman product mixture P=sum_f pi_f tensor_j p_fj."""
+    """Generate the same Allman/shadow law under either configured draw order."""
+    sampling_order = config.get("sampling_order", "outcome_first")
+    if sampling_order not in ("outcome_first", "shadow_first"):
+        raise ValueError(f"Unknown sampling order: {sampling_order}")
     n = int(config["sample_size"])
     model = config["model"]
     class_probability = np.asarray(model["class_probability"], dtype=float)
@@ -206,18 +249,31 @@ def simulate_allman_dataset(config: dict, rng: np.random.Generator) -> dict:
         [feature_probability[name] for name in ("Y1", "Y2", "Y3")], dtype=float
     )
     w = rng.binomial(1, w_kernel[latent_class])
-    y_probability = measurement[np.arange(3)[None, :], latent_class[:, None]]
-    y = rng.binomial(1, y_probability).astype(float)
-
     shadow_config = config["shadow"]
     shadow_probability = np.asarray(
         shadow_config["probability_given_pair_cell"], dtype=float
     )
-    shadows = []
-    for pair in config["supported_pairs"]:
-        pair_cell = (2 * y[:, pair[0]] + y[:, pair[1]]).astype(int)
-        shadows.append(_categorical_draw(shadow_probability[pair_cell], rng))
-    shadows = np.column_stack(shadows)
+    if sampling_order == "outcome_first":
+        y_probability = measurement[np.arange(3)[None, :], latent_class[:, None]]
+        y = rng.binomial(1, y_probability).astype(float)
+        shadows = []
+        for pair in config["supported_pairs"]:
+            pair_cell = (2 * y[:, pair[0]] + y[:, pair[1]]).astype(int)
+            shadows.append(_categorical_draw(shadow_probability[pair_cell], rng))
+        shadows = np.column_stack(shadows)
+    else:
+        y_cells, z_cells, z_given_f, y_given_fz = _shadow_first_kernels(
+            measurement, shadow_probability, config["supported_pairs"]
+        )
+        # CDF roundoff below one must not produce an out-of-range final cell.
+        z_index = np.minimum(
+            _categorical_draw(z_given_f[latent_class], rng), len(z_cells) - 1
+        )
+        shadows = z_cells[z_index]
+        y_index = np.minimum(
+            _categorical_draw(y_given_fz[latent_class, z_index], rng), len(y_cells) - 1
+        )
+        y = y_cells[y_index].astype(float)
 
     missingness = config["missingness"]
     target_average = float(missingness["target_average_item_observation_rate"])
