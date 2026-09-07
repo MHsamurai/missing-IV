@@ -1,7 +1,26 @@
 # 観測カテゴリ候補モデルの再検証
 
-2026-09-07。元の原稿・スライド・シミュレーションは変更しない。
+2026-09-07。n=500/5,000の初回検証は元の原稿・スライドを変更せず実行した。
+追加のn=1,000の結果は本文7.2と別名の新スライドへ反映する。旧スライドと旧シミュレーションは保持する。
 候補ノートは `notes/reading/latent_mnar_observed_category_identification_candidate.md`。
+
+## n=1,000の追加結果
+
+`observed_category_n1000.ipynb` は実行済み。MCAR/MAR/MNAR各100反復。
+設定・DGP・推定法は同じで、nのみ1,000へ変更した。
+MNARの候補法のoutcome平均biasはY2=-0.0009、Y3=0.0029、class 2比率biasは0.0072。
+測定核6成分の成分別RMSE平均は0.0387（ignorability: 0.0816）。
+境界付近の解はMCAR/MARで6/100、MNARで19/100。MNARのWald CIは81反復でのみ得られた。
+有効CI内のY2/Y3/class 2比率coverageは0.975/0.963/0.951で、全100反復のcoverageではない。
+
+CSVは `results_n1000/`、本文・新スライド用図表は `report_n1000/`。
+本文7.1の旧bridge実験とは識別条件も推定量も区別し、7.2に追加した。
+新スライドは `manuscript/vector_missing_iv_identification_beamer_n1000.tex`、ビルドは `make beamer-n1000`。
+
+```sh
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 simulation/.venv/bin/python simulation/observed_category/experiment.py --sample-size 1000 --output results_n1000
+simulation/.venv/bin/python simulation/observed_category/build_n1000_report.py
+```
 
 ## 結果
 
