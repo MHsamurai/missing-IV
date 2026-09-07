@@ -9,6 +9,9 @@ PROOF_PDF := build/formal/vector_missing_iv_identification_proof/vector_missing_
 BEAMER_TEX := manuscript/vector_missing_iv_identification_beamer.tex
 BEAMER_PDF := build/formal/vector_missing_iv_identification_beamer/vector_missing_iv_identification_beamer.pdf
 BEAMER_FIGURES := $(wildcard manuscript/figures/readable/*.tex manuscript/figures/readable/*.pdf)
+BEAMER_N1000_TEX := manuscript/vector_missing_iv_identification_beamer_n1000.tex
+BEAMER_N1000_PDF := build/formal/vector_missing_iv_identification_beamer_n1000/vector_missing_iv_identification_beamer_n1000.pdf
+N1000_REPORT := $(wildcard simulation/observed_category/report_n1000/*.tex simulation/observed_category/report_n1000/*.pdf)
 TEMPLATE_TEX := notes/onepage/a4_two_column_format_template.tex
 TEMPLATE_PDF := build/templates/a4_two_column_format_template/a4_two_column_format_template.pdf
 READING_DHAULTFOEUILLE_TEX := notes/reading/dhaultfoeuille2010_annotated_ja.tex
@@ -18,7 +21,7 @@ READING_ZHAO_SHAO_PDF := build/supplementary_reading/zhao_shao2015/zhao_shao2015
 READING_KANO_TAKAI_TEX := notes/reading/kano_takai2011_nmar_latent_annotated_ja.tex
 READING_KANO_TAKAI_PDF := build/supplementary_reading/kano_takai2011/kano_takai2011_nmar_latent_annotated_ja.pdf
 
-.PHONY: pdf abstract working-paper working-onepage proof beamer template reading-dhaultfoeuille2010 reading-zhao-shao2015 reading-kano-takai2011 clean
+.PHONY: pdf abstract working-paper working-onepage proof beamer beamer-n1000 template reading-dhaultfoeuille2010 reading-zhao-shao2015 reading-kano-takai2011 clean
 
 pdf: $(PDF)
 
@@ -34,7 +37,7 @@ working-paper: $(WORKING_PDF)
 
 working-onepage: working-paper
 
-$(WORKING_PDF): $(WORKING_TEX) .latexmkrc
+$(WORKING_PDF): $(WORKING_TEX) notes/sections/observed_category_n1000_simulation.tex $(N1000_REPORT) .latexmkrc
 	latexmk -outdir=build/formal/vector_missing_iv_identification_working $(WORKING_TEX)
 
 proof: $(PROOF_PDF)
@@ -46,6 +49,11 @@ beamer: $(BEAMER_PDF)
 
 $(BEAMER_PDF): $(BEAMER_TEX) $(BEAMER_FIGURES) .latexmkrc
 	latexmk -outdir=build/formal/vector_missing_iv_identification_beamer $(BEAMER_TEX)
+
+beamer-n1000: $(BEAMER_N1000_PDF)
+
+$(BEAMER_N1000_PDF): $(BEAMER_N1000_TEX) $(BEAMER_FIGURES) $(N1000_REPORT) .latexmkrc
+	latexmk -outdir=build/formal/vector_missing_iv_identification_beamer_n1000 $(BEAMER_N1000_TEX)
 
 template: $(TEMPLATE_PDF)
 

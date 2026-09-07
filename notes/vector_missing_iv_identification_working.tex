@@ -65,9 +65,10 @@ complete-case completenessを用いて各supported-block lawを回復し，第�
 overlapping block lawsをanchor itemsとlatent shifterにより接続する。有限潜在クラス
 モデルについて，Kruskal型rank条件の下で潜在クラス比率と全測定核を共通labelの
 下で識別し，global complete caseを必要としないbridge-weighted composite estimatorを
-構成する。有限次元bridgeに対する一致性と漸近正規性を示し，simulationでは，提案法が
-MNARによる観測変数分布のbiasを補正し，parametric selection modelの誤指定に伴うbiasを
-抑えながら潜在測定核を回復することを確認する。
+構成する。有限次元bridgeに対する一致性と漸近正規性を示す。
+数値実験では，従来のblockwise bridge実験と，追加制約を課した観測カテゴリモデルの
+同時尤度による実験を区別する。後者では$n=1{,}000$のMCAR・MAR・MNARを比較し，
+MNARにおけるbias補正と，境界解によるWald推論の限界を検討する。
 
 \noindent\textbf{Keywords:} MNAR; shadow variable; completeness; latent class;
 tensor decomposition; instrumental variable
@@ -245,7 +246,8 @@ bridge-weighted estimatorを構成する。
 以下，第2節では各supported blockのfull lawを識別し，第3節では回復された
 overlapping block lawsを有限潜在クラスへ分解する。第4節でbridge-weighted
 estimatorを構成し，第5節でその漸近理論を与える。第6節で計算手順を示し，
-第7節で有限標本性能を検討する。
+第7節で有限標本性能を検討する。同節の観測カテゴリモデルの実験は，
+blockwise bridge推定量とは異なる同時尤度を対象とし，両者の識別条件を区別する。
 
 \section{モデルと仮定}
 本節は識別を二段階に分け，その第一段階を定式化する。まず潜在因子$F$，
@@ -869,14 +871,16 @@ block-coordinate updateし，criterionとparameter changeの両方で収束を
 propensity overlap，label stabilityを報告する。
 
 \section{Simulation studies}
-本節では，定理3.1に対応する有限カテゴリlatent-class modelの下で，
-欠測機構をMCAR，MAR，MNARとしたときの通常のlatent-class推定と
-提案推定量の有限標本特性を比較する構成とする。MCAR・MARでは，
-正しく指定されたlatent modelの下で通常法が分布と潜在母数を回復できること，
-および提案法に補正に伴う分散増大が生じうることを検討する。
-MNARでは，ignorabilityを仮定した通常法の偏りを提案法が補正できるかを検討する。
-この比較は，提案法が全条件で効率性に優れることを主張するものではない。
-現時点で実行済みなのは以下のMNAR実験であり，MCAR・MARの比較結果は未取得である。
+本節では，blockwise bridgeによる従来のMNAR実験と，観測カテゴリを用いる
+同時推定の実験を分けて示す。後者は$n=1{,}000$でMCAR・MAR・MNARを比較する。
+MCAR・MARでは通常のlatent-class FIMLに対する追加推定の分散コストを，MNARでは
+ignorabilityに起因するbiasの補正を検討する。
+
+\subsection{Blockwise bridgeによる比較実験}
+以下の$n=500$の実験は，$Z$を周辺化したproduct measurement modelに対する
+比較である。$Y\mid(F,Z)$には$Z$の直接依存を許すため，次小節で課す
+$V=(W,Z)$全体に対する測定不変性の検証ではない。これに対し，次小節では$V\to F\to Y$を維持し，
+異なる識別条件と推定法を用いる。以下の従来実験で実行済みなのはMNAR条件である。
 Allman, Matias and Rhodes
 (2009, Sections 3--5)の$r$-class, $p$-feature model
 $M(r;\kappa_1,\ldots,\kappa_p)$に従い，
@@ -1227,6 +1231,12 @@ parametric selection modelを正しく指定できる場合の効率性を上回
 overlapping block lawsの統合に由来する分散が残り，とくにclass比率の推定効率には改善の
 余地がある。
 
+\input{notes/sections/observed_category_n1000_simulation.tex}
+
+\subsection{Blockwise識別設計の診断}
+以下は命題2.1の条件を満たすblockwise設計についての診断であり，
+前小節の観測カテゴリモデルにcomplete-case completenessを仮定するものではない。
+
 \noindent\textbf{補題7.1（候補識別設計の経験的診断）.}
 blockwise IV，latent shifter，通常共変量，およびanchor itemsの候補となる割当てを
 一つ固定する。各supported blockのcomplete casesから，$Z_S$のrelevanceと，有限カテゴリ
@@ -1261,6 +1271,12 @@ shadow-IV exclusion，complete-case completeness，局所独立性，anchor orde
 Kruskal rank条件に依存する。さらに，通常の漸近正規性は有限次元bridgeに対する結果であり，
 sieve bridge，連続潜在因子，class数の選択，および弱いcompletenessやrankの下での推論は
 別途検討を要する。
+
+観測カテゴリモデルの追加実験では，$V\to F\to Y$と応答に関する追加の除外制約を
+維持した同時尤度により，$n=1{,}000$のMNARでoutcome平均と測定核のbiasが小さくなった。
+ただし，100反復中19反復で境界付近の解となり，Wald区間の安定性は未解決である。
+この実験は任意のblock lawに対するcompletenessやbridge推定量の漸近理論を
+検証するものではなく，正指定の飽和logistic selectionと異なる効率性も主張しない。
 
 \appendix
 \section{補題3.1の証明}
