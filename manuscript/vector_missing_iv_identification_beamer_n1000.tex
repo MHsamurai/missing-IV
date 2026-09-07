@@ -79,6 +79,16 @@
 \institute{1. 慶應義塾大学、2. 理化学研究所、3. London School of Economics and Political Science}
 \date{}
 
+\AtBeginSection[]{%
+  \begin{frame}{Outline}
+    \setbeamertemplate{section in toc}{%
+      \leavevmode\begingroup
+      \ifnum\inserttocsectionnumber=\value{section}\relax\bfseries\fi
+      \inserttocsection\par\endgroup}
+    \tableofcontents[hideallsubsections]
+  \end{frame}
+}
+
 \begin{document}
 
 \begin{frame}[plain]
@@ -90,10 +100,6 @@
 \end{tikzpicture}
 \vspace{1.35cm}
 \titlepage
-\end{frame}
-
-\begin{frame}{Outline}
-\tableofcontents[hideallsubsections]
 \end{frame}
 
 \section{Motivation}
