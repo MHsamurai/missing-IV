@@ -225,17 +225,17 @@ Ni and Shao (2023, \emph{AISM}) & \textbf{Estimate multivariate outcome paramete
 \begin{columns}[T,onlytextwidth]
 \begin{column}{.63\textwidth}
 Let $D$ denote the response pattern and $W$ a latent shifter.
-Even if manuscript Eq.~(5) holds,
+Even if the latent-conditional exclusion holds,
 \[
-D\indep W\mid(Y,F,X),\tag{5}
+D\indep W\mid(Y,F,X),
 \]
-marginalizing $F$ gives manuscript Eq.~(6):
+marginalizing $F$ gives:
 \[
 \begin{aligned}
 &\Prb(D=d\mid Y=y,W=w,X=x)\\
 &\qquad=\int\Prb(D=d\mid y,f,x)\,
 \textcolor{Red}{d\Prb(f\mid y,w,x)}.
-\end{aligned}\tag{6}
+\end{aligned}
 \]
 The posterior of $F$ may depend on $w$:\\
 $D\indep W\mid(Y,X)$ does \redkey{not} follow.
@@ -680,7 +680,7 @@ The following are uniformly bounded away from zero:
 \bluekey{Identification alone does not imply regular estimation or stable inference.}
 \end{frame}
 
-\begin{frame}{Theorem 5.1}
+\begin{frame}{\textcolor{Red}{New!} Theorem 5.1}
 \begin{theorembox}{Consistency and asymptotic normality}
 Under Assumption 5.1 and Proposition 4.1,
 \[
