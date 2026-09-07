@@ -268,46 +268,24 @@ Ni and Shao (2023, \emph{AISM}) & \textbf{Estimate multivariate outcome paramete
 \par\smallskip
 \end{frame}
 
-\begin{frame}{Motivation and objective}
-Let $D$ denote the response pattern and $W$ a latent shifter. Even if
-\[
-D\indep W\mid(Y,F,X),
-\]
-marginalizing $F$ gives
-\[
-\Prb(D=d\mid y,w,x)=\int\Prb(D=d\mid y,f,x)\,
-\textcolor{Red}{d\Prb(f\mid y,w,x)}.
-\]
-The posterior may depend on $w$: $D\indep W\mid(Y,X)$ does \redkey{not} follow.
-\medskip
-\begin{columns}[T,onlytextwidth]
-\begin{column}{.48\textwidth}
-\textbf{$Z_S$: Missing IV}\\
-$R_S\indep Z_S\mid(Y_S,U_S)$; predicts $Y_S$.\\
-\bluekey{Stage 1: recover the block law.}
-\end{column}
-\begin{column}{.48\textwidth}
-\textbf{$W$: latent shifter}\\
-Shifts $F$; supplies third-mode variation.\\
-\bluekey{Stage 2: separate $Q_F$ and $Q_Y$.}
-\end{column}
-\end{columns}
-\medskip
-\bluekey{Objective: connect both stages for joint identification of $Q_F,Q_Y$.}\\
-No parametric selection model; finite classes, rank and label conditions.
-\end{frame}
-
 \section{Model \& identification}
 \begin{frame}{Our contribution}
 \begin{enumerate}
-\setlength{\itemsep}{2em}
-\item \bluekey{Connect Missing-IV exclusions and finite latent-class identification through categories that include missingness.}
-\item \bluekey{Identify selection probabilities, all measurement kernels, and the latent distribution under explicit two-class restrictions.}
+  \setlength{\itemsep}{2em}
+  \item \bluekey{Connect Missing-IV identification and finite latent-class decomposition in a common framework.}
+  \item \bluekey{Identify both the latent distribution $Q_F$ and measurement kernels $Q_Y$ under common class labels, using overlapping blocks, anchor items, and latent-shifter variation.}
 \end{enumerate}
 \bigskip
-\term{Candidate model}: sufficient conditions, not a claim of established novelty.
-\par\smallskip
-The following model and $n=1{,}000$ experiment are separate from the earlier block-bridge approach.
+{\slideannotation Subject to the stated exclusion, support, and rank conditions.}
+\end{frame}
+
+\begin{frame}{Proposed two-stage identification}
+\centering
+\input{manuscript/figures/readable/identification_flow_en.tex}
+\medskip
+\begin{takeaway}
+\bluekey{New: connect block-law recovery and latent decomposition in one theorem.}
+\end{takeaway}
 \end{frame}
 
 \begin{frame}{Lemma 2.1}
@@ -326,19 +304,8 @@ Then $\pi$ uniquely solves, among positive $q$ with $q^{-1}\in L^2(P_1)$,
 \]
 For every integrable $h$, $\E h(Y,Z,U)=\E\{Rh(Y,Z,U)/\pi(Y,U)\}$ identifies the full law.
 \end{theorembox}
-\bluekey{Blockwise route: positivity alone does not supply completeness.}
-\par{\slideannotation d'Haultfoeuille (2010, \emph{JoE}); Miao et al. (2019, arXiv). This lemma is not the candidate identification result.}
-\end{frame}
-
-\begin{frame}{Proposed two-stage identification}
-\centering
-\input{manuscript/figures/readable/identification_flow_en.tex}
-\par\smallskip
-\begin{takeaway}
-\bluekey{Blockwise route: requires its own complete-case completeness.}
-\end{takeaway}
-\par\smallskip
-The candidate experiment below does not validate this block-law recovery step.
+\bluekey{A direct vector extension, but it requires global complete-case positivity.}
+\par{\footnotesize d'Haultfoeuille (2010, \emph{JoE}); Miao et al. (2019, arXiv).}
 \end{frame}
 
 \begin{frame}{Assumption 5}
@@ -362,197 +329,147 @@ $U_S,Z_S,R_S$ are always observed. Use $Y_S$ as a complete block only when $R_S=
 \input{manuscript/figures/readable/supported_block_set_diagram.tex}
 \end{column}
 \end{columns}
-\par\smallskip
-\bluekey{Candidate DGP: four-cell block rank $2<4$; arbitrary-block completeness fails.}
 \end{frame}
 
-\begin{frame}{Two marginal views of the model}
-\centering
-\input{manuscript/figures/readable/latent_mnar_dag.tex}
-\medskip
-\raggedright
-\textbf{Measurement law:} marginalize $Z,D$; Assumption 4 gives product kernels.\\
-\textbf{Missing-IV law:} marginalize $F,Y_{-S}$; Assumption 6 gives exclusion.
-{\slideannotation These are two marginal views, not one joint DAG. No extra $F$--$Z$ independence is imposed.}
-\end{frame}
-
-\begin{frame}{Overlapping supported blocks}
-\centering
-\input{manuscript/figures/readable/supported_blocks_dag.tex}
-\medskip
-\bluekey{Recover each pair separately; common anchors connect the latent labels.}\\
-A global complete case is not required.
-\end{frame}
-
-\begin{frame}{The remaining decomposition problem}
-\textbf{After Stage 1:} each required block law is known; $F$ is still unobserved.
-Fix $X=x$ and $F\in\{1,\ldots,r\}$.
+\begin{frame}{Stage 1 (1): Recover the block law}
+\bluekey{Recover the population law, including people with missing items.}\par
+\smallskip
+Let $Y_S$ be the items in block $S$, $R_S=1$ indicate that all are observed,
+and $U_S=(X,W)$ be observed covariates.
+\begin{block}{\textcolor{Red}{New!} Proposition 1: Key result}
+With Missing IV $Z_S$, positivity and complete-case completeness,
 \[
-\begin{aligned}
-p_f(x)&=\Prb(F=f\mid X=x),&
-G(w,f;x)&=\Prb(W=w\mid F=f,X=x),\\
-M_j(y,f;x)&=\Prb(Y_j=y\mid F=f,X=x).
-\end{aligned}
+\E\left\{\frac{R_S}{\pi_S(Y_S,U_S)}\middle|Z_S,U_S\right\}=1,
+\qquad \pi_S(y,u)=\Prb(R_S=1\mid Y_S=y,U_S=u).
 \]
-Let $\theta=(p,G,M_1,\ldots,M_m)$ and $\Phi_x:\theta\mapsto T(\theta)$.
-\[
-P_{\mathrm{obs},\theta}=P_{\mathrm{obs},\widetilde\theta}
-\quad\Longrightarrow\quad T(\theta)=T(\widetilde\theta)
-\qquad\text{(Proposition 1).}
-\]
+The moment identifies $\pi_S$ in the stated bridge class, hence the
+block law $\Prb(Y_S,Z_S,U_S)$ is identified.
+\end{block}
 \begin{itemize}
-\item Injectivity up to permutation identifies $[\theta]\in\Theta_x/\mathfrak S_r$.
-\item Anchor ordering fixes labels and identifies $\theta$ itself.
+\item Weight observed blocks by $1/\pi_S$ to correct MNAR selection.
+\item \redkey{No parametric selection model}; exclusion and completeness are required.
 \end{itemize}
-\bluekey{Targets: $Q_F=\{\lambda_f(w,x)\}$ and $Q_Y=\{M_j\}$.}
-{\slideannotation Identification terminology: Lewbel (2019, \emph{JEL}).}
+{\slideannotation Assumptions 1, 5--7 and $\pi_S^{-1}\in L^2\{P(Y_S,U_S\mid R_S=1)\}$; details in Appendix.}
 \end{frame}
 
-\begin{frame}{\textcolor{Red}{New!} Theorem 1}
-\begin{theorembox}{Anchor-pair identification with $W$ as the third mode}
-Under the stage-1 assumptions and the anchor-pair conditions, the observed-data law identifies, under the fixed anchor ordering,
+\begin{frame}{Stage 1 (2): Use overlapping pairs}
+\bluekey{We need the required pairs to be observable, not all items at once.}
+\begin{block}{Supported blocks}
+Each required block has positive observation probability on its target support.
+Use anchor pair $\{a,b\}$ and extension pairs $\{j,a\}$:
 \[
-p(x),\quad G(x),\quad
-Q_F(x)=\{\lambda_f(w,x)\}_{f,w},\quad
-Q_Y(x)=\{M_j(y,f;x)\}_{j,y,f}.
+\underbrace{(Y_a,Y_b,W)}_{\text{anchor law}}
+\qquad\longleftrightarrow\qquad
+\underbrace{(Y_j,Y_a,W)}_{\text{extension law for each }j}.
 \]
-Moreover, for any set of items $A$,
+\end{block}
+\begin{itemize}
+\item Apply Stage 1 separately to each pair, conditional on $X$.
+\item The shared item $Y_a$ connects the recovered pair laws.
+\item $Z_S$ corrects missingness; $W$ supplies variation for latent decomposition.
+\end{itemize}
+\medskip
+\begin{takeaway}
+\bluekey{Output: overlapping pair laws.}\quad
+\redkey{Global complete cases are not required.}
+\end{takeaway}
+\end{frame}
+
+\begin{frame}{Stage 2 (1): Identify the latent structure}
+\bluekey{Decompose one anchor tensor, then recover every extension item.}\par
+\smallskip
+Let $F\in\{1,\ldots,r\}$ denote the latent class,
+$M_j(y,f;x)=\Prb(Y_j=y\mid F=f,X=x)$, and
+$\lambda_f(w,x)=\Prb(F=f\mid W=w,X=x)$.
+\begin{block}{\textcolor{Red}{New!} Theorem 1: Key result}
+The recovered law of $(Y_a,Y_b,W)\mid X$ identifies the anchor factors.
+Overlapping extension laws then identify
+\[
+\underbrace{Q_F=\{\lambda_f(w,x)\}}_{\text{latent-class distribution}}
+\qquad\text{and}\qquad
+\underbrace{Q_Y=\{M_j(y,f;x)\}_j}_{\text{all measurement kernels}}.
+\]
+\end{block}
+\begin{itemize}
+\item Allman et al. (2009, \emph{AoS}): three views, with $W$ as the third mode.
+\item Known finite $r$, finite supports, local independence and measurement exclusion.
+\item Three-view ranks satisfy $k_a+k_b+k_G\ge 2r+2$ (Assumption 3.1).
+\item Anchor ordering fixes \redkey{common labels}; otherwise identification is up to permutation.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Stage 2 (2): Connect identification to estimation}
+\begin{block}{Recover the joint outcome law}
+For any item set $A$, including items never jointly observed,
 \[
 \Prb(Y_A=y_A\mid W=w,X=x)
-=\sum_{f=1}^r\lambda_f(w,x)\prod_{j\in A}M_j(y_j,f;x)
+=\sum_{f=1}^r\lambda_f(w,x)\prod_{j\in A}M_j(y_j,f;x).
 \]
-is identified even if all items in $A$ are never jointly observed.
-\end{theorembox}
-\vspace{.2em}
-\bluekey{In short: recover the pair laws, decompose one anchor tensor, and obtain the latent-class distribution and every measurement kernel.}
+\end{block}
+\begin{itemize}
+\item \textbf{Stage 1:} estimate each pair's inverse observation probability.
+\item \textbf{Stage 2:} fit a \term{bridge-weighted composite criterion} to the observed pairs.
+\end{itemize}
+\medskip
+\begin{takeaway}
+\bluekey{New: connect MNAR block-law recovery and latent decomposition in one identification theorem.}
+\end{takeaway}
+\medskip
+\textbf{Next:} finite-dimensional inference under Appendix regularity conditions;
+account for bridge estimation.
 \end{frame}
 
-\begin{frame}{Candidate model: the generating DAG}
+\begin{frame}{\textcolor{Red}{New!} Theorem 5.1}
+\begin{theorembox}{Consistency and asymptotic normality}
+Under Assumption 5.1 and Proposition 4.1,
+\[
+\widehat\theta\to_p\theta_0,\qquad
+\sqrt n(\widehat\theta-\theta_0)\rightsquigarrow N(0,A^{-1}BA^{-\top}).
+\]
+Let $\psi$ denote the composite score. At $(\theta_0,\eta_0)$,
+\[
+A=\E(\partial_\theta\psi),\qquad C=\E(\partial_\eta\psi),\qquad
+B=\operatorname{Var}\{\psi+C\varphi_\eta\}.
+\]
+\end{theorembox}
+\begin{itemize}
+  \item The sandwich variance includes \textbf{first-stage bridge estimation}.
+  \item Individual-level bootstrap repeats both stages and label alignment.
+  \item A growing sieve needs additional rate and inverse-problem conditions.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Computation}
+\small
+Zhao and Shao (2015, \emph{JASA}, Section 2.3) provide the precedent for a plug-in order that estimates a nuisance law before the target model. The algorithm here is different because the criterion contains a nonconvex latent mixture; it uses \bluekey{tensor initialization, multiple starts, and constrained updates}.\par
+\vspace{.25em}
 \centering
 \begin{tikzpicture}[
-obs/.style={rectangle,draw=Navy,thick,minimum width=.8cm,minimum height=.7cm},
-lat/.style={circle,draw=Navy,thick,minimum size=.8cm},
-arr/.style={-{Latex[length=2mm]},thick,Navy}]
-\node[obs,minimum width=2cm] (v) at (0,0) {$V=(W,Z)$};
-\node[lat] (f) at (2.3,0) {$F$};
-\node[obs] (y1) at (4.8,1.6) {$Y_1$};
-\node[obs] (y2) at (4.8,0) {$Y_2$};
-\node[obs] (y3) at (4.8,-1.6) {$Y_3$};
-\node[obs] (d2) at (8,0) {$D_2$};
-\node[obs] (d3) at (8,-1.6) {$D_3$};
-\draw[arr] (v)--(f);
-\draw[arr] (f)--(y1); \draw[arr] (f)--(y2); \draw[arr] (f)--(y3);
-\draw[arr] (y1)--(d2);
-\draw[arr] (y1.north) -- ++(0,.55) -| (9.3,-1.6) -- (d3.east);
-\draw[arr] (y2)--(d2); \draw[arr] (y3)--(d3);
+  node distance=.50cm,
+  phase/.style={draw=Navy,thick,rounded corners=2pt,fill=PaleBlue,
+    minimum width=4.1cm,minimum height=2.85cm,align=left,text width=3.65cm,
+    inner sep=.24cm,font=\footnotesize,execute at begin node=\raggedright},
+  flow/.style={-{Latex[length=2.4mm]},line width=1.2pt,Blue},
+  tag/.style={circle,fill=Blue,text=white,font=\bfseries,minimum size=.62cm}
+]
+\node[phase] (bridge) {\hspace{.62cm}\bluekey{Bridge}\par\medskip
+\textbf{1.} Estimate $\pi_S$ and check overlap.\par\smallskip
+\textbf{2.} Build weighted pair tensors.};
+\node[tag] at ([xshift=.35cm,yshift=-.35cm]bridge.north west) {1};
+\node[phase,right=of bridge] (tensor) {\hspace{.62cm}\bluekey{Decomposition}\par\medskip
+\textbf{3.} Initialize nonnegative CP factors.\par\smallskip
+\textbf{4.} Normalize columns, fix labels, and invert extension tensors.};
+\node[tag] at ([xshift=.35cm,yshift=-.35cm]tensor.north west) {2};
+\node[phase,right=of tensor] (refine) {\hspace{.62cm}\bluekey{Refinement}\par\medskip
+\textbf{5.} Apply constrained updates from several starts.\par\smallskip
+\textbf{6.} Select the largest criterion and report diagnostic gaps.};
+\node[tag] at ([xshift=.35cm,yshift=-.35cm]refine.north west) {3};
+\draw[flow] (bridge.east) -- (tensor.west);
+\draw[flow] (tensor.east) -- (refine.west);
 \end{tikzpicture}
-\par\smallskip
-$X$ is fixed; $V=(W,Z)$ and $Y_1$ are always observed.
-\par\smallskip
-\bluekey{No direct $V\to Y_j$ or $F,V\to D_j$ effects.}
-\par\smallskip
-$P(V)$ is unrestricted: the diagram does not require $W\indep Z$.
-\end{frame}
+\vspace{.25em}
 
-\begin{frame}{Candidate assumptions: measurement and latent variation}
-\begin{assumptionbox}{Measurement and latent variation}
-\begin{itemize}
-\setlength{\itemsep}{.7em}
-\item $W,Z,Y_1,Y_2,Y_3$ are binary; $F\in\{1,2\}$; $X$ is fixed.
-\item \term{Joint local independence}, with kernels independent of $V$:
-\[
-P(Y=y\mid F=f,V=v)=\prod_{j=1}^3 M_j(y_j,f).
-\]
-\item $0<M_j(y,f)<1$ and $0<\lambda(v)=P(F=2\mid V=v)<1$
-on the support $P(v)>0$.
-\item $\lambda(v)$ varies on that support. For $j=2,3$,
-$M_j(1,1)\ne M_j(1,2)$.
-\item Fix the \term{common class labels} by $M_2(1,1)<M_2(1,2)$.
-\end{itemize}
-\end{assumptionbox}
-\bluekey{Finite classes, invariant kernels, and latent variation are restrictions.}
-\end{frame}
-
-\begin{frame}{Candidate assumptions: item response}
-\begin{assumptionbox}{Response exclusions and independence}
-$D_1=1$; for $j=2,3$ define $\pi_j(a,y)=P(D_j=1\mid Y_1=a,Y_j=y)$.
-\[
-P(D_2=d_2,D_3=d_3\mid Y,F,V)
-=\prod_{j=2}^3\pi_j(Y_1,Y_j)^{d_j}
-       \{1-\pi_j(Y_1,Y_j)\}^{1-d_j}.
-\]
-\begin{itemize}
-\setlength{\itemsep}{.6em}
-\item \term{Interior selection}: $0<\pi_j(a,y)<1$ for every cell.
-\item Each response excludes $F,V$ and the other missing item, given $(Y_1,Y_j)$.
-\item $D_2,D_3$ are conditionally independent given $Y$.
-\item Dependence on the unobserved $Y_j$ is allowed: this includes MNAR.
-\end{itemize}
-\end{assumptionbox}
-\smallskip
-\bluekey{Unspecified selection link does not mean unrestricted missingness.}
-\par\smallskip
-Each of the four cells of $\pi_j$ is free; the exclusions and independence remain.
-\end{frame}
-
-\begin{frame}{Identification through three observed views}
-Define $T_j=\mathrm{mis}$ when $D_j=0$, and $T_j=Y_j$ otherwise.
-\par\smallskip
-\term{All observed patterns} form $O=(Y_1,V,T_2,T_3)$.
-Within $Y_1=a$:
-\[
-P(T_2=t_2,T_3=t_3,V=v\mid Y_1=a)
-=\sum_{f=1}^2\omega_f(a)K_{2f}^{(a)}(t_2)K_{3f}^{(a)}(t_3)G_f(v).
-\]
-Here $\omega_f(a)=P(F=f\mid Y_1=a)$, $G_f(v)=P(V=v\mid F=f)$,
-and $K_{jf}^{(a)}=P(T_j=\cdot\mid F=f,Y_1=a)$.
-\begin{itemize}
-\item The three views $T_2,T_3,V$ are independent given $(F,Y_1)$.
-\item Column Kruskal ranks satisfy $2+2+2=2r+2=6$.
-\item Thus $\omega,K_2,K_3,G$ are unique up to labels.
-\end{itemize}
-\bluekey{Decompose observed categories, not a recovered four-cell block law.}
-\par\smallskip
-{\slideannotation Allman, Matias and Rhodes (2009, \emph{AoS}), Section 4, Theorem 1 and Corollary 2. Their row convention is transposed here.}
-\end{frame}
-
-\begin{frame}{Identification targets and scope}
-\begin{enumerate}
-\setlength{\itemsep}{.6em}
-\item Decompose each observed tensor conditional on $Y_1$.
-\item Use $K_{jf}^{(a)}(y)=\pi_j(a,y)M_j(y,f)$ and
-$M_j(0,f)+M_j(1,f)=1$ to separate response and measurement.
-\item Align the two strata by the $M_2$ ordering; recover
-$p_f$, $M_1$, $P(F\mid W,Z)$ and, by marginalizing $Z$, $P(F\mid W)$.
-\end{enumerate}
-\medskip
-\begin{block}{What this does not establish}
-In this candidate DGP, the old four-cell block operator has rank $2<4$:
-arbitrary-function completeness fails. This is \textbf{not the old Stage 1}.
-The candidate also requires the joint observed law and positive complete-case probability.
-\end{block}
-\bluekey{Identification of distributions is not recovery of each person's class.}
-\end{frame}
-
-\begin{frame}{Observed-data likelihood}
-Let $q_f(v)=P(F=f\mid V=v)$ and $\mathcal Y(o)$ contain outcomes
-compatible with the observed entries. For the candidate:
-\[
-L_\theta(o\mid v)=
-\sum_{f=1}^2q_f(v)
-\sum_{y\in\mathcal Y(o)}
-\prod_{j=1}^3 M_j(y_j,f)
-\prod_{j=2}^3
-\pi_j(y_1,y_j)^{d_j}\{1-\pi_j(y_1,y_j)\}^{1-d_j}.
-\]
-\begin{itemize}
-\setlength{\itemsep}{.6em}
-\item Jointly fit shared kernels, four $q_2(v)$ cells, and eight selection cells.
-\item Maximize $\sum_i\log L_\theta(O_i\mid V_i)$ over all response patterns.
-\item Six random starts, no truth initialization; choose the best objective.
-\item Logit bounds $[-10,10]$; no guarantee of a global optimum.
-\end{itemize}
-\bluekey{No bridge weighting or old bridge asymptotic theorem is used.}
+\bluekey{The computation follows the identification order: recover, decompose, refine.}
 \end{frame}
 
 \section{Simulation}
