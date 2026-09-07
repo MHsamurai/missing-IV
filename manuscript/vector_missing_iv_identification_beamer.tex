@@ -160,12 +160,12 @@ Missing-IV exclusion + positivity give the moment; completeness identifies $\pi$
 \begin{itemize}
 \setlength{\itemsep}{0pt}
 \item d'Haultfoeuille (2010, \emph{JoE}): full law via conditional moments.
-\item Zhao and Shao (2015, \emph{JASA}): covariate-adjusted GLM identification.
+\item Zhao and Shao (2015, \emph{JASA}): covariate-adjusted, semiparametric GLMs.
 \item Miao et al. (2019, arXiv): shadow-variable full-law identification using complete-case completeness.
 \end{itemize}
 }
 \par
-\bluekey{IPW recovers the full-data law; its latent components remain to be identified.}
+\bluekey{Avoid selection-link misspecification: recover the full-data law by IPW.}
 \end{frame}
 
 \begin{frame}{From outcome-law recovery to latent identification}
@@ -257,16 +257,14 @@ Ni and Shao (2023, \emph{AISM}) & \textbf{Estimate multivariate outcome paramete
 \par\smallskip
 \end{frame}
 
-\begin{frame}{Why leave the selection model unspecified?}
-\par{\footnotesize Zhao and Shao (2015, \emph{JASA}, Sections 1 and 6) motivate semiparametric estimation.}
-\begin{itemize}
-  \item \textbf{Full parametric likelihood:} can be efficient if correct; selection-link errors can induce bias.
-  \item \textbf{Semiparametric route:} outcome model specified; selection mechanism unspecified.
-  \item \textbf{Nonparametric recovery:} no selection link; requires Missing IV and completeness.
-\end{itemize}
-\begin{takeaway}
-\bluekey{Recovering the law of $Y$ does not itself separate $Q_F$ and $Q_Y$.}
-\end{takeaway}
+\begin{frame}{Our contribution}
+\begin{enumerate}
+  \setlength{\itemsep}{2em}
+  \item \bluekey{Connect Missing-IV identification and finite latent-class decomposition in a common framework.}
+  \item \bluekey{Identify both the latent distribution $Q_F$ and measurement kernels $Q_Y$ under common class labels, using overlapping blocks, anchor items, and latent-shifter variation.}
+\end{enumerate}
+\bigskip
+{\slideannotation Subject to the stated exclusion, support, and rank conditions.}
 \end{frame}
 
 \begin{frame}{Stage 1 (1): Recover the block law}

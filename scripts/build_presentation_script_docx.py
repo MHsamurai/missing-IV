@@ -31,6 +31,7 @@ SLIDES = [
         "式のパイは、Yの値ごとの観測確率です。Missing IVの条件と、観測確率が正であることから、この式が成り立ちます。さらにcompletenessという、Zが識別に十分な情報を持つ条件を置くと、パイが一つに決まります。",
         "この考え方の背景にあるのが、ここに挙げた三つの研究です。d’Haultfoeuilleは、条件付きモーメントの式から母集団の分布を識別します。ZhaoとShaoは共変量を調整した除外制約の下で、GLMのパラメータを識別します。Miaoらはshadow variableによる識別を扱い、観測されたcomplete-caseの分布でcompletenessを考えます。三つとも、識別の対象や条件が全く同じというわけではありません。",
         "あとは、その逆数で観測された人を重み付けします。たとえば観測確率が半分なら、重みは2です。観測されにくい人に大きな重みを付けて、欠測した人も含む母集団全体のYの分布を回復する、という考え方です。",
+        "ここで、欠測確率の関数形を決めないことにも意味があります。ZhaoとShaoが議論するように、selection modelを間違えるとバイアスにつながります。そこで、Missing IVとcompletenessを使い、selectionのリンクを指定せずに回復する方法を考えます。",
     ]),
     ("Slide 4  Lemma 2.1", [
         "まず、Missing IVをベクトルYへそのまま広げる方法を、補題2.1として整理します。全項目がそろった人をcomplete caseとし、各D jの積をRとします。UはXとW、P 1はcomplete caseの中でのYとUの分布です。",
@@ -179,9 +180,9 @@ SLIDES = [
     ("Latent measurement model", _slide_by_title("Latent measurement model")[1][:3]),
     ("Latent models with nonignorable missingness", _slide_by_title("Latent measurement model")[1][3:]),
     ("Multivariate MNAR and the remaining gap", _slide_by_title("Multivariate MNAR and the remaining gap")[1][:2]),
-    ("Why leave the selection model unspecified?", [
-        *_slide_by_title("Multivariate MNAR and the remaining gap")[1][2:4],
-        _slide_by_title("Multivariate MNAR and the remaining gap")[1][4],
+    ("Our contribution", [
+        "ここまでの研究に対して、本稿の貢献を二つにまとめます。一つ目は、Missing IVによる識別と、有限潜在クラスの分解を、一つの枠組みでつなぐことです。潜在変数とMNARを一緒に扱うこと自体ではなく、この接続が本稿の焦点です。",
+        "二つ目は、Yの分布を戻すだけで終わらず、潜在分布Q Fと各項目の測定核Q Yの両方を識別対象にすることです。重なりのあるblockとanchor項目、潜在分布を動かす変数を使い、クラスのラベルをそろえます。もちろん、除外制約やsupport、rankの条件が必要です。次に、その識別戦略を順に説明します。",
     ]),
     (
         "Motivation and objective",
