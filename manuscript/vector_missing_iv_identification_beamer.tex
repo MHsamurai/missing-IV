@@ -377,7 +377,7 @@ B=\operatorname{Var}\{\psi+C\varphi_\eta\}.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Previous block-bridge computation}
+\begin{frame}{Computation}
 \small
 Zhao and Shao (2015, \emph{JASA}, Section 2.3) provide the precedent for a plug-in order that estimates a nuisance law before the target model. The algorithm here is different because the criterion contains a nonconvex latent mixture; it uses \bluekey{tensor initialization, multiple starts, and constrained updates}.\par
 \vspace{.25em}
@@ -410,13 +410,13 @@ Zhao and Shao (2015, \emph{JASA}, Section 2.3) provide the precedent for a plug-
 \bluekey{The computation follows the identification order: recover, decompose, refine.}
 \end{frame}
 
-\begin{frame}{Previous simulation model}
+\begin{frame}{Simulation targets in the model}
 Fixed $X=x$; $F\in\{1,2\}$; binary $W,Y_1,Y_2,Y_3$.\par
 \centering
 \input{manuscript/figures/readable/simulation_dgp.tex}\par
 \raggedright
 $A_{Sf}=\Prb(Z_S\mid F=f)$; $B_{Sf}=\Prb(Y_S\mid F=f,Z_S)$.\\
-\textbf{Previous DGP:} not a validation of the revised candidate model.\par
+\textbf{After marginalizing $Z$:} product measurement kernels.\par
 $n=500$; 100 replications; mean item response rate: $80\%$.
 \end{frame}
 

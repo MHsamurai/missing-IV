@@ -395,17 +395,6 @@ SLIDES[benchmark_index] = ("MNAR benchmark: five estimators", [
     ),
     *SLIDES[benchmark_index][1][1:],
 ])
-previous_settings = {
-    "Computation": ("Previous block-bridge computation",
-                    "従来のblock-bridge法について整理した計算手順を振り返ります。新しく検討しているTをカテゴリ変数とする候補モデルの計算手順ではありません。"),
-    "Simulation targets in the model": ("Previous simulation model",
-                    "このページは、後で示す数値を得た従来のDGP、つまりデータの生成設定です。新しいTカテゴリ候補を検証したものではありません。図に残しているZを平均して消す関係も、この従来の設定についての説明です。"),
-}
-SLIDES = [
-    (previous_settings[title][0], [previous_settings[title][1], *paragraphs])
-    if title in previous_settings else (title, paragraphs)
-    for title, paragraphs in SLIDES
-]
 MNAR_RESULT_TITLES = {
     "Population outcome recovery: bias and SD",
     "Population outcome recovery: SE and coverage",
@@ -460,7 +449,7 @@ def align_with_beamer(slides):
         raise ValueError("Expected 58 slides with Motivation and objective at Appendix slide 26")
     titles = [title for title, _ in slides]
     if titles[13:19] != [
-        "Previous block-bridge computation", "Previous simulation model",
+        "Computation", "Simulation targets in the model",
         "Outcome and latent parameters", "MNAR benchmark: five estimators",
         "Simulation evaluation criteria", "Population outcome recovery: bias and SD",
     ]:
