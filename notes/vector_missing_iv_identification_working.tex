@@ -870,7 +870,14 @@ propensity overlap，label stabilityを報告する。
 
 \section{Simulation studies}
 本節では，定理3.1に対応する有限カテゴリlatent-class modelの下で，
-提案推定量の有限標本特性を検討する。Allman, Matias and Rhodes
+欠測機構をMCAR，MAR，MNARとしたときの通常のlatent-class推定と
+提案推定量の有限標本特性を比較する構成とする。MCAR・MARでは，
+正しく指定されたlatent modelの下で通常法が分布と潜在母数を回復できること，
+および提案法に補正に伴う分散増大が生じうることを検討する。
+MNARでは，ignorabilityを仮定した通常法の偏りを提案法が補正できるかを検討する。
+この比較は，提案法が全条件で効率性に優れることを主張するものではない。
+現時点で実行済みなのは以下のMNAR実験であり，MCAR・MARの比較結果は未取得である。
+Allman, Matias and Rhodes
 (2009, Sections 3--5)の$r$-class, $p$-feature model
 $M(r;\kappa_1,\ldots,\kappa_p)$に従い，
 \begin{equation}
@@ -892,7 +899,18 @@ M=\begin{pmatrix}
 \end{equation}
 式\eqref{eq:simulation-measurement-kernel}のように設定した。
 
-$Y_1$は常時観測とし，$Y_2,Y_3$の観測確率をそれぞれ
+比較条件間では，潜在分布・測定核・shadowの条件付き分布を共通にし，
+$Y_1$を常時観測とする。追加するMCAR条件では$D_2,D_3$を一定確率0.70で
+独立に生成する。MAR条件では$Y_1$のみを用いたlogistic観測確率とし，
+$Y_1$の係数を$-0.50$に固定する。各条件で切片を母集団上で調整し，
+$Y_2,Y_3$の観測率をそれぞれ0.70，平均item観測率を80\%にそろえる。
+MAR条件で$W$への追加依存を置かないことで，現行の$r_S(Y_S)$というbridgeの
+関数クラスを維持する。各条件で通常のobserved-data latent-class FIMLと提案法を
+適用し，complete-data oracleを共通の基準とする。通常法はAllmanらの
+モデル族を用いた最尤推定であり，同論文がMCAR・MAR専用の推定法を提案した
+という意味ではない。
+
+実行済みのMNAR条件では，$Y_2,Y_3$の観測確率をそれぞれ
 \begin{equation}
 \begin{aligned}
 \operatorname{logit}P(D_j=1\mid Y_1,Y_j)
@@ -955,10 +973,14 @@ $A_f(z)B_f(y\mid z)=g_f(y)K(y,z)$なので，この$Z$先行の生成順序は
 \footnote{以下の100反復の数値結果は同じ同時分布を$Y$先行で生成した標本に基づく。
 再現用の実装ではこの旧生成順序も保持している。生成順序の変更のみから因果効果の識別は導かれない。}
 
-比較するのは次の五手法である。complete-data oracleは欠測前の
-$(W,Y_1,Y_2,Y_3)$に対するfull product-mixture likelihoodを最大化する。MARは
+以下のMNAR実験では，上記の主比較に正指定・誤指定のselection likelihoodを
+補助的な比較として加えた五手法を用いる。complete-data oracleは欠測前の
+$(W,Y_1,Y_2,Y_3)$に対するfull product-mixture likelihoodを最大化する。
+既存の図表でMARと表記する手法は，真の欠測機構の名称ではなく，
 ignorabilityの下で観測itemすべてを用いたobserved-data full-information maximum
-likelihoodである。正しく指定されたparametric selection likelihoodは，式
+likelihoodである。通常法は$Z_S$を用いず提案法は用いるため，両者の差を
+同一情報下での効率比較とは解釈しない。
+正しく指定されたparametric selection likelihoodは，式
 \eqref{eq:simulation-missingness}をlatent-class likelihoodと組み合わせ，
 $(W,Y_{\mathrm{obs}},R)$の周辺尤度を最大化する。誤指定版はselection modelを
 $\operatorname{logit}P(D_j=1\mid Y_1,Y_j)=\gamma_{0j}+\gamma_{1j}Y_j$に制限し，

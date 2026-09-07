@@ -437,10 +437,30 @@ Report $p_2$ and the six $M_{jf}(1)$ components.
 \bluekey{Outcome recovery and latent decomposition have distinct targets.}
 \end{frame}
 
-\begin{frame}{Simulation design: five estimators}
+\begin{frame}{Simulation comparison: MCAR, MAR and MNAR}
+\bluekey{Same latent model, $n=500$, and mean item observation rate of $80\%$.}
+\begin{block}{Vary the true missingness mechanism}
+\begin{tabular}{@{}ll@{}}
+\textbf{MCAR} & Constant observation probability.\\[.35em]
+\textbf{MAR} & Depends only on always-observed $Y_1$.\\[.35em]
+\textbf{MNAR} & Depends on $Y_1$, missing $Y_j$, and their interaction.
+\end{tabular}
+\end{block}
+\begin{itemize}
+\item In each setting: \textbf{ordinary latent-class FIML} vs. \textbf{proposed bridge correction}; complete-data oracle as reference.
+\item \textbf{MCAR / MAR:} assess recovery by both methods and the possible variance cost of correction.
+\item \textbf{MNAR:} assess whether correction removes the bias from ignoring nonresponse.
+\end{itemize}
+\medskip
+\bluekey{Targets: outcome probabilities, measurement kernels $M_j$, and class shares $p_f$.}
+\par\smallskip
+{\slideannotation MCAR/MAR comparisons are planned; the results below are from the existing MNAR experiment.}
+\end{frame}
+
+\begin{frame}{MNAR benchmark: five estimators}
 \begin{enumerate}
 \item \textbf{Complete-data oracle:} product-mixture likelihood before missingness.
-\item \textbf{MAR:} observed-data likelihood under ignorability.
+\item \textbf{Ordinary latent-class FIML:} ignorable likelihood (labelled MAR in figures).
 \item \textbf{Correct selection likelihood:} true logistic selection model.
 \item \textbf{Misspecified selection likelihood:} omit $Y_1$ main effect and interaction. Both selection fits exclude $Z_S$.
 \item \textbf{Proposed finite-cell bridge:}
@@ -449,7 +469,7 @@ Report $p_2$ and the six $M_{jf}(1)$ components.
 \]
 Direct normalized IPW, then weighted latent-class fitting.
 \end{enumerate}
-\bluekey{Proposed outcome recovery uses Stage 1; comparators use fitted models.}
+\bluekey{MNAR benchmark: Stage-1 outcome recovery vs. model-implied laws.}
 \end{frame}
 
 \begin{frame}{Simulation evaluation criteria}
@@ -473,28 +493,28 @@ For each outcome parameter $\mu_j$ or $p_{S,c}$:
 \centering
 \includegraphics{manuscript/figures/readable/allman_outcome_marginal_inference_bias_sd_chart.pdf}
 \medskip
-\bluekey{Proposed Stage 1: less absolute bias than MAR and misspecified selection.}
+\bluekey{MNAR: less absolute bias than MAR and misspecified selection.}
 \end{frame}
 
 \begin{frame}{Population outcome recovery: SE and coverage}
 \centering
 \includegraphics{manuscript/figures/readable/allman_outcome_marginal_inference_se_coverage_chart.pdf}
 \medskip
-\bluekey{Proposed: estimated SE tracks SD; coverage is near 95\%.}
+\bluekey{MNAR: proposed SE tracks SD; coverage is near 95\%.}
 \end{frame}
 
 \begin{frame}{Stage-2 full joint law}
 \centering
 \includegraphics{manuscript/figures/readable/allman_y_joint_distribution_chart.pdf}
 \medskip
-\bluekey{Recovered class shares and kernels reconstruct $\Prb(Y_1,Y_2,Y_3)$.}
+\bluekey{MNAR: recovered class shares and kernels reconstruct $\Prb(Y_1,Y_2,Y_3)$.}
 \end{frame}
 
 \begin{frame}{Latent-parameter recovery}
 \centering
 \includegraphics{manuscript/figures/readable/allman_bias_rmse_comparison_chart.pdf}
 \medskip
-\bluekey{$M_j$: less bias and RMSE than MAR / misspecified selection.}\\
+\bluekey{MNAR: $M_j$ has less bias and RMSE than MAR / misspecified selection.}\\
 Class-share bias $\approx0$; \redkey{RMSE is not uniformly smallest.}
 \end{frame}
 

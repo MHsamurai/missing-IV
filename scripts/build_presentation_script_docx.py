@@ -383,7 +383,37 @@ SLIDES.insert(3, ("From outcome-law recovery to latent identification", [
     "潜在分布と測定核が与えられれば、Fを積分することで、ZとUごとのYの分布が得られます。既存のMissing IVの理論が扱うのは、この積分後のoutcome law、あるいはZhaoとShaoの場合にはGLMのパラメータです。潜在変数を明示的に置くことや、実際に積分計算することが、既存法の必須条件というわけではありません。",
     "私たちが知りたいのは、その先です。戻したoutcomeの分布から、潜在分布と測定核をそれぞれ取り出せるか。積分する向きは書けても、逆向きの分解が一つに決まるとは限りません。そこで、その追加の識別に必要な条件を考えます。",
 ]))
-APPENDIX_START = 26
+comparison_index = next(
+    i for i, (title, _) in enumerate(SLIDES)
+    if title == "Simulation design: five estimators"
+)
+SLIDES[comparison_index] = ("MNAR benchmark: five estimators", [
+    "ここからは、既に実行したMNAR実験の結果です。先ほどの三つの欠測機構の比較とは別に、この実験では五つの推定法を比べています。図や表に残っているMARというラベルは、真の欠測機構の名前ではなく、欠測を無視できると仮定した通常の潜在クラスFIMLを指します。MCARとMARのデータでの比較は、まだ実行していません。",
+    SLIDES[comparison_index][1][0].replace(
+        "二つ目は、欠測を無視できると考えて観測尤度を使うMARです。",
+        "二つ目は、欠測を無視できると考えて観測尤度を使う、通常の潜在クラスFIMLです。図ではMARと表記しています。"
+    ),
+    *SLIDES[comparison_index][1][1:],
+])
+SLIDES.insert(comparison_index, ("Simulation comparison: MCAR, MAR and MNAR", [
+    "比較の設計を、ここで整理します。Allmanらの有限潜在クラスのproduct mixtureに沿った、同じ潜在モデルの分布を使います。クラス比率と測定核は固定し、標本サイズも500、全項目の平均観測率も80パーセントにそろえて、欠測の起こり方だけを変えます。Y 1はいつも観測するので、Y 2とY 3の平均観測率はそれぞれ70パーセントです。",
+    "MCARでは、観測確率パイを定数にします。MARでは、いつも見えているY 1だけに観測確率を依存させます。MNARでは、現在の実験と同じく、Y 1、欠測する項目自身のY j、その交互作用に依存させます。",
+    "三つの設定それぞれで、通常の潜在クラスFIMLと、bridgeで補正する提案法を比べます。通常のFIMLは、欠測機構を無視できるとして観測データの尤度を使う方法です。欠測前の全データを使うoracleも、比較の基準として置きます。評価するのは、Yの確率、測定核M j、クラス比率p fです。",
+    "MCARとMARでは、潜在モデルが正しく、識別などの条件が満たされれば、通常のFIMLでも母集団の値を回復できるはずです。提案法も回復できるか、それに補正の分だけばらつきが増える可能性があるかを見ます。ただし、通常のFIMLはZを使わず、提案法はZを使います。同じ情報を使った効率比較ではないので、分散の差を補正のコストだけで説明することはできません。MNARでは、欠測を無視したときの偏りを、提案法がどこまで補正できるかを見ます。",
+    "ただし、これは比較の設計です。MCARとMARでの比較は、まだ実行していません。この後の数値と図は全て、既に実行したMNAR実験の五手法比較です。MCARやMARでも同じ結果が出た、という意味ではありません。",
+]))
+MNAR_RESULT_TITLES = {
+    "Population outcome recovery: bias and SD",
+    "Population outcome recovery: SE and coverage",
+    "Stage-2 full joint law",
+    "Latent-parameter recovery",
+}
+SLIDES = [
+    (title, ["ここで示すのは、MNAR実験の結果です。" + paragraphs[0], *paragraphs[1:]])
+    if title in MNAR_RESULT_TITLES else (title, paragraphs)
+    for title, paragraphs in SLIDES
+]
+APPENDIX_START = 27
 
 
 def beamer_frames():
@@ -422,8 +452,12 @@ def align_with_beamer(slides):
     for index, ((title, _), (frame_title, _)) in enumerate(zip(slides, frames), 1):
         if title.casefold() != frame_title.casefold():
             raise ValueError(f"Slide {index}: script {title!r} != Beamer {frame_title!r}")
-    if len(slides) != 58 or slides[APPENDIX_START - 1][0] != "Motivation and objective":
-        raise ValueError("Expected 58 slides with Motivation and objective at Appendix slide 26")
+    if len(slides) != 59 or slides[APPENDIX_START - 1][0] != "Motivation and objective":
+        raise ValueError("Expected 59 slides with Motivation and objective at Appendix slide 27")
+    titles = [title for title, _ in slides]
+    comparison = titles.index("Simulation comparison: MCAR, MAR and MNAR")
+    if titles[comparison + 1] != "MNAR benchmark: five estimators" or comparison + 1 >= APPENDIX_START - 1:
+        raise ValueError("The comparison must immediately precede the MNAR benchmark in the main slides")
     expected_appendix = APPENDIX_START - 1
     if [is_appendix for _, is_appendix in frames] != [
         i >= expected_appendix for i in range(len(slides))
@@ -543,8 +577,9 @@ def build():
     doc.add_paragraph(
         f"英語Beamer全{len(SLIDES)}枚に対応した、日本語の発表原稿です。"
         "欠測した人も含む分布をまず回復し、その後で潜在クラスの比率と測定核を分ける、という流れで説明します。"
-        "本編25枚では二段階の要約、推定理論と数値結果を説明します。"
-        "26枚目からのAppendixには、元の詳細な動機、仮定、識別と推定の議論を残し、その後に証明と数値設定を収めています。"
+        f"本編{appendix_start - 1}枚では二段階の要約、推定理論、三つの欠測機構の比較設計とMNARの数値結果を説明します。"
+        "MCARとMARの比較は未実行で、掲載数値は既存のMNAR実験の五手法比較に限ります。"
+        f"{appendix_start}枚目からのAppendixには、元の詳細な動機、仮定、識別と推定の議論を残し、その後に証明と数値設定を収めています。"
     )
 
     doc.add_paragraph("発表の構成", style="Heading 1")
@@ -564,14 +599,17 @@ def build():
     sections = [
         ("Title", "基礎概念、既存研究、問題設定"),
         (SUMMARY_SLIDES[0][0], "二段階の要約 分布の回復、重なるペア、潜在構造の識別、推定への接続"),
-        ("New Theorem 5.1", "漸近理論、計算、simulation、結論、参考文献"),
+        ("New Theorem 5.1", "漸近理論、計算、simulationのモデルと評価対象"),
+        ("Simulation comparison: MCAR, MAR and MNAR", "MCAR・MAR・MNARの比較設計 MCARとMARは未実行"),
+        ("MNAR benchmark: five estimators", "既存MNAR実験の五手法比較、数値結果、結論、参考文献"),
         ("Motivation and objective", "詳細な動機、モデルと仮定、block lawの回復、潜在識別、推定条件"),
         ("Proof sketch for Proposition 1", "証明スケッチ、定理1の8ステップ、empirical diagnostics、数値設定"),
     ]
     starts = [SLIDE_NUMBERS[title] for title, _ in sections]
     ends = [start - 1 for start in starts[1:]] + [len(SLIDES)]
     rows = [
-        (f"{'Appendix' if start >= appendix_start else 'Slides'} {start}–{end}", description)
+        (f"{'Appendix' if start >= appendix_start else 'Slide' if start == end else 'Slides'} "
+         f"{start}" + (f"–{end}" if start != end else ""), description)
         for start, end, (_, description) in zip(starts, ends, sections)
     ]
     for left, right in rows:

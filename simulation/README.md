@@ -52,7 +52,23 @@ seed with that setting does not reproduce the archived samples.
 
 ## Estimators and targets
 
-The comparison uses five estimators:
+The primary comparison is organized by the true missingness mechanism: MCAR,
+MAR, and MNAR. Within each mechanism, compare ordinary ignorable latent-class
+FIML with the proposed bridge correction, using the complete-data oracle as a
+reference. Keep the complete-data law, shadow law, sample size, and mean item
+observation rate fixed. Under MCAR/MAR, evaluate recovery and the possible
+variance cost of correction; under MNAR, evaluate correction of ignorability bias.
+
+**Execution status:** only the MNAR experiment below has been implemented and
+run. MCAR/MAR comparisons are a design specification, not reported results.
+For their implementation, retain the always-observed anchor Y1. Use independent
+response draws with probability 0.70 for MCAR; for MAR use a logistic probability
+depending only on Y1 with coefficient -0.50 and population-calibrated intercepts
+giving each nonanchor a 0.70 response rate. This preserves the existing
+inverse-bridge class r(Y1,Yj) and the 80% overall item observation target.
+
+The existing MNAR benchmark additionally includes correctly specified and
+misspecified selection likelihoods, for five estimators in total:
 
 1. `full_data_oracle`: the Allman model fitted before missingness.
 2. `mar`: observed-data FIML using every observed item under ignorability.
