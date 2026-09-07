@@ -1,0 +1,36 @@
+% Slide-only copy. Assumption 5 supplies both the bridge and support extension.
+\begingroup
+\fontsize{10.6pt}{12.6pt}\selectfont
+\begin{tikzpicture}[
+  font=\sffamily\fontsize{10.6pt}{12.6pt}\selectfont,
+  every node/.style={font=\sffamily\fontsize{10.6pt}{12.6pt}\selectfont},
+  assumption/.style={draw=Blue,fill=PaleBlue,rounded corners=2pt,
+    text width=3.8cm,minimum height=.9cm,align=center,inner sep=1mm},
+  result/.style={draw=Navy,fill=black!5,rounded corners=2pt,
+    text width=3.8cm,minimum height=.95cm,align=center,inner sep=1mm},
+  final/.style={result,draw=Red,fill=Red!6},
+  path/.style={-{Latex[length=2.1mm]},thick,Navy}
+]
+  \node[assumption] (a1) at (2.1,3.8) {Assumption 1\\observed data $O$};
+  \node[assumption] (a6) at (6.7,3.8) {Assumption 6\\$R_S\indep Z_S\mid(Y_S,U_S)$};
+  \node[assumption] (a5) at (11.3,3.8) {Assumption 5\\block support: $\pi_S>0$};
+  \node[result,text width=5.8cm] (bridge) at (6.7,2.65)
+    {observable bridge moment\\$\E\{R_S/q(Y_S,U_S)\mid Z_S,U_S\}=1$};
+  \draw[path] (a1.south) -- (bridge.north west);
+  \draw[path] (a6.south) -- (bridge.north);
+  \draw[path] (a5.south) -- (bridge.north east);
+  \node[assumption] (a7) at (2.1,1.3) {Assumption 7\\complete-case\\completeness};
+  \node[result] (ccunique) at (6.7,1.3)
+    {unique on $R_S=1$\\$q^{-1}=\pi_S^{-1}$};
+  \node[result] (fullunique) at (11.3,1.3)
+    {positivity: $q=\pi_S$\\on target support};
+  \draw[path] (bridge.south) -- (ccunique.north);
+  \draw[path] (a7.east) -- (ccunique.west);
+  \draw[path] (ccunique.east) -- (fullunique.west);
+  % The outer route keeps the positivity premise separate from the bridge arrows.
+  \draw[path] (a5.east) -- (13.7,3.8) |- (fullunique.east);
+  \node[final] (law) at (11.3,.04)
+    {IPW identifies\\$P(Y_S,Z_S,U_S)$};
+  \draw[path] (fullunique.south) -- (law.north);
+\end{tikzpicture}%
+\endgroup%

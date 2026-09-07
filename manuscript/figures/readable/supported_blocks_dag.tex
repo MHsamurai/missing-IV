@@ -1,0 +1,44 @@
+% Observed-variable marginal views, with F integrated out in each block.
+\begingroup
+\fontsize{10.6pt}{12.6pt}\selectfont
+\begin{tikzpicture}[
+  font=\sffamily\fontsize{10.6pt}{12.6pt}\selectfont,
+  every node/.style={font=\sffamily\fontsize{10.6pt}{12.6pt}\selectfont},
+  smallobs/.style={draw,rounded corners=1pt,fill=gray!10,minimum width=1.05cm,
+    minimum height=.55cm,inner sep=.7mm},
+  covar/.style={draw,rounded corners=1pt,fill=white,minimum height=.75cm,inner sep=1mm},
+  select/.style={draw,diamond,aspect=1.65,fill=gray!10,minimum width=1.3cm,
+    minimum height=.85cm,inner sep=.5mm},
+  group/.style={draw=gray!55,rounded corners=1.5pt,inner sep=1.2mm},
+  arrow/.style={-{Latex[length=1.8mm,width=1.2mm]},line width=.65pt},
+  title/.style={font=\sffamily\fontsize{10.6pt}{12.6pt}\selectfont\bfseries}
+]
+  \foreach \tag/\shift/\itemlabel/\setlabel in {0/0/b/{a,b},J/7/J/{J,a}} {
+    \begin{scope}[xshift=\shift cm]
+      \draw[gray!65,rounded corners=2pt] (0,.55) rectangle (6.25,4.3);
+      \node[title] at (3.125,3.95) {$S_\tag=\{\setlabel\}$};
+      \node[covar] (u\tag) at (3.05,3.15) {$U_{S_\tag}=(X,W)$};
+      \node[smallobs] (z\tag 1) at (.9,2.45) {$Z_{\tag,1}$};
+      \node (zd\tag) at (.9,1.95) {$\vdots$};
+      \node[smallobs] (z\tag q) at (.9,1.45) {$Z_{\tag,q_\tag}$};
+      \node[group,fit=(z\tag 1)(zd\tag)(z\tag q)] (zg\tag) {};
+      \node[smallobs,fill=gray!22] (ya\tag) at (3.05,2.3) {$Y_a$};
+      \node[smallobs] (yb\tag) at (3.05,1.6) {$Y_\itemlabel$};
+      \node[group,fit=(ya\tag)(yb\tag)] (yg\tag) {};
+      \node at (.9,.85) {$\bm Z_{S_\tag}$};
+      \node at (2.9,.85) {$Y_{S_\tag}$};
+      \node[select] (r\tag) at (5.25,1.95) {$R_{S_\tag}$};
+      \node at (4.9,.85) {$R_{S_\tag}=\prod_{k\in S_\tag}D_k$};
+      \draw[arrow] (u\tag.west) -- (zg\tag.north);
+      \draw[arrow] (u\tag.south) -- (yg\tag.north);
+      \draw[arrow] (u\tag.east) -- (r\tag.north);
+      \draw[arrow] (zg\tag.east) -- (yg\tag.west);
+      \draw[arrow] (yg\tag.east) -- (r\tag.west);
+    \end{scope}
+  }
+  \node at (6.625,2.4) {$\cdots$};
+  \node[align=center] at (6.625,.05)
+    {$F$ marginalized;\quad $R_S\mathrel{\perp\!\!\!\perp}\bm Z_S\mid(Y_S,U_S)$\\
+     gray $Y_a$: shared anchor item across extension pairs};
+\end{tikzpicture}%
+\endgroup%

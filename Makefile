@@ -8,6 +8,7 @@ PROOF_TEX := manuscript/vector_missing_iv_identification_proof.tex
 PROOF_PDF := build/formal/vector_missing_iv_identification_proof/vector_missing_iv_identification_proof.pdf
 BEAMER_TEX := manuscript/vector_missing_iv_identification_beamer.tex
 BEAMER_PDF := build/formal/vector_missing_iv_identification_beamer/vector_missing_iv_identification_beamer.pdf
+BEAMER_FIGURES := $(wildcard manuscript/figures/readable/*.tex manuscript/figures/readable/*.pdf)
 TEMPLATE_TEX := notes/onepage/a4_two_column_format_template.tex
 TEMPLATE_PDF := build/templates/a4_two_column_format_template/a4_two_column_format_template.pdf
 READING_DHAULTFOEUILLE_TEX := notes/reading/dhaultfoeuille2010_annotated_ja.tex
@@ -43,7 +44,7 @@ $(PROOF_PDF): $(PROOF_TEX) .latexmkrc
 
 beamer: $(BEAMER_PDF)
 
-$(BEAMER_PDF): $(BEAMER_TEX) .latexmkrc
+$(BEAMER_PDF): $(BEAMER_TEX) $(BEAMER_FIGURES) .latexmkrc
 	latexmk -outdir=build/formal/vector_missing_iv_identification_beamer $(BEAMER_TEX)
 
 template: $(TEMPLATE_PDF)

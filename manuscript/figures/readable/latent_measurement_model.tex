@@ -1,0 +1,37 @@
+% Slide-only copy. Input at natural size; no resizebox or external scaling.
+\begingroup
+\fontsize{10.6pt}{12.6pt}\selectfont
+\begin{tikzpicture}[
+  font=\sffamily\fontsize{10.6pt}{12.6pt}\selectfont,
+  every node/.style={font=\sffamily\fontsize{10.6pt}{12.6pt}\selectfont},
+  latent/.style={ellipse,draw=Navy,fill=PaleBlue,minimum width=1.35cm,minimum height=1cm,thick},
+  observed/.style={draw=Navy,fill=black!7,minimum width=1.15cm,minimum height=.7cm,thick},
+  path/.style={-{Latex[length=2.2mm]},thick,Navy},
+  covariate path/.style={-{Latex[length=2.2mm]},thick,GrayText},
+  kernel/.style={text=Navy,fill=white,inner sep=2pt},
+  role/.style={text=Navy,align=center,font=\sffamily\fontsize{10.6pt}{12.6pt}\selectfont\bfseries}
+]
+  \node[observed] (w) at (.65,0) {$W$};
+  \node[observed] (x) at (2.8,1.75) {$X$};
+  \node[latent] (f) at (2.8,0) {$F$};
+  \node[observed] (y1) at (5.1,.9) {$Y_1$};
+  \node[observed] (yj) at (5.1,-.25) {$Y_j$};
+  \node[observed] (ym) at (5.1,-1.4) {$Y_m$};
+  \node at (5.1,.325) {$\vdots$};
+  \node at (5.1,-.825) {$\vdots$};
+  \draw[path] (w.east) -- node[kernel,above] {$Q_F$} (f.west);
+  \draw[covariate path] (x.south) -- (f.north);
+  \draw[path] (f.north east) -- node[kernel,above] {$Q_1$} (y1.west);
+  \draw[path] (f.east) -- node[kernel,above] {$Q_j$} (yj.west);
+  \draw[path] (f.south east) -- node[kernel,below] {$Q_m$} (ym.west);
+  % The outer bus is a common X input, with one arrow to each measurement.
+  \draw[thick,GrayText] (x.east) -- (6.1,1.75) -- (6.1,-1.4);
+  \foreach \itemnode in {y1,yj,ym} {
+    \draw[covariate path] (6.1,0 |- \itemnode.east) -- (\itemnode.east);
+  }
+  \node[role] at (.65,-.95) {latent\\shifter};
+  \node[role] at (2.8,2.45) {covariates};
+  \node[role] at (2.8,-1.05) {latent\\variable};
+  \node[role] at (5.1,2.45) {observed\\measurements};
+\end{tikzpicture}%
+\endgroup%

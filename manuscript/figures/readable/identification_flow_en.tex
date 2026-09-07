@@ -1,0 +1,33 @@
+% Slide-only copy; clockwise flow, with identification conditions in each stage.
+\begingroup
+\fontsize{10.6pt}{12.6pt}\selectfont
+\begin{tikzpicture}[
+  font=\sffamily\fontsize{10.6pt}{12.6pt}\selectfont,
+  every node/.style={font=\sffamily\fontsize{10.6pt}{12.6pt}\selectfont},
+  box/.style={draw,rounded corners=1pt,fill=gray!10,text width=6cm,
+    minimum height=1.85cm,align=center,inner sep=1.2mm},
+  arrow/.style={-{Latex[length=2.3mm,width=1.5mm]},line width=.75pt},
+  lab/.style={fill=white,inner sep=1pt,align=center}
+]
+  \node[box] (pobs) at (3.2,3.55)
+    {observed-data law $P_{\mathrm{obs}}(O)$\\
+     $O=(X,W,Z,D,Y_D)$};
+  \node[box] (laws) at (10.2,3.55)
+    {Missing IV $+$ positivity $+$\\complete-case completeness\\
+     New Proposition 1: block laws\\
+     $\{\pi_S,\ P(Y_S,Z_S,U_S)\}_{S\in\mathcal S}$};
+  \node[box,fill=gray!18,minimum height=1.5cm] (tensor) at (10.2,.9)
+    {recovered block tensors\\[2pt]
+     $\mathcal T_{abW}(x),\quad\{\mathcal T_{jaW}(x)\}_{j}$\\[2pt]
+     $\mathcal T_{abW}=\sum_f p_f M_a\otimes M_b\otimes G_f$};
+  \node[box,fill=white,minimum height=2.3cm] (latent) at (3.2,1.2)
+    {Kruskal rank ($W$) $+$ linear inversion\\
+     anchor ordering fixes labels\\[2pt]
+     identified latent components\\
+     $Q_F(x)=\{\lambda_f(w,x)\}_{f,w}$\\
+     $Q_Y(x)=\{M_j(y,f;x)\}_{j,y,f}$};
+  \draw[arrow] (pobs.east) -- (laws.west);
+  \draw[arrow] (laws.south) -- node[lab] {marginalize and condition} (tensor.north);
+  \draw[arrow] (tensor.west) -- (latent.east);
+\end{tikzpicture}%
+\endgroup%

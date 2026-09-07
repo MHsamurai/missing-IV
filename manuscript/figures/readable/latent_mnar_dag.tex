@@ -1,0 +1,36 @@
+% Separate marginal views; neither is a DAG for the entire complete-data law.
+\begingroup
+\fontsize{10.6pt}{12.6pt}\selectfont
+\begin{tikzpicture}[
+  font=\sffamily\fontsize{10.6pt}{12.6pt}\selectfont,
+  every node/.style={font=\sffamily\fontsize{10.6pt}{12.6pt}\selectfont},
+  obs/.style={draw,rounded corners=1pt,fill=gray!10,minimum width=1.25cm,
+    minimum height=.8cm,align=center,inner sep=1mm},
+  latent/.style={draw,circle,fill=white,minimum size=.9cm},
+  select/.style={draw,diamond,aspect=1.8,fill=gray!10,minimum width=1.5cm,
+    minimum height=.9cm,inner sep=.8mm},
+  arrow/.style={-{Latex[length=2mm,width=1.3mm]},line width=.65pt},
+  lab/.style={fill=white,inner sep=1pt,align=center},
+  heading/.style={align=center,font=\sffamily\fontsize{10.6pt}{12.6pt}\selectfont\bfseries}
+]
+  \node[heading] at (3,4.3) {Measurement law\\$Z,D$ marginalized};
+  \node[obs] (u) at (1.05,1.6) {$U_S=(X,W)$};
+  \node[latent] (f) at (3,3.2) {$F$};
+  \node[obs] (y) at (5.15,1.6) {$Y_S$};
+  \draw[arrow] (u.north) -- node[lab,above left] {$Q_F$} (f.west);
+  \draw[arrow] (f.east) -- node[lab,above right] {$\prod_{j\in S}Q_j$} (y.north);
+  \draw[arrow] (u.east) -- node[lab,above] {$X$ only} (y.west);
+  \draw[gray!50] (6.35,.2) -- (6.35,4.7);
+  \node[heading] at (10,4.3) {Missing-IV law\\$F$ marginalized};
+  \node[obs] (v) at (10,3.2) {$U_S=(X,W)$};
+  \node[obs] (z) at (7.7,1.6) {$Z_S$};
+  \node[obs] (q) at (10,1.6) {$Y_S$};
+  \node[select] (r) at (12.4,1.6) {$R_S$};
+  \draw[arrow] (v.south) -- (q.north);
+  \draw[arrow] (v.west) -- (z.north);
+  \draw[arrow] (v.east) -- (r.north);
+  \draw[arrow] (z.east) -- (q.west);
+  \draw[arrow] (q.east) -- (r.west);
+  \node at (10,.45) {$R_S\mathrel{\perp\!\!\!\perp}Z_S\mid(Y_S,U_S)$};
+\end{tikzpicture}%
+\endgroup%
