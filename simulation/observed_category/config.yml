@@ -1,0 +1,15 @@
+{
+  "seed": 260907,
+  "sample_size": 500,
+  "replications": 100,
+  "starts": 6,
+  "maxiter": 1500,
+  "workers": 4,
+  "mechanisms": ["MCAR", "MAR", "MNAR"],
+  "v_states": [[0, 0], [0, 1], [1, 0], [1, 1]],
+  "v_probability": [0.25, 0.25, 0.25, 0.25],
+  "class2_given_v": [0.10, 0.30, 0.60, 0.80],
+  "measurement": [[0.15, 0.80], [0.25, 0.75], [0.20, 0.85]],
+  "nonanchor_response_rate": 0.70,
+  "selection_coefficients": [-0.50, -0.80, -1.20]
+}

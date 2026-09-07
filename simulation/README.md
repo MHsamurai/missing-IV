@@ -1,5 +1,10 @@
 # Allman latent-class MNAR simulation
 
+The separate [observed-category candidate experiment](observed_category/README.md)
+tests the 2026-09-07 candidate with `W,Z -> F -> Y` and joint observed-data
+estimation. Its executed notebook and n=500/n=5,000 results do not overwrite
+the archived block-bridge experiment described below.
+
 The simulation uses only the finite latent-class model of Allman, Matias and
 Rhodes (2009, Sections 3-5). For latent class `F` and observed finite-state
 features `(W, Y1, Y2, Y3)`, the complete-data distribution is
