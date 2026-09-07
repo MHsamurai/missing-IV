@@ -377,7 +377,7 @@ B=\operatorname{Var}\{\psi+C\varphi_\eta\}.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Computation}
+\begin{frame}{Previous block-bridge computation}
 \small
 Zhao and Shao (2015, \emph{JASA}, Section 2.3) provide the precedent for a plug-in order that estimates a nuisance law before the target model. The algorithm here is different because the criterion contains a nonconvex latent mixture; it uses \bluekey{tensor initialization, multiple starts, and constrained updates}.\par
 \vspace{.25em}
@@ -410,13 +410,13 @@ Zhao and Shao (2015, \emph{JASA}, Section 2.3) provide the precedent for a plug-
 \bluekey{The computation follows the identification order: recover, decompose, refine.}
 \end{frame}
 
-\begin{frame}{Simulation targets in the model}
+\begin{frame}{Previous simulation model}
 Fixed $X=x$; $F\in\{1,2\}$; binary $W,Y_1,Y_2,Y_3$.\par
 \centering
 \input{manuscript/figures/readable/simulation_dgp.tex}\par
 \raggedright
 $A_{Sf}=\Prb(Z_S\mid F=f)$; $B_{Sf}=\Prb(Y_S\mid F=f,Z_S)$.\\
-\textbf{After marginalizing $Z$:} product measurement kernels.\par
+\textbf{Previous DGP:} not a validation of the revised candidate model.\par
 $n=500$; 100 replications; mean item response rate: $80\%$.
 \end{frame}
 
@@ -435,26 +435,6 @@ p_f=\Prb(F=f),\qquad M_{jf}(y)=\Prb(Y_j=y\mid F=f).
 Report $p_2$ and the six $M_{jf}(1)$ components.
 \end{block}
 \bluekey{Outcome recovery and latent decomposition have distinct targets.}
-\end{frame}
-
-\begin{frame}{Simulation comparison: MCAR, MAR and MNAR}
-\bluekey{Same latent model, $n=500$, and mean item observation rate of $80\%$.}
-\begin{block}{Vary the true missingness mechanism}
-\begin{tabular}{@{}ll@{}}
-\textbf{MCAR} & Constant observation probability.\\[.35em]
-\textbf{MAR} & Depends only on always-observed $Y_1$.\\[.35em]
-\textbf{MNAR} & Depends on $Y_1$, missing $Y_j$, and their interaction.
-\end{tabular}
-\end{block}
-\begin{itemize}
-\item In each setting: \textbf{ordinary latent-class FIML} vs. \textbf{proposed bridge correction}; complete-data oracle as reference.
-\item \textbf{MCAR / MAR:} assess recovery by both methods and the possible variance cost of correction.
-\item \textbf{MNAR:} assess whether correction removes the bias from ignoring nonresponse.
-\end{itemize}
-\medskip
-\bluekey{Targets: outcome probabilities, measurement kernels $M_j$, and class shares $p_f$.}
-\par\smallskip
-{\slideannotation MCAR/MAR comparisons are planned; the results below are from the existing MNAR experiment.}
 \end{frame}
 
 \begin{frame}{MNAR benchmark: five estimators}
